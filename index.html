@@ -177,12 +177,41 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .frame{display:block;width:100%;height:min(76vh,760px);min-height:440px;border:0;border-radius:var(--r);background:var(--paper);box-shadow:0 0 0 2px var(--line)}
 button.game{font:inherit;text-align:start;cursor:pointer}
 
+
+/* play mode: the page never scrolls, the game fills the window, chrome is one thin row each */
+html.playing,html.playing body{height:100dvh;overflow:hidden;overscroll-behavior:none}
+html.playing body{display:flex;flex-direction:column;padding:0;margin:0}
+html.playing .wrap{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;max-width:none;width:100%}
+html.playing header,html.playing .stagebar h2,html.playing #barPlayLbl,html.playing .lpbar .who small,html.playing .lpbar .who .lock,html.playing body::before{display:none}
+html.playing main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+html.playing #v-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+html.playing .stagebar{display:none}
+html.playing .frame{flex:1 1 auto;height:auto;min-height:0;border-radius:0;box-shadow:none}
+html.playing .lpbar{position:static;margin:0;gap:4px 10px;padding:3px 6px 3px 8px;border-radius:0;box-shadow:0 1px 0 var(--line)}
+html.playing .lpbar .who b{font-size:16px}
+html.playing .lpbar .chip{min-height:34px;padding:2px 12px 2px 3px;font-size:14px;gap:5px}
+html.playing .lpbar .chip .code{width:26px;height:26px;font-size:10px}
+html.playing .setbtn{min-height:34px;padding:2px 14px 2px 10px;box-shadow:none}
+html.playing .setbtn small{display:none}
+html.playing .back{min-height:34px;padding:2px 12px;font-size:14px}
+html.playing .lpbar .note{font-size:12px;flex-basis:auto;margin-left:auto}
+html.playing footer{margin:0;padding:1px 8px;font-size:10.5px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 -1px 0 var(--line)}
+html.playing footer .eu{font-size:10px;padding:0 6px 0 3px}
+html.playing footer .eu svg{width:10px;height:10px}
+html.playing .lpbar{flex-wrap:nowrap}
+html.playing .lpbar .play{overflow-x:auto;scrollbar-width:none}html.playing .lpbar .langs{flex-wrap:nowrap}
+html.playing .lpbar .who{display:none}
+@media (max-width:640px){html.playing .lpbar .chip .own,html.playing .setbtn span{display:none}html.playing .lpbar .chip{padding:2px 3px 2px 3px}html.playing .setbtn{padding:2px 10px}html.playing .back span{display:none}html.playing .back{padding:2px 8px}html.playing .lpbar .note{display:none}html.playing footer{font-size:9.5px}}
+.fsbtn{flex:none;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;padding:0}
+.fsbtn:hover{border-color:var(--sky)}
+.fsbtn svg{width:16px;height:16px}
+
 /* settings sheet */
 .sheet{position:fixed;inset:0;z-index:30;overflow-y:auto;background:#0c1428b3;padding-block:max(24px,env(safe-area-inset-top,0px)) 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .sheet>.card{max-width:860px;margin:0 auto}
 .sheethead{display:flex;justify-content:flex-end;margin-bottom:-8px}
 footer a{color:var(--ink);font-weight:700}footer a.tiny{font-size:11px;font-weight:400;color:var(--muted);margin-left:8px}.eu{display:inline-flex;align-items:center;gap:6px;margin:0 2px;padding:2px 10px 2px 6px;border:1px solid currentColor;border-radius:99px;font-size:12px;font-weight:600;line-height:1.6;vertical-align:middle;opacity:.85}.eu svg{flex:none}
-footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:var(--muted)}
+footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:var(--muted)}footer .eu{padding:0 8px 0 4px;font-size:11px;line-height:1.4}
 
 @media (max-width:640px){nav{margin-left:0;width:100%}nav button{padding:8px 10px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -204,6 +233,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
   <div class="lpbar" id="lpbar" hidden>
     <div class="who" id="barWho"><svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><b id="barName"></b><small id="barAge"></small></div>
     <div class="play" role="group" aria-labelledby="barPlayLbl"><span id="barPlayLbl"></span><span class="langs" id="barLangs"></span></div>
+    <button type="button" class="fsbtn" id="fsBtn" aria-label="Fullscreen" title="Fullscreen" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
     <button type="button" class="setbtn" id="nav-settings"><i class="fill" id="setFill" aria-hidden="true"></i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span><span id="barSettings"></span><small id="barSettingsSub"></small></span></button>
     <div class="note" id="barNote" hidden></div>
   </div>
@@ -235,6 +265,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
         </div>
         <div class="field">
           <div class="lbl" id="s-home"></div>
+          <p class="hint" id="s-home-hint"></p>
           <div class="pills" id="homeLangs" role="group" aria-labelledby="s-home"></div>
         </div>
         <div class="field">
@@ -269,7 +300,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
       </div>
       <div class="filter">
         <span class="quiet" id="g-filter"></span>
-        <p class="sample" id="g-sample" hidden>This is a sample setup. To add your child's name and the languages your family speaks, hold <b>Settings</b> for 3 seconds.</p>
+        <p class="sample" id="g-sample" hidden></p>
       </div>
       <div class="grid" id="gameGrid"></div>
     </section>
@@ -277,42 +308,32 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
 
     <!-- APP -->
     <section class="card prose" id="v-app" hidden>
-      <div class="eyebrow">LingoPlaytime for Mac</div>
-      <h1>Coming soon</h1>
-      <p class="lede">We're building a desktop app that locks the keyboard to the game, so a toddler can slap every key without closing a tab, opening a menu or emailing your boss.</p>
-      <p>It will also remember which words your child has heard (on your computer only), work offline, and bring extra games. The website stays free, with no ads.</p>
-      <p class="soon"><span>Coming soon</span></p>
+      <div class="eyebrow" id="app-0"></div>
+      <h1 id="app-1"></h1>
+      <p class="lede" id="app-2"></p>
+      <p id="app-3"></p>
+      <p class="soon"><span id="app-4"></span></p>
     </section>
 
     <!-- PRIVACY -->
     <section class="card prose" id="v-privacy" hidden>
-      <div class="eyebrow">Privacy</div>
-      <h1>We don't know your child's name. Only your device does.</h1>
-      <ul class="facts">
-        <li><span class="k">Stored</span><span>Your child's name, age group, home language and the languages they're learning.</span></li>
-        <li><span class="k">Where</span><span>In this browser on this device. It never reaches us.</span></li>
-        <li><span class="k no">Not stored</span><span>Everything else. No accounts, no logins, no email, no photos.</span></li>
-        <li><span class="k no">No</span><span>Ads, tracking cookies, or social buttons. So there's no cookie banner either.</span></li>
-        <li><span class="k">Sounds</span><span>Played from files on our own site. Your child's name is never sent to a voice service.</span></li>
-        <li><span class="k">Counting</span><span>At most a cookieless visit counter, so we know roughly how many people come by.</span></li>
-        <li><span class="k">Hosting</span><span>The site is hosted on GitHub Pages. Like any web server, GitHub logs visitors' IP addresses for a short time to deliver and protect the site. GitHub's own privacy policy applies to that.</span></li>
-        <li><span class="k">Who</span><span>Jeffrey Humble, Berlin, is responsible for this site. You can ask what we hold, have it corrected or deleted, object, or complain to a data protection authority. Contact details are in the <a href="impressum.html">Impressum</a>.</span></li>
-        <li><span class="k">Paying</span><span>If you buy the app later, the payment company sees your email. That is kept apart from anything about your child.</span></li>
-      </ul>
-      <h2>Forget everything</h2>
-      <p>This wipes the name and languages from this device and starts setup again.</p>
-      <button class="danger" type="button" id="forget">Forget everything</button>
+      <div class="eyebrow" id="priv-0"></div>
+      <h1 id="priv-1"></h1>
+      <ul class="facts" id="facts"></ul>
+      <h2 id="fg-0"></h2>
+      <p id="fg-1"></p>
+      <button class="danger" type="button" id="forget"></button>
       <div class="confirm" id="forgetConfirm" hidden>
-        <span>Wipe the setup on this device?</span>
-        <button class="yes" type="button" id="forgetYes">Yes, wipe it</button>
-        <button type="button" id="forgetNo">Keep it</button>
+        <span id="fg-3"></span>
+        <button class="yes" type="button" id="forgetYes"></button>
+        <button type="button" id="forgetNo"></button>
       </div>
       <p class="quiet" id="forgetDone" aria-live="polite"></p>
     </section>
 
   </main>
 
-  <footer>LingoPlaytime · Little games, lots of languages · No ads, no accounts<br>Made by a parent, for kids · <span class="eu"><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#1d3f9c"/><g fill="#ffd23f"><circle cx="10.0" cy="4.0" r="1.1"/><circle cx="13.0" cy="4.8" r="1.1"/><circle cx="15.2" cy="7.0" r="1.1"/><circle cx="16.0" cy="10.0" r="1.1"/><circle cx="15.2" cy="13.0" r="1.1"/><circle cx="13.0" cy="15.2" r="1.1"/><circle cx="10.0" cy="16.0" r="1.1"/><circle cx="7.0" cy="15.2" r="1.1"/><circle cx="4.8" cy="13.0" r="1.1"/><circle cx="4.0" cy="10.0" r="1.1"/><circle cx="4.8" cy="7.0" r="1.1"/><circle cx="7.0" cy="4.8" r="1.1"/></g></svg>Made in the EU</span><br>Questions or problems? <a href="https://pigrosoft.com" target="_blank" rel="noopener">Get support from Pigrosoft</a> <a class="tiny" href="impressum.html">Impressum</a></footer>
+  <footer>LingoPlaytime · <span id="ft-0"></span> · <span id="ft-1"></span><span class="sep"> · </span><span id="ft-2"></span> · <span class="eu"><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="10" cy="10" r="10" fill="#1d3f9c"/><g fill="#ffd23f"><circle cx="10.0" cy="4.0" r="1.1"/><circle cx="13.0" cy="4.8" r="1.1"/><circle cx="15.2" cy="7.0" r="1.1"/><circle cx="16.0" cy="10.0" r="1.1"/><circle cx="15.2" cy="13.0" r="1.1"/><circle cx="13.0" cy="15.2" r="1.1"/><circle cx="10.0" cy="16.0" r="1.1"/><circle cx="7.0" cy="15.2" r="1.1"/><circle cx="4.8" cy="13.0" r="1.1"/><circle cx="4.0" cy="10.0" r="1.1"/><circle cx="4.8" cy="7.0" r="1.1"/><circle cx="7.0" cy="4.8" r="1.1"/></g></svg><span id="ft-3"></span></span><span class="sep"> · </span><span id="ft-4"></span> <a href="https://pigrosoft.com" target="_blank" rel="noopener" id="ft-5"></a> <a class="tiny" href="impressum.html">Impressum</a></footer>
 </div>
 
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="s-title"></div>
@@ -359,7 +380,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
       sEyebrow:"Set up in under a minute",sTitle:"Who's playing today?",sLede:"Tell us a little about your child. The games use their name and speak their languages.",
       name:"Child's name",nameHint:"A first name or nickname is perfect.",namePh:"e.g. Mila",
       age:"How old?",ages:["Tiny","Small","Big"],ageSub:["1–2","3–4","5–7"],
-      home:"Language at home",learn:"Languages to play in",learnHint:"Pick up to 4.",
+      home:"Main language",homeHint:"The language your child hears most. The whole site, including the blog, uses it too.",learn:"Languages to play in",learnHint:"Pick up to 4.",
       go:"Let's play!",privacyNote:"Saved only on this device. We never see it.",
       errName:"Add a name first.",errLearn:"Pick at least one language to play in.",
       gEyebrow:"Pick a game",gTitle:n=>`${n}'s playroom`,filter:(a,l)=>`Showing games for ${a} kids, in ${l}.`,
@@ -369,7 +390,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
       sEyebrow:"In einer Minute eingerichtet",sTitle:"Wer spielt heute?",sLede:"Erzähl uns ein bisschen über dein Kind. Die Spiele nennen es beim Namen und sprechen seine Sprachen.",
       name:"Name des Kindes",nameHint:"Vorname oder Spitzname reicht.",namePh:"z. B. Mila",
       age:"Wie alt?",ages:["Winzig","Klein","Groß"],ageSub:["1–2","3–4","5–7"],
-      home:"Sprache zu Hause",learn:"Sprachen zum Spielen",learnHint:"Bis zu 4 auswählen.",
+      home:"Hauptsprache",homeHint:"Die Sprache, die dein Kind am meisten hört. Die ganze Seite, auch der Blog, ist dann in dieser Sprache.",learn:"Sprachen zum Spielen",learnHint:"Bis zu 4 auswählen.",
       go:"Los geht's!",privacyNote:"Nur auf diesem Gerät gespeichert. Wir sehen es nie.",
       errName:"Bitte zuerst einen Namen eingeben.",errLearn:"Bitte mindestens eine Sprache wählen.",
       gEyebrow:"Such dir ein Spiel aus",gTitle:n=>`${n}s Spielzimmer`,filter:(a,l)=>`Spiele für ${a}, auf ${l}.`,
@@ -379,7 +400,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
       sEyebrow:"Listo en un minuto",sTitle:"¿Quién juega hoy?",sLede:"Cuéntanos un poco sobre tu peque. Los juegos dicen su nombre y hablan sus idiomas.",
       name:"Nombre del niño o niña",nameHint:"Basta con el nombre o un apodo.",namePh:"p. ej. Mila",
       age:"¿Qué edad?",ages:["Mini","Pequeño","Grande"],ageSub:["1–2","3–4","5–7"],
-      home:"Idioma en casa",learn:"Idiomas para jugar",learnHint:"Elige hasta 4.",
+      home:"Idioma principal",homeHint:"El idioma que tu hijo oye más. Todo el sitio, también el blog, aparece en este idioma.",learn:"Idiomas para jugar",learnHint:"Elige hasta 4.",
       go:"¡A jugar!",privacyNote:"Se guarda solo en este dispositivo. Nunca lo vemos.",
       errName:"Primero escribe un nombre.",errLearn:"Elige al menos un idioma.",
       gEyebrow:"Elige un juego",gTitle:n=>`La sala de juegos de ${n}`,filter:(a,l)=>`Juegos para ${a}, en ${l}.`,
@@ -389,7 +410,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
       sEyebrow:"Prêt en une minute",sTitle:"Qui joue aujourd'hui ?",sLede:"Parlez-nous un peu de votre enfant. Les jeux disent son prénom et parlent ses langues.",
       name:"Prénom de l'enfant",nameHint:"Un prénom ou un surnom suffit.",namePh:"ex. Mila",
       age:"Quel âge ?",ages:["Tout-petit","Petit","Grand"],ageSub:["1–2","3–4","5–7"],
-      home:"Langue à la maison",learn:"Langues pour jouer",learnHint:"Jusqu'à 4.",
+      home:"Langue principale",homeHint:"La langue que votre enfant entend le plus. Tout le site, blog compris, s'affiche dans cette langue.",learn:"Langues pour jouer",learnHint:"Jusqu'à 4.",
       go:"On joue !",privacyNote:"Enregistré seulement sur cet appareil. Nous ne le voyons jamais.",
       errName:"Ajoutez d'abord un prénom.",errLearn:"Choisissez au moins une langue.",
       gEyebrow:"Choisis un jeu",gTitle:n=>`La salle de jeux de ${n}`,filter:(a,l)=>`Jeux pour ${a}, en ${l}.`,
@@ -399,7 +420,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
       sEyebrow:"Pronto in un minuto",sTitle:"Chi gioca oggi?",sLede:"Raccontaci qualcosa del tuo bambino. I giochi usano il suo nome e parlano le sue lingue.",
       name:"Nome del bambino",nameHint:"Basta il nome o un soprannome.",namePh:"es. Mila",
       age:"Quanti anni?",ages:["Piccino","Piccolo","Grande"],ageSub:["1–2","3–4","5–7"],
-      home:"Lingua di casa",learn:"Lingue per giocare",learnHint:"Scegline fino a 4.",
+      home:"Lingua principale",homeHint:"La lingua che tuo figlio sente di più. Tutto il sito, anche il blog, sarà in questa lingua.",learn:"Lingue per giocare",learnHint:"Scegline fino a 4.",
       go:"Giochiamo!",privacyNote:"Salvato solo su questo dispositivo. Noi non lo vediamo mai.",
       errName:"Scrivi prima un nome.",errLearn:"Scegli almeno una lingua.",
       gEyebrow:"Scegli un gioco",gTitle:n=>`La stanza dei giochi di ${n}`,filter:(a,l)=>`Giochi per ${a}, in ${l}.`,
@@ -409,7 +430,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
       sEyebrow:"Pronto em um minuto",sTitle:"Quem vai brincar hoje?",sLede:"Conte um pouco sobre a sua criança. Os jogos usam o nome dela e falam as suas línguas.",
       name:"Nome da criança",nameHint:"Primeiro nome ou apelido já basta.",namePh:"ex. Mila",
       age:"Que idade?",ages:["Bebé","Pequeno","Grande"],ageSub:["1–2","3–4","5–7"],
-      home:"Língua de casa",learn:"Línguas para brincar",learnHint:"Escolha até 4.",
+      home:"Língua principal",homeHint:"A língua que o teu filho mais ouve. Todo o site, incluindo o blog, fica nessa língua.",learn:"Línguas para brincar",learnHint:"Escolha até 4.",
       go:"Vamos brincar!",privacyNote:"Guardado só neste aparelho. Nós nunca vemos.",
       errName:"Primeiro escreva um nome.",errLearn:"Escolha pelo menos uma língua.",
       gEyebrow:"Escolha um jogo",gTitle:n=>`A sala de brincar de ${n}`,filter:(a,l)=>`Jogos para ${a}, em ${l}.`,
@@ -418,6 +439,18 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
   };
 
   // Games live in games/ next to this page. Each loads a small bridge that reads the settings bar.
+  /* text for the parts of the page outside the settings tables, per main language */
+  const STATIC = {"en": {"games": {"peek": ["Peekaboo", "Peekaboo! Curtains, boxes and bushes hide animals. Any tap opens one."], "face": ["Where's your nose?", "Tap a nose, eyes or toes and hear the word, then point to your own."], "street": ["Street sounds", "Buses, bikes, a plane, a helicopter and a dog. Tap anything to hear it and its name."], "dress": ["Get dressed", "Rain, sun or snow? Put on the right clothes, one word at a time, then head outside."], "night": ["Goodnight room", "Say goodnight to the moon, the lamp and the teddy. The last game before bed; it ends by itself."], "sky": ["Sky Words", "Planes fly past carrying pictures. Tap the one you hear."], "farm": ["Old MacDonald's Farm", "Tap an animal, hear its real sound and its name, then sing the song."], "drum": ["Drum Parade", "Bang the drums, or any key. Every hit is a beat, a word or a number."], "train": ["Word Train", "Ride from station to station and find the word at each stop."], "paint": ["Paint the World", "Everything starts grey. Each tap splashes in a color and says its name."], "soup": ["Little Soup Pot", "A hungry friend wants soup. Add food, stir, and serve."], "flappy": ["Flappy Words", "Tap to fly through the gaps, catch pictures, hear each word two ways."], "ark": ["Noah's Ark", "Tap an animal and two hop aboard, two by two. Hear each name, and the number two."], "pairs": ["Pairs", "A memory game where every pair is a picture and its word in another language."]}, "app": ["LingoPlaytime for Mac", "Coming soon", "We're building a desktop app that locks the keyboard to the game, so a toddler can slap every key without closing a tab, opening a menu or emailing your boss.", "It will also remember which words your child has heard (on your computer only), work offline, and bring extra games. The website stays free, with no ads.", "Coming soon"], "priv": ["Privacy", "We don't know your child's name. Only your device does."], "facts": [["Stored", "Your child's name, age group, main language and the languages they're learning."], ["Where", "In this browser on this device. It never reaches us."], ["Not stored", "Everything else. No accounts, no logins, no email, no photos."], ["No", "Ads, tracking cookies, or social buttons. So there's no cookie banner either."], ["Sounds", "Played from files on our own site. Your child's name is never sent to a voice service."], ["Counting", "At most a cookieless visit counter, so we know roughly how many people come by."], ["Hosting", "The site is hosted on GitHub Pages. Like any web server, GitHub logs visitors' IP addresses for a short time to deliver and protect the site. GitHub's own privacy policy applies to that."], ["Who", "Jeffrey Humble, Berlin, is responsible for this site. You can ask what we hold, have it corrected or deleted, object, or complain to a data protection authority. Contact details are in the {imp}."], ["Paying", "If you buy the app later, the payment company sees your email. That is kept apart from anything about your child."]], "forget": ["Forget everything", "This wipes the name and languages from this device and goes back to the sample setup.", "Forget everything", "Wipe the setup on this device?", "Yes, wipe it", "Keep it", "Done. Nothing about your child is stored on this device now."], "foot": ["Little games, lots of languages", "No ads, no accounts", "Made by a parent, for kids", "Made in the EU", "Questions or problems?", "Get support from Pigrosoft"], "sample": "This is a sample setup. To add your child's name and the languages your family speaks, hold <b>{settings}</b> for 3 seconds."}, "de": {"games": {"peek": ["Kuckuck", "Kuckuck! Hinter Vorhängen, Kisten und Büschen verstecken sich Tiere. Jedes Tippen öffnet eins."], "face": ["Wo ist deine Nase?", "Tippe auf Nase, Augen oder Zehen, hör das Wort und zeig dann auf deine eigenen."], "street": ["Auf der Straße", "Busse, Fahrräder, ein Flugzeug, ein Hubschrauber und ein Hund. Tippe auf alles und hör, wie es klingt und heißt."], "dress": ["Anziehen!", "Regen, Sonne oder Schnee? Zieh die passenden Sachen an, ein Wort nach dem anderen, und dann ab nach draußen."], "night": ["Gute Nacht", "Sag dem Mond, der Lampe und dem Teddy gute Nacht. Das letzte Spiel vor dem Schlafen; es endet von selbst."], "sky": ["Himmelswörter", "Flugzeuge fliegen mit Bildern vorbei. Tippe auf das, das du hörst."], "farm": ["Old MacDonalds Bauernhof", "Tippe auf ein Tier, hör sein echtes Geräusch und seinen Namen und sing dann das Lied."], "drum": ["Trommelparade", "Hau auf die Trommeln oder auf jede Taste. Jeder Schlag ist ein Takt, ein Wort oder eine Zahl."], "train": ["Wörterzug", "Fahr von Bahnhof zu Bahnhof und finde an jeder Haltestelle das Wort."], "paint": ["Mal die Welt an", "Alles ist erst grau. Jedes Tippen kleckst eine Farbe hin und sagt ihren Namen."], "soup": ["Kleiner Suppentopf", "Ein hungriger Freund will Suppe. Zutaten rein, umrühren, servieren."], "flappy": ["Flatterwörter", "Tippe, um durch die Lücken zu fliegen, fang Bilder und hör jedes Wort auf zwei Arten."], "ark": ["Die Arche Noah", "Tippe auf ein Tier, und zwei hüpfen an Bord, immer zu zweit. Hör jeden Namen und die Zahl zwei."], "pairs": ["Paare finden", "Ein Memo-Spiel, bei dem jedes Paar aus einem Bild und seinem Wort in einer anderen Sprache besteht."]}, "app": ["LingoPlaytime für Mac", "Bald verfügbar", "Wir bauen eine Desktop-App, die die Tastatur an das Spiel bindet. So kann ein Kleinkind auf jede Taste hauen, ohne einen Tab zu schließen, ein Menü zu öffnen oder deiner Chefin eine Mail zu schicken.", "Sie merkt sich außerdem, welche Wörter dein Kind schon gehört hat (nur auf deinem Computer), funktioniert offline und bringt zusätzliche Spiele mit. Die Website bleibt kostenlos und werbefrei.", "Bald verfügbar"], "priv": ["Datenschutz", "Wir kennen den Namen deines Kindes nicht. Nur dein Gerät kennt ihn."], "facts": [["Gespeichert", "Name, Altersgruppe und Hauptsprache deines Kindes sowie die Sprachen, die es lernt."], ["Wo", "In diesem Browser auf diesem Gerät. Bei uns kommt nichts an."], ["Nicht gespeichert", "Alles andere. Keine Konten, keine Logins, keine E-Mail, keine Fotos."], ["Keine", "Werbung, Tracking-Cookies oder Social-Buttons. Deshalb gibt es auch kein Cookie-Banner."], ["Töne", "Kommen aus Dateien auf unserer eigenen Seite. Der Name deines Kindes wird nie an einen Sprachdienst geschickt."], ["Zählen", "Höchstens ein Besuchszähler ohne Cookies, damit wir ungefähr wissen, wie viele vorbeischauen."], ["Hosting", "Die Seite liegt bei GitHub Pages. Wie jeder Webserver speichert GitHub die IP-Adressen der Besucher kurz, um die Seite auszuliefern und zu schützen. Dafür gilt GitHubs eigene Datenschutzerklärung."], ["Verantwortlich", "Jeffrey Humble, Berlin, ist für diese Seite verantwortlich. Du kannst Auskunft, Berichtigung oder Löschung verlangen, widersprechen oder dich bei einer Datenschutzbehörde beschweren. Die Kontaktdaten stehen im {imp}."], ["Bezahlen", "Wenn du später die App kaufst, sieht der Zahlungsanbieter deine E-Mail-Adresse. Das bleibt getrennt von allem, was dein Kind betrifft."]], "forget": ["Alles vergessen", "Damit werden Name und Sprachen von diesem Gerät gelöscht, und es gilt wieder die Beispiel-Einstellung.", "Alles vergessen", "Die Einstellungen auf diesem Gerät löschen?", "Ja, löschen", "Behalten", "Erledigt. Auf diesem Gerät ist jetzt nichts mehr über dein Kind gespeichert."], "foot": ["Kleine Spiele, viele Sprachen", "Keine Werbung, keine Konten", "Von einem Vater gemacht, für Kinder", "Made in the EU", "Fragen oder Probleme?", "Hilfe von Pigrosoft"], "sample": "Das ist eine Beispiel-Einstellung. Um den Namen deines Kindes und eure Sprachen einzutragen, halte <b>{settings}</b> 3 Sekunden lang gedrückt."}, "es": {"games": {"peek": ["Cucú", "¡Cucú! Cortinas, cajas y arbustos esconden animales. Cada toque abre uno."], "face": ["¿Dónde está tu nariz?", "Toca la nariz, los ojos o los dedos de los pies, escucha la palabra y luego señala los tuyos."], "street": ["En la calle", "Autobuses, bicis, un avión, un helicóptero y un perro. Toca cualquier cosa para oír cómo suena y cómo se llama."], "dress": ["¡A vestirse!", "¿Lluvia, sol o nieve? Ponte la ropa adecuada, palabra a palabra, y sal a la calle."], "night": ["Buenas noches", "Dale las buenas noches a la luna, la lámpara y el osito. El último juego antes de dormir; termina solo."], "sky": ["Palabras en el cielo", "Pasan aviones con dibujos. Toca el que oyes."], "farm": ["La granja del viejo MacDonald", "Toca un animal, escucha su sonido real y su nombre, y luego canta la canción."], "drum": ["Desfile de tambores", "Golpea los tambores o cualquier tecla. Cada golpe es un ritmo, una palabra o un número."], "train": ["El tren de las palabras", "Viaja de estación en estación y encuentra la palabra en cada parada."], "paint": ["Pinta el mundo", "Todo empieza gris. Cada toque salpica un color y dice su nombre."], "soup": ["La ollita de sopa", "Un amigo con hambre quiere sopa. Añade comida, remueve y sirve."], "flappy": ["Palabras voladoras", "Toca para volar entre los huecos, atrapa dibujos y oye cada palabra de dos maneras."], "ark": ["El arca de Noé", "Toca un animal y suben dos a bordo, de dos en dos. Oye cada nombre y el número dos."], "pairs": ["Parejas", "Un juego de memoria en el que cada pareja es un dibujo y su palabra en otro idioma."]}, "app": ["LingoPlaytime para Mac", "Muy pronto", "Estamos creando una app de escritorio que bloquea el teclado dentro del juego, para que un niño pequeño pueda aporrear todas las teclas sin cerrar una pestaña, abrir un menú ni escribirle a tu jefe.", "Además recordará qué palabras ha oído tu hijo (solo en tu ordenador), funcionará sin conexión y traerá juegos extra. La web sigue siendo gratis y sin anuncios.", "Muy pronto"], "priv": ["Privacidad", "No sabemos el nombre de tu hijo. Solo lo sabe tu dispositivo."], "facts": [["Se guarda", "El nombre de tu hijo, su grupo de edad, su idioma principal y los idiomas que está aprendiendo."], ["Dónde", "En este navegador, en este dispositivo. Nunca nos llega."], ["No se guarda", "Todo lo demás. Sin cuentas, sin inicio de sesión, sin correo, sin fotos."], ["Sin", "Anuncios, cookies de seguimiento ni botones sociales. Por eso tampoco hay aviso de cookies."], ["Sonidos", "Se reproducen desde archivos de nuestra propia web. El nombre de tu hijo nunca se envía a un servicio de voz."], ["Recuento", "Como mucho, un contador de visitas sin cookies, para saber más o menos cuánta gente pasa."], ["Alojamiento", "La web está alojada en GitHub Pages. Como cualquier servidor, GitHub registra las direcciones IP de los visitantes durante poco tiempo para servir y proteger la web. Para eso rige la política de privacidad de GitHub."], ["Responsable", "Jeffrey Humble, Berlín, es el responsable de esta web. Puedes pedir qué datos tenemos, corregirlos o borrarlos, oponerte o reclamar ante una autoridad de protección de datos. Los datos de contacto están en el {imp}."], ["Pagos", "Si más adelante compras la app, la empresa de pagos verá tu correo. Eso se guarda aparte de todo lo relacionado con tu hijo."]], "forget": ["Olvidarlo todo", "Esto borra el nombre y los idiomas de este dispositivo y vuelve a la configuración de ejemplo.", "Olvidarlo todo", "¿Borrar la configuración de este dispositivo?", "Sí, borrarla", "Conservarla", "Listo. Ya no hay nada sobre tu hijo guardado en este dispositivo."], "foot": ["Juegos pequeños, muchos idiomas", "Sin anuncios, sin cuentas", "Hecho por un padre, para niños", "Made in the EU", "¿Preguntas o problemas?", "Ayuda de Pigrosoft"], "sample": "Esta es una configuración de ejemplo. Para poner el nombre de tu hijo y los idiomas de tu familia, mantén pulsado <b>{settings}</b> 3 segundos."}, "fr": {"games": {"peek": ["Coucou", "Coucou ! Rideaux, boîtes et buissons cachent des animaux. Chaque toucher en ouvre un."], "face": ["Où est ton nez ?", "Touche le nez, les yeux ou les orteils, écoute le mot, puis montre les tiens."], "street": ["Dans la rue", "Des bus, des vélos, un avion, un hélicoptère et un chien. Touche tout pour entendre son bruit et son nom."], "dress": ["On s'habille !", "Pluie, soleil ou neige ? Mets les bons vêtements, un mot à la fois, puis sors dehors."], "night": ["Bonne nuit", "Dis bonne nuit à la lune, à la lampe et au nounours. Le dernier jeu avant le dodo ; il se termine tout seul."], "sky": ["Les mots du ciel", "Des avions passent avec des images. Touche celle que tu entends."], "farm": ["La ferme du vieux MacDonald", "Touche un animal, écoute son vrai cri et son nom, puis chante la chanson."], "drum": ["La parade des tambours", "Tape sur les tambours, ou sur n'importe quelle touche. Chaque coup est un rythme, un mot ou un chiffre."], "train": ["Le train des mots", "Va de gare en gare et trouve le mot à chaque arrêt."], "paint": ["Colorie le monde", "Tout commence en gris. Chaque toucher éclabousse une couleur et dit son nom."], "soup": ["La petite marmite", "Un ami affamé veut de la soupe. Ajoute les ingrédients, remue et sers."], "flappy": ["Les mots volants", "Touche pour voler entre les trous, attrape des images et entends chaque mot de deux façons."], "ark": ["L'arche de Noé", "Touche un animal et deux montent à bord, deux par deux. Entends chaque nom, et le chiffre deux."], "pairs": ["Paires", "Un jeu de mémoire où chaque paire est une image et son mot dans une autre langue."]}, "app": ["LingoPlaytime pour Mac", "Bientôt disponible", "Nous préparons une app pour ordinateur qui verrouille le clavier sur le jeu : un tout-petit peut taper sur toutes les touches sans fermer d'onglet, ouvrir de menu ni écrire à votre patron.", "Elle retiendra aussi les mots que votre enfant a entendus (sur votre ordinateur uniquement), fonctionnera hors ligne et proposera des jeux en plus. Le site reste gratuit et sans publicité.", "Bientôt disponible"], "priv": ["Confidentialité", "Nous ne connaissons pas le prénom de votre enfant. Seul votre appareil le connaît."], "facts": [["Enregistré", "Le prénom de votre enfant, sa tranche d'âge, sa langue principale et les langues qu'il apprend."], ["Où", "Dans ce navigateur, sur cet appareil. Rien ne nous parvient."], ["Non enregistré", "Tout le reste. Pas de compte, pas de connexion, pas d'e-mail, pas de photos."], ["Pas de", "Publicité, cookies de suivi ou boutons de réseaux sociaux. Donc pas de bandeau cookies non plus."], ["Sons", "Joués à partir de fichiers hébergés sur notre propre site. Le prénom de votre enfant n'est jamais envoyé à un service vocal."], ["Comptage", "Au plus un compteur de visites sans cookies, pour savoir à peu près combien de personnes passent."], ["Hébergement", "Le site est hébergé sur GitHub Pages. Comme tout serveur web, GitHub conserve brièvement les adresses IP des visiteurs pour servir et protéger le site. La politique de confidentialité de GitHub s'applique à cela."], ["Responsable", "Jeffrey Humble, Berlin, est responsable de ce site. Vous pouvez demander quelles données nous détenons, les faire corriger ou effacer, vous opposer ou porter plainte auprès d'une autorité de protection des données. Les coordonnées figurent dans l'{imp}."], ["Paiement", "Si vous achetez l'app plus tard, le prestataire de paiement verra votre e-mail. Cela reste séparé de tout ce qui concerne votre enfant."]], "forget": ["Tout oublier", "Cela efface le prénom et les langues de cet appareil et revient à la configuration d'exemple.", "Tout oublier", "Effacer la configuration de cet appareil ?", "Oui, effacer", "La garder", "C'est fait. Plus rien sur votre enfant n'est enregistré sur cet appareil."], "foot": ["Petits jeux, plein de langues", "Sans pub, sans compte", "Fait par un parent, pour les enfants", "Made in the EU", "Des questions ou un problème ?", "Aide de Pigrosoft"], "sample": "Ceci est une configuration d'exemple. Pour ajouter le prénom de votre enfant et les langues de votre famille, maintenez <b>{settings}</b> appuyé 3 secondes."}, "it": {"games": {"peek": ["Cucù", "Cucù! Tende, scatole e cespugli nascondono animali. Ogni tocco ne apre uno."], "face": ["Dov'è il tuo naso?", "Tocca il naso, gli occhi o le dita dei piedi, ascolta la parola e poi indica i tuoi."], "street": ["Per strada", "Autobus, bici, un aereo, un elicottero e un cane. Tocca qualsiasi cosa per sentire il suo suono e il suo nome."], "dress": ["Vestiamoci!", "Pioggia, sole o neve? Metti i vestiti giusti, una parola alla volta, e poi fuori."], "night": ["Buonanotte", "Di' buonanotte alla luna, alla lampada e all'orsetto. L'ultimo gioco prima di dormire; finisce da solo."], "sky": ["Parole nel cielo", "Passano aerei con delle immagini. Tocca quella che senti."], "farm": ["La fattoria del vecchio MacDonald", "Tocca un animale, senti il suo verso vero e il suo nome, poi canta la canzone."], "drum": ["La parata dei tamburi", "Batti sui tamburi, o su un tasto qualsiasi. Ogni colpo è un ritmo, una parola o un numero."], "train": ["Il treno delle parole", "Viaggia di stazione in stazione e trova la parola a ogni fermata."], "paint": ["Colora il mondo", "All'inizio è tutto grigio. Ogni tocco schizza un colore e dice il suo nome."], "soup": ["La pentolina", "Un amico affamato vuole la minestra. Aggiungi il cibo, mescola e servi."], "flappy": ["Parole volanti", "Tocca per volare tra i varchi, prendi le immagini e senti ogni parola in due modi."], "ark": ["L'Arca di Noè", "Tocca un animale e ne salgono due a bordo, a due a due. Senti ogni nome e il numero due."], "pairs": ["Coppie", "Un memory in cui ogni coppia è un'immagine e la sua parola in un'altra lingua."]}, "app": ["LingoPlaytime per Mac", "In arrivo", "Stiamo costruendo un'app per computer che blocca la tastiera sul gioco, così un bimbo piccolo può picchiare su ogni tasto senza chiudere una scheda, aprire un menu o scrivere al tuo capo.", "Ricorderà anche quali parole tuo figlio ha già sentito (solo sul tuo computer), funzionerà offline e avrà giochi in più. Il sito resta gratuito e senza pubblicità.", "In arrivo"], "priv": ["Privacy", "Non conosciamo il nome di tuo figlio. Lo conosce solo il tuo dispositivo."], "facts": [["Salvato", "Il nome di tuo figlio, la fascia d'età, la lingua principale e le lingue che sta imparando."], ["Dove", "In questo browser, su questo dispositivo. Non arriva mai a noi."], ["Non salvato", "Tutto il resto. Niente account, niente login, niente email, niente foto."], ["Niente", "Pubblicità, cookie di tracciamento o pulsanti social. Quindi niente banner dei cookie."], ["Suoni", "Riprodotti da file sul nostro sito. Il nome di tuo figlio non viene mai inviato a un servizio vocale."], ["Conteggio", "Al massimo un contatore di visite senza cookie, per sapere più o meno quante persone passano."], ["Hosting", "Il sito è ospitato su GitHub Pages. Come ogni server web, GitHub registra per poco tempo gli indirizzi IP dei visitatori per servire e proteggere il sito. Per questo vale l'informativa privacy di GitHub."], ["Titolare", "Jeffrey Humble, Berlino, è responsabile di questo sito. Puoi chiedere quali dati abbiamo, farli correggere o cancellare, opporti o presentare reclamo a un'autorità per la protezione dei dati. I contatti sono nell'{imp}."], ["Pagamenti", "Se in futuro compri l'app, la società di pagamento vedrà la tua email. Questo resta separato da tutto ciò che riguarda tuo figlio."]], "forget": ["Dimentica tutto", "Cancella il nome e le lingue da questo dispositivo e torna alla configurazione di esempio.", "Dimentica tutto", "Cancellare la configurazione su questo dispositivo?", "Sì, cancella", "Tienila", "Fatto. Su questo dispositivo non c'è più nulla su tuo figlio."], "foot": ["Piccoli giochi, tante lingue", "Niente pubblicità, niente account", "Fatto da un genitore, per i bambini", "Made in the EU", "Domande o problemi?", "Assistenza da Pigrosoft"], "sample": "Questa è una configurazione di esempio. Per aggiungere il nome di tuo figlio e le lingue della tua famiglia, tieni premuto <b>{settings}</b> per 3 secondi."}, "pt": {"games": {"peek": ["Cucu", "Cucu! Cortinas, caixas e arbustos escondem animais. Cada toque abre um."], "face": ["Onde está o teu nariz?", "Toca no nariz, nos olhos ou nos dedos dos pés, ouve a palavra e depois aponta para os teus."], "street": ["Na rua", "Autocarros, bicicletas, um avião, um helicóptero e um cão. Toca em tudo para ouvir o som e o nome."], "dress": ["Vamos vestir!", "Chuva, sol ou neve? Veste a roupa certa, uma palavra de cada vez, e depois vai lá para fora."], "night": ["Boa noite", "Diz boa noite à lua, ao candeeiro e ao ursinho. O último jogo antes de dormir; acaba sozinho."], "sky": ["Palavras no céu", "Passam aviões com imagens. Toca na que ouves."], "farm": ["A quinta do velho MacDonald", "Toca num animal, ouve o som verdadeiro e o nome dele, e depois canta a canção."], "drum": ["Desfile de tambores", "Bate nos tambores, ou em qualquer tecla. Cada pancada é um ritmo, uma palavra ou um número."], "train": ["O comboio das palavras", "Viaja de estação em estação e encontra a palavra em cada paragem."], "paint": ["Pinta o mundo", "Tudo começa cinzento. Cada toque salpica uma cor e diz o nome dela."], "soup": ["A panelinha de sopa", "Um amigo com fome quer sopa. Junta comida, mexe e serve."], "flappy": ["Palavras voadoras", "Toca para voar pelos buracos, apanha imagens e ouve cada palavra de duas maneiras."], "ark": ["A arca de Noé", "Toca num animal e sobem dois a bordo, dois a dois. Ouve cada nome e o número dois."], "pairs": ["Pares", "Um jogo de memória em que cada par é uma imagem e a sua palavra noutra língua."]}, "app": ["LingoPlaytime para Mac", "Em breve", "Estamos a criar uma app para computador que prende o teclado ao jogo, para que uma criança pequena possa bater em todas as teclas sem fechar um separador, abrir um menu ou mandar um e-mail ao teu chefe.", "Vai também lembrar-se das palavras que o teu filho já ouviu (só no teu computador), funcionar offline e trazer jogos extra. O site continua gratuito e sem anúncios.", "Em breve"], "priv": ["Privacidade", "Não sabemos o nome do teu filho. Só o teu dispositivo sabe."], "facts": [["Guardado", "O nome do teu filho, a faixa etária, a língua principal e as línguas que está a aprender."], ["Onde", "Neste navegador, neste dispositivo. Nunca chega até nós."], ["Não guardado", "Tudo o resto. Sem contas, sem login, sem e-mail, sem fotografias."], ["Sem", "Anúncios, cookies de rastreio ou botões de redes sociais. Por isso também não há aviso de cookies."], ["Sons", "Tocados a partir de ficheiros do nosso próprio site. O nome do teu filho nunca é enviado para um serviço de voz."], ["Contagem", "No máximo um contador de visitas sem cookies, para sabermos mais ou menos quantas pessoas passam por cá."], ["Alojamento", "O site está alojado no GitHub Pages. Como qualquer servidor web, o GitHub regista durante pouco tempo os endereços IP dos visitantes para entregar e proteger o site. Para isso aplica-se a política de privacidade do GitHub."], ["Responsável", "Jeffrey Humble, Berlim, é o responsável por este site. Podes pedir que dados temos, corrigi-los ou apagá-los, opor-te ou apresentar queixa a uma autoridade de proteção de dados. Os contactos estão no {imp}."], ["Pagamento", "Se mais tarde comprares a app, a empresa de pagamentos verá o teu e-mail. Isso fica separado de tudo o que diz respeito ao teu filho."]], "forget": ["Esquecer tudo", "Isto apaga o nome e as línguas deste dispositivo e volta à configuração de exemplo.", "Esquecer tudo", "Apagar a configuração deste dispositivo?", "Sim, apagar", "Manter", "Feito. Já não há nada sobre o teu filho guardado neste dispositivo."], "foot": ["Pequenos jogos, muitas línguas", "Sem anúncios, sem contas", "Feito por um pai, para crianças", "Made in the EU", "Dúvidas ou problemas?", "Ajuda da Pigrosoft"], "sample": "Esta é uma configuração de exemplo. Para pôr o nome do teu filho e as línguas da tua família, mantém <b>{settings}</b> premido durante 3 segundos."}};
+  const ST=()=>STATIC[(profile||draft).home]||STATIC.en;
+  const gname=g=>(ST().games[g.id]||[g.name])[0], gblurb=g=>(ST().games[g.id]||[0,g.blurb])[1];
+  function applyStatic(){
+    const x=ST(),set=(id,v)=>{const e=$(id);if(e)e.textContent=v};
+    x.app.forEach((v,i)=>set("app-"+i,v));x.priv.forEach((v,i)=>set("priv-"+i,v));
+    $("facts").innerHTML=x.facts.map(([k,v],i)=>`<li><span class="k${i===2||i===3?" no":""}">${esc(k)}</span><span>${esc(v).replace("{imp}",'<a href="impressum.html">Impressum</a>')}</span></li>`).join("");
+    ["fg-0","fg-1","forget","fg-3","forgetYes","forgetNo"].forEach((id,i)=>set(id,x.forget[i]));
+    x.foot.forEach((v,i)=>set("ft-"+i,v));
+    $("g-sample").innerHTML=x.sample.replace("{settings}",esc(t().settings));
+  }
   const GAMES = [
     {id:"peek",name:"Kuckuck",blurb:"Peekaboo! Curtains, boxes and bushes hide animals. Any tap opens one.",min:0,sound:true,langs:["en","de","es","fr","it","pt"],art:"peek"},
     {id:"face",name:"Where's your nose?",blurb:"Tap a nose, eyes or toes and hear the word, then point to your own.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"face"},
@@ -512,6 +545,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
     const s=t();
     ["games","parents","app","privacy"].forEach(k=>$("nav-"+k).textContent=s[k]);
     $("nav-games").disabled=!profile;
+    applyStatic();
     renderBar();
   }
 
@@ -524,11 +558,11 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
     $("barAge").textContent=`${s.ages[p.age]} · ${s.ageSub[p.age]}`;
     $("barPlayLbl").textContent=x.playing;
     $("barSettings").textContent=s.settings;$("barSettingsSub").textContent=x.sub;$("barWho").title=x.locked;
-    $("barLangs").innerHTML=playable(p).map(c=>`<button type="button" class="chip${p.active===c?" on":""}" data-code="${c}" aria-pressed="${p.active===c}" lang="${c}"><span class="code">${c.toUpperCase()}</span>${esc(L[c].own)}</button>`).join("");
+    $("barLangs").innerHTML=playable(p).map(c=>`<button type="button" class="chip${p.active===c?" on":""}" data-code="${c}" aria-pressed="${p.active===c}" lang="${c}"><span class="code">${c.toUpperCase()}</span><span class="own">${esc(L[c].own)}</span></button>`).join("");
     const g=view==="play"&&current?GAME[current]:null;
     const got=g?gameLang(g,p):null;
     $("barNote").hidden=!(g&&got!==p.active);
-    if(g&&got!==p.active)$("barNote").textContent=x.note(g.name,L[p.active].own,L[got].own);
+    if(g&&got!==p.active)$("barNote").textContent=x.note(gname(g),L[p.active].own,L[got].own);
   }
 
   function show(v){
@@ -536,6 +570,9 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
     if(v==="setup"&&profile&&!editing) v="games";
     if(view==="play"&&v!=="play"){$("frame").src="about:blank";current=null}
     view=v;
+    document.documentElement.classList.toggle("playing",v==="play");
+    const bb=$("backBtn");
+    if(v==="play"){$("lpbar").prepend(bb)}else if(bb.parentNode.id==="lpbar"){document.querySelector(".stagebar").prepend(bb)}
     document.querySelectorAll("main>section").forEach(s=>s.hidden=s.id!=="v-"+v);
     document.querySelectorAll("nav [data-view]").forEach(b=>b.setAttribute("aria-current",(b.dataset.view===v||(v==="play"&&b.dataset.view==="games"))?"page":"false"));
     if(v==="setup")renderSetup();
@@ -558,7 +595,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
     $("s-lede").textContent=s.sLede;
     $("s-name").textContent=s.name;$("s-name-hint").textContent=s.nameHint;$("name").placeholder=s.namePh;
     if(document.activeElement!==$("name"))$("name").value=draft.name;
-    $("s-age").textContent=s.age;$("s-home").textContent=s.home;$("s-learn").textContent=s.learn;
+    $("s-age").textContent=s.age;$("s-home").textContent=s.home;$("s-home-hint").textContent=s.homeHint||"";$("s-learn").textContent=s.learn;
     $("s-learn-hint").textContent=s.learnHint+` (${draft.learn.length}/${MAX_LEARN})`;
     $("s-go").textContent=editing?x.save:s.go;
     $("s-cancel").hidden=!editing;$("s-cancel").textContent=x.cancel;
@@ -617,7 +654,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
       const match=g.langs.filter(c=>playable(p).includes(c));
       return `<button type="button" class="game${tooBig?" dim":""}" data-game="${g.id}">
         <div class="art ${TILE[g.id][1]}">${LPLook.pic(TILE[g.id][0])||ART[g.art]}</div>
-        <h3>${esc(g.name)}</h3><p>${esc(g.blurb)}</p>
+        <h3>${esc(gname(g))}</h3><p>${esc(gblurb(g))}</p>
         <div class="tags">
           <span class="tag">${esc(s.ages[g.min])}+</span>
           ${g.sound?`<span class="tag sound">${esc(s.sound)}</span>`:""}
@@ -626,16 +663,30 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
     }).join("");
   }
 
+  /* ---------- fullscreen ---------- */
+  const FSK="lp-fullscreen", FSL={en:"Fullscreen",de:"Vollbild",es:"Pantalla completa",fr:"Plein écran",it:"Schermo intero",pt:"Ecrã inteiro"};
+  const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  const fsCan=()=>!!(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen);
+  function fsEnter(){const e=document.documentElement;try{const r=(e.requestFullscreen||e.webkitRequestFullscreen).call(e,{navigationUI:"hide"});if(r&&r.catch)r.catch(()=>{})}catch(x){}}
+  function fsExit(){try{const r=(document.exitFullscreen||document.webkitExitFullscreen).call(document);if(r&&r.catch)r.catch(()=>{})}catch(x){}}
+  function fsPref(v){try{if(v===undefined)return localStorage.getItem(FSK)==="1";localStorage.setItem(FSK,v?"1":"0")}catch(e){return false}}
+  function fsLabel(){const l=FSL[profile&&profile.home]||FSL.en;$("fsBtn").title=l;$("fsBtn").setAttribute("aria-label",l)}
+  $("fsBtn").hidden=!fsCan();
+  $("fsBtn").addEventListener("click",()=>{if(fsEl()){fsPref(false);fsExit()}else{fsPref(true);fsEnter()}});
+  document.addEventListener("fullscreenchange",()=>{if(!fsEl()&&view==="play"){/* left with Esc: respect it */fsPref(false)}});
+
   /* ---------- the game stage ---------- */
   function openGame(id){
     const g=GAME[id];if(!g||!profile)return;
     current=id;
-    $("playTitle").textContent=g.name;
+    $("playTitle").textContent=gname(g);
     $("backLbl").textContent=b().back;
     const q=new URLSearchParams({lp:JSON.stringify(settings()),name:profile.name});
-    $("frame").title=g.name;
+    $("frame").title=gname(g);
     $("frame").src=`games/${id}.html?${q}`;
     show("play");
+    fsLabel();
+    if(fsCan()&&fsPref()&&!fsEl())fsEnter();
     setTimeout(()=>{try{$("frame").focus()}catch(e){}},300);
   }
   function tellGame(){
@@ -725,7 +776,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
   $("forgetNo").addEventListener("click",()=>{$("forgetConfirm").hidden=true});
   $("forgetYes").addEventListener("click",()=>{
     wipe();profile={...SAMPLE_PROFILE,learn:[...SAMPLE_PROFILE.learn]};draft=fresh();
-    $("forgetConfirm").hidden=true;$("forgetDone").textContent="Done. Nothing about your child is stored on this device now.";
+    $("forgetConfirm").hidden=true;$("forgetDone").textContent=ST().forget[6];
     applyLang();
   });
 

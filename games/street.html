@@ -122,7 +122,7 @@ const T=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
 const $=id=>document.getElementById(id);
 const L=()=>LP.t(DATA.lines);
 const w=id=>T[id][LP.lang]||T[id].en;
-let want=null,misses=0,lastTap=0,last=null;
+let want=null,misses=0,lastTap=0,last=null,lastId=null,lastPoint=null,playedAt=0;
 
 
 /* real CC0 recordings (sounds.js); the synthesized versions below are a fallback */
@@ -145,7 +145,7 @@ const fill=(tpl,id)=>tpl.replace("{w}",w(id).w);
 
 const SND=new Proxy({},{get:(_,id)=>()=>{if(!LP.sample(id,2.4))SYN[id]()}});
 function play(id){
- const now=Date.now();if(now-lastTap<500)return;lastTap=now;
+ const now=Date.now();if(now-lastTap<150)return;lastTap=now;playedAt=now;lastId=id;
  const g=document.querySelector(`[data-thing="${id}"]`);
  const anim=["dog","bird","bike","heli"].includes(id)?"hop":"go";
  g.classList.remove("go","hop");void g.getBBox();g.classList.add(anim);
@@ -173,9 +173,11 @@ label();document.title=L().title;bubble(L().title);
 LP.start(L().title,()=>setTimeout(ask,500));
 LP.mash((e)=>{
  const g=e.target.closest&&e.target.closest("[data-thing]");
- if(g){play(g.dataset.thing);return}
+ const all=DATA.words.map(x=>x.id);
+ const pointed=g?g.dataset.thing:null,again=pointed&&pointed===lastPoint&&Date.now()-playedAt<8000;lastPoint=pointed;
+ if(g&&(want||!again)){play(g.dataset.thing);return} // pointing at a thing plays that thing
  if(want&&LP.age<2){play(want);return} // little ones: a stray tap finds the answer
- play(LP.next("street",DATA.words.map(x=>x.id)));
+ play(LP.next("street",all.filter(i=>i!==lastId))); // empty space, or the same thing again: on to the next sound
 });
 </script>
 </body>
