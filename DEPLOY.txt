@@ -1,0 +1,18 @@
+LingoPlaytime.com, ready to upload
+
+This folder is the whole site. Upload its contents (not the folder itself) so that index.html sits at the top level.
+
+Porkbun Static Hosting
+1. In Porkbun, open the domain and add Static Hosting (Starter plan).
+2. Use the file manager or FTP to upload everything in this folder.
+3. Porkbun sets the DNS and SSL for you. Delete DEPLOY.txt and CNAME afterwards if you like; they do nothing there.
+
+GitHub Pages (free)
+1. Make a public repo, for example lingoplaytime-site, and give Claude access, or upload these files to it.
+2. Settings > Pages: deploy from the main branch, root folder. The CNAME file sets the domain.
+3. At Porkbun DNS, remove the parking records and add four A records for the bare domain:
+   185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153
+   and a CNAME for www pointing to <your-github-name>.github.io
+4. Back in Pages settings, tick Enforce HTTPS once the certificate is issued.
+
+After it is live: add the site in Google Search Console and submit https://lingoplaytime.com/sitemap.xml
