@@ -196,7 +196,7 @@ html.playing .setbtn small{display:none}
 html.playing .back{min-height:34px;padding:2px 12px;font-size:14px}
 html.playing .lpbar .note{font-size:12px;flex-basis:auto;margin-left:auto}
 html.playing footer{margin:0;padding:1px 8px;font-size:10.5px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 -1px 0 var(--line)}
-html.playing footer .eu{font-size:10px;padding:0 6px 0 3px}
+html.playing footer .eu{font-size:inherit;padding:0}
 html.playing footer .eu svg{width:10px;height:10px}
 html.playing .lpbar{flex-wrap:nowrap}
 html.playing .lpbar .play{overflow-x:auto;scrollbar-width:none}html.playing .lpbar .langs{flex-wrap:nowrap}
@@ -210,8 +210,8 @@ html.playing .lpbar .who{display:none}
 .sheet{position:fixed;inset:0;z-index:30;overflow-y:auto;background:#0c1428b3;padding-block:max(24px,env(safe-area-inset-top,0px)) 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .sheet>.card{max-width:860px;margin:0 auto}
 .sheethead{display:flex;justify-content:flex-end;margin-bottom:-8px}
-footer a{color:var(--ink);font-weight:700}footer a.tiny{font-size:11px;font-weight:400;color:var(--muted);margin-left:8px}.eu{display:inline-flex;align-items:center;gap:6px;margin:0 2px;padding:2px 10px 2px 6px;border:1px solid currentColor;border-radius:99px;font-size:12px;font-weight:600;line-height:1.6;vertical-align:middle;opacity:.85}.eu svg{flex:none}
-footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:var(--muted)}footer .eu{padding:0 8px 0 4px;font-size:11px;line-height:1.4}
+footer a{color:var(--ink);font-weight:700}footer a.tiny{font-size:11px;font-weight:400;color:var(--muted);margin-left:8px}.eu{display:inline-flex;align-items:center;gap:5px;margin:0 2px;padding:0;font-size:12px;font-weight:600;line-height:1.6;vertical-align:middle;opacity:.85}.eu svg{flex:none}
+footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:var(--muted)}footer .eu{padding:0;font-size:inherit;line-height:inherit}
 
 @media (max-width:640px){nav{margin-left:0;width:100%}nav button{padding:8px 10px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
