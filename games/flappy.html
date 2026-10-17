@@ -1,0 +1,348 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<script>window.LP_GAME="flappy"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="look.js"></script>
+<title>Flappy Words</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{--sky:#8fd3f4;--sky2:#e3f6ff;--ink:#1d3557;--sun:#ffc93c;--leaf:#4caf6a;--leaf2:#2f8a4f;--card:#fffdf6;--pink:#ff6f91}
+html,body{height:100%}
+body{margin:0;background:var(--sky);color:var(--ink);font-family:"Baloo 2",ui-rounded,system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+#wrap{position:fixed;inset:0}
+canvas{display:block;width:100%;height:100%}
+#bar{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));left:16px;right:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#bar select,#bar button{font:inherit;font-weight:700;font-size:16px;color:var(--ink);background:var(--card);border:3px solid var(--ink);border-radius:14px;padding:4px 12px;cursor:pointer}
+#bar button[aria-pressed="true"]{background:var(--sun)}
+#bar :focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+#score{margin-left:auto;font-weight:800;font-size:22px;background:var(--card);border:3px solid var(--ink);border-radius:14px;padding:0 14px;font-variant-numeric:tabular-nums}
+#word{position:absolute;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) scale(.6);opacity:0;transition:transform .25s cubic-bezier(.3,1.6,.5,1),opacity .2s;background:var(--card);border:4px solid var(--ink);border-radius:22px;padding:6px 26px;text-align:center;pointer-events:none;max-width:calc(100% - 32px)}
+#word.show{opacity:1;transform:translateX(-50%) scale(1)}
+#word b{display:block;font-size:clamp(34px,8vw,64px);line-height:1.1}
+#word span{display:block;font-size:clamp(16px,3.4vw,24px);opacity:.75;font-weight:700;margin-top:2px}
+#word:after{content:"";position:absolute;top:8px;right:10px;font-size:15px}
+#word.mute:after{content:"🔇"}
+#intro{position:absolute;inset:0;display:grid;place-items:center;padding:16px}
+#intro div{background:var(--card);border:4px solid var(--ink);border-radius:26px;padding:22px 28px;text-align:center;max-width:420px}
+#intro h1{margin:0;font-size:44px;line-height:1;text-wrap:balance}
+#intro p{margin:10px 0 0;font-size:18px}
+#intro kbd{background:var(--sun);border:2px solid var(--ink);border-radius:8px;padding:0 8px;font:inherit;font-weight:800}
+
+/* LingoPlaytime look */
+
+#bar select,#bar button{font-family:"Fredoka","Baloo 2",system-ui,sans-serif;border-radius:999px}
+#word{font-family:"Fredoka","Baloo 2",system-ui,sans-serif}
+</style>
+<div id="wrap">
+  <canvas id="c"></canvas>
+  <div id="bar">
+    <select id="lang" aria-label="First language"></select>
+    <select id="lang2" aria-label="Second language"></select>
+    <select id="char" aria-label="Character"></select>
+    <button id="mode" aria-pressed="true" title="Toddler mode: no crashing">🧸 Toddler</button>
+    <div id="score">0</div>
+  </div>
+  <div id="word"><b id="wText"></b><span id="wSub"></span></div>
+  <div id="intro"><div>
+    <h1>Flappy Words</h1>
+    <p>Press <kbd>any key</kbd> or tap to fly. Pick your flyer and two languages up top, then zoom through the gaps to catch pictures and hear each word said both ways.</p>
+    <p>Toddler mode never crashes. Switch to Big Kids mode for the real thing.</p>
+  </div></div>
+</div>
+<script>
+const LANGS={
+ en:{n:"English",v:"en-US"},de:{n:"Deutsch",v:"de-DE"},es:{n:"Español",v:"es-ES"},fr:{n:"Français",v:"fr-FR"},
+ it:{n:"Italiano",v:"it-IT"},pt:{n:"Português",v:"pt-BR"},nl:{n:"Nederlands",v:"nl-NL"},tr:{n:"Türkçe",v:"tr-TR"},
+ ja:{n:"日本語",v:"ja-JP"},zh:{n:"中文",v:"zh-CN"},ar:{n:"العربية",v:"ar-SA"},hi:{n:"हिन्दी",v:"hi-IN"}};
+// emoji, en, de, es, fr, it, pt, nl, tr, ja, zh, ar, hi
+const W=[
+["🐶","dog","Hund","perro","chien","cane","cachorro","hond","köpek","いぬ","狗","كلب","कुत्ता"],
+["🐱","cat","Katze","gato","chat","gatto","gato","kat","kedi","ねこ","猫","قطة","बिल्ली"],
+["🍎","apple","Apfel","manzana","pomme","mela","maçã","appel","elma","りんご","苹果","تفاحة","सेब"],
+["🍌","banana","Banane","plátano","banane","banana","banana","banaan","muz","バナナ","香蕉","موزة","केला"],
+["⚽","ball","Ball","pelota","ballon","palla","bola","bal","top","ボール","球","كرة","गेंद"],
+["🚗","car","Auto","coche","voiture","macchina","carro","auto","araba","くるま","汽车","سيارة","गाड़ी"],
+["🐟","fish","Fisch","pez","poisson","pesce","peixe","vis","balık","さかな","鱼","سمكة","मछली"],
+["🌙","moon","Mond","luna","lune","luna","lua","maan","ay","つき","月亮","قمر","चाँद"],
+["⭐","star","Stern","estrella","étoile","stella","estrela","ster","yıldız","ほし","星星","نجمة","तारा"],
+["🐘","elephant","Elefant","elefante","éléphant","elefante","elefante","olifant","fil","ぞう","大象","فيل","हाथी"],
+["🦆","duck","Ente","pato","canard","anatra","pato","eend","ördek","あひる","鸭子","بطة","बत्तख"],
+["🌸","flower","Blume","flor","fleur","fiore","flor","bloem","çiçek","はな","花","زهرة","फूल"],
+["🍓","strawberry","Erdbeere","fresa","fraise","fragola","morango","aardbei","çilek","いちご","草莓","فراولة","स्ट्रॉबेरी"],
+["🚂","train","Zug","tren","train","treno","trem","trein","tren","でんしゃ","火车","قطار","रेलगाड़ी"],
+["🐻","bear","Bär","oso","ours","orso","urso","beer","ayı","くま","熊","دب","भालू"],
+["☀️","sun","Sonne","sol","soleil","sole","sol","zon","güneş","たいよう","太阳","شمس","सूरज"],
+["🐸","frog","Frosch","rana","grenouille","rana","sapo","kikker","kurbağa","かえる","青蛙","ضفدع","मेंढक"],
+["🍪","cookie","Keks","galleta","biscuit","biscotto","biscoito","koekje","kurabiye","クッキー","饼干","بسكويت","बिस्कुट"],
+["🐮","cow","Kuh","vaca","vache","mucca","vaca","koe","inek","うし","牛","بقرة","गाय"],
+["🚀","rocket","Rakete","cohete","fusée","razzo","foguete","raket","roket","ロケット","火箭","صاروخ","रॉकेट"]];
+// Big Kids word list: longer, less everyday words for kids past first words.
+const HARD=[
+["🌈","rainbow","Regenbogen","arcoíris","arc-en-ciel","arcobaleno","arco-íris","regenboog","gökkuşağı","にじ","彩虹","قوس قزح","इंद्रधनुष"],
+["🦋","butterfly","Schmetterling","mariposa","papillon","farfalla","borboleta","vlinder","kelebek","ちょう","蝴蝶","فراشة","तितली"],
+["🦕","dinosaur","Dinosaurier","dinosaurio","dinosaure","dinosauro","dinossauro","dinosaurus","dinozor","きょうりゅう","恐龙","ديناصور","डायनासोर"],
+["⛰️","mountain","Berg","montaña","montagne","montagna","montanha","berg","dağ","やま","山","جبل","पहाड़"],
+["☂️","umbrella","Regenschirm","paraguas","parapluie","ombrello","guarda-chuva","paraplu","şemsiye","かさ","雨伞","مظلة","छाता"],
+["🚲","bicycle","Fahrrad","bicicleta","vélo","bicicletta","bicicleta","fiets","bisiklet","じてんしゃ","自行车","دراجة","साइकिल"],
+["🌋","volcano","Vulkan","volcán","volcan","vulcano","vulcão","vulkaan","yanardağ","かざん","火山","بركان","ज्वालामुखी"],
+["🕷️","spider","Spinne","araña","araignée","ragno","aranha","spin","örümcek","くも","蜘蛛","عنكبوت","मकड़ी"],
+["🏰","castle","Schloss","castillo","château","castello","castelo","kasteel","kale","しろ","城堡","قلعة","किला"],
+["🐉","dragon","Drache","dragón","dragon","drago","dragão","draak","ejderha","りゅう","龙","تنين","ड्रैगन"],
+["🤖","robot","Roboter","robot","robot","robot","robô","robot","robot","ロボット","机器人","روبوت","रोबोट"],
+["🏝️","island","Insel","isla","île","isola","ilha","eiland","ada","しま","岛屿","جزيرة","द्वीप"],
+["🌲","forest","Wald","bosque","forêt","foresta","floresta","bos","orman","もり","森林","غابة","जंगल"],
+["⚡","thunder","Donner","trueno","tonnerre","tuono","trovão","donder","gök gürültüsü","かみなり","雷","رعد","गरज"],
+["🪐","planet","Planet","planeta","planète","pianeta","planeta","planeet","gezegen","わくせい","行星","كوكب","ग्रह"],
+["🏴‍☠️","pirate","Pirat","pirata","pirate","pirata","pirata","piraat","korsan","かいぞく","海盗","قرصان","समुद्री डाकू"],
+["🦄","unicorn","Einhorn","unicornio","licorne","unicorno","unicórnio","eenhoorn","tek boynuzlu at","ユニコーン","独角兽","وحيد القرن","यूनिकॉर्न"],
+["🏞️","waterfall","Wasserfall","cascada","cascade","cascata","cachoeira","waterval","şelale","たき","瀑布","شلال","झरना"],
+["🐧","penguin","Pinguin","pingüino","manchot","pinguino","pinguim","pinguïn","penguen","ペンギン","企鹅","بطريق","पेंगुइन"],
+["👨‍🚀","astronaut","Astronaut","astronauta","astronaute","astronauta","astronauta","astronaut","astronot","うちゅうひこうし","宇航员","رائد فضاء","अंतरिक्ष यात्री"]];
+const KEYS=Object.keys(LANGS);
+const sel=document.getElementById("lang"),sel2=document.getElementById("lang2");
+for(const k of KEYS){sel.appendChild(new Option(LANGS[k].n,k));sel2.appendChild(new Option(LANGS[k].n,k))}
+function markVoices(){
+ if(!voiceCache.length)return;
+ for(const s of[sel,sel2])for(const o of s.options){
+  const has=!!bestVoice(o.value);
+  o.textContent=LANGS[o.value].n+(has?"":" (no voice here)");
+ }
+}
+let lang="en";try{lang=localStorage.getItem("fw-lang")||lang}catch(e){}
+if(!LANGS[lang])lang="en";sel.value=lang;
+let lang2="de";try{lang2=localStorage.getItem("fw-lang2")||lang2}catch(e){}
+if(!LANGS[lang2])lang2="de";sel2.value=lang2;
+sel.onchange=()=>{lang=sel.value;try{localStorage.setItem("fw-lang",lang)}catch(e){};sel.blur()};
+sel2.onchange=()=>{lang2=sel2.value;try{localStorage.setItem("fw-lang2",lang2)}catch(e){};sel2.blur()};
+const CHARS={
+ bird:{n:"🐦 Bird",body:"#ff6f91",trim:"#ffd1dc"},
+ plane:{n:"✈️ Plane",body:"#5aa9e6",trim:"#e8f4ff"},
+ rocket:{n:"🚀 Rocket",body:"#e63946",trim:"#f1faee"},
+ balloon:{n:"🎈 Balloon",body:"#9b5de5",trim:"#f0e6ff"},
+ bee:{n:"🐝 Bee",body:"#ffca3a",trim:"#2b2118"}};
+const charSel=document.getElementById("char");
+for(const k in CHARS){const o=document.createElement("option");o.value=k;o.textContent=CHARS[k].n;charSel.appendChild(o)}
+let charKey="bird";try{charKey=localStorage.getItem("fw-char")||charKey}catch(e){}
+if(!CHARS[charKey])charKey="bird";charSel.value=charKey;
+charSel.onchange=()=>{charKey=charSel.value;try{localStorage.setItem("fw-char",charKey)}catch(e){};charSel.blur()};
+
+const modeBtn=document.getElementById("mode");let toddler=true;
+modeBtn.onclick=()=>{toddler=!toddler;modeBtn.setAttribute("aria-pressed",toddler);modeBtn.textContent=toddler?"🧸 Toddler":"🎯 Big Kids";modeBtn.blur();bag=[];reset()};
+function words(){return toddler?W:HARD}
+
+let voiceCache=[],voicesReady=false;
+function loadVoices(){try{const v=speechSynthesis.getVoices();if(v&&v.length){voiceCache=v;voicesReady=true;markVoices()}}catch(e){}}
+if(window.speechSynthesis){
+ loadVoices();
+ speechSynthesis.addEventListener("voiceschanged",loadVoices);
+ // Some browsers (mobile Safari, some Android webviews) never fire voiceschanged
+ // and only populate the list a moment after the first getVoices() call, so poll briefly too.
+ let tries=0;const poll=setInterval(()=>{loadVoices();if(voicesReady||++tries>20)clearInterval(poll)},250);
+}
+function bestVoice(code){
+ const want=LANGS[code].v.toLowerCase(),prefix=want.slice(0,2);
+ return voiceCache.find(v=>v.lang.toLowerCase().replace("_","-")===want)
+   || voiceCache.find(v=>v.lang.toLowerCase().startsWith(prefix))
+   || null;
+}
+function noVoiceHint(){wordEl.classList.add("mute");clearTimeout(muteT);muteT=setTimeout(()=>wordEl.classList.remove("mute"),1500)}
+let muteT;
+function say(t,code,queue,tries){
+ tries=tries||0;
+ try{
+  const s=window.speechSynthesis;if(!s)return noVoiceHint();
+  loadVoices();
+  const v=bestVoice(code);
+  if(!v&&!voicesReady&&tries<6){setTimeout(()=>say(t,code,queue,tries+1),300);return} // voices still loading, retry briefly
+  if(!queue)s.cancel(); // starting a fresh pair: clear anything mid-speech; the second call in a pair queues after the first instead
+  const u=new SpeechSynthesisUtterance(t);
+  u.lang=v?v.lang:LANGS[code].v;u.rate=.8;u.pitch=1.2;
+  if(v)u.voice=v;else if(!(window.LP_CLIPS&&LP_CLIPS[code])){noVoiceHint();return} // no matching voice on this device: skip rather than mispronounce in the wrong language
+  s.speak(u);
+ }catch(e){noVoiceHint()}
+}
+function sayBoth(t1,c1,t2,c2){say(t1,c1,false);if(c2!==c1||t2!==t1)say(t2,c2,true)}
+let actx;function blip(f,d=.12,type="triangle"){try{actx=actx||new AudioContext();const o=actx.createOscillator(),g=actx.createGain();o.type=type;o.frequency.setValueAtTime(f,actx.currentTime);o.frequency.exponentialRampToValueAtTime(f*1.6,actx.currentTime+d);g.gain.setValueAtTime(.12,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d);o.connect(g).connect(actx.destination);o.start();o.stop(actx.currentTime+d)}catch(e){}}
+
+const cv=document.getElementById("c"),cx=cv.getContext("2d");let Wd,Ht,dpr;
+function size(){dpr=Math.min(2,devicePixelRatio||1);Wd=innerWidth;Ht=innerHeight;cv.width=Wd*dpr;cv.height=Ht*dpr;cx.setTransform(dpr,0,0,dpr,0,0)}
+addEventListener("resize",size);size();
+
+const wordEl=document.getElementById("word"),wText=document.getElementById("wText"),wSub=document.getElementById("wSub"),scoreEl=document.getElementById("score"),intro=document.getElementById("intro");
+let bird,pipes,score,started,over,t0,spawnT,bag=[],clouds=[],hideT,shake=0,parts=[];
+for(let i=0;i<6;i++)clouds.push({x:Math.random()*2000,y:Math.random()*.5,s:.6+Math.random(),v:.2+Math.random()*.4});
+function nextWord(){if(!bag.length)bag=words().map((_,i)=>i).sort(()=>Math.random()-.5);return bag.pop()}
+function reset(){bird={x:Math.min(Wd*.28,220),y:Ht*.45,vy:0,r:Math.max(18,Math.min(Wd,Ht)*.035),rot:0};pipes=[];score=0;over=false;spawnT=0;scoreEl.textContent=0}
+reset();
+function flap(){if(!started){started=true;intro.hidden=true}
+ if(over){reset();return}
+ bird.vy=-Math.max(6.2,Ht*.0115);blip(420+Math.random()*80)}
+addEventListener("keydown",e=>{const onSel=e.target===sel||e.target===sel2||e.target===charSel;if(onSel&&!e.key.match(/^[ a-z0-9]$/i))return;if(e.metaKey||e.ctrlKey)return;if(onSel)e.target.blur();e.preventDefault();flap()});
+cv.addEventListener("pointerdown",flap);intro.addEventListener("pointerdown",flap);wordEl.style.pointerEvents="none";
+
+function speed(){return (toddler?2.4:3.1+Math.min(score*.08,2.2))*Math.max(1,Wd/900)}
+function gapSize(){return toddler?Math.max(210,Ht*.42):Math.max(150,Ht*.3-Math.min(score*2,40))}
+function spawn(){const g=gapSize(),m=70,y=m+g/2+Math.random()*(Ht-2*m-g);pipes.push({x:Wd+60,gy:y,g,w:Math.max(64,Wd*.07),w_i:nextWord(),got:false,hue:[120,200,30,330][Math.floor(Math.random()*4)]})}
+function show(i){
+ const e=words()[i],k1=KEYS.indexOf(lang)+1,k2=KEYS.indexOf(lang2)+1;
+ wText.textContent=e[0]+" "+e[k1];wText.dir=lang==="ar"?"rtl":"ltr";
+ wSub.textContent=lang2===lang?"":e[k2];wSub.dir=lang2==="ar"?"rtl":"ltr";
+ wordEl.classList.add("show");clearTimeout(hideT);hideT=setTimeout(()=>wordEl.classList.remove("show"),2800);
+ sayBoth(e[k1],lang,e[k2],lang2);
+}
+function burst(x,y){for(let i=0;i<18;i++){const a=Math.random()*6.28,s=2+Math.random()*4;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:40,c:["#ffc93c","#ff6f91","#fff","#4caf6a"][i%4]})}}
+
+function step(){
+ const g=Math.max(.34,Ht*.00062);
+ if(started&&!over){
+  bird.vy=Math.min(bird.vy+g,12);bird.y+=bird.vy;
+  if(bird.y<bird.r){bird.y=bird.r;bird.vy=0}
+  const floor=Ht-40;
+  if(bird.y>floor-bird.r){if(toddler){bird.y=floor-bird.r;bird.vy=-Math.max(5,Ht*.009)}else crash()}
+  spawnT-=speed();if(spawnT<=0){spawn();spawnT=toddler?Math.max(340,Wd*.45):Math.max(280,Wd*.36)}
+  for(const p of pipes){p.x-=speed();
+   const inX=bird.x+bird.r*.8>p.x&&bird.x-bird.r*.8<p.x+p.w;
+   if(inX){const top=p.gy-p.g/2,bot=p.gy+p.g/2;
+    if(bird.y-bird.r*.8<top||bird.y+bird.r*.8>bot){if(toddler){bird.y+=(p.gy-bird.y)*.25;bird.vy*=.3}else crash()}}
+   if(!p.got&&bird.x>p.x+p.w/2){p.got=true;score++;scoreEl.textContent=score;show(p.w_i);burst(p.x+p.w/2,p.gy);blip(660,.25,"sine")}}
+  pipes=pipes.filter(p=>p.x>-p.w-20);
+ }else if(!started){bird.y=Ht*.45+Math.sin(performance.now()/300)*14}
+ bird.rot+=((Math.max(-.5,Math.min(1.1,bird.vy*.08)))-bird.rot)*.2;
+ for(const c of clouds){c.x-=c.v*(started&&!over?1:.3);if(c.x<-200)c.x=Wd+100+Math.random()*200}
+ for(const q of parts){q.x+=q.vx;q.y+=q.vy;q.vy+=.15;q.l--}parts=parts.filter(q=>q.l>0);
+ if(shake>0)shake*=.9;
+}
+function crash(){over=true;shake=12;blip(160,.4,"sawtooth");wText.textContent="💥 "+score;wText.dir="ltr";wSub.textContent="press any key";wordEl.classList.add("show");clearTimeout(hideT)}
+
+function draw(){
+ cx.save();if(shake>.5)cx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
+ const sk=cx.createLinearGradient(0,0,0,Ht);const TD=SKYT[(()=>{const h=new Date().getHours();return h>=6&&h<10?"morning":h>=10&&h<17?"day":h>=17&&h<20?"evening":"night"})()];sk.addColorStop(0,TD[0]);sk.addColorStop(.5,TD[1]);sk.addColorStop(1,TD[2]);cx.fillStyle=sk;cx.fillRect(-20,-20,Wd+40,Ht+40);
+ {const gl=cx.createRadialGradient(Wd-90,110,10,Wd-90,110,140);gl.addColorStop(0,"rgba(255,230,120,.7)");gl.addColorStop(1,"rgba(255,210,63,0)");cx.fillStyle=gl;cx.fillRect(Wd-240,-40,300,300);const sg=cx.createRadialGradient(Wd-104,96,4,Wd-90,110,46);sg.addColorStop(0,"#fffbe6");sg.addColorStop(.5,"#ffe066");sg.addColorStop(1,"#ffb000");cx.fillStyle=sg;cx.beginPath();cx.arc(Wd-90,110,46,0,7);cx.fill();}
+ cx.fillStyle="#fff";for(const c of clouds){const x=c.x,y=c.y*Ht+60,s=c.s*30;cx.beginPath();cx.arc(x,y,s,0,7);cx.arc(x+s,y-s*.5,s*1.2,0,7);cx.arc(x+s*2.1,y,s,0,7);cx.fill()}
+ for(const p of pipes){const top=p.gy-p.g/2,bot=p.gy+p.g/2,col=`hsl(${p.hue} 78% 60%)`,dk=`hsl(${p.hue} 70% 42%)`;
+  cx.fillStyle=col;cx.strokeStyle="rgba(0,0,0,0)";cx.lineWidth=4;
+  rr(p.x,-10,p.w,top+10,14);rr(p.x,bot,p.w,Ht-bot+10,14);
+  cx.fillStyle=dk;rr(p.x-6,top-26,p.w+12,26,10);rr(p.x-6,bot,p.w+12,26,10);
+  if(!p.got){const bob=Math.sin(performance.now()/250+p.x*.01)*6,fs=Math.min(p.g*.45,90);const im=window.LPLook&&LPLook.image(words()[p.w_i][0]);if(im&&im.complete&&im.naturalWidth){const z=fs*1.25;cx.drawImage(im,p.x+p.w/2-z/2,p.gy+bob-z/2,z,z)}else{cx.font=`${fs}px serif`;cx.textAlign="center";cx.textBaseline="middle";cx.fillText(words()[p.w_i][0],p.x+p.w/2,p.gy+bob)}}}
+ cx.fillStyle="#4fc777";cx.fillRect(-20,Ht-40,Wd+40,60);cx.fillStyle="#3fae6a";const off=(performance.now()/10*(started&&!over?1:0))%40;for(let x=-off;x<Wd;x+=40){cx.beginPath();cx.moveTo(x,Ht-40);cx.lineTo(x+20,Ht-52);cx.lineTo(x+40,Ht-40);cx.fill()}
+ for(const q of parts){cx.globalAlpha=q.l/40;cx.fillStyle=q.c;cx.beginPath();cx.arc(q.x,q.y,5,0,7);cx.fill()}cx.globalAlpha=1;
+ const b=bird,r=b.r;cx.save();cx.translate(b.x,b.y);cx.rotate(b.rot);cx.lineWidth=4;cx.strokeStyle="rgba(0,0,0,0)";
+ (DRAW[charKey]||DRAW.bird)(cx,r,b);
+ cx.restore();cx.restore();
+}
+// Shared cute face: a big round eye (white + pupil highlight) and a small curved smile,
+// so every flyer reads as a character rather than a vehicle icon.
+const SKYT={morning:["#5b6ee8","#f08fb0","#ffd29a"],day:["#2f6fe8","#4f9cff","#9fdcff"],evening:["#3a2a86","#d9607e","#ffad66"],night:["#140f3a","#241c63","#3a2a86"]};
+function eye(cx,x,y,r,dir){cx.fillStyle="#fff";cx.beginPath();cx.arc(x,y,r,0,7);cx.fill();cx.stroke();
+ cx.fillStyle="#1d3557";cx.beginPath();cx.arc(x+r*.32*(dir||1),y+r*.12,r*.42,0,7);cx.fill();
+ cx.fillStyle="#fff";cx.beginPath();cx.arc(x+r*.42*(dir||1)+r*.1,y-r*.15,r*.12,0,7);cx.fill()}
+function smile(cx,x,y,w,h){cx.strokeStyle="rgba(0,0,0,0)";cx.lineWidth=3;cx.beginPath();cx.moveTo(x-w,y);cx.quadraticCurveTo(x,y+h,x+w,y);cx.stroke();cx.lineWidth=4}
+const DRAW={
+ bird(cx,r,b){
+  cx.fillStyle=CHARS.bird.body;cx.beginPath();cx.ellipse(0,0,r*1.15,r,0,0,7);cx.fill();cx.stroke();
+  const wf=Math.sin(performance.now()/(b.vy<0?40:120))*r*.35;cx.fillStyle=CHARS.bird.trim;cx.beginPath();cx.ellipse(-r*.3,r*.1+wf*.3,r*.55,r*.35+Math.abs(wf)*.3,-.3,0,7);cx.fill();cx.stroke();
+  cx.fillStyle="#ffc93c";cx.beginPath();cx.moveTo(r*.85,0);cx.lineTo(r*1.5,r*.16);cx.lineTo(r*.85,r*.32);cx.closePath();cx.fill();cx.stroke();
+  eye(cx,r*.45,-r*.32,r*.32,1);smile(cx,r*.4,r*.12,r*.16,r*.1);
+ },
+ plane(cx,r,b){
+  // A side-view airliner silhouette: rounded nose, tapered tail, swept tail fin,
+  // a low wing with an engine pod, and a row of cabin windows — no face, it's a vehicle.
+  const c=CHARS.plane,navy="#28527a";
+  // horizontal stabilizer + vertical tail fin, drawn first so the fuselage overlaps them
+  cx.fillStyle=navy;cx.beginPath();cx.moveTo(-r*1.05,-r*.05);cx.lineTo(-r*1.55,-r*.85);cx.lineTo(-r*1.15,-r*.9);cx.lineTo(-r*.78,-r*.12);cx.closePath();cx.fill();cx.stroke();
+  cx.beginPath();cx.moveTo(-r*1.0,r*.05);cx.lineTo(-r*1.55,r*.35);cx.lineTo(-r*1.32,r*.4);cx.lineTo(-r*.85,r*.12);cx.closePath();cx.fill();cx.stroke();
+  // low swept wing with a small underslung engine
+  cx.fillStyle=c.body;cx.beginPath();cx.moveTo(r*.1,r*.28);cx.lineTo(-r*.35,r*1.15);cx.lineTo(r*.05,r*1.1);cx.lineTo(r*.55,r*.3);cx.closePath();cx.fill();cx.stroke();
+  cx.fillStyle="#455a64";cx.beginPath();cx.ellipse(-r*.05,r*.78,r*.24,r*.13,-.15,0,7);cx.fill();cx.stroke();
+  // fuselage: a smooth cylinder with a rounded nose cone and tapered tail cone
+  cx.fillStyle="#f4f7fa";cx.beginPath();
+  cx.moveTo(r*1.7,0);
+  cx.quadraticCurveTo(r*1.55,-r*.32,r*.9,-r*.34);
+  cx.lineTo(-r*.85,-r*.3);
+  cx.quadraticCurveTo(-r*1.55,-r*.22,-r*1.7,0);
+  cx.quadraticCurveTo(-r*1.55,r*.22,-r*.85,r*.3);
+  cx.lineTo(r*.9,r*.34);
+  cx.quadraticCurveTo(r*1.55,r*.32,r*1.7,0);
+  cx.closePath();cx.fill();cx.stroke();
+  // racing stripe along the body
+  cx.fillStyle=c.body;cx.beginPath();cx.moveTo(r*1.5,-r*.1);cx.lineTo(-r*1.2,-r*.08);cx.lineTo(-r*1.2,r*.03);cx.lineTo(r*1.55,r*.05);cx.closePath();cx.fill();
+  // cockpit glazing at the nose
+  cx.fillStyle="#9fd0e8";cx.beginPath();cx.ellipse(r*1.15,-r*.12,r*.22,r*.13,-.25,0,7);cx.fill();cx.lineWidth=4;cx.strokeStyle="rgba(0,0,0,0)";
+  // a neat row of cabin windows
+  cx.fillStyle=navy;for(let i=0;i<6;i++){cx.beginPath();cx.arc(r*.7-i*r*.34,-r*.14,r*.055,0,7);cx.fill()}
+  if(b.vy<-1)for(let i=0;i<3;i++){cx.strokeStyle="rgba(255,255,255,.8)";cx.lineWidth=3;cx.beginPath();cx.moveTo(-r*1.7-i*9,i*5-r*.1);cx.lineTo(-r*2.25-i*9,i*5-r*.1);cx.stroke();cx.lineWidth=4;cx.strokeStyle="rgba(0,0,0,0)"}
+ },
+ rocket(cx,r,b){
+  // Classic upright-style rocket flown on its side: red-and-white body, black nose cone,
+  // swept fins and a round porthole — like a storybook rocket, not a face with a hat on.
+  const c=CHARS.rocket;
+  cx.fillStyle=c.body;cx.beginPath();cx.moveTo(-r*.5,-r*.42);cx.lineTo(-r*1.3,-r*.1);cx.lineTo(-r*.42,0);cx.closePath();cx.fill();cx.stroke();
+  cx.beginPath();cx.moveTo(-r*.5,r*.42);cx.lineTo(-r*1.3,r*.1);cx.lineTo(-r*.42,0);cx.closePath();cx.fill();cx.stroke();
+  // main body: cylinder with a pointed nose cone
+  cx.fillStyle="#f1faee";cx.beginPath();cx.moveTo(-r*.55,-r*.5);cx.lineTo(r*.55,-r*.5);cx.quadraticCurveTo(r*.9,-r*.5,r*.9,0);cx.quadraticCurveTo(r*.9,r*.5,r*.55,r*.5);cx.lineTo(-r*.55,r*.5);cx.quadraticCurveTo(-r*.68,0,-r*.55,-r*.5);cx.closePath();cx.fill();cx.stroke();
+  cx.fillStyle="#2b2118";cx.beginPath();cx.moveTo(r*.55,-r*.5);cx.quadraticCurveTo(r*1.15,-r*.42,r*1.55,0);cx.quadraticCurveTo(r*1.15,r*.42,r*.55,r*.5);cx.quadraticCurveTo(r*.42,0,r*.55,-r*.5);cx.closePath();cx.fill();cx.stroke();
+  cx.fillStyle=c.body;cx.beginPath();cx.moveTo(-r*.55,-r*.3);cx.lineTo(r*.15,-r*.3);cx.lineTo(r*.15,r*.3);cx.lineTo(-r*.55,r*.3);cx.closePath();cx.fill();
+  cx.fillStyle="#a8dadc";cx.beginPath();cx.arc(-r*.05,0,r*.24,0,7);cx.fill();cx.stroke();
+  cx.fillStyle="rgba(255,255,255,.5)";cx.beginPath();cx.arc(-r*.12,-r*.08,r*.08,0,7);cx.fill();
+  const fl=8+Math.random()*12;cx.fillStyle="#ffb703";cx.beginPath();cx.moveTo(-r*.55,-r*.28);cx.lineTo(-r*.55-fl,0);cx.lineTo(-r*.55,r*.28);cx.closePath();cx.fill();
+  cx.fillStyle="#ff6f3c";cx.beginPath();cx.moveTo(-r*.55,-r*.14);cx.lineTo(-r*.55-fl*.55,0);cx.lineTo(-r*.55,r*.14);cx.closePath();cx.fill();
+ },
+ balloon(cx,r,b){
+  // A hot-air balloon: onion-domed envelope with vertical gores, a burner throat,
+  // and a real woven basket on four ropes rather than a floating smiley bulb.
+  const c=CHARS.balloon;
+  cx.strokeStyle="rgba(0,0,0,0)";cx.lineWidth=2.5;
+  cx.beginPath();cx.moveTo(-r*.36,r*.98);cx.lineTo(-r*.3,r*1.52);cx.stroke();
+  cx.beginPath();cx.moveTo(r*.36,r*.98);cx.lineTo(r*.3,r*1.52);cx.stroke();
+  cx.beginPath();cx.moveTo(-r*.15,r*1.05);cx.lineTo(-r*.28,r*1.52);cx.stroke();
+  cx.beginPath();cx.moveTo(r*.15,r*1.05);cx.lineTo(r*.28,r*1.52);cx.stroke();
+  cx.lineWidth=4;
+  // envelope: classic onion silhouette, wide shoulders tapering to a narrow throat
+  cx.fillStyle=c.body;cx.beginPath();
+  cx.moveTo(0,-r*1.45);
+  cx.bezierCurveTo(r*1.15,-r*1.35,r*1.15,-r*.15,r*.42,r*.55);
+  cx.lineTo(r*.22,r*.98);cx.lineTo(-r*.22,r*.98);
+  cx.lineTo(-r*.42,r*.55);
+  cx.bezierCurveTo(-r*1.15,-r*.15,-r*1.15,-r*1.35,0,-r*1.45);
+  cx.closePath();cx.fill();cx.stroke();
+  // gore panels: alternating shaded stripes following the envelope's curve
+  cx.save();cx.clip();
+  cx.fillStyle="rgba(29,53,87,.16)";
+  for(const gx of[-r*.72,-r*.24,r*.24,r*.72]){cx.beginPath();cx.ellipse(gx,-r*.3,r*.16,r*1.25,0,0,7);cx.fill()}
+  cx.restore();
+  cx.fillStyle="rgba(255,255,255,.4)";cx.beginPath();cx.ellipse(-r*.42,-r*.75,r*.2,r*.55,-.15,0,7);cx.fill();
+  cx.fillStyle="#c8a15c";cx.beginPath();cx.roundRect(-r*.36,r*1.5,r*.72,r*.42,5);cx.fill();cx.stroke();
+  cx.strokeStyle="rgba(29,53,87,.5)";cx.lineWidth=2;for(let i=1;i<4;i++){cx.beginPath();cx.moveTo(-r*.36,r*1.5+i*r*.1);cx.lineTo(r*.36,r*1.5+i*r*.1);cx.stroke()}
+  cx.lineWidth=4;cx.strokeStyle="rgba(0,0,0,0)";
+ },
+ bee(cx,r,b){
+  // A rounder, fuzzier bee: striped abdomen, a distinct dark head with real compound
+  // eyes (not cartoon ones), two sheer wing pairs, thin legs and curled antennae.
+  const wf=Math.sin(performance.now()/45)*.4+.6;
+  cx.save();cx.globalAlpha=.55;cx.fillStyle="#eef6fb";cx.strokeStyle="#c7d9e3";cx.lineWidth=2;
+  cx.beginPath();cx.ellipse(-r*.05,-r*.55-wf*r*.15,r*.55,r*.3,-.25,0,7);cx.fill();cx.stroke();
+  cx.beginPath();cx.ellipse(r*.35,-r*.4-wf*r*.1,r*.4,r*.22,-.1,0,7);cx.fill();cx.stroke();
+  cx.restore();cx.strokeStyle="rgba(0,0,0,0)";cx.lineWidth=4;
+  // thin legs
+  cx.lineWidth=2.5;for(const lx of[-r*.3,0,r*.3]){cx.beginPath();cx.moveTo(lx,r*.55);cx.lineTo(lx-r*.1,r*.95);cx.stroke()}
+  cx.lineWidth=4;
+  // striped abdomen (back half) then head (front half), slightly offset so it reads as two body parts
+  cx.fillStyle=CHARS.bee.body;cx.beginPath();cx.ellipse(-r*.15,0,r*.95,r*.72,0,0,7);cx.fill();cx.stroke();
+  cx.save();cx.beginPath();cx.ellipse(-r*.15,0,r*.95,r*.72,0,0,7);cx.clip();
+  cx.fillStyle="#2b2118";for(const dx of[-.75,-.3,.15,.6]){cx.beginPath();cx.roundRect(dx*r-5,-r*.75,9,r*1.5,4);cx.fill()}
+  cx.restore();
+  cx.fillStyle="#2b2118";cx.beginPath();cx.arc(r*.72,-r*.05,r*.4,0,7);cx.fill();cx.stroke();
+  cx.strokeStyle="#2b2118";cx.lineWidth=2.5;
+  cx.beginPath();cx.moveTo(r*.55,-r*.35);cx.quadraticCurveTo(r*.7,-r*.75,r*.95,-r*.72);cx.stroke();
+  cx.beginPath();cx.moveTo(r*.85,-r*.32);cx.quadraticCurveTo(r*1.05,-r*.68,r*1.28,-r*.6);cx.stroke();
+  cx.fillStyle="#1d3557";cx.beginPath();cx.ellipse(r*.82,-r*.1,r*.13,r*.17,.3,0,7);cx.fill();
+  cx.fillStyle="rgba(255,255,255,.6)";cx.beginPath();cx.arc(r*.78,-r*.16,r*.04,0,7);cx.fill();
+  cx.strokeStyle="rgba(0,0,0,0)";cx.lineWidth=4;
+  cx.fillStyle="#2b2118";cx.beginPath();cx.moveTo(-r*1.08,0);cx.lineTo(-r*1.3,-r*.06);cx.lineTo(-r*1.3,r*.06);cx.closePath();cx.fill();
+ }
+};
+function rr(x,y,w,h,r){cx.beginPath();cx.roundRect(x,y,w,h,r);cx.fill();cx.stroke()}
+let last=performance.now(),acc=0;
+function loop(n){acc+=Math.min(100,n-last);last=n;while(acc>=16.67){step();acc-=16.67}draw();requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+if(window.speechSynthesis)speechSynthesis.getVoices();
+</script>
+
+</body></html>

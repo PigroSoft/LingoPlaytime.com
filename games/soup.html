@@ -1,0 +1,356 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<script>window.LP_GAME="soup"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="look.js"></script>
+<title>Little Soup Pot</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{
+  color-scheme:light;
+  --tile:#bfe3df; --tile-line:#a5d3cf; --counter:#8a5a34; --counter-top:#a9713f; --counter-dark:#5a381d;
+  --wall:#dcecdf; --wall-hi:#eaf5eb; --wall-lo:#c7e0cc; --sky:#bfe6f2; --sky-lo:#eaf8f0; --curtain:#f0d55a; --curtain-dark:#dcb63f;
+  --pot:#2f3d4f; --pot-rim:#46586e; --soup:#f2a93b; --ink:#1f2a36; --paper:#fffdf7; --pop:#e8495b; --glow:#ffd84a;
+}
+html,body{height:100%}
+body{margin:0;color:var(--ink);font-family:"Baloo 2",ui-rounded,"Arial Rounded MT Bold",system-ui,sans-serif;overflow:hidden;
+  cursor:none;user-select:none;-webkit-user-select:none;touch-action:manipulation;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 0%,var(--wall-hi),transparent 65%),
+    linear-gradient(var(--wall) 0%,var(--wall) 40%,var(--counter-top) 72%,var(--counter) 100%)}
+/* soft wallpaper dot texture, faded out before it reaches the counter */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4;
+  background-image:radial-gradient(var(--wall-lo) 2.5px,transparent 2.5px);background-size:46px 46px;background-position:12px 12px;
+  -webkit-mask-image:linear-gradient(#000 0%,#000 38%,transparent 62%);mask-image:linear-gradient(#000 0%,#000 38%,transparent 62%)}
+/* faint plank lines on the counter half only */
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.3;
+  background-image:repeating-linear-gradient(100deg,rgba(0,0,0,.12) 0 3px,transparent 3px 30px);
+  -webkit-mask-image:linear-gradient(transparent 0%,transparent 58%,#000 72%,#000 100%);mask-image:linear-gradient(transparent 0%,transparent 58%,#000 72%,#000 100%)}
+.kitchen{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.kitchen .window{position:absolute;top:max(3%,env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);width:min(38vw,240px);aspect-ratio:1.5;border-radius:16px;
+  background:linear-gradient(var(--sky),var(--sky-lo));box-shadow:0 0 0 9px var(--paper),0 0 0 12px #d8cfa8,0 8px 16px -6px rgba(0,0,0,.25);overflow:hidden}
+.kitchen .window::before,.kitchen .window::after{content:"";position:absolute;background:var(--paper)}
+.kitchen .window::before{left:50%;top:0;bottom:0;width:7px;margin-left:-3.5px}
+.kitchen .window::after{top:50%;left:0;right:0;height:7px;margin-top:-3.5px}
+.kitchen .sun{position:absolute;width:26%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff3ad,#ffd84a 70%);top:16%;left:10%;box-shadow:0 0 18px 3px rgba(255,216,74,.6)}
+.kitchen .cloud{position:absolute;background:#fff;border-radius:50%;opacity:.9}
+.kitchen .cloud.c1{width:26%;height:30%;top:18%;right:12%}
+.kitchen .cloud.c2{width:16%;height:18%;top:42%;right:28%}
+.kitchen .curtain{position:absolute;top:max(1.5%,env(safe-area-inset-top,0px));width:7%;height:calc(min(38vw,240px) / 1.5 * .82);border-radius:0 0 60% 10%/0 0 30% 10%;
+  background:linear-gradient(90deg,var(--curtain),var(--curtain-dark) 90%);box-shadow:2px 2px 6px rgba(0,0,0,.15)}
+.kitchen .curtain.l{left:calc(50% - min(19vw,120px) - 8.5%)}
+.kitchen .curtain.r{left:calc(50% + min(19vw,120px) + 1.5%);border-radius:0 0 10% 60%/0 0 10% 30%}
+.kitchen .shelf-wrap{position:absolute;top:calc(max(3%,env(safe-area-inset-top,0px)) + min(38vw,240px) / 1.5 + 22px);left:12%;right:12%}
+.kitchen .shelf-wrap .board{height:14px;background:linear-gradient(var(--counter-top),var(--counter-dark));border-radius:5px;box-shadow:0 5px 6px -2px rgba(0,0,0,.25)}
+.kitchen .shelf-wrap .jars{display:flex;justify-content:space-evenly;font-size:clamp(20px,4.5vw,32px);transform:translateY(-86%);filter:drop-shadow(0 3px 2px rgba(0,0,0,.2))}
+#cursor{position:fixed;left:0;top:0;font-size:64px;pointer-events:none;z-index:99;transform:translate(-30%,-8%) rotate(-8deg);transition:transform .12s;filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 12px #fff)}
+#cursor.hot{transform:translate(-30%,-8%) rotate(-18deg) scale(1.25)}
+#cursor.press{transform:translate(-30%,-8%) rotate(-8deg) scale(.85)}
+@media (hover:none){#cursor{display:none}}
+.game{position:relative;z-index:1;height:100%;display:grid;grid-template-rows:auto 1fr auto;padding-inline:16px;box-sizing:border-box;max-width:1100px;margin:0 auto}
+header{display:flex;justify-content:space-between;align-items:center;padding-block:12px;gap:12px}
+.lang{background:var(--paper);border-radius:999px;padding:6px 18px;font-weight:800;font-size:22px;box-shadow:0 3px 0 var(--tile-line)}
+.stickers{display:flex;gap:4px;font-size:30px;flex:1;justify-content:center;flex-wrap:wrap;min-height:40px}
+.stickers span{animation:pop .5s}
+@keyframes pop{0%{transform:scale(0) rotate(-30deg)}70%{transform:scale(1.4)}}
+.gear{background:var(--paper);border:0;border-radius:50%;width:48px;height:48px;font-size:24px;cursor:none;box-shadow:0 3px 0 var(--tile-line);flex:none}
+.stage{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:clamp(8px,4vw,60px);padding-bottom:28px}
+.word{position:absolute;top:2%;left:0;right:0;margin:0 auto;width:max-content;max-width:100%;text-align:center;font-weight:800;font-size:clamp(30px,6.5vw,68px);color:var(--ink);text-shadow:0 3px 0 #fff;min-height:1.2em;background:none;border:0;font-family:inherit;cursor:none;padding:0 12px}
+.word.bump{animation:bump .4s}
+.word .ear{font-size:.5em;vertical-align:middle;opacity:.8}
+@keyframes bump{40%{transform:scale(1.15)}}
+.guest{position:relative;display:grid;justify-items:center;width:clamp(110px,24vw,220px)}
+.guest .face{font-size:clamp(80px,16vw,150px);line-height:1;transition:transform .6s cubic-bezier(.3,1.6,.5,1)}
+.guest.away .face{transform:translateX(-140vw)}
+.guest.eat .face{animation:chomp .25s 5}
+@keyframes chomp{50%{transform:scaleY(.85) scaleX(1.1)}}
+.guest.no .face{animation:shake .4s}
+@keyframes shake{25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
+.bubble-say{position:relative;background:var(--paper);border-radius:22px;padding:6px 14px;font-size:clamp(48px,9vw,78px);line-height:1.1;margin-bottom:10px;box-shadow:0 4px 0 var(--tile-line);min-width:1.2em;text-align:center;border:0;font-family:inherit;cursor:none}
+.bubble-say::after{content:"";position:absolute;bottom:-12px;left:40%;border:12px solid transparent;border-top-color:var(--paper);border-bottom:0}
+.bubble-say:empty{visibility:hidden}
+.pot{position:relative;width:min(52vw,360px);aspect-ratio:1.4;flex:none;border:0;background:none;padding:0;cursor:none}
+.pot .body{position:absolute;inset:22% 4% 0;background:var(--pot);border-radius:12% 12% 40% 40%/10% 10% 55% 55%}
+.pot .rim{position:absolute;left:0;right:0;top:12%;height:18%;background:var(--pot-rim);border-radius:50%;overflow:hidden}
+.pot .soup{position:absolute;inset:18% 6% 12%;background:var(--soup);border-radius:50%;transition:background .5s,transform .3s}
+.pot .h{position:absolute;top:30%;width:14%;height:12%;border:8px solid var(--pot-rim);border-radius:40%}
+.pot .h.l{left:-9%}.pot .h.r{right:-9%}
+.pot.wobble{animation:wob .5s}
+@keyframes wob{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+.spoon{position:absolute;left:50%;top:-18%;font-size:clamp(50px,10vw,90px);transform-origin:50% 90%;pointer-events:none;transition:opacity .3s}
+.pot.stirring .spoon{opacity:1}
+.spoon{opacity:0}
+.pot.stirring{box-shadow:0 0 0 0 var(--glow);border-radius:40%;animation:beacon 1.2s infinite}
+@keyframes beacon{50%{filter:drop-shadow(0 0 18px var(--glow))}}
+.steam{position:absolute;border-radius:50%;background:rgba(255,255,255,.7);pointer-events:none;animation:rise 1.2s ease-out forwards}
+@keyframes rise{to{transform:translateY(-120px) scale(1.6);opacity:0}}
+.fly{position:fixed;font-size:72px;pointer-events:none;z-index:50;transition:transform .55s cubic-bezier(.3,-.4,.6,1),opacity .2s .5s}
+.meter{position:absolute;bottom:-26px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.meter i{width:22px;height:22px;border-radius:50%;background:var(--paper);box-shadow:inset 0 0 0 3px var(--pot-rim);transition:background .2s}
+.meter i.on{background:var(--pop)}
+.bowl{position:absolute;right:-10px;bottom:-20px;font-size:clamp(60px,11vw,100px);border:0;background:none;cursor:none;animation:hop .8s infinite;filter:drop-shadow(0 0 14px var(--glow))}
+@keyframes hop{50%{transform:translateY(-14px)}}
+.shelf{background:var(--counter);border-top:14px solid var(--counter-top);margin-inline:-16px;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;justify-content:center;gap:12px;transition:opacity .3s}
+.shelf.rest{opacity:.45}
+.ing{font-size:clamp(44px,8vw,68px);width:1.6em;height:1.6em;border:0;border-radius:24px;background:var(--paper);cursor:none;box-shadow:0 6px 0 #5a381d;transition:transform .1s}
+.ing:active{transform:translateY(4px);box-shadow:0 2px 0 #5a381d}
+.ing.hint{animation:hint .7s infinite;background:var(--glow)}
+@keyframes hint{50%{transform:translateY(-10px) rotate(-6deg)}}
+.ing.nope{animation:shake .35s}
+.ing:focus-visible,.gear:focus-visible,.pot:focus-visible,.bowl:focus-visible{outline:4px solid var(--pop);outline-offset:3px}
+.ing.gone{visibility:hidden}
+.overlay{position:fixed;inset:0;background:rgba(31,42,54,.55);display:grid;place-items:center;z-index:60;padding:16px;overflow:auto}
+.card{background:var(--paper);border-radius:28px;padding:28px;max-width:440px;width:100%;box-sizing:border-box;display:grid;gap:14px;cursor:auto}
+.card *{cursor:auto}
+.card h1{margin:0;font-size:40px;line-height:1;text-wrap:balance}
+.card p{margin:0;font-size:17px;line-height:1.4}
+.card .lbl{font-weight:700;font-size:15px;letter-spacing:.04em;text-transform:uppercase}
+.card input[type=text]{font:inherit;font-size:22px;padding:8px 14px;border:3px solid var(--tile-line);border-radius:14px;width:100%;box-sizing:border-box}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{font-size:18px;background:var(--tile);padding:4px 14px;border-radius:999px;display:flex;gap:6px;align-items:center}
+.chips label small{font-size:14px;opacity:.7}
+.go{font:inherit;font-weight:800;font-size:28px;border:0;border-radius:18px;padding:10px;background:var(--pop);color:#fff;box-shadow:0 6px 0 #a42d3b;cursor:pointer}
+.note{font-size:14px;color:#556}
+@media (max-width:560px){.stage{flex-direction:column;align-items:center;justify-content:flex-end;gap:4px}.guest{flex-direction:row;display:flex;align-items:flex-end;gap:8px;width:auto}.guest .face{font-size:72px}.bubble-say{font-size:44px}.pot{width:min(72vw,300px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* LingoPlaytime look */
+
+:root{--wall:#3a2a86;--wall-hi:#5240b8;--wall-lo:#241c63;--tile:#2c2275;--tile-line:#3d2f99;--counter:#8a4724;--counter-top:#b96a3c;--counter-dark:#5a2c1a;--pot:#2c2468;--pot-rim:#4a3f8f;--paper:#fff;--ink:#1a1440;--glow:#ffd23f}
+body{color:#fff}
+#face svg{width:1.1em;height:1.1em;display:block;filter:drop-shadow(0 8px 10px #0005)}
+.ing,.bowl,.word,.bubble-say{font-family:"Fredoka","Baloo 2",system-ui,sans-serif}
+.word{color:#fff!important;text-shadow:0 4px 18px #0007}
+</style>
+
+<div class="kitchen" aria-hidden="true">
+  <div class="window"><div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div></div>
+  <div class="curtain l"></div><div class="curtain r"></div>
+  <div class="shelf-wrap"><div class="board"></div><div class="jars"><span>🫙</span><span>🍯</span><span>🥣</span><span>🫙</span></div></div>
+</div>
+<div class="game">
+  <header>
+    <div class="lang" id="langTag">English</div>
+    <div class="stickers" id="stickers" aria-label="Soups served"></div>
+    <button class="gear" id="gear" aria-label="Grown-up settings">⚙️</button>
+  </header>
+  <div class="stage">
+    <button class="word" id="word" aria-label="Hear it again"></button>
+    <div class="guest away" id="guest">
+      <button class="bubble-say" id="want" aria-label="Hear the order again"></button>
+      <div class="face" id="face">🐻</div>
+    </div>
+    <button class="pot" id="pot" aria-label="Soup pot">
+      <div class="h l"></div><div class="h r"></div>
+      <div class="body"></div>
+      <div class="rim"><div class="soup" id="soup"></div></div>
+      <div class="spoon" id="spoon">🥄</div>
+      <div class="meter" id="meter"></div>
+    </button>
+    <button class="bowl" id="bowl" hidden aria-label="Serve the soup">🍲</button>
+  </div>
+  <div class="shelf" id="shelf"></div>
+</div>
+<div id="cursor">👆</div>
+
+<div class="overlay" id="setup">
+  <form class="card" id="form">
+    <h1>Little Soup Pot</h1>
+    <p>A hungry friend is coming to the kitchen. Put food in the pot, stir it, and serve the soup. Any key on the keyboard helps too.</p>
+    <label class="lbl" for="name">Cook's name</label>
+    <input type="text" id="name" placeholder="Sky" maxlength="20">
+    <span class="lbl">Languages</span>
+    <div class="chips" id="chips"></div>
+    <span class="lbl">How to play</span>
+    <div class="chips">
+      <label><input type="radio" name="mode" id="m_free" value="free"> Free cooking <small>any food, ages 1–2</small></label>
+      <label><input type="radio" name="mode" id="m_order" value="order"> Take orders <small>listen and find, ages 2+</small></label>
+    </div>
+    <button class="go" id="go" type="submit">Let's cook!</button>
+    <p class="note" id="voiceNote"></p>
+  </form>
+</div>
+
+<script>
+const LANGS={
+ en:{name:"English",code:"en-US"},de:{name:"Deutsch",code:"de-DE"},es:{name:"Español",code:"es-ES"},
+ fr:{name:"Français",code:"fr-FR"},it:{name:"Italiano",code:"it-IT"}};
+const FOODS=[
+ {e:"🍅",c:"#e0452f",w:{en:"a tomato",de:"die Tomate",es:"el tomate",fr:"la tomate",it:"il pomodoro"}},
+ {e:"🥕",c:"#f08a24",w:{en:"a carrot",de:"die Karotte",es:"la zanahoria",fr:"la carotte",it:"la carota"}},
+ {e:"🥔",c:"#d9b36c",w:{en:"a potato",de:"die Kartoffel",es:"la patata",fr:"la pomme de terre",it:"la patata"}},
+ {e:"🧅",c:"#c9a0c4",w:{en:"an onion",de:"die Zwiebel",es:"la cebolla",fr:"l'oignon",it:"la cipolla"}},
+ {e:"🥦",c:"#4f9a3a",w:{en:"broccoli",de:"der Brokkoli",es:"el brócoli",fr:"le brocoli",it:"i broccoli"}},
+ {e:"🌽",c:"#f2cf3b",w:{en:"corn",de:"der Mais",es:"el maíz",fr:"le maïs",it:"il mais"}},
+ {e:"🍄",c:"#b58a6a",w:{en:"a mushroom",de:"der Pilz",es:"el champiñón",fr:"le champignon",it:"il fungo"}},
+ {e:"🫛",c:"#7cc25a",w:{en:"peas",de:"die Erbsen",es:"los guisantes",fr:"les petits pois",it:"i piselli"}},
+ {e:"🧄",c:"#efe6d2",w:{en:"garlic",de:"der Knoblauch",es:"el ajo",fr:"l'ail",it:"l'aglio"}},
+ {e:"🍗",c:"#c9803e",w:{en:"chicken",de:"das Hähnchen",es:"el pollo",fr:"le poulet",it:"il pollo"}},
+ {e:"🫑",c:"#3f9d4a",w:{en:"a pepper",de:"die Paprika",es:"el pimiento",fr:"le poivron",it:"il peperone"}},
+ {e:"🧀",c:"#f6c945",w:{en:"cheese",de:"der Käse",es:"el queso",fr:"le fromage",it:"il formaggio"}}];
+const GUESTS=[
+ {e:"🐻",n:{en:"The bear",de:"Der Bär",es:"El oso",fr:"L'ours",it:"L'orso"}},
+ {e:"🐱",n:{en:"The cat",de:"Die Katze",es:"El gato",fr:"Le chat",it:"Il gatto"}},
+ {e:"🐸",n:{en:"The frog",de:"Der Frosch",es:"La rana",fr:"La grenouille",it:"La rana"}},
+ {e:"🐰",n:{en:"The bunny",de:"Der Hase",es:"El conejo",fr:"Le lapin",it:"Il coniglio"}},
+ {e:"🐷",n:{en:"The pig",de:"Das Schwein",es:"El cerdo",fr:"Le cochon",it:"Il maiale"}},
+ {e:"🐭",n:{en:"The mouse",de:"Die Maus",es:"El ratón",fr:"La souris",it:"Il topo"}},
+ {e:"🐶",n:{en:"The dog",de:"Der Hund",es:"El perro",fr:"Le chien",it:"Il cane"}}];
+const P={
+ en:{hungry:a=>`${a} is hungry!`,want:f=>`I want ${f}!`,stir:"Stir, stir, stir!",serve:"Soup's ready!",yum:n=>`Mmm, yummy! Thank you, ${n}!`,yumSay:n=>`Yummy! Thank you, ${n}!`,oops:"Oops, not that one!",chef:"chef"},
+ de:{hungry:a=>`${a} hat Hunger!`,want:f=>`Ich möchte ${f}!`,stir:"Rühren, rühren, rühren!",serve:"Die Suppe ist fertig!",yum:n=>`Mmm, lecker! Danke, ${n}!`,yumSay:n=>`Lecker! Danke, ${n}!`,oops:"Hoppla, das nicht!",chef:"Koch"},
+ es:{hungry:a=>`¡${a} tiene hambre!`,want:f=>`¡Quiero ${f}!`,stir:"¡Remueve, remueve!",serve:"¡La sopa está lista!",yum:n=>`¡Mmm, qué rico! ¡Gracias, ${n}!`,yumSay:n=>`¡Qué rico! ¡Gracias, ${n}!`,oops:"¡Uy, ese no!",chef:"chef"},
+ fr:{hungry:a=>`${a} a faim !`,want:f=>`Je veux ${f} !`,stir:"Tourne, tourne, tourne !",serve:"La soupe est prête !",yum:n=>`Miam, c'est bon ! Merci, ${n} !`,yumSay:n=>`Miam, c'est bon ! Merci, ${n} !`,oops:"Oups, pas celui-là !",chef:"chef"},
+ it:{hungry:a=>`${a} ha fame!`,want:f=>`Voglio ${f}!`,stir:"Gira, gira, gira!",serve:"La zuppa è pronta!",yum:n=>`Mmm, che buono! Grazie, ${n}!`,yumSay:n=>`Che buono! Grazie, ${n}!`,oops:"Ops, non quello!",chef:"chef"}};
+const PER=4, STIRS=8;
+let st={name:"",langs:["en","de"],mode:"free",li:0,stickers:[]};
+try{Object.assign(st,JSON.parse(localStorage.getItem("soupPot")||"{}"),{li:0})}catch(e){}
+let R={}; // round state
+
+const $=id=>document.getElementById(id);
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const lang=()=>st.langs[st.li%st.langs.length];
+const cook=()=>st.name||P[lang()].chef;
+
+// setup
+$("name").value=st.name;
+$("chips").innerHTML=Object.entries(LANGS).map(([k,v])=>`<label><input type="checkbox" id="l_${k}" value="${k}" ${st.langs.includes(k)?"checked":""}>${v.name}</label>`).join("");
+$(st.mode==="order"?"m_order":"m_free").checked=true;
+$("form").addEventListener("submit",e=>{e.preventDefault();
+  st.name=$("name").value.trim();
+  const picked=[...document.querySelectorAll("#chips input:checked")].map(i=>i.value);
+  st.langs=picked.length?picked:["en"];st.li=0;
+  st.mode=document.querySelector("input[name=mode]:checked").value;
+  save();$("setup").hidden=true;initAudio();plop();newRound();});
+$("gear").onclick=()=>{speechSynthesis?.cancel();$("setup").hidden=false};
+function save(){try{localStorage.setItem("soupPot",JSON.stringify({name:st.name,langs:st.langs,mode:st.mode,stickers:st.stickers.slice(-24)}))}catch(e){}}
+
+// voices
+let voices=[];
+function loadV(){voices=speechSynthesis?.getVoices()||[];
+  const miss=Object.values(LANGS).filter(l=>voices.length&&!voices.some(v=>v.lang.replace("_","-").startsWith(l.code.slice(0,2)))).map(l=>l.name);
+  $("voiceNote").textContent=miss.length?`No voice on this device for: ${miss.join(", ")}. Words will still show.`:"";}
+if("speechSynthesis"in window){loadV();speechSynthesis.onvoiceschanged=loadV}
+function say(text,l,queue){if(!("speechSynthesis"in window))return;if(!$("setup").hidden)return;if(!queue)speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text),code=LANGS[l].code;u.lang=code;u.rate=.85;u.pitch=1.15;
+  const v=voices.find(v=>v.lang.replace("_","-")===code)||voices.find(v=>v.lang.startsWith(code.slice(0,2)));if(v)u.voice=v;
+  speechSynthesis.speak(u);}
+
+// sounds
+let ac;function initAudio(){try{ac=ac||new AudioContext();ac.resume()}catch(e){}}
+function tone(f1,f2,dur,type="sine",vol=.3,delay=0){if(!ac)return;const t=ac.currentTime+delay,o=ac.createOscillator(),g=ac.createGain();
+  o.type=type;o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+dur);}
+const plop=()=>{tone(700,120,.18);tone(300,900,.08,"sine",.15,.12)};
+const bloop=()=>{for(let i=0;i<4;i++)tone(200+Math.random()*300,600+Math.random()*400,.12,"sine",.12,i*.09)};
+const swish=()=>tone(300+Math.random()*200,900,.15,"triangle",.1);
+const boing=()=>tone(220,110,.3,"square",.08);
+const nom=()=>{for(let i=0;i<5;i++)tone(180,120,.1,"square",.1,i*.25)};
+const fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,f,.25,"triangle",.2,i*.13));
+function noise(dur,vol,delay=0,freq=800,type="lowpass",q=1){if(!ac)return;
+  const n=Math.max(1,Math.floor(ac.sampleRate*dur)),buf=ac.createBuffer(1,n,ac.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<n;i++)d[i]=Math.random()*2-1;
+  const src=ac.createBufferSource();src.buffer=buf;
+  const f=ac.createBiquadFilter();f.type=type;f.frequency.value=freq;f.Q.value=q;
+  const g=ac.createGain(),t=ac.currentTime+delay;
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  src.connect(f).connect(g).connect(ac.destination);src.start(t);src.stop(t+dur);}
+// one synthesized call per animal, since the artifact sandbox can't play recorded clips
+const ANIMAL_SOUND={
+ "🐻":()=>{tone(190,90,.5,"sawtooth",.16);noise(.45,.06,.04,260,"lowpass",1)},              // bear: low growl
+ "🐱":()=>{tone(520,760,.14,"sine",.16);tone(740,420,.22,"sine",.14,.13)},                    // cat: meow
+ "🐸":()=>{for(let i=0;i<3;i++)tone(150,95,.09,"square",.14,i*.12)},                          // frog: croak
+ "🐰":()=>{tone(1250,1550,.06,"sine",.1);tone(1500,1150,.06,"sine",.09,.08)},                 // bunny: soft squeak
+ "🐷":()=>{tone(260,140,.13,"sawtooth",.17);tone(300,150,.15,"sawtooth",.15,.17)},            // pig: oink oink
+ "🐭":()=>{tone(1900,2500,.05,"sine",.11);tone(2500,1900,.05,"sine",.09,.06)},                // mouse: high squeak
+ "🐶":()=>{tone(520,190,.12,"square",.18);noise(.08,.08,0,1600,"bandpass",1)}};               // dog: bark
+const animalSound=e=>ANIMAL_SOUND[e]?.();
+
+// word bar: tap to hear the last word in every chosen language
+let lastFood=null;
+function showWord(txt){const w=$("word");w.innerHTML=txt+(lastFood&&st.langs.length>1?' <span class="ear">🔁</span>':"");w.classList.remove("bump");void w.offsetWidth;w.classList.add("bump");}
+$("word").addEventListener("pointerdown",()=>{if(!lastFood)return;
+  speechSynthesis?.cancel();st.langs.forEach((l,i)=>{setTimeout(()=>{$("word").firstChild.textContent=cap(lastFood.w[l])+" ";},i*1400);say(lastFood.w[l],l,true)});});
+$("want").addEventListener("pointerdown",()=>{if(R.target)say(P[lang()].want(R.target.w[lang()]),lang())});
+
+// round
+function newRound(){const l=lang();
+  R={phase:"fill",count:0,stirs:0,colors:[],misses:0,target:null,guest:GUESTS[Math.floor(Math.random()*GUESTS.length)]};
+  lastFood=null;$("soup").style.background="var(--soup)";$("soup").style.transform="";$("bowl").hidden=true;$("pot").classList.remove("stirring");
+  R.foods=[...FOODS].sort(()=>Math.random()-.5).slice(0,st.mode==="order"?5:6);
+  $("shelf").innerHTML=R.foods.map((f,i)=>`<button class="ing" data-i="${i}" aria-label="${f.w[l]}">${f.e}</button>`).join("");
+  $("shelf").classList.remove("rest");
+  $("meter").innerHTML="<i></i>".repeat(PER);
+  $("langTag").textContent=LANGS[l].name;
+  $("face").innerHTML=(window.LPLook&&LPLook.fromEmoji(R.guest.e))||R.guest.e;$("want").textContent="";
+  const g=$("guest");g.className="guest away";
+  setTimeout(()=>{g.classList.remove("away");boing();animalSound(R.guest.e);
+    const t=P[l].hungry(R.guest.n[l]);showWord(t);say(t,l);
+    if(st.mode==="order")setTimeout(nextOrder,1800);},300);}
+function nextOrder(){const left=[...$("shelf").querySelectorAll(".ing:not(.gone)")];
+  const btn=left[Math.floor(Math.random()*left.length)];R.target=R.foods[btn.dataset.i];R.misses=0;
+  $("want").textContent=R.target.e;const l=lang();say(P[l].want(R.target.w[l]),l);}
+function tapFood(btn){if(R.phase!=="fill"||!btn||btn.classList.contains("gone"))return;initAudio();
+  const f=R.foods[btn.dataset.i],l=lang();
+  if(st.mode==="order"){
+    if(!R.target)return;
+    if(f!==R.target){R.misses++;boing();btn.classList.remove("nope");void btn.offsetWidth;btn.classList.add("nope");
+      $("guest").classList.remove("no");void $("guest").offsetWidth;$("guest").classList.add("no");
+      lastFood=f;showWord(cap(f.w[l]));say(`${cap(f.w[l])}? ${P[l].oops}`,l);
+      if(R.misses>=2)$("shelf").querySelector(`.ing[data-i="${R.foods.indexOf(R.target)}"]`)?.classList.add("hint");
+      return;}
+    R.target=null;$("want").textContent="";}
+  const r=btn.getBoundingClientRect(),p=$("pot").getBoundingClientRect();
+  const fl=document.createElement("div");fl.className="fly";fl.textContent=f.e;fl.style.left=r.left+"px";fl.style.top=r.top+"px";document.body.appendChild(fl);
+  btn.classList.add("gone");btn.classList.remove("hint");plop();
+  lastFood=f;showWord(cap(f.w[l]));say(f.w[l],l);
+  requestAnimationFrame(()=>{fl.style.transform=`translate(${p.left+p.width/2-r.left-36}px,${p.top+p.height*.15-r.top}px) scale(.6) rotate(200deg)`;fl.style.opacity=0});
+  setTimeout(()=>{fl.remove();splash(f.c)},560);}
+function steam(n){for(let i=0;i<n;i++){const b=document.createElement("div");b.className="steam";const s=10+Math.random()*22;
+  Object.assign(b.style,{width:s+"px",height:s+"px",left:20+Math.random()*60+"%",top:10+Math.random()*10+"%",animationDelay:Math.random()*.4+"s"});
+  $("pot").appendChild(b);setTimeout(()=>b.remove(),1700);}}
+function paintSoup(rot=0){$("soup").style.background=`conic-gradient(from ${rot}deg,${R.colors.map((c,i)=>`${c} ${i*100/R.colors.length}% ${(i+1)*100/R.colors.length}%`).join(",")})`;}
+function splash(color){R.count++;R.colors.push(color);paintSoup();
+  $("pot").classList.remove("wobble");void $("pot").offsetWidth;$("pot").classList.add("wobble");bloop();steam(6);
+  [...$("meter").children].forEach((m,i)=>m.classList.toggle("on",i<R.count));
+  if(R.count>=PER){R.phase="stir";$("shelf").classList.add("rest");
+    setTimeout(()=>{const l=lang();$("pot").classList.add("stirring");$("meter").innerHTML="<i></i>".repeat(STIRS);showWord(P[l].stir);say(P[l].stir,l)},700);}
+  else if(st.mode==="order")setTimeout(nextOrder,1100);}
+function stir(){if(R.phase!=="stir")return;initAudio();R.stirs++;swish();steam(2);
+  const rot=R.stirs*45;$("spoon").style.transform=`rotate(${R.stirs%2?30:-30}deg)`;paintSoup(rot);
+  [...$("meter").children].forEach((m,i)=>m.classList.toggle("on",i<R.stirs));
+  if(R.stirs>=STIRS){R.phase="serve";$("pot").classList.remove("stirring");
+    $("soup").style.background=`radial-gradient(circle,${R.colors.join(",")})`;
+    const l=lang();fanfare();showWord(P[l].serve);say(P[l].serve,l);$("bowl").hidden=false;}}
+function serve(){if(R.phase!=="serve")return;R.phase="done";$("bowl").hidden=true;
+  const b=$("bowl").getBoundingClientRect(),g=$("face").getBoundingClientRect();
+  const fl=document.createElement("div");fl.className="fly";fl.textContent="🍲";fl.style.left=b.left+"px";fl.style.top=b.top+"px";document.body.appendChild(fl);
+  requestAnimationFrame(()=>{fl.style.transform=`translate(${g.left-b.left}px,${g.top-b.top+20}px) scale(.7)`;fl.style.opacity=0});
+  setTimeout(()=>{fl.remove();$("guest").classList.add("eat");animalSound(R.guest.e);setTimeout(nom,180);
+    const l=lang(),t=P[l].yum(cook());showWord(t);say(P[l].yumSay(cook()),l);
+    st.stickers.push(R.guest.e);save();const s=document.createElement("span");s.textContent=R.guest.e;$("stickers").appendChild(s);},560);
+  setTimeout(()=>{$("guest").className="guest away";},3800);
+  setTimeout(()=>{st.li++;newRound()},4600);}
+
+// input
+$("shelf").addEventListener("pointerdown",e=>tapFood(e.target.closest(".ing")));
+$("pot").addEventListener("pointerdown",stir);
+$("bowl").addEventListener("pointerdown",serve);
+document.addEventListener("keydown",e=>{if(!$("setup").hidden)return;e.preventDefault();initAudio();
+  if(R.phase==="stir")return stir();
+  if(R.phase==="serve")return serve();
+  if(R.phase!=="fill")return;
+  if(st.mode==="order"&&R.target){ // keyboard mashers get the right answer after one miss
+    const right=$("shelf").querySelector(`.ing[data-i="${R.foods.indexOf(R.target)}"]`);
+    const left=[...$("shelf").querySelectorAll(".ing:not(.gone)")];
+    return tapFood(R.misses>=1?right:left[Math.floor(Math.random()*left.length)]);}
+  const left=[...$("shelf").querySelectorAll(".ing:not(.gone)")];tapFood(left[Math.floor(Math.random()*left.length)]);});
+
+// cursor
+const cur=$("cursor");
+addEventListener("pointermove",e=>{cur.style.left=e.clientX+"px";cur.style.top=e.clientY+"px";
+  cur.classList.toggle("hot",!!e.target.closest?.(".ing,.gear,.go,.pot,.bowl,.word,.bubble-say"))});
+addEventListener("pointerdown",()=>cur.classList.add("press"));addEventListener("pointerup",()=>cur.classList.remove("press"));
+
+$("stickers").innerHTML=st.stickers.slice(-24).map(e=>`<span>${e}</span>`).join("");
+newRound();
+</script>
+
+</body></html>

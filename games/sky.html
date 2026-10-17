@@ -1,0 +1,263 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<script>window.LP_GAME="sky"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="look.js"></script>
+<title>Sky Words</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{--sky1:#4a9fe0;--sky2:#bfe6fb;--sky3:#fff3d6;--ink:#12345a;--sun:#ffc93c;--sunDeep:#ff9a3c;--good:#2e9e5b;--card:#ffffffe6;--cardEdge:#ffffff;color-scheme:light}
+html,body{height:100%}
+body{background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 55%,var(--sky3) 100%);color:var(--ink);font-family:"Baloo 2",system-ui,sans-serif;overflow:hidden;padding-inline:16px;box-sizing:border-box;transition:background 1.1s ease}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding-block:12px;position:relative;z-index:5}
+h1{margin:0;font-size:2rem;font-weight:800;letter-spacing:.5px;color:#fff;text-shadow:0 2px 0 #d97a2e,0 4px 10px #12345a4d;display:flex;align-items:center;gap:8px}
+h1 .plane-emoji{display:inline-block;animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(3deg)}}
+header{position:relative}
+#levels{display:flex;gap:6px;order:1;flex:0 0 auto}
+#levels button{padding:5px 13px;font-size:.85rem}
+#levels button#lvl-hard.on{background:#c8462f;border-color:#c8462f}
+#levels button#lvl-big.on{background:#6a3fb8;border-color:#6a3fb8}
+h1{order:2;flex:1 1 auto;justify-content:center}
+.langs{display:flex;gap:6px;order:3;flex:0 1 auto;overflow-x:auto;flex-wrap:nowrap;max-width:44vw;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.langs::-webkit-scrollbar{height:6px}
+.langs::-webkit-scrollbar-thumb{background:#ffffff90;border-radius:4px}
+.langs button{flex:0 0 auto}
+body[dir="rtl"] #prompt{flex-direction:row-reverse}
+body[dir="rtl"] #score{margin-left:0;margin-right:auto}
+body[dir="rtl"] .langs{direction:ltr}
+button{font:inherit;cursor:pointer;border:0;border-radius:999px;padding:7px 15px;background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 2px 0 #00000014,0 4px 10px #12345a26;border:2px solid #ffffffb3;transition:transform .12s,box-shadow .12s}
+button:active{transform:translateY(1px) scale(.97)}
+button.on{background:var(--ink);color:#fff;border-color:#12345a;box-shadow:0 2px 0 #00000030,0 4px 12px #12345a4d}
+button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+#prompt{position:relative;z-index:5;display:flex;gap:12px;align-items:center;background:var(--card);backdrop-filter:blur(6px);border:2px solid var(--cardEdge);border-radius:22px;padding:10px 20px;width:max-content;max-width:100%;box-sizing:border-box;font-size:1.4rem;font-weight:800;box-shadow:0 6px 0 #00000012,0 10px 24px #12345a33}
+#prompt .big{font-size:2.3rem;filter:drop-shadow(0 3px 3px #12345a2b)}
+#score{margin-left:auto;font-size:1.2rem;background:linear-gradient(180deg,#fff6da,#ffe6a3);padding:4px 12px;border-radius:999px;border:2px solid #ffffffb3;box-shadow:inset 0 -2px 0 #d9a43a55}
+#score.pop{animation:pop .4s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.35) rotate(-6deg)}100%{transform:scale(1)}}
+#sky{position:absolute;inset:0;overflow:hidden}
+.sun{position:absolute;right:8%;top:14%;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle at 35% 32%,#fff8dd,var(--sun) 55%,var(--sunDeep) 100%);box-shadow:0 0 70px 18px #ffc93c88;animation:glow 4s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 70px 18px #ffc93c88}50%{box-shadow:0 0 90px 26px #ffc93cb0}}
+.ray{position:absolute;right:calc(8% + 50px);top:calc(14% + 50px);width:230px;height:230px;margin:-115px;border-radius:50%;background:conic-gradient(from 0deg,#fff6d780 0 8deg,transparent 8deg 24deg);opacity:.55;animation:spin 60s linear infinite;pointer-events:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cloud{position:absolute;filter:drop-shadow(0 8px 10px #12345a1f)}
+.cloud .puff{position:absolute;background:radial-gradient(circle at 35% 30%,#ffffff,#eef6fc 75%);border-radius:50%}
+.plane{position:absolute;left:0;display:flex;align-items:center;cursor:pointer;user-select:none;will-change:transform;background:none;padding:0;border-radius:0;border:0;box-shadow:none;filter:drop-shadow(0 10px 8px #12345a2e)}
+.plane .body{display:block}
+.plane:before{content:"";position:absolute;left:-320px;right:150px;top:46%;height:5px;border-radius:3px;background:linear-gradient(90deg,#fff0,#ffffffb0 40%,#ffffffe0);z-index:-1;filter:blur(1px)}
+.plane .banner{background:linear-gradient(180deg,#ffffff,#f2f6fb);border:3px solid var(--ink);border-radius:8px 16px 16px 8px;padding:3px 13px;font-size:44px;margin-right:26px;position:relative;animation:flap .5s ease-in-out infinite alternate;transform-origin:right center;box-shadow:0 5px 0 #12345a1a,0 8px 14px #12345a26}
+@keyframes flap{to{transform:skewY(3deg) scaleY(.96)}}
+.plane .banner:after{content:"";position:absolute;right:-26px;top:50%;width:26px;border-top:2.5px dashed #12345a99}
+.plane.right .banner{border-color:var(--good);background:linear-gradient(180deg,#effff2,#dcf7e2);box-shadow:0 0 0 5px #2e9e5b40,0 8px 14px #12345a26}
+.plane.textbanner .banner{font-size:1.15rem;padding:8px 16px;white-space:nowrap;font-weight:800}
+.plane:hover .banner{box-shadow:0 0 0 6px var(--sun),0 8px 14px #12345a26}
+
+#start{position:absolute;inset:0;display:grid;place-items:center;z-index:10;background:radial-gradient(circle at 50% 40%,#3d6fa855,#12345acc)}
+#start button{font-size:2.1rem;padding:20px 44px;background:linear-gradient(180deg,#ffe08a,var(--sun));border:3px solid #fff;box-shadow:0 6px 0 #d9860f,0 14px 26px #12345a4d}
+@media (pointer:fine){body,body *{cursor:none!important}}
+#bigcursor{position:fixed;left:0;top:0;font-size:72px;line-height:1;margin:-6px 0 0 -30px;pointer-events:none;z-index:50;filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 3px #fff) drop-shadow(0 4px 6px #12345a66);transition:transform .15s;transform-origin:30px 6px}
+#bigcursor.over{transform:scale(1.25) rotate(-8deg)}
+#bigcursor.tap{transform:scale(.85)}
+@media (pointer:coarse){#bigcursor{display:none}}
+@media (prefers-reduced-motion:reduce){.cloud,.sun,.ray,h1 .plane-emoji{animation:none}}
+
+/* LingoPlaytime look */
+body{background:#2f6fe8!important;color:#fff;font-family:"Fredoka","Baloo 2",system-ui,sans-serif}
+#sky{background:none}
+#sky .sun,#sky .ray,#sky .cloud{display:none}
+#lpsky{position:fixed;inset:0;z-index:0;pointer-events:none}
+h1{text-shadow:0 4px 16px #0004}
+#prompt{background:#1a14404d;border:2px solid #ffffff55;color:#fff;box-shadow:0 8px 24px #0003;backdrop-filter:blur(4px)}
+#prompt .big svg{width:1.2em;height:1.2em;vertical-align:-.25em}
+#score{background:linear-gradient(#ffe27a,#ffc23d);color:#1a1440;border-color:#fff8;box-shadow:none}
+.plane .banner{border:0;border-radius:14px 22px 22px 14px;background:linear-gradient(160deg,#ffffff,#e6defc);box-shadow:0 8px 20px #0004}
+.plane .banner .pic{display:inline-block;width:56px;height:56px;vertical-align:middle}
+.plane .banner .pic svg{width:100%;height:100%;display:block}
+.plane .banner:after{border-top-color:#ffffffaa}
+.plane.right .banner{background:linear-gradient(160deg,#eafff8,#b9f5e8);box-shadow:0 0 0 5px #20c9b0,0 0 30px #20c9b099}
+.plane:hover .banner{box-shadow:0 0 0 6px #ffd23f,0 8px 20px #0004}
+.plane:before{background:linear-gradient(90deg,#fff0,#ffffff90 40%,#fffffff0)}
+#start{background:#140f3acc}
+#start button{background:linear-gradient(#ffe27a,#ffc23d);color:#1a1440;box-shadow:0 10px 0 #c98a12,0 0 60px #ffd23f66}
+
+</style>
+
+<div id="bigcursor" hidden>👆</div>
+<div id="lpsky"></div><div id="sky"><div class="sun"></div><div class="ray"></div></div>
+<header>
+  <div id="levels"></div>
+  <h1><span class="plane-emoji">✈️</span> Sky Words</h1>
+  <div class="langs" id="langs"></div>
+</header>
+<div id="prompt"><span id="ask">Find the…</span><span class="big" id="target">🍎</span><span id="word">apple</span><button id="again" aria-label="Say it again">🔊</button><span id="score">⭐ 0</span></div>
+<div id="start"><button id="go">Take off! 🛫</button></div>
+
+<script>
+const LANGS={
+ en:{name:"English",code:"en-US",ask:"Find the",yes:["Yes!","Great job!","You got it!"],no:"Try again"},
+ de:{name:"Deutsch",code:"de-DE",ask:"Wo ist",yes:["Ja!","Super!","Toll gemacht!"],no:"Nochmal"},
+ es:{name:"Español",code:"es-ES",ask:"Busca",yes:["¡Sí!","¡Muy bien!","¡Genial!"],no:"Otra vez"},
+ fr:{name:"Français",code:"fr-FR",ask:"Trouve",yes:["Oui !","Bravo !","Super !"],no:"Encore"},
+ it:{name:"Italiano",code:"it-IT",ask:"Trova",yes:["Sì!","Bravo!","Bravissimo!"],no:"Riprova"}
+};
+const WORDS_EASY=[
+ {e:"🍎",en:"apple",de:"der Apfel",es:"la manzana",fr:"la pomme",it:"la mela",pt:"a maçã",nl:"de appel",pl:"jabłko",sv:"äpplet",el:"το μήλο",zh:"苹果",ar:"تفاحة",ja:"りんご",ko:"사과",ru:"яблоко",tr:"elma",hi:"सेब"},
+ {e:"🐶",en:"dog",de:"der Hund",es:"el perro",fr:"le chien",it:"il cane",pt:"o cão",nl:"de hond",pl:"pies",sv:"hunden",el:"ο σκύλος",zh:"狗",ar:"كلب",ja:"いぬ",ko:"개",ru:"собаку",tr:"köpeği",hi:"कुत्ता"},
+ {e:"🐱",en:"cat",de:"die Katze",es:"el gato",fr:"le chat",it:"il gatto",pt:"o gato",nl:"de kat",pl:"kot",sv:"katten",el:"η γάτα",zh:"猫",ar:"قطة",ja:"ねこ",ko:"고양이",ru:"кошку",tr:"kediyi",hi:"बिल्ली"},
+ {e:"🚗",en:"car",de:"das Auto",es:"el coche",fr:"la voiture",it:"la macchina",pt:"o carro",nl:"de auto",pl:"samochód",sv:"bilen",el:"το αυτοκίνητο",zh:"汽车",ar:"سيارة",ja:"くるま",ko:"자동차",ru:"машину",tr:"arabayı",hi:"कार"},
+ {e:"🍌",en:"banana",de:"die Banane",es:"el plátano",fr:"la banane",it:"la banana",pt:"a banana",nl:"de banaan",pl:"banan",sv:"bananen",el:"η μπανάνα",zh:"香蕉",ar:"موزة",ja:"バナナ",ko:"바나나",ru:"банан",tr:"muzu",hi:"केला"},
+ {e:"🐟",en:"fish",de:"der Fisch",es:"el pez",fr:"le poisson",it:"il pesce",pt:"o peixe",nl:"de vis",pl:"rybę",sv:"fisken",el:"το ψάρι",zh:"鱼",ar:"سمكة",ja:"さかな",ko:"물고기",ru:"рыбу",tr:"balığı",hi:"मछली"},
+ {e:"⚽",en:"ball",de:"der Ball",es:"la pelota",fr:"le ballon",it:"la palla",pt:"a bola",nl:"de bal",pl:"piłkę",sv:"bollen",el:"η μπάλα",zh:"球",ar:"كرة",ja:"ボール",ko:"공",ru:"мяч",tr:"topu",hi:"गेंद"},
+ {e:"🌙",en:"moon",de:"der Mond",es:"la luna",fr:"la lune",it:"la luna",pt:"a lua",nl:"de maan",pl:"księżyc",sv:"månen",el:"το φεγγάρι",zh:"月亮",ar:"قمر",ja:"つき",ko:"달",ru:"луну",tr:"ayı",hi:"चाँद"},
+ {e:"🐘",en:"elephant",de:"der Elefant",es:"el elefante",fr:"l'éléphant",it:"l'elefante",pt:"o elefante",nl:"de olifant",pl:"słonia",sv:"elefanten",el:"ο ελέφαντας",zh:"大象",ar:"فيل",ja:"ぞう",ko:"코끼리",ru:"слона",tr:"fili",hi:"हाथी"},
+ {e:"🏠",en:"house",de:"das Haus",es:"la casa",fr:"la maison",it:"la casa",pt:"a casa",nl:"het huis",pl:"dom",sv:"huset",el:"το σπίτι",zh:"房子",ar:"بيت",ja:"いえ",ko:"집",ru:"дом",tr:"evi",hi:"घर"},
+ {e:"🌳",en:"tree",de:"der Baum",es:"el árbol",fr:"l'arbre",it:"l'albero",pt:"a árvore",nl:"de boom",pl:"drzewo",sv:"trädet",el:"το δέντρο",zh:"树",ar:"شجرة",ja:"き",ko:"나무",ru:"дерево",tr:"ağacı",hi:"पेड़"},
+ {e:"🦆",en:"duck",de:"die Ente",es:"el pato",fr:"le canard",it:"l'anatra",pt:"o pato",nl:"de eend",pl:"kaczkę",sv:"ankan",el:"η πάπια",zh:"鸭子",ar:"بطة",ja:"あひる",ko:"오리",ru:"утку",tr:"ördeği",hi:"बत्तख"}
+];
+const WORDS_HARD=[
+ {e:"🦋",en:"butterfly",de:"der Schmetterling",es:"la mariposa",fr:"le papillon",it:"la farfalla",pt:"a borboleta",nl:"de vlinder",pl:"motyla",sv:"fjärilen",el:"η πεταλούδα",zh:"蝴蝶",ar:"فراشة",ja:"ちょう",ko:"나비",ru:"бабочку",tr:"kelebeği",hi:"तितली"},
+ {e:"☂️",en:"umbrella",de:"der Regenschirm",es:"el paraguas",fr:"le parapluie",it:"l'ombrello",pt:"o guarda-chuva",nl:"de paraplu",pl:"parasol",sv:"paraplyet",el:"η ομπρέλα",zh:"雨伞",ar:"مظلة",ja:"かさ",ko:"우산",ru:"зонт",tr:"şemsiyeyi",hi:"छाता"},
+ {e:"🌈",en:"rainbow",de:"der Regenbogen",es:"el arcoíris",fr:"l'arc-en-ciel",it:"l'arcobaleno",pt:"o arco-íris",nl:"de regenboog",pl:"tęczę",sv:"regnbågen",el:"το ουράνιο τόξο",zh:"彩虹",ar:"قوس قزح",ja:"にじ",ko:"무지개",ru:"радугу",tr:"gökkuşağını",hi:"इंद्रधनुष"},
+ {e:"🕷️",en:"spider",de:"die Spinne",es:"la araña",fr:"l'araignée",it:"il ragno",pt:"a aranha",nl:"de spin",pl:"pająka",sv:"spindeln",el:"η αράχνη",zh:"蜘蛛",ar:"عنكبوت",ja:"くも",ko:"거미",ru:"паука",tr:"örümceği",hi:"मकड़ी"},
+ {e:"🐌",en:"snail",de:"die Schnecke",es:"el caracol",fr:"l'escargot",it:"la lumaca",pt:"o caracol",nl:"de slak",pl:"ślimaka",sv:"snigeln",el:"το σαλιγκάρι",zh:"蜗牛",ar:"حلزون",ja:"かたつむり",ko:"달팽이",ru:"улитку",tr:"salyangozu",hi:"घोंघा"},
+ {e:"⭐",en:"star",de:"der Stern",es:"la estrella",fr:"l'étoile",it:"la stella",pt:"a estrela",nl:"de ster",pl:"gwiazdę",sv:"stjärnan",el:"το αστέρι",zh:"星星",ar:"نجمة",ja:"ほし",ko:"별",ru:"звезду",tr:"yıldızı",hi:"तारा"},
+ {e:"🔑",en:"key",de:"der Schlüssel",es:"la llave",fr:"la clé",it:"la chiave",pt:"a chave",nl:"de sleutel",pl:"klucz",sv:"nyckeln",el:"το κλειδί",zh:"钥匙",ar:"مفتاح",ja:"かぎ",ko:"열쇠",ru:"ключ",tr:"anahtarı",hi:"चाबी"},
+ {e:"🎩",en:"hat",de:"der Hut",es:"el sombrero",fr:"le chapeau",it:"il cappello",pt:"o chapéu",nl:"de hoed",pl:"kapelusz",sv:"hatten",el:"το καπέλο",zh:"帽子",ar:"قبعة",ja:"ぼうし",ko:"모자",ru:"шляпу",tr:"şapkayı",hi:"टोपी"},
+ {e:"🚲",en:"bicycle",de:"das Fahrrad",es:"la bicicleta",fr:"le vélo",it:"la bicicletta",pt:"a bicicleta",nl:"de fiets",pl:"rower",sv:"cykeln",el:"το ποδήλατο",zh:"自行车",ar:"دراجة",ja:"じてんしゃ",ko:"자전거",ru:"велосипед",tr:"bisikleti",hi:"साइकिल"},
+ {e:"🐢",en:"turtle",de:"die Schildkröte",es:"la tortuga",fr:"la tortue",it:"la tartaruga",pt:"a tartaruga",nl:"de schildpad",pl:"żółwia",sv:"sköldpaddan",el:"η χελώνα",zh:"乌龟",ar:"سلحفاة",ja:"かめ",ko:"거북이",ru:"черепаху",tr:"kaplumbağayı",hi:"कछुआ"},
+ {e:"🐰",en:"rabbit",de:"der Hase",es:"el conejo",fr:"le lapin",it:"il coniglio",pt:"o coelho",nl:"het konijn",pl:"królika",sv:"kaninen",el:"το κουνέλι",zh:"兔子",ar:"أرنب",ja:"うさぎ",ko:"토끼",ru:"кролика",tr:"tavşanı",hi:"खरगोश"},
+ {e:"📖",en:"book",de:"das Buch",es:"el libro",fr:"le livre",it:"il libro",pt:"o livro",nl:"het boek",pl:"książkę",sv:"boken",el:"το βιβλίο",zh:"书",ar:"كتاب",ja:"ほん",ko:"책",ru:"книгу",tr:"kitabı",hi:"किताब"},
+ {e:"🪑",en:"chair",de:"der Stuhl",es:"la silla",fr:"la chaise",it:"la sedia",pt:"a cadeira",nl:"de stoel",pl:"krzesło",sv:"stolen",el:"η καρέκλα",zh:"椅子",ar:"كرسي",ja:"いす",ko:"의자",ru:"стул",tr:"sandalyeyi",hi:"कुर्सी"},
+ {e:"🕐",en:"clock",de:"die Uhr",es:"el reloj",fr:"l'horloge",it:"l'orologio",pt:"o relógio",nl:"de klok",pl:"zegar",sv:"klockan",el:"το ρολόι",zh:"时钟",ar:"ساعة",ja:"とけい",ko:"시계",ru:"часы",tr:"saati",hi:"घड़ी"},
+ {e:"🪁",en:"kite",de:"der Drachen",es:"la cometa",fr:"le cerf-volant",it:"l'aquilone",pt:"a pipa",nl:"de vlieger",pl:"latawiec",sv:"draken",el:"ο χαρταετός",zh:"风筝",ar:"طائرة ورقية",ja:"たこ",ko:"연",ru:"воздушного змея",tr:"uçurtmayı",hi:"पतंग"}
+];
+const LEVELS={
+ easy:{label:"Easy",words:WORDS_EASY,planes:3,speedMul:1,textMode:false},
+ hard:{label:"Hard",words:WORDS_HARD,planes:3,speedMul:1,textMode:false},
+ big:{label:"Big Kids",words:WORDS_HARD,planes:4,speedMul:1.5,textMode:true}
+};
+const COLORS=["#ff4f8b","#3aa0ff","#ffc23d"];
+function planeSvg(c){return `<svg class="body" viewBox="0 0 220 90" width="190" height="78" aria-hidden="true">
+<defs><linearGradient id="fus" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#ece8ff"/><stop offset="1" stop-color="#b9b2e0"/></linearGradient></defs>
+<path d="M22 44 L8 12 L26 12 L58 40 Z" fill="${c}"/>
+<path d="M18 50 L2 58 L14 60 L40 54 Z" fill="#9fb0c4"/>
+<path d="M20 38 C60 32 150 30 186 36 C206 39 216 46 214 52 C212 58 196 60 176 60 L40 60 C26 60 16 54 20 38 Z" fill="url(#fus)"/>
+<path d="M22 52 C80 55 160 55 212 52 C210 57 196 60 176 60 L40 60 C30 60 22 57 22 52 Z" fill="${c}" opacity=".9"/>
+<path d="M198 40 C204 41 209 44 211 47 L198 47 Z" fill="#2b3f5c"/>
+<g fill="#3a5578">${[...Array(12)].map((_,i)=>`<rect x="${62+i*10}" y="41" width="5" height="6" rx="2"/>`).join("")}</g>
+<path d="M150 42 L160 44 L118 20 L104 20 Z" fill="#9fb0c4" opacity=".7"/>
+<path d="M90 54 L132 54 L96 86 L78 86 Z" fill="#c4d0de" stroke="#8394aa" stroke-width="1"/>
+<rect x="98" y="62" width="30" height="11" rx="5.5" fill="#dfe6ee" stroke="#8394aa"/>
+<ellipse cx="128" cy="67.5" rx="2" ry="5" fill="#44536a"/>
+</svg>`}
+
+let lang="en",level="easy",score=0,target=null,planes=[],ac=null,running=false;
+try{lang=localStorage.getItem("skyLang")||"en"}catch(e){}
+try{level=localStorage.getItem("skyLevel")||"easy"}catch(e){}
+const sky=document.getElementById("sky");
+
+// language buttons
+const lw=document.getElementById("langs");
+Object.entries(LANGS).forEach(([k,v])=>{const b=document.createElement("button");b.textContent=v.name;b.id="lang-"+k;b.onclick=()=>{lang=k;try{localStorage.setItem("skyLang",k)}catch(e){};paintLangs();applyDir();if(running)newRound()};lw.appendChild(b)});
+function paintLangs(){Object.keys(LANGS).forEach(k=>document.getElementById("lang-"+k).classList.toggle("on",k===lang))}
+function applyDir(){document.body.dir=LANGS[lang].rtl?"rtl":"ltr"}
+paintLangs();applyDir();
+
+// level buttons
+const lvw=document.getElementById("levels");
+Object.entries(LEVELS).forEach(([k,v])=>{const b=document.createElement("button");b.textContent=v.label;b.id="lvl-"+k;b.onclick=()=>{level=k;try{localStorage.setItem("skyLevel",k)}catch(e){};paintLevels();if(running)newRound()};lvw.appendChild(b)});
+function paintLevels(){Object.keys(LEVELS).forEach(k=>document.getElementById("lvl-"+k).classList.toggle("on",k===level))}
+paintLevels();
+
+// clouds — each built from overlapping soft puffs so they read as fluffy, not blocky
+function makeCloud(){
+ const w=90+Math.random()*130,h=w*.5;
+ const c=document.createElement("div");c.className="cloud";
+ Object.assign(c.style,{width:w+"px",height:h+"px",top:(10+Math.random()*68)+"%",left:(Math.random()*100)+"%",opacity:.75+Math.random()*.2});
+ const puffs=[[0,.35,.62,.62],[.18,0,.55,.85],[.42,.1,.62,.8],[.66,.3,.48,.6],[.3,.5,.5,.5]];
+ puffs.forEach(([x,y,pw,ph])=>{const p=document.createElement("div");p.className="puff";Object.assign(p.style,{left:x*w+"px",top:y*h+"px",width:pw*w+"px",height:ph*h+"px"});c.appendChild(p)});
+ c.dataset.v=.08+Math.random()*.22;
+ sky.appendChild(c);
+}
+LPLook.sky(document.getElementById("lpsky"),{mode:"day"});
+
+// speech
+function say(t,rate=.85){if(!("speechSynthesis" in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=LANGS[lang].code;u.rate=rate;const v=speechSynthesis.getVoices().find(v=>v.lang.replace("_","-").startsWith(LANGS[lang].code.slice(0,2)));if(v)u.voice=v;speechSynthesis.speak(u)}
+
+// engine sounds (Web Audio): filtered noise for jet roar, sawtooth for propeller drone
+function noiseBuf(){const b=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),d=b.getChannelData(0);let last=0;for(let i=0;i<d.length;i++){const w=Math.random()*2-1;last=(last+.02*w)/1.02;d[i]=last*3.5}return b}
+let NB;
+function flyby(dur=2.5){const t=ac.currentTime,src=ac.createBufferSource();src.buffer=NB;src.loop=true;const f=ac.createBiquadFilter();f.type="bandpass";f.Q.value=.7;f.frequency.setValueAtTime(300,t);f.frequency.linearRampToValueAtTime(1400,t+dur*.5);f.frequency.linearRampToValueAtTime(250,t+dur);const g=ac.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.9,t+dur*.5);g.gain.linearRampToValueAtTime(0,t+dur);const p=ac.createStereoPanner();p.pan.setValueAtTime(-1,t);p.pan.linearRampToValueAtTime(1,t+dur);src.connect(f).connect(g).connect(p).connect(ac.destination);src.start(t);src.stop(t+dur)}
+let drone;
+function startDrone(){const o=ac.createOscillator(),lfo=ac.createOscillator(),lg=ac.createGain(),f=ac.createBiquadFilter(),g=ac.createGain();o.type="sawtooth";o.frequency.value=58;lfo.frequency.value=22;lg.gain.value=.5;lfo.connect(lg).connect(g.gain);f.type="lowpass";f.frequency.value=260;g.gain.value=.5;const m=ac.createGain();m.gain.value=.06;o.connect(f).connect(g).connect(m).connect(ac.destination);o.start();lfo.start();drone=m}
+function chime(){const t=ac.currentTime;[523,659,784,1047].forEach((fr,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";o.frequency.value=fr;g.gain.setValueAtTime(0,t+i*.09);g.gain.linearRampToValueAtTime(.25,t+i*.09+.02);g.gain.exponentialRampToValueAtTime(.001,t+i*.09+.5);o.connect(g).connect(ac.destination);o.start(t+i*.09);o.stop(t+i*.09+.6)})}
+function boop(){const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(300,t);o.frequency.exponentialRampToValueAtTime(140,t+.3);g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.001,t+.35);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.4)}
+
+function sentence(){return LANGS[lang].ask+" "+target[lang]+"?"}
+function newRound(){
+ planes.forEach(p=>p.el.remove());planes=[];
+ const cfg=LEVELS[level];
+ const n=cfg.planes||3;
+ const pool=[...cfg.words].sort(()=>Math.random()-.5).slice(0,n);
+ target=pool[Math.floor(Math.random()*n)];
+ document.getElementById("ask").textContent=LANGS[lang].ask;
+ document.getElementById("target").textContent="❓";
+ document.getElementById("word").hidden=!!cfg.textMode;
+ document.getElementById("word").textContent=target[lang];
+ const H=innerHeight;
+ const topClear=180,bottomClear=90;
+ const band=Math.max(H-topClear-bottomClear,120);
+ pool.forEach((w,i)=>{
+  const el=document.createElement("button");el.className="plane"+(cfg.textMode?" textbanner":"");el.setAttribute("aria-label",w.en);
+  el.innerHTML=`<span class="banner">${cfg.textMode?w[lang]:(LPLook.fromEmoji(w.e)?`<span class="pic">${LPLook.fromEmoji(w.e)}</span>`:w.e)}</span>`+planeSvg(COLORS[i%3]);
+  sky.appendChild(el);
+  const p={el,w,x:-260-i*260,y:topClear+band*(n>1?i/(n-1):0),speed:(1.3+Math.random()*.6)*(cfg.speedMul||1)*(((window.LP_SETTINGS||{}).age||0)===0?.6:1),bob:Math.random()*6,done:false};
+  el.onclick=()=>hit(p);planes.push(p);
+ });
+ setTimeout(()=>say(sentence()),300);
+}
+function hit(p){
+ if(p.done)return;
+ if(p.w===target){
+  p.done=true;p.el.classList.add("right");score++;
+  const sc=document.getElementById("score");sc.textContent="⭐ "+score;sc.classList.remove("pop");void sc.offsetWidth;sc.classList.add("pop");
+  document.getElementById("target").innerHTML=LPLook.fromEmoji(target.e)||target.e;
+  chime();flyby(1.6);
+  const y=LANGS[lang].yes;say(y[Math.floor(Math.random()*y.length)]+" "+target[lang]+"!");
+  p.speed=9;setTimeout(newRound,2600);
+ }else{boop();say(LANGS[lang].no+". "+sentence())}
+}
+let lastFly=0;
+function loop(ts){
+ const W=innerWidth;
+ planes.forEach(p=>{p.x+=p.speed;if(p.x>W+40&&!p.done){p.x=-300}const y=p.y+Math.sin(ts/400+p.bob)*8;p.el.style.transform=`translate(${p.x}px,${y}px) rotate(${Math.cos(ts/400+p.bob)*2.5}deg)`});
+ document.querySelectorAll(".cloud").forEach(c=>{let l=parseFloat(c.style.left);l-=c.dataset.v*.05;if(l<-20)l=105;c.style.left=l+"%"});
+ if(ts-lastFly>7000){lastFly=ts;flyby(3)}
+ requestAnimationFrame(loop);
+}
+document.getElementById("go").onclick=()=>{
+ ac=new (window.AudioContext||window.webkitAudioContext)();NB=noiseBuf();startDrone();flyby(3);
+ document.getElementById("start").hidden=true;running=true;newRound();requestAnimationFrame(loop);
+};
+document.getElementById("again").onclick=()=>target&&say(sentence());
+const bc=document.getElementById("bigcursor");
+addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;bc.hidden=false;bc.style.left=e.clientX+"px";bc.style.top=e.clientY+"px";bc.classList.toggle("over",!!e.target.closest(".plane,button"))});
+addEventListener("pointerdown",()=>{bc.classList.add("tap");setTimeout(()=>bc.classList.remove("tap"),150)});
+document.addEventListener("mouseleave",()=>bc.hidden=true);
+</script>
+
+<script>
+/* LingoPlaytime: tap anywhere in the sky. The youngest kids hit the right plane wherever they tap;
+   older ones get a generous area around each plane, so a palm near a plane still counts. */
+(function(){
+ addEventListener("pointerdown",function(e){
+  if(!running||!planes.length)return;
+  if(e.target.closest("header,#prompt,#start,.plane"))return;
+  var age=(window.LP_SETTINGS||{}).age||0;
+  var live=planes.filter(function(p){return !p.done});
+  if(!live.length)return;
+  if(age===0){var t=live.find(function(p){return p.w===target});if(t)hit(t);return}
+  var best=null,d=1e9;
+  live.forEach(function(p){var r=p.el.getBoundingClientRect();var cx=Math.max(r.left,Math.min(e.clientX,r.right)),cy=Math.max(r.top,Math.min(e.clientY,r.bottom));var dd=Math.hypot(e.clientX-cx,e.clientY-cy);if(dd<d){d=dd;best=p}});
+  if(best&&d<160)hit(best);
+ });
+})();
+</script>
+</body></html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Where's your nose?</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{color-scheme:dark;--bg:#D5F0EC;--bg2:#BDE6DF;--ink:#18264A;--paper:#FFFDF8;--sun:#F6C033;--tomato:#E5553B;--teal:#1E9A8F;--lilac:#7A68D9;--sky:#3B8BD4;
+  --display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif}
+html,body{height:100%;margin:0}
+body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.app{height:100%;position:relative;display:flex;flex-direction:column;align-items:center;box-sizing:border-box;padding:max(12px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+#bubble{font-size:clamp(24px,4.6vw,44px);min-height:1.2em;transition:transform .15s;max-width:100%;box-sizing:border-box}
+#bubble.bump{transform:scale(1.08)}
+.stage{flex:1;min-height:0;width:100%;position:relative;margin-top:8px}
+svg#kid{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.part{cursor:pointer;transform-box:fill-box;transform-origin:center}
+.part .hit{fill:#0000;stroke:none}
+.part:focus{outline:none}
+.part:focus-visible .hit{fill:#3B8BD422;stroke:#3B8BD4;stroke-width:3}
+.part.go{animation:boing .5s cubic-bezier(.3,1.6,.5,1)}
+.part.glow .hit{fill:#ffd23f44;stroke:#ffd23f;stroke-width:4;animation:pulse 1s ease-in-out infinite;filter:drop-shadow(0 0 10px #ffd23f)}
+@keyframes boing{30%{transform:scale(1.18)}60%{transform:scale(.94)}}
+@keyframes pulse{50%{fill:#F6C03388}}
+.blink{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+@media (prefers-reduced-motion:reduce){.part.go,.blink,.part.glow .hit{animation:none}}
+</style>
+</head>
+<body>
+<script>window.LP_GAME="face"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
+<div class="app" id="app">
+  <div id="bubble" class="k-bubble" aria-live="polite"></div>
+  <div class="stage">
+    <svg id="kid" viewBox="0 0 240 360" role="img" aria-label="A child to tap">
+      <ellipse cx="120" cy="352" rx="80" ry="9" fill="#000" opacity=".28"/>
+      <!-- legs and feet -->
+      <g class="part" data-part="feet" tabindex="0" role="button">
+        <ellipse cx="96" cy="342" rx="22" ry="11" fill="url(#k-red)"/><ellipse cx="144" cy="342" rx="22" ry="11" fill="url(#k-red)"/>
+        <rect class="hit" x="62" y="322" width="116" height="36" rx="12"/>
+      </g>
+      <rect x="86" y="246" width="22" height="96" rx="10" fill="url(#k-blue)"/><rect x="132" y="246" width="22" height="96" rx="10" fill="url(#k-blue)"/>
+      <g class="part" data-part="knees" tabindex="0" role="button">
+        <circle cx="97" cy="294" r="12" class="skin"/><circle cx="143" cy="294" r="12" class="skin"/>
+        <rect class="hit" x="74" y="274" width="92" height="40" rx="12"/>
+      </g>
+      <!-- body -->
+      <path d="M70 172c0-18 18-28 50-28s50 10 50 28v80H70Z" fill="url(#k-teal)"/>
+      <path d="M70 196h100M70 220h100" stroke="#119a8a" stroke-width="6" opacity=".6"/>
+      <g class="part" data-part="tummy" tabindex="0" role="button">
+        <circle cx="120" cy="216" r="16" fill="#fff3" />
+        <circle cx="120" cy="218" r="3" fill="#18264A55"/>
+        <rect class="hit" x="86" y="186" width="68" height="62" rx="16"/>
+      </g>
+      <!-- arms and hands -->
+      <path d="M72 168c-22 10-32 30-36 52" stroke="#20c9b0" stroke-width="18" stroke-linecap="round" fill="none"/>
+      <path d="M168 168c22 10 32 30 36 52" stroke="#20c9b0" stroke-width="18" stroke-linecap="round" fill="none"/>
+      <g class="part" data-part="hands" tabindex="0" role="button">
+        <circle cx="34" cy="230" r="14" class="skin"/><circle cx="206" cy="230" r="14" class="skin"/>
+        <rect class="hit" x="8" y="204" width="52" height="54" rx="16"/><rect class="hit" x="180" y="204" width="52" height="54" rx="16"/>
+      </g>
+      <!-- head -->
+      <rect x="108" y="128" width="24" height="22" class="skin"/>
+      <g class="part" data-part="ears" tabindex="0" role="button">
+        <circle cx="66" cy="86" r="14" class="skin"/><circle cx="174" cy="86" r="14" class="skin"/>
+        <rect class="hit" x="42" y="64" width="34" height="46" rx="12"/><rect class="hit" x="164" y="64" width="34" height="46" rx="12"/>
+      </g>
+      <circle cx="120" cy="84" r="54" class="skin"/><ellipse cx="96" cy="58" rx="16" ry="9" fill="#fff" opacity=".22" transform="rotate(-28 96 58)"/>
+      <g class="part" data-part="hair" tabindex="0" role="button">
+        <path class="hairc" d="M64 78c-4-40 30-60 60-58 36 2 60 26 54 60-12-14-26-22-40-22-6 10-22 16-34 14 4-6 4-10 2-14-16 4-28 10-42 20Z"/>
+        <rect class="hit" x="60" y="18" width="120" height="44" rx="16"/>
+      </g>
+      <g class="part" data-part="eyes" tabindex="0" role="button">
+        <g class="blink"><ellipse cx="100" cy="82" rx="7" ry="9" fill="#1a1440"/><ellipse cx="140" cy="82" rx="7" ry="9" fill="#1a1440"/><circle cx="102" cy="78" r="2.8" fill="#fff"/><circle cx="142" cy="78" r="2.8" fill="#fff"/></g>
+        <rect class="hit" x="84" y="66" width="72" height="30" rx="12"/>
+      </g>
+      <circle cx="88" cy="104" r="8" fill="#ff4f8b55"/><circle cx="152" cy="104" r="8" fill="#ff4f8b55"/>
+      <g class="part" data-part="nose" tabindex="0" role="button">
+        <ellipse cx="120" cy="100" rx="7" ry="6" class="skin2"/>
+        <rect class="hit" x="104" y="92" width="32" height="18" rx="8"/>
+      </g>
+      <g class="part" data-part="mouth" tabindex="0" role="button">
+        <path d="M104 116c8 12 24 12 32 0" stroke="#1a1440" stroke-width="4" fill="#ff4d5e" stroke-linecap="round"/>
+        <rect class="hit" x="98" y="110" width="44" height="22" rx="10"/>
+      </g>
+    </svg>
+  </div>
+</div>
+<script>
+/* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
+const DATA={
+ words:[
+  {id:"hair",en:{w:"hair",q:"Where's your hair?"},de:{w:"die Haare",q:"Wo sind deine Haare?"},es:{w:"el pelo",q:"¿Dónde está tu pelo?"},fr:{w:"les cheveux",q:"Où sont tes cheveux ?"},it:{w:"i capelli",q:"Dove sono i tuoi capelli?"},pt:{w:"o cabelo",q:"Onde está o teu cabelo?"}},
+  {id:"eyes",en:{w:"eyes",q:"Where are your eyes?"},de:{w:"die Augen",q:"Wo sind deine Augen?"},es:{w:"los ojos",q:"¿Dónde están tus ojos?"},fr:{w:"les yeux",q:"Où sont tes yeux ?"},it:{w:"gli occhi",q:"Dove sono i tuoi occhi?"},pt:{w:"os olhos",q:"Onde estão os teus olhos?"}},
+  {id:"ears",en:{w:"ears",q:"Where are your ears?"},de:{w:"die Ohren",q:"Wo sind deine Ohren?"},es:{w:"las orejas",q:"¿Dónde están tus orejas?"},fr:{w:"les oreilles",q:"Où sont tes oreilles ?"},it:{w:"le orecchie",q:"Dove sono le tue orecchie?"},pt:{w:"as orelhas",q:"Onde estão as tuas orelhas?"}},
+  {id:"nose",en:{w:"nose",q:"Where's your nose?"},de:{w:"die Nase",q:"Wo ist deine Nase?"},es:{w:"la nariz",q:"¿Dónde está tu nariz?"},fr:{w:"le nez",q:"Où est ton nez ?"},it:{w:"il naso",q:"Dov'è il tuo naso?"},pt:{w:"o nariz",q:"Onde está o teu nariz?"}},
+  {id:"mouth",en:{w:"mouth",q:"Where's your mouth?"},de:{w:"der Mund",q:"Wo ist dein Mund?"},es:{w:"la boca",q:"¿Dónde está tu boca?"},fr:{w:"la bouche",q:"Où est ta bouche ?"},it:{w:"la bocca",q:"Dov'è la tua bocca?"},pt:{w:"a boca",q:"Onde está a tua boca?"}},
+  {id:"tummy",en:{w:"tummy",q:"Where's your tummy?"},de:{w:"der Bauch",q:"Wo ist dein Bauch?"},es:{w:"la barriga",q:"¿Dónde está tu barriga?"},fr:{w:"le ventre",q:"Où est ton ventre ?"},it:{w:"la pancia",q:"Dov'è la tua pancia?"},pt:{w:"a barriga",q:"Onde está a tua barriga?"}},
+  {id:"hands",en:{w:"hands",q:"Where are your hands?"},de:{w:"die Hände",q:"Wo sind deine Hände?"},es:{w:"las manos",q:"¿Dónde están tus manos?"},fr:{w:"les mains",q:"Où sont tes mains ?"},it:{w:"le mani",q:"Dove sono le tue mani?"},pt:{w:"as mãos",q:"Onde estão as tuas mãos?"}},
+  {id:"knees",en:{w:"knees",q:"Where are your knees?"},de:{w:"die Knie",q:"Wo sind deine Knie?"},es:{w:"las rodillas",q:"¿Dónde están tus rodillas?"},fr:{w:"les genoux",q:"Où sont tes genoux ?"},it:{w:"le ginocchia",q:"Dove sono le tue ginocchia?"},pt:{w:"os joelhos",q:"Onde estão os teus joelhos?"}},
+  {id:"feet",en:{w:"feet",q:"Where are your feet?"},de:{w:"die Füße",q:"Wo sind deine Füße?"},es:{w:"los pies",q:"¿Dónde están tus pies?"},fr:{w:"les pieds",q:"Où sont tes pieds ?"},it:{w:"i piedi",q:"Dove sono i tuoi piedi?"},pt:{w:"os pés",q:"Onde estão os teus pés?"}}
+ ],
+ lines:{
+  en:{title:"Where's your nose?",yes:"Yes, that's it!",show:"Show me!"},
+  de:{title:"Wo ist deine Nase?",yes:"Ja, genau!",show:"Zeig mal!"},
+  es:{title:"¿Dónde está tu nariz?",yes:"¡Sí, muy bien!",show:"¡Enséñamelo!"},
+  fr:{title:"Où est ton nez ?",yes:"Oui, bravo !",show:"Montre-moi !"},
+  it:{title:"Dov'è il tuo naso?",yes:"Sì, bravo!",show:"Fammi vedere!"},
+  pt:{title:"Onde está o teu nariz?",yes:"Sim, isso mesmo!",show:"Mostra-me!"}
+ }
+};
+const P=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
+const $=id=>document.getElementById(id);
+const L=()=>LP.t(DATA.lines);
+const w=id=>(P[id][LP.lang]||P[id].en);
+let want=null,misses=0,lastPart=null;
+
+// a different child each visit: skin and hair from a range of real tones
+const SKIN=[["#F5D0B0","#E8B48E"],["#E2AE84","#CC915F"],["#C68A5E","#A86D44"],["#8D5A3B","#734528"],["#5E3A26","#4A2A19"]];
+const HAIR=["#2B1D14","#5A3A22","#B5651D","#E8C15A","#1A1A1A"];
+(function dress(){const s=SKIN[Math.floor(Math.random()*SKIN.length)];document.querySelectorAll(".skin").forEach(e=>e.setAttribute("fill",s[0]));document.querySelectorAll(".skin2").forEach(e=>e.setAttribute("fill",s[1]));document.querySelector(".hairc").setAttribute("fill",HAIR[Math.floor(Math.random()*HAIR.length)])})();
+
+function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
+function label(){document.querySelectorAll("[data-part]").forEach(g=>g.setAttribute("aria-label",w(g.dataset.part).w))}
+function bounce(id){const g=document.querySelector(`[data-part="${id}"]`);g.classList.remove("go");void g.getBBox();g.classList.add("go");return g}
+function centre(g){const r=g.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2]}
+
+function tapPart(id){
+ const g=bounce(id);
+ document.querySelectorAll(".glow").forEach(x=>x.classList.remove("glow"));
+ if(want){
+  if(id===want){
+   want=null;misses=0;LP.sfx.chime();const [x,y]=centre(g);LP.burst(x,y,20);
+   bubble(L().yes+" "+L().show);LP.say(L().yes);LP.say(L().show,true);
+   setTimeout(ask,4200);return;
+  }
+  misses++;LP.sfx.pop();bubble(w(id).w);LP.say(w(id).w);
+  if(misses>=2)setTimeout(()=>document.querySelector(`[data-part="${want}"]`).classList.add("glow"),900);
+  setTimeout(()=>{if(want){bubble(w(want).q);LP.say(w(want).q)}},1600);
+  return;
+ }
+ LP.sfx.pop();const [x,y]=centre(g);LP.burst(x,y,8);bubble(w(id).w);LP.say(w(id).w);
+}
+function ask(){
+ if(LP.age<1){want=null;bubble(L().title);return}
+ const ids=DATA.words.map(x=>x.id).filter(i=>i!==lastPart);want=ids[Math.floor(Math.random()*ids.length)];lastPart=want;misses=0;
+ bubble(w(want).q);LP.say(w(want).q);
+}
+
+LP.init({langs:["en","de","es","fr","it","pt"],
+ onLang:()=>{label();document.title=L().title;bubble(want?w(want).q:L().title)},
+ onAge:()=>{want=null;bubble(L().title)}});
+LPLook.sky(document.getElementById("app"),{moon:false});
+label();document.title=L().title;bubble(L().title);
+LP.start(L().title,()=>setTimeout(ask,400));
+LP.mash((e)=>{
+ const g=e.target.closest&&e.target.closest("[data-part]");
+ if(g){tapPart(g.dataset.part);return}
+ // a tap off the child: little ones get a random part named; when asked, it points them to the answer
+ if(want&&LP.age<2){tapPart(want);return}
+ if(want){document.querySelector(`[data-part="${want}"]`).classList.add("glow");return}
+ const ids=DATA.words.map(x=>x.id);tapPart(ids[Math.floor(Math.random()*ids.length)]);
+});
+document.querySelectorAll("[data-part]").forEach(g=>g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.stopPropagation();e.preventDefault();tapPart(g.dataset.part)}}));
+</script>
+</body>
+</html>

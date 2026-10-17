@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kuckuck</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{color-scheme:dark;--ink:#fff;--sky:#3aa0ff;--display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif}
+html,body{height:100%;margin:0}
+body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.app{height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:max(12px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px))}
+.top{display:flex;align-items:center;justify-content:center;min-height:64px}
+#bubble{font-size:clamp(24px,4.6vw,44px);min-height:1.2em;transition:transform .15s}
+#bubble.bump{transform:scale(1.08)}
+.grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:clamp(10px,2.5vw,26px);padding-block:12px;container-type:size}
+@media (max-aspect-ratio:1/1){.grid{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr)}}
+.spot{position:relative;border:0;padding:0;background:none;cursor:pointer;border-radius:24px;overflow:visible;display:grid;place-items:center}
+.spot:focus-visible{outline:5px solid var(--sky);outline-offset:4px}
+.stage{position:relative;width:min(100%,100cqh*0.46,100cqw*0.3);aspect-ratio:1;max-width:100%}
+@media (max-aspect-ratio:1/1){.stage{width:min(100%,100cqh*0.3,100cqw*0.46)}}
+.stage>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.glow{position:absolute;inset:-18%;border-radius:50%;background:radial-gradient(circle,#ffd23f55,#ffd23f00 65%);opacity:0;transition:opacity .4s;pointer-events:none}
+.open .glow{opacity:1}
+.friend{position:absolute;left:18%;top:14%;width:64%;height:64%;transform:translateY(16%) scale(.3);opacity:0;transition:transform .4s cubic-bezier(.3,1.6,.5,1),opacity .2s;pointer-events:none;filter:drop-shadow(0 6px 10px #0006)}
+.friend svg{width:100%;height:100%;display:block}
+.open .friend{opacity:1;transform:none}
+.spot.box .friend,.spot.basket .friend{top:-6%}
+.cover{transition:transform .45s cubic-bezier(.4,1.3,.5,1);transform-box:fill-box}
+.curtain .l{transform-origin:left center}.curtain .r{transform-origin:right center}
+.open.curtain .l{transform:scaleX(.2)}.open.curtain .r{transform:scaleX(.2)}
+.box .lid{transform-origin:12% 100%}.open.box .lid{transform:rotate(-40deg) translateY(-14%)}
+.door .leaf{transform-origin:left center}.open.door .leaf{transform:perspective(500px) rotateY(-72deg)}
+.bush .l{transform-origin:left bottom}.bush .r{transform-origin:right bottom}
+.open.bush .l{transform:translateX(-32%) rotate(-12deg)}.open.bush .r{transform:translateX(32%) rotate(12deg)}
+.basket .cloth{transform-origin:center}.open.basket .cloth{transform:translate(42%,-72%) rotate(30deg)}
+.blanket .sheet{transform-origin:center bottom}.open.blanket .sheet{transform:translateY(38%) scaleY(.5)}
+.spot.hint .stage{animation:wiggle .6s ease-in-out 2}
+@keyframes wiggle{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+.k-eyes{animation:blink 5s infinite;transform-box:fill-box;transform-origin:center}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+@media (prefers-reduced-motion:reduce){.cover,.friend,.glow{transition:none}.spot.hint .stage,.k-eyes{animation:none}}
+</style>
+</head>
+<body>
+<script>window.LP_GAME="peek"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="sounds.js"></script><script src="look.js"></script>
+<div class="app" id="app">
+  <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+/* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
+const DATA={
+ words:[
+  {id:"cow",e:"🐮",snd:"cow",en:"the cow",de:"die Kuh",es:"la vaca",fr:"la vache",it:"la mucca",pt:"a vaca"},
+  {id:"pig",e:"🐷",snd:"pig",en:"the pig",de:"das Schwein",es:"el cerdo",fr:"le cochon",it:"il maiale",pt:"o porco"},
+  {id:"duck",e:"🦆",snd:"duck",en:"the duck",de:"die Ente",es:"el pato",fr:"le canard",it:"l'anatra",pt:"o pato"},
+  {id:"sheep",e:"🐑",snd:"sheep",en:"the sheep",de:"das Schaf",es:"la oveja",fr:"le mouton",it:"la pecora",pt:"a ovelha"},
+  {id:"horse",e:"🐴",snd:"horse",en:"the horse",de:"das Pferd",es:"el caballo",fr:"le cheval",it:"il cavallo",pt:"o cavalo"},
+  {id:"chicken",e:"🐔",snd:"chicken",en:"the chicken",de:"das Huhn",es:"la gallina",fr:"la poule",it:"la gallina",pt:"a galinha"},
+  {id:"cat",e:"🐱",snd:"cat",en:"the cat",de:"die Katze",es:"el gato",fr:"le chat",it:"il gatto",pt:"o gato"},
+  {id:"dog",e:"🐶",snd:"dog",en:"the dog",de:"der Hund",es:"el perro",fr:"le chien",it:"il cane",pt:"o cão"},
+  {id:"mouse",e:"🐭",snd:"mouse",en:"the mouse",de:"die Maus",es:"el ratón",fr:"la souris",it:"il topo",pt:"o rato"},
+  {id:"rabbit",e:"🐰",snd:"rabbit",en:"the rabbit",de:"der Hase",es:"el conejo",fr:"le lapin",it:"il coniglio",pt:"o coelho"},
+  {id:"frog",e:"🐸",snd:"frog",en:"the frog",de:"der Frosch",es:"la rana",fr:"la grenouille",it:"la rana",pt:"a rã"},
+  {id:"teddy",e:"🧸",snd:"teddy",en:"the teddy",de:"der Teddy",es:"el osito",fr:"le nounours",it:"l'orsacchiotto",pt:"o ursinho"}
+ ],
+ lines:{
+  en:{title:"Peekaboo",peek:"Peekaboo!",where:"Where is {w}?",found:"There's {w}!"},
+  de:{title:"Kuckuck",peek:"Kuckuck!",where:"Wo ist {w}?",found:"Da ist {w}!"},
+  es:{title:"Cucú",peek:"¡Cucú!",where:"¿Dónde está {w}?",found:"¡Aquí está {w}!"},
+  fr:{title:"Coucou",peek:"Coucou !",where:"Où est {w} ?",found:"Voilà {w} !"},
+  it:{title:"Cucù",peek:"Cucù!",where:"Dov'è {w}?",found:"Ecco {w}!"},
+  pt:{title:"Cucu",peek:"Cucu!",where:"Onde está {w}?",found:"Aqui está {w}!"}
+ }
+};
+const SPOTS=["curtain","box","door","bush","basket","blanket"];
+const ART={
+ curtain:`<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="8" y="8" width="84" height="84" rx="10" fill="url(#k-dark)"/><rect x="14" y="14" width="72" height="72" rx="6" fill="#2a3a8f"/><circle cx="64" cy="34" r="9" fill="#ffe58a"/><circle cx="30" cy="28" r="1.6" fill="#fff"/><circle cx="44" cy="60" r="1.4" fill="#fff"/><circle cx="74" cy="66" r="1.6" fill="#fff"/><rect x="4" y="4" width="92" height="9" rx="4.5" fill="url(#k-gold)"/><g class="cover l"><path d="M10 12h42v80c-7-4-12 3-18-1s-12 3-24-1Z" fill="url(#k-pink)"/><path d="M22 14v76M36 14v78" stroke="#d9306c" stroke-width="3" opacity=".6"/></g><g class="cover r"><path d="M48 12h42v80c-12 4-18-3-24 1s-11-3-18 1Z" fill="url(#k-pink)"/><path d="M64 14v78M78 14v76" stroke="#d9306c" stroke-width="3" opacity=".6"/></g></svg>`,
+ box:`<svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="94" rx="40" ry="5" fill="#000" opacity=".25"/><rect x="14" y="44" width="72" height="48" rx="6" fill="url(#k-orange)"/><rect x="44" y="44" width="12" height="48" fill="url(#k-yellow)"/><g class="cover lid"><rect x="8" y="30" width="84" height="18" rx="6" fill="url(#k-orange)"/><rect x="44" y="30" width="12" height="18" fill="url(#k-yellow)"/><path d="M50 30c-10-14-26-10-20 0M50 30c10-14 26-10 20 0" stroke="url(#k-yellow)" stroke-width="7" fill="none" stroke-linecap="round"/></g></svg>`,
+ door:`<svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="96" rx="40" ry="4" fill="#000" opacity=".25"/><path d="M14 96V30a36 30 0 0 1 72 0v66Z" fill="url(#k-dark)"/><path d="M20 96V32a30 26 0 0 1 60 0v64Z" fill="#ffe58a" opacity=".85"/><g class="cover leaf"><path d="M20 96V32a30 26 0 0 1 60 0v64Z" fill="url(#k-teal)"/><circle cx="70" cy="64" r="4.5" fill="url(#k-gold)"/><path d="M32 40h36M32 54h36" stroke="#119a8a" stroke-width="3" opacity=".6"/></g></svg>`,
+ bush:`<svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="94" rx="44" ry="5" fill="#000" opacity=".25"/><g class="cover l"><circle cx="30" cy="66" r="26" fill="url(#k-green)"/><circle cx="40" cy="42" r="21" fill="url(#k-green)"/><circle cx="22" cy="82" r="14" fill="#33a24f"/></g><g class="cover r"><circle cx="70" cy="66" r="26" fill="url(#k-teal)"/><circle cx="60" cy="40" r="21" fill="url(#k-green)"/><circle cx="78" cy="82" r="14" fill="#119a8a"/><circle cx="66" cy="52" r="4" fill="url(#k-pink)"/><circle cx="78" cy="68" r="4" fill="url(#k-yellow)"/><circle cx="54" cy="74" r="3.5" fill="url(#k-pink)"/></g></svg>`,
+ basket:`<svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="95" rx="40" ry="4" fill="#000" opacity=".25"/><path d="M22 44c0-28 56-28 56 0" fill="none" stroke="url(#k-brown)" stroke-width="6" stroke-linecap="round"/><path d="M10 46h80l-9 46H19Z" fill="url(#k-brown)"/><path d="M14 60h72M16 74h68" stroke="#8a4724" stroke-width="4" opacity=".7"/><g class="cover cloth"><path d="M8 42c14-12 70-12 84 0l-5 12c-22-7-52-7-74 0Z" fill="url(#k-cream)"/><path d="M26 38l3 13M44 35l1 15M62 35l-1 15M78 38l-3 13" stroke="url(#k-red)" stroke-width="4" stroke-linecap="round"/></g></svg>`,
+ blanket:`<svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="94" rx="44" ry="5" fill="#000" opacity=".25"/><g class="cover sheet"><path d="M6 94c0-46 20-72 44-72s44 26 44 72Z" fill="url(#k-violet)"/><circle cx="32" cy="52" r="5" fill="url(#k-yellow)"/><circle cx="62" cy="42" r="4" fill="url(#k-yellow)"/><circle cx="58" cy="72" r="5" fill="url(#k-yellow)"/><circle cx="26" cy="78" r="4" fill="url(#k-yellow)"/><circle cx="78" cy="74" r="5" fill="url(#k-yellow)"/><path d="M30 34c6-6 14-9 20-9" stroke="#fff" stroke-width="4" opacity=".3" fill="none" stroke-linecap="round"/></g></svg>`
+};
+const W=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
+const $=id=>document.getElementById(id);
+let hidden={},open={},want=null,busy=false;
+
+const L=()=>LP.t(DATA.lines);
+const word=id=>W[id][LP.lang]||W[id].en;
+const fill=(tpl,id)=>tpl.replace("{w}",word(id));
+function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
+
+function shuffleFriends(){const ids=DATA.words.map(w=>w.id).sort(()=>Math.random()-.5);SPOTS.forEach((s,i)=>{hidden[s]=ids[i]});}
+function build(){
+ $("grid").innerHTML=SPOTS.map(s=>`<button type="button" class="spot ${s}" data-spot="${s}" data-tap aria-label="${s}"><div class="stage"><div class="glow"></div>${ART[s]}<div class="friend"></div></div></button>`).join("");
+ sizeFriends();
+}
+function sizeFriends(){document.querySelectorAll(".stage").forEach(st=>st.style.setProperty("--s",st.getBoundingClientRect().width+"px"))}
+addEventListener("resize",sizeFriends);
+
+function animalSound(id){
+ const w=W[id];if(LP.sample(w.snd,1.5))return;
+ const T=LP.tone;
+ if(id==="cat"){T(620,.5,"triangle",.18,0,880);T(880,.4,"triangle",.14,.3,520)}
+ else if(id==="dog"){LP.noise(.12,.25,"bandpass",900,2);T(420,.14,"square",.14,0,200);LP.noise(.12,.25,"bandpass",900,2,.22);T(420,.14,"square",.14,.22,200)}
+ else if(id==="mouse"){T(2200,.07,"sine",.1,0,2800);T(2600,.07,"sine",.09,.1,2000)}
+ else if(id==="frog"){T(180,.09,"square",.12);T(160,.12,"square",.12,.13)}
+ else if(id==="rabbit"){LP.sfx.boing()}
+ else LP.sfx.twinkle();
+}
+
+function reveal(spot){
+ if(open[spot])return;
+ const el=document.querySelector(`[data-spot="${spot}"]`),id=hidden[spot];
+ el.querySelector(".friend").innerHTML=LPLook.animal(id);
+ el.setAttribute("aria-label",word(id));
+ el.classList.add("open");el.classList.remove("hint");open[spot]=true;
+ const r=el.getBoundingClientRect();
+ if(want&&id===want){
+  want=null;LP.sfx.chime();animalSound(id);LP.burst(r.left+r.width/2,r.top+r.height/2,22);
+  const t=fill(L().found,id);bubble(t);setTimeout(()=>LP.say(t),350);
+  setTimeout(()=>{closeAll();setTimeout(ask,1300)},2600);
+  return;
+ }
+ LP.sfx.whoosh();setTimeout(()=>animalSound(id),180);LP.burst(r.left+r.width/2,r.top+r.height*.3,8);
+ bubble(L().peek+" "+word(id));
+ LP.say(L().peek);LP.say(word(id),true);
+ setTimeout(()=>closeSpot(spot),3000);
+}
+function closeSpot(spot){
+ const el=document.querySelector(`[data-spot="${spot}"]`);if(!el)return;
+ el.classList.remove("open");el.setAttribute("aria-label",spot);open[spot]=false;
+ // a new friend sneaks in while it's closed, unless we're hunting for this one
+ setTimeout(()=>{if(open[spot]||hidden[spot]===want)return;const used=new Set(Object.values(hidden));const free=DATA.words.map(w=>w.id).filter(i=>!used.has(i));if(free.length)hidden[spot]=free[Math.floor(Math.random()*free.length)]},500);
+}
+function closeAll(){SPOTS.forEach(s=>open[s]&&closeSpot(s))}
+function ask(){
+ if(LP.age<1){want=null;return}
+ const closed=SPOTS.filter(s=>!open[s]);if(!closed.length){setTimeout(ask,800);return}
+ want=hidden[closed[Math.floor(Math.random()*closed.length)]];misses=0;
+ const t=fill(L().where,want);bubble(t);LP.say(t);
+}
+function giveHint(){if(!want)return;const s=SPOTS.find(x=>hidden[x]===want);const el=document.querySelector(`[data-spot="${s}"]`);if(el){el.classList.remove("hint");void el.offsetWidth;el.classList.add("hint")}}
+
+let misses=0;
+LP.init({langs:["en","de","es","fr","it","pt"],
+ onLang:()=>{document.title=L().title;if(want){const t=fill(L().where,want);bubble(t)}else bubble(L().title)},
+ onAge:()=>{want=null;closeAll()}});
+document.title=L().title;
+LPLook.sky(document.getElementById("app"));
+build();shuffleFriends();bubble(L().title);
+LP.start(L().title,()=>{LP.say(L().peek);setTimeout(ask,1600)});
+LP.mash((e)=>{
+ const el=e.target.closest&&e.target.closest("[data-spot]");
+ let spot=el?el.dataset.spot:null;
+ if(!spot){ // a tap anywhere opens a closed spot; when hunting, toddlers' stray taps find the friend
+  const closed=SPOTS.filter(s=>!open[s]);if(!closed.length)return;
+  spot=want&&LP.age<2?(SPOTS.find(s=>hidden[s]===want)||closed[0]):closed[Math.floor(Math.random()*closed.length)];
+ }
+ if(want&&hidden[spot]!==want){misses++;if(misses>=2)giveHint()}else misses=0;
+ reveal(spot);
+});
+</script>
+</body>
+</html>

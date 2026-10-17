@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lingoplaytime.com/sitemap.xml

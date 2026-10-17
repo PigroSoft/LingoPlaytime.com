@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Goodnight room</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{color-scheme:dark;--ink:#F1F5FC;--paper:#26315a;--display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif}
+html,body{height:100%;margin:0}
+body{background:#1c2547;color:var(--ink);font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.app{position:relative;height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:max(12px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+.top{display:flex;justify-content:center;min-height:60px;position:relative;z-index:3}
+#bubble{font-size:clamp(22px,4.2vw,40px);min-height:1.2em;text-align:center;transition:transform .2s,opacity 1.2s}
+#bubble.bump{transform:scale(1.06)}
+.stage{flex:1;min-height:0;display:grid;place-items:center;position:relative}
+svg#room{width:100%;height:100%}
+.item{cursor:pointer}
+.item .hit{fill:#0000}
+.item:focus{outline:none}.item:focus-visible .hit{stroke:#F6C033;stroke-width:4;fill:#F6C03322}
+.item .shape{transition:filter 1.2s}
+.item.asleep .shape{filter:brightness(.55) saturate(.55)}
+.eyes-open,.eyes-shut{transition:opacity .4s}
+.eyes-shut{opacity:0}.asleep .eyes-shut{opacity:1}.asleep .eyes-open{opacity:0}
+.glow{transition:opacity 1.2s}
+.lamp.asleep .glow{opacity:0}
+#dark{fill:#07051c;opacity:0;transition:opacity 1.6s;pointer-events:none}
+.z{font-family:var(--display);font-weight:700;fill:#c9d3ff;animation:zz 2.4s ease-out forwards;pointer-events:none}
+@keyframes zz{0%{opacity:0;transform:translate(0,0) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translate(24px,-70px) scale(1.4)}}
+.tw{animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.35}}
+#again{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:14px;z-index:4;font:inherit;font-size:14px;font-weight:700;color:#c9d3ff;background:#ffffff14;border:0;border-radius:999px;padding:8px 14px;min-height:40px;cursor:pointer;opacity:0;transition:opacity 1s;pointer-events:none}
+body.done #again{opacity:.7;pointer-events:auto}
+@media (prefers-reduced-motion:reduce){.z,.tw{animation:none}}
+</style>
+</head>
+<body>
+<script>window.LP_GAME="night"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
+<div class="app" id="app">
+  <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
+  <div class="stage">
+    <svg id="room" viewBox="0 0 800 520" preserveAspectRatio="xMidYMid meet" role="img" aria-label="A bedroom at night">
+      <defs><linearGradient id="nwall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2a86"/><stop offset="1" stop-color="#241c63"/></linearGradient><linearGradient id="nfloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4b37a3"/><stop offset="1" stop-color="#2c2275"/></linearGradient><linearGradient id="nsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d0a2e"/><stop offset="1" stop-color="#2a1f70"/></linearGradient></defs><rect width="800" height="520" fill="url(#nwall)"/>
+      <rect y="400" width="800" height="120" fill="url(#nfloor)"/><ellipse cx="420" cy="470" rx="300" ry="34" fill="#5a44b8" opacity=".6"/>
+      <g fill="#ffffff10"><circle cx="60" cy="60" r="3"/><circle cx="120" cy="140" r="3"/><circle cx="740" cy="90" r="3"/><circle cx="690" cy="300" r="3"/><circle cx="40" cy="300" r="3"/></g>
+      <!-- window -->
+      <rect x="300" y="40" width="220" height="180" rx="16" fill="url(#nsky)" stroke="url(#k-cream)" stroke-width="10"/>
+      <g class="item" data-item="stars" tabindex="0" role="button">
+        <g class="shape" fill="#F6C033"><path class="tw" d="M340 80l5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2Z"/><path class="tw" style="animation-delay:-1s" d="M470 70l4 8 9 1-7 6 2 9-8-4-8 4 2-9-7-6 9-1Z"/><path class="tw" style="animation-delay:-2s" d="M380 170l4 8 9 1-7 6 2 9-8-4-8 4 2-9-7-6 9-1Z"/><circle cx="460" cy="190" r="3"/><circle cx="330" cy="140" r="3"/></g>
+        <rect class="hit" x="310" y="50" width="90" height="160" rx="8"/><rect class="hit" x="455" y="50" width="55" height="40" rx="8"/>
+      </g>
+      <g class="item" data-item="moon" tabindex="0" role="button">
+        <g class="shape"><circle cx="440" cy="130" r="62" fill="url(#k-glow)" opacity=".7"/><circle cx="440" cy="130" r="40" fill="url(#k-gold)"/><circle cx="458" cy="118" r="36" fill="#1a1450"/></g>
+        <g class="eyes-open" fill="#18264A"><circle cx="418" cy="126" r="3.5"/></g>
+        <path class="eyes-shut" d="M412 126q6 5 12 0" stroke="#18264A" stroke-width="3" fill="none"/>
+        <rect class="hit" x="396" y="86" width="64" height="90" rx="12"/>
+      </g>
+      <path d="M410 40v180M300 130h220" stroke="#c9b48f" stroke-width="6" opacity=".0"/>
+      <!-- bed -->
+      <rect x="40" y="300" width="300" height="120" rx="16" fill="url(#k-brown)"/>
+      <rect x="50" y="270" width="280" height="80" rx="24" fill="url(#k-white)"/>
+      <path d="M140 300h200v90H140Z" fill="url(#k-teal)"/><path d="M140 330h200M140 360h200" stroke="#119a8a" stroke-width="6" opacity=".6"/>
+      <ellipse cx="96" cy="296" rx="44" ry="22" fill="#fff"/>
+      <rect x="30" y="250" width="22" height="190" rx="10" fill="#8a4724"/>
+      <!-- teddy on the bed -->
+      <g class="item" data-item="teddy" tabindex="0" role="button">
+        <g class="shape" fill="url(#k-gold)"><circle cx="186" cy="250" r="16"/><circle cx="234" cy="250" r="16"/><circle cx="210" cy="272" r="32"/><ellipse cx="210" cy="320" rx="34" ry="30"/><circle cx="210" cy="282" r="12" fill="#fff0c8"/></g>
+        <g class="eyes-open" fill="#18264A"><circle cx="198" cy="266" r="4"/><circle cx="222" cy="266" r="4"/></g>
+        <path class="eyes-shut" d="M192 266q6 5 12 0M216 266q6 5 12 0" stroke="#18264A" stroke-width="3" fill="none"/>
+        <circle cx="210" cy="280" r="3.5" fill="#18264A"/>
+        <rect class="hit" x="166" y="226" width="88" height="128" rx="20"/>
+      </g>
+      <!-- nightstand and lamp -->
+      <rect x="560" y="310" width="120" height="110" rx="10" fill="url(#k-violet)"/><rect x="574" y="340" width="92" height="12" rx="6" fill="#6439d1"/>
+      <g class="item lamp" data-item="lamp" tabindex="0" role="button">
+        <circle class="glow" cx="620" cy="240" r="150" fill="url(#k-glow)" opacity=".6"/>
+        <g class="shape"><rect x="614" y="250" width="12" height="60" fill="#c9b48f"/><ellipse cx="620" cy="310" rx="30" ry="8" fill="#c9b48f"/><path d="M584 254l14-50h44l14 50Z" fill="url(#k-yellow)"/></g>
+        <g class="eyes-open" fill="#18264A"><circle cx="608" cy="232" r="3.5"/><circle cx="632" cy="232" r="3.5"/></g>
+        <path class="eyes-shut" d="M602 232q6 5 12 0M626 232q6 5 12 0" stroke="#18264A" stroke-width="3" fill="none"/>
+        <rect class="hit" x="576" y="196" width="88" height="124" rx="14"/>
+      </g>
+      <!-- shelf with book and fish -->
+      <rect x="560" y="140" width="200" height="12" rx="6" fill="url(#k-brown)"/>
+      <g class="item" data-item="book" tabindex="0" role="button">
+        <g class="shape"><rect x="578" y="96" width="22" height="44" rx="3" fill="url(#k-teal)"/><rect x="602" y="104" width="22" height="36" rx="3" fill="url(#k-pink)"/><path d="M582 108h14M606 116h14" stroke="#fff8" stroke-width="3"/></g>
+        <rect class="hit" x="570" y="88" width="64" height="58" rx="8"/>
+      </g>
+      <g class="item" data-item="fish" tabindex="0" role="button">
+        <g class="shape"><path d="M670 86h70c10 0 14 54-35 54s-45-54-35-54Z" fill="#9fd3ef88" stroke="#c9e9fb" stroke-width="3"/><path d="M682 112c8-10 24-10 32 0-8 10-24 10-32 0Z" fill="url(#k-orange)"/><path d="M714 112l12-8v16Z" fill="url(#k-orange)"/></g>
+        <g class="eyes-open" fill="#18264A"><circle cx="692" cy="110" r="2.5"/></g>
+        <path class="eyes-shut" d="M688 110q4 3 8 0" stroke="#18264A" stroke-width="2" fill="none"/>
+        <rect class="hit" x="664" y="80" width="88" height="62" rx="10"/>
+      </g>
+      <!-- floor toys -->
+      <g class="item" data-item="ball" tabindex="0" role="button">
+        <g class="shape"><circle cx="420" cy="440" r="34" fill="url(#k-red)"/><path d="M386 440h68" stroke="#fff" stroke-width="8"/><path d="M420 406c-16 20-16 48 0 68" stroke="#ffd23f" stroke-width="6" fill="none"/><ellipse cx="406" cy="420" rx="9" ry="5" fill="#fff" opacity=".3" transform="rotate(-30 406 420)"/></g>
+        <g class="eyes-open" fill="#18264A"><circle cx="410" cy="428" r="3.5"/><circle cx="430" cy="428" r="3.5"/></g>
+        <path class="eyes-shut" d="M404 428q6 5 12 0M424 428q6 5 12 0" stroke="#18264A" stroke-width="3" fill="none"/>
+        <rect class="hit" x="380" y="400" width="80" height="80" rx="20"/>
+      </g>
+      <g class="item" data-item="car" tabindex="0" role="button">
+        <g class="shape"><path d="M480 452h110v-24l-20-26h-56l-20 26h-14Z" fill="url(#k-blue)"/><rect x="522" y="408" width="40" height="18" rx="4" fill="#bfe6fb"/><circle cx="508" cy="456" r="13" fill="#18264A"/><circle cx="566" cy="456" r="13" fill="#18264A"/></g>
+        <g class="eyes-open" fill="#F6C033"><circle cx="586" cy="438" r="5"/></g>
+        <path class="eyes-shut" d="M580 438q6 4 12 0" stroke="#18264A" stroke-width="3" fill="none"/>
+        <rect class="hit" x="472" y="396" width="128" height="76" rx="14"/>
+      </g>
+      <g id="zs"></g>
+      <rect id="dark" width="800" height="520"/>
+    </svg>
+  </div>
+  <button type="button" id="again"></button>
+</div>
+<script>
+/* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
+const DATA={
+ words:[
+  {id:"moon",en:{w:"the moon",g:"Goodnight, moon!"},de:{w:"der Mond",g:"Gute Nacht, Mond!"},es:{w:"la luna",g:"¡Buenas noches, luna!"},fr:{w:"la lune",g:"Bonne nuit, la lune !"},it:{w:"la luna",g:"Buonanotte, luna!"},pt:{w:"a lua",g:"Boa noite, lua!"}},
+  {id:"stars",en:{w:"the stars",g:"Goodnight, stars!"},de:{w:"die Sterne",g:"Gute Nacht, Sterne!"},es:{w:"las estrellas",g:"¡Buenas noches, estrellas!"},fr:{w:"les étoiles",g:"Bonne nuit, les étoiles !"},it:{w:"le stelle",g:"Buonanotte, stelle!"},pt:{w:"as estrelas",g:"Boa noite, estrelas!"}},
+  {id:"lamp",en:{w:"the lamp",g:"Goodnight, lamp!"},de:{w:"die Lampe",g:"Gute Nacht, Lampe!"},es:{w:"la lámpara",g:"¡Buenas noches, lámpara!"},fr:{w:"la lampe",g:"Bonne nuit, la lampe !"},it:{w:"la lampada",g:"Buonanotte, lampada!"},pt:{w:"o candeeiro",g:"Boa noite, candeeiro!"}},
+  {id:"teddy",en:{w:"the teddy",g:"Goodnight, teddy!"},de:{w:"der Teddy",g:"Gute Nacht, Teddy!"},es:{w:"el osito",g:"¡Buenas noches, osito!"},fr:{w:"le nounours",g:"Bonne nuit, nounours !"},it:{w:"l'orsacchiotto",g:"Buonanotte, orsacchiotto!"},pt:{w:"o ursinho",g:"Boa noite, ursinho!"}},
+  {id:"book",en:{w:"the book",g:"Goodnight, book!"},de:{w:"das Buch",g:"Gute Nacht, Buch!"},es:{w:"el libro",g:"¡Buenas noches, libro!"},fr:{w:"le livre",g:"Bonne nuit, le livre !"},it:{w:"il libro",g:"Buonanotte, libro!"},pt:{w:"o livro",g:"Boa noite, livro!"}},
+  {id:"fish",en:{w:"the fish",g:"Goodnight, fish!"},de:{w:"der Fisch",g:"Gute Nacht, Fisch!"},es:{w:"el pez",g:"¡Buenas noches, pez!"},fr:{w:"le poisson",g:"Bonne nuit, le poisson !"},it:{w:"il pesce",g:"Buonanotte, pesce!"},pt:{w:"o peixe",g:"Boa noite, peixe!"}},
+  {id:"ball",en:{w:"the ball",g:"Goodnight, ball!"},de:{w:"der Ball",g:"Gute Nacht, Ball!"},es:{w:"la pelota",g:"¡Buenas noches, pelota!"},fr:{w:"le ballon",g:"Bonne nuit, le ballon !"},it:{w:"la palla",g:"Buonanotte, palla!"},pt:{w:"a bola",g:"Boa noite, bola!"}},
+  {id:"car",en:{w:"the car",g:"Goodnight, car!"},de:{w:"das Auto",g:"Gute Nacht, Auto!"},es:{w:"el coche",g:"¡Buenas noches, coche!"},fr:{w:"la voiture",g:"Bonne nuit, la voiture !"},it:{w:"la macchina",g:"Buonanotte, macchina!"},pt:{w:"o carro",g:"Boa noite, carro!"}}
+ ],
+ lines:{
+  en:{title:"Goodnight",end:"Sleep well!",again:"Again"},
+  de:{title:"Gute Nacht",end:"Schlaf gut!",again:"Nochmal"},
+  es:{title:"Buenas noches",end:"¡Que duermas bien!",again:"Otra vez"},
+  fr:{title:"Bonne nuit",end:"Dors bien !",again:"Encore"},
+  it:{title:"Buonanotte",end:"Sogni d'oro!",again:"Ancora"},
+  pt:{title:"Boa noite",end:"Dorme bem!",again:"Outra vez"}
+ }
+};
+const W=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
+const $=id=>document.getElementById(id);
+const L=()=>LP.t(DATA.lines);
+const w=id=>W[id][LP.lang]||W[id].en;
+let asleep=new Set(),done=false,lastTap=0;
+
+function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
+function label(){document.querySelectorAll("[data-item]").forEach(g=>g.setAttribute("aria-label",w(g.dataset.item).w));$("again").textContent=L().again}
+
+function zzz(g){const b=g.querySelector(".hit").getBBox();const t=document.createElementNS("http://www.w3.org/2000/svg","text");t.setAttribute("x",b.x+b.width*.7);t.setAttribute("y",b.y+10);t.setAttribute("font-size","34");t.setAttribute("class","z");t.textContent="z";$("zs").appendChild(t);setTimeout(()=>t.remove(),2500)}
+
+function sleep(id){
+ if(done||asleep.has(id))return;
+ const now=Date.now();if(now-lastTap<700)return;lastTap=now; // one goodnight at a time, even when mashing
+ asleep.add(id);
+ const g=document.querySelector(`[data-item="${id}"]`);g.classList.add("asleep");zzz(g);
+ LP.tone(523,.6,"sine",.08);LP.tone(392,.8,"sine",.06,.25);
+ bubble(w(id).g);LP.say(w(id).g);
+ $("dark").style.opacity=(asleep.size/DATA.words.length*.35).toFixed(2);
+ if(asleep.size===DATA.words.length)setTimeout(finish,2200);
+}
+function finish(){
+ done=true;$("dark").style.opacity=".62";
+ lullaby();bubble(L().end);setTimeout(()=>LP.say(L().end),400);
+ setTimeout(()=>{$("bubble").style.opacity=".35";document.body.classList.add("done")},5000);
+}
+// a short original music-box tune
+function lullaby(){const n=[659,587,523,587,659,659,659,0,587,587,587,0,659,784,784,0,659,587,523,587,659,659,659,659,587,587,659,587,523];let t=.6;n.forEach(f=>{if(f)LP.tone(f,1.1,"sine",.06,t),LP.tone(f*2,.6,"sine",.015,t);t+=.42})}
+function reset(){asleep.clear();done=false;document.querySelectorAll(".asleep").forEach(g=>g.classList.remove("asleep"));$("dark").style.opacity="0";$("bubble").style.opacity="1";document.body.classList.remove("done");bubble(L().title);LP.say(L().title)}
+
+LP.init({langs:["en","de","es","fr","it","pt"],onLang:()=>{label();document.title=L().title;if(!done)bubble(L().title)}});
+label();document.title=L().title;bubble(L().title);
+LP.start(L().title,()=>LP.say(L().title));
+$("again").addEventListener("click",reset);
+LP.mash((e)=>{
+ if(e.target.closest&&e.target.closest("#again"))return;
+ if(done){LP.sfx.twinkle();return} // after bedtime, taps only twinkle
+ const g=e.target.closest&&e.target.closest("[data-item]");
+ const id=g&&!asleep.has(g.dataset.item)?g.dataset.item:DATA.words.map(x=>x.id).find(i=>!asleep.has(i));
+ if(id)sleep(id);
+});
+</script>
+</body>
+</html>

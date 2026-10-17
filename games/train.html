@@ -1,0 +1,292 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<script>window.LP_GAME="train"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="look.js"></script>
+<title>Word Train</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{--sky:#bfe6f5;--sky2:#e4f5fb;--hill:#7cc36a;--hill2:#5aa84f;--grass:#8fcf6b;--rail:#6b4a2f;--ink:#23324a;--paper:#fffdf6;--red:#e0463a;color-scheme:light}
+html,body{height:100%}
+[hidden]{display:none!important}
+body{margin:0;background:var(--sky);color:var(--ink);font-family:"Baloo 2",system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent;cursor:none}
+button{font:inherit;color:var(--ink);cursor:none}
+.bigcursor{position:fixed;top:0;left:0;font-size:46px;line-height:1;z-index:99;pointer-events:none;transform:translate(-6px,-4px) rotate(0deg) scale(1);filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 10px #fff);transition:transform .12s cubic-bezier(.34,1.6,.64,1);will-change:transform}
+.bigcursor.hover{transform:translate(-6px,-4px) rotate(-14deg) scale(1.28)}
+.bigcursor.down{transform:translate(-6px,-4px) rotate(-14deg) scale(.85)}
+@media (hover:none){.bigcursor{display:none}body,button{cursor:auto}}
+button:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
+.app{height:100%;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:10px 16px}
+.top h1{margin:0;font-size:clamp(22px,5vw,32px);font-weight:800}
+.ctl{display:flex;gap:6px;flex-wrap:wrap}
+.ctl button{font-weight:800;font-size:17px;border:3px solid var(--ink);background:var(--paper);border-radius:14px;padding:2px 12px}
+.ctl button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.ctl .t{font-size:24px;padding:0 8px}
+.langsel{font-family:inherit;font-weight:800;font-size:16px;border:3px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:14px;padding:3px 10px}
+[dir="rtl"] .top{flex-direction:row-reverse}
+[dir="rtl"] .choices,[dir="rtl"] .ctl{flex-direction:row}
+.scene{position:relative;flex:1;overflow:hidden;background:linear-gradient(var(--sky),var(--sky2))}
+.layer{position:absolute;left:0;right:0;background-repeat:repeat-x}
+.clouds{top:0;height:46%;overflow:visible}
+.cloud{position:absolute;filter:drop-shadow(0 8px 10px #12345a1f)}
+.cloud i{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffffff,#eef6fc 75%)}
+.hills{bottom:118px;height:190px}
+.hillback,.hillfront{position:absolute;left:0;right:0;bottom:0;background-repeat:repeat-x}
+.hillback{height:150px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 150'%3E%3Cpath d='M0,92 C70,60 130,110 210,86 C300,58 360,104 440,80 C520,56 580,100 660,78 C740,58 810,92 900,92 L900,150 L0,150 Z' fill='%235aa84f'/%3E%3C/svg%3E");background-size:900px 150px;opacity:.85}
+.hillfront{height:120px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 120'%3E%3Cpath d='M0,70 C60,42 120,84 190,64 C270,42 320,80 400,60 C470,42 520,78 590,58 C650,42 700,66 760,70 L760,120 L0,120 Z' fill='%237cc36a'/%3E%3C/svg%3E");background-size:760px 120px}
+.hillfront::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(35,60,20,.12));pointer-events:none}
+.trees{bottom:112px;height:70px;background-image:radial-gradient(circle 22px at 40px 26px,#3f8f3a 96%,transparent),linear-gradient(#7a5231,#7a5231);background-size:260px 70px,6px 22px;background-position:0 0,37px 48px}
+.ground{position:absolute;left:0;right:0;bottom:0;height:120px;background:var(--grass)}
+.track{bottom:52px;height:16px;background-image:linear-gradient(var(--rail),var(--rail)),linear-gradient(90deg,#8a6443 0 12px,transparent 12px 30px);background-size:100% 4px,30px 16px;background-position:0 2px,0 0;background-repeat:repeat-x}
+.station{position:absolute;bottom:68px;width:220px;height:170px;display:none}
+.station .roof{position:absolute;top:0;left:-14px;right:-14px;height:44px;background:var(--red);clip-path:polygon(10% 0,90% 0,100% 100%,0 100%)}
+.station .wall{position:absolute;top:44px;left:0;right:0;bottom:0;background:#f3d9a4;border:4px solid #c9a064;border-bottom:0}
+.station .sign{position:absolute;top:54px;left:50%;transform:translateX(-50%);background:var(--paper);border:4px solid var(--ink);border-radius:12px;padding:0 14px;font-size:26px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.station .clock{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--ink)}
+.train{position:absolute;bottom:60px;left:16px;display:flex;align-items:flex-end;gap:5px;z-index:3}
+.car{position:relative;width:clamp(58px,12vw,92px);height:clamp(50px,10vw,76px);background:var(--c);border-radius:10px 10px 4px 4px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.15)}
+.car .win{position:absolute;inset:10% 14% 34% 14%;background:#dff3ff;border-radius:8px;display:grid;place-items:center;font-size:clamp(22px,5vw,36px);overflow:hidden}
+.car .win span{animation:board .6s}
+@keyframes board{0%{transform:translateY(-60px) scale(2)}70%{transform:translateY(4px)}100%{transform:none}}
+.wheel{position:absolute;bottom:-14px;width:24px;height:24px;border-radius:50%;background:var(--ink);border:4px solid #aaa;box-sizing:border-box;background-image:linear-gradient(90deg,transparent 45%,#aaa 45% 55%,transparent 55%),linear-gradient(transparent 45%,#aaa 45% 55%,transparent 55%)}
+.wheel.a{left:8%}.wheel.b{right:8%}
+.engine{width:clamp(74px,16vw,120px);height:clamp(68px,14vw,104px);background:none;box-shadow:none;display:grid;place-items:end center;font-size:clamp(62px,13vw,100px);line-height:.9}
+.engine .face{display:block;transform:scaleX(-1)}
+.engine .wheel{display:none}
+.puff{position:absolute;width:26px;height:26px;border-radius:50%;background:#fff;opacity:.85;z-index:2;pointer-events:none;animation:puff 1.6s ease-out forwards}
+@keyframes puff{to{transform:translate(-80px,-120px) scale(3);opacity:0}}
+.choices{position:absolute;top:10px;left:0;right:0;bottom:0;display:flex;justify-content:center;align-items:flex-start;gap:clamp(10px,3vw,28px);padding-inline:12px;z-index:5}
+.choices button{flex:1;width:clamp(110px,30vw,220px);max-height:min(46vh,260px);aspect-ratio:1;max-width:32%;border:none;border-radius:28px;background:var(--paper);font-size:clamp(64px,18vw,120px);box-shadow:0 10px 0 rgba(35,50,74,.25);animation:rise .4s backwards}
+.choices button:nth-child(2){animation-delay:.1s}.choices button:nth-child(3){animation-delay:.2s}
+@keyframes rise{from{transform:translateY(-40px);opacity:0}}
+.choices button.no{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+.choices button.yes{background:#fff3a8;transform:scale(1.15)}
+.say{border:none;background:none;font-size:26px;padding:0}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;z-index:9;background:rgba(191,230,245,.6)}
+.big{font-weight:800;font-size:clamp(26px,7vw,40px);background:var(--red);color:#fff;border:none;border-radius:50px;padding:12px 40px;box-shadow:0 8px 0 #a02b22}
+.big:active{transform:translateY(5px);box-shadow:0 3px 0 #a02b22}
+.cheer{text-align:center;font-weight:800;font-size:clamp(36px,10vw,64px);display:grid;gap:14px;justify-items:center}
+.conf{position:absolute;top:-20px;font-size:28px;z-index:8;animation:fall 2.4s linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.dots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:10px;z-index:4}
+.dots i{width:18px;height:18px;border-radius:50%;background:var(--paper);border:3px solid var(--ink)}
+.dots i.on{background:#f6c343}
+@media (prefers-reduced-motion:reduce){.puff,.conf{display:none}}
+
+/* LingoPlaytime look */
+:root{--grass:#4fc777;--paper:#fff;--ink:#1a1440;--red:#ff4d5e}
+body{background:#2f6fe8}
+.top{background:linear-gradient(#2a1f70,#3a2a86);color:#fff}
+.top h1{color:#fff}
+.ctl button{border:2px solid #ffffff55;background:#ffffff22;color:#fff;border-radius:999px}
+.ctl button[aria-pressed="true"]{background:linear-gradient(#ffe27a,#ffc23d);color:#1a1440;border-color:#fff8}
+.scene{background:none}
+.hillback,.hillfront,.clouds{display:none}
+.ground{background:linear-gradient(#58d26b,#3fae6a)}
+.choices button{background:linear-gradient(160deg,#ffffff,#e6defc);box-shadow:0 12px 24px #0005!important;border-radius:28px}
+.choices button svg,.car .win svg{width:78%;height:78%;display:block;margin:auto}
+.choices button.yes{background:linear-gradient(160deg,#eafff8,#b9f5e8);box-shadow:0 0 0 6px #20c9b0,0 0 40px #20c9b0aa!important}
+.car{background:linear-gradient(170deg,color-mix(in srgb,var(--c),#fff 35%),var(--c) 50%,color-mix(in srgb,var(--c),#000 22%));border-radius:14px 14px 6px 6px;box-shadow:0 8px 16px #0003}
+.car .win{background:linear-gradient(#e9f7ff,#bfe6fb)}
+.engine .face svg{width:clamp(74px,16vw,120px);height:auto;display:block}
+.station .roof{background:linear-gradient(#ff6b78,#d22f44)}
+.station .wall{background:linear-gradient(#fff2d8,#efd3a8);border:0}
+.station .sign{border:0;box-shadow:0 6px 16px #0003;color:#1a1440}
+.overlay{background:#140f3acc}
+.big{background:linear-gradient(#ffe27a,#ffc23d)!important;color:#1a1440!important;box-shadow:0 10px 0 #c98a12,0 0 60px #ffd23f66!important;border:0!important}
+</style>
+<div class="app">
+  <div class="top"><h1>Word Train</h1>
+    <select class="langsel" id="langsel"></select>
+    <div class="ctl" id="pick"></div>
+  </div>
+  <div class="scene" id="scene">
+    <div class="layer clouds" id="clouds"></div>
+    <div class="layer hills" id="l1"><div class="hillback" id="l1b"></div><div class="hillfront" id="l1f"></div></div>
+    <div class="layer trees" id="l2"></div>
+    <div class="ground"></div>
+    <div class="station" id="station"><div class="roof"></div><div class="clock"></div><div class="wall"></div>
+      <div class="sign"><span id="signtxt">?</span><button class="say" id="again" aria-label="hear again">🔊</button></div></div>
+    <div class="layer track" id="l3"></div>
+    <div class="train" id="train"></div>
+    <div class="choices" id="choices"></div>
+    <div class="dots" id="dots"></div>
+    <div class="overlay" id="overlay"><button class="big" id="start">▶ All aboard!</button></div>
+  </div>
+</div>
+<div class="bigcursor" id="cursor">👆</div>
+<script>
+addEventListener("DOMContentLoaded",()=>{if(window.LPLook)LPLook.sky(document.getElementById("scene"),{mode:"day",hills:true})});
+const EM="🐶 🐱 🍎 🚗 ⚽ 🐟 🌞 🌙 🍌 🐮 🦆 🌳 🏠 🐻 🍪 🌸 🐘 🥛 🚌 ⭐ 👟 🐑 🎈 🐸".split(" ");
+// Master language list (project doc). Article languages store the article with the word.
+// Fields: name, speech tag, 24 words (same order as EM), question template, yes, last stop, all aboard, new trip, tier
+const RAW=[
+["en","English","en-US","the dog|the cat|the apple|the car|the ball|the fish|the sun|the moon|the banana|the cow|the duck|the tree|the house|the bear|the cookie|the flower|the elephant|the milk|the bus|the star|the shoe|the sheep|the balloon|the frog","Where is {w}?","Yes!","Hooray! Last stop!","All aboard!","New trip",1],
+["de","Deutsch","de-DE","der Hund|die Katze|der Apfel|das Auto|der Ball|der Fisch|die Sonne|der Mond|die Banane|die Kuh|die Ente|der Baum|das Haus|der Bär|der Keks|die Blume|der Elefant|die Milch|der Bus|der Stern|der Schuh|das Schaf|der Luftballon|der Frosch","Wo ist {w}?","Ja! Super!","Hurra! Endstation!","Alle einsteigen!","Neue Fahrt",1],
+["es","Español","es-ES","el perro|el gato|la manzana|el coche|la pelota|el pez|el sol|la luna|el plátano|la vaca|el pato|el árbol|la casa|el oso|la galleta|la flor|el elefante|la leche|el autobús|la estrella|el zapato|la oveja|el globo|la rana","¿Dónde está {w}?","¡Sí! ¡Muy bien!","¡Hurra! ¡Última parada!","¡Todos a bordo!","Nuevo viaje",1],
+["fr","Français","fr-FR","le chien|le chat|la pomme|la voiture|la balle|le poisson|le soleil|la lune|la banane|la vache|le canard|l'arbre|la maison|l'ours|le biscuit|la fleur|l'éléphant|le lait|le bus|l'étoile|la chaussure|le mouton|le ballon|la grenouille","Où est {w} ?","Oui ! Bravo !","Hourra ! Terminus !","En voiture !","Nouveau voyage",1],
+["it","Italiano","it-IT","il cane|il gatto|la mela|la macchina|la palla|il pesce|il sole|la luna|la banana|la mucca|l'anatra|l'albero|la casa|l'orso|il biscotto|il fiore|l'elefante|il latte|l'autobus|la stella|la scarpa|la pecora|il palloncino|la rana","Dov'è {w}?","Sì! Bravo!","Evviva! Capolinea!","Tutti a bordo!","Nuovo viaggio",1],
+["pt","Português","pt-BR","o cachorro|o gato|a maçã|o carro|a bola|o peixe|o sol|a lua|a banana|a vaca|o pato|a árvore|a casa|o urso|o biscoito|a flor|o elefante|o leite|o ônibus|a estrela|o sapato|a ovelha|o balão|o sapo","Onde está {w}?","Sim! Muito bem!","Viva! Última parada!","Todos a bordo!","Nova viagem",2],
+["nl","Nederlands","nl-NL","de hond|de kat|de appel|de auto|de bal|de vis|de zon|de maan|de banaan|de koe|de eend|de boom|het huis|de beer|het koekje|de bloem|de olifant|de melk|de bus|de ster|de schoen|het schaap|de ballon|de kikker","Waar is {w}?","Ja! Goed zo!","Hoera! Eindstation!","Instappen!","Nieuwe rit",2],
+["pl","Polski","pl-PL","pies|kot|jabłko|samochód|piłka|ryba|słońce|księżyc|banan|krowa|kaczka|drzewo|dom|miś|ciastko|kwiatek|słoń|mleko|autobus|gwiazdka|but|owca|balon|żaba","Gdzie jest {w}?","Tak! Brawo!","Hura! Stacja końcowa!","Wsiadamy!","Nowa podróż",2],
+["sv","Svenska","sv-SE","hunden|katten|äpplet|bilen|bollen|fisken|solen|månen|bananen|kon|ankan|trädet|huset|björnen|kakan|blomman|elefanten|mjölken|bussen|stjärnan|skon|fåret|ballongen|grodan","Var är {w}?","Ja! Bra!","Hurra! Slutstation!","Alla ombord!","Ny resa",2],
+["el","Ελληνικά","el-GR","ο σκύλος|η γάτα|το μήλο|το αυτοκίνητο|η μπάλα|το ψάρι|ο ήλιος|το φεγγάρι|η μπανάνα|η αγελάδα|η πάπια|το δέντρο|το σπίτι|η αρκούδα|το μπισκότο|το λουλούδι|ο ελέφαντας|το γάλα|το λεωφορείο|το αστέρι|το παπούτσι|το πρόβατο|το μπαλόνι|ο βάτραχος","Πού είναι {w};","Ναι! Μπράβο!","Ζήτω! Τέρμα!","Όλοι στο τρένο!","Νέο ταξίδι",2],
+["zh","中文","zh-CN","狗|猫|苹果|汽车|球|鱼|太阳|月亮|香蕉|奶牛|鸭子|树|房子|熊|饼干|花|大象|牛奶|公交车|星星|鞋子|羊|气球|青蛙","{w}在哪里？","对！真棒！","好耶！终点站！","上车啦！","再坐一次",3],
+["ar","العربية","ar-SA","الكلب|القطة|التفاحة|السيارة|الكرة|السمكة|الشمس|القمر|الموزة|البقرة|البطة|الشجرة|البيت|الدب|البسكويت|الوردة|الفيل|الحليب|الحافلة|النجمة|الحذاء|الخروف|البالون|الضفدع","أين {w}؟","نعم! أحسنت!","هيا! المحطة الأخيرة!","الجميع إلى القطار!","رحلة جديدة",3],
+["ja","日本語","ja-JP","いぬ|ねこ|りんご|くるま|ボール|さかな|たいよう|おつきさま|バナナ|うし|あひる|木|おうち|くま|クッキー|おはな|ぞう|ぎゅうにゅう|バス|ほし|くつ|ひつじ|ふうせん|かえる","{w}はどこ？","そう！すごい！","やったー！しゅうてん！","しゅっぱつしんこう！","もういちど",4],
+["ko","한국어","ko-KR","강아지|고양이|사과|자동차|공|물고기|해|달|바나나|소|오리|나무|집|곰|쿠키|꽃|코끼리|우유|버스|별|신발|양|풍선|개구리","{w} 어디 있어?","맞아! 잘했어!","야호! 종점이야!","모두 타세요!","다시 출발",4],
+["ru","Русский","ru-RU","собака|кошка|яблоко|машина|мяч|рыба|солнце|луна|банан|корова|утка|дерево|дом|мишка|печенье|цветок|слон|молоко|автобус|звезда|ботинок|овца|шарик|лягушка","Где {w}?","Да! Молодец!","Ура! Конечная!","Все по вагонам!","Новая поездка",4],
+["tr","Türkçe","tr-TR","köpek|kedi|elma|araba|top|balık|güneş|ay|muz|inek|ördek|ağaç|ev|ayı|kurabiye|çiçek|fil|süt|otobüs|yıldız|ayakkabı|koyun|balon|kurbağa","{w} nerede?","Evet! Aferin!","Yaşasın! Son durak!","Herkes trene!","Yeni yolculuk",4],
+["hi","हिन्दी","hi-IN","कुत्ता|बिल्ली|सेब|गाड़ी|गेंद|मछली|सूरज|चाँद|केला|गाय|बतख|पेड़|घर|भालू|बिस्कुट|फूल|हाथी|दूध|बस|तारा|जूता|भेड़|गुब्बारा|मेंढक","{w} कहाँ है?","हाँ! शाबाश!","हुर्रे! आख़िरी स्टेशन!","सब सवार हो जाओ!","नई यात्रा",4]];
+const L={};RAW.forEach(r=>{L[r[0]]={name:r[1],tag:r[2],words:r[3].split("|"),find:w=>r[4].replace("{w}",w),yes:r[5],end:r[6],go:r[7],again:r[8],tier:r[9]}});
+const W=EM.map((e,i)=>({e,i}));
+const word=(x)=>L[lang].words[x.i];
+function hasVoice(){try{const p=L[lang].tag.slice(0,2);const v=speechSynthesis.getVoices();return !v.length||v.some(x=>x.lang.replace("_","-").toLowerCase().startsWith(p))}catch(e){return false}}
+const RTL={ar:1};
+const TR=[{e:"🚂",s:"steam"},{e:"🚄",s:"fast"},{e:"🚋",s:"tram"}];
+const C=["#f6c343","#4fa3e0","#9b6cd6","#3fb58a"];
+const $=id=>document.getElementById(id);
+const PIC=e=>(window.LPLook&&LPLook.fromEmoji(e))||e;
+let lang="en",cur=0,trip=[],stop=0,target=null;
+
+/* ---------- sound (synthesized with Web Audio) ---------- */
+let ac,noiseBuf;
+function A(){try{if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();const n=ac.sampleRate;noiseBuf=ac.createBuffer(1,n,n);const d=noiseBuf.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1}ac.resume();return ac}catch(e){return null}}
+function env(g,t,a,v,d){g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+d)}
+function tone(f,at,d,type,v,f2){const a=A();if(!a)return;const t=a.currentTime+at,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);env(g,t,.02,v,d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d+.05)}
+function noise(at,d,v,type,freq,q){const a=A();if(!a)return;const t=a.currentTime+at,s=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();s.buffer=noiseBuf;f.type=type;f.frequency.value=freq;f.Q.value=q||1;env(g,t,.01,v,d);s.connect(f).connect(g).connect(a.destination);s.start(t,Math.random()*.5);s.stop(t+d+.05)}
+let chugN=0;
+function chug(){const s=TR[cur].s;chugN++;
+ if(s=="steam"){noise(0,.16,chugN%2?.35:.55,"lowpass",700);if(chugN%4==0)noise(0,.25,.12,"highpass",3000)}
+ else{ if(chugN%2==0){tone(90,0,.08,"triangle",.35);tone(90,.07,.08,"triangle",.3)} noise(0,.05,.08,"bandpass",2500,4)}}
+function whistle(){const s=TR[cur].s;
+ if(s=="steam"){[523,622,784].forEach(f=>{tone(f,0,1.1,"triangle",.09,f*.98);tone(f*2,0,1.1,"sine",.02)});noise(0,1.1,.06,"bandpass",1500,2)}
+ else if(s=="fast"){tone(440,0,.4,"sawtooth",.06);tone(554,0,.4,"sawtooth",.05);tone(349,.45,.6,"sawtooth",.06);tone(440,.45,.6,"sawtooth",.05)}
+ else if(s=="tram"){for(let k=0;k<3;k++){tone(1318,k*.2,.5,"sine",.2);tone(2637,k*.2,.25,"sine",.05)}}
+ else{tone(784,0,.25,"sine",.18);tone(659,.25,.25,"sine",.18);tone(523,.5,.25,"sine",.18);tone(392,.75,.5,"sine",.18)}}
+function brakes(){tone(2600,0,1,"sawtooth",.02,2100);noise(0,1,.08,"bandpass",4000,6);noise(.9,.8,.18,"highpass",2000)}
+function dingdong(){tone(659,0,1.2,"sine",.25);tone(1318,0,.5,"sine",.04);tone(523,.55,1.6,"sine",.25);tone(1046,.55,.6,"sine",.04)}
+function doors(){noise(0,.9,.2,"highpass",1500);tone(880,.1,.12,"square",.03);tone(880,.3,.12,"square",.03)}
+function yay(){[523,659,784,1046].forEach((f,i)=>tone(f,i*.1,.4,"triangle",.18));for(let k=0;k<14;k++)noise(.5+k*.07+Math.random()*.03,.05,.25,"bandpass",1800,1.5)}
+function boing(){tone(330,0,.4,"sine",.3,110)}
+function fanfare(){[523,523,523,659,784,659,784,1046].forEach((f,i)=>tone(f,i*.16,.3,"square",.06));for(let k=0;k<30;k++)noise(1.3+k*.05+Math.random()*.04,.05,.25,"bandpass",1800,1.5)}
+function say(t,delay){if(!hasVoice()&&!(window.LP_CLIPS&&LP_CLIPS[lang]))return;setTimeout(()=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=L[lang].tag;u.rate=.8;u.pitch=1.2;speechSynthesis.speak(u)}catch(e){}},delay||0)}
+
+/* ---------- controls ---------- */
+function drawCtl(){const sel=$("langsel");if(!sel.options.length){RAW.forEach(r=>{const o=document.createElement("option");o.value=r[0];o.textContent=r[1];sel.appendChild(o)});sel.onchange=()=>{lang=sel.value;document.documentElement.dir=RTL[lang]?"rtl":"ltr";drawCtl();if(target)ask()}}
+ sel.value=lang;document.documentElement.dir=RTL[lang]?"rtl":"ltr";
+ $("pick").innerHTML="";TR.forEach((t,i)=>{const b=document.createElement("button");b.className="t";b.textContent=t.e;b.setAttribute("aria-pressed",i==cur);b.setAttribute("aria-label","train "+(i+1));b.onclick=()=>{cur=i;drawCtl();drawTrain();A();whistle()};$("pick").appendChild(b)});
+ $("start").textContent="▶ "+L[lang].go}
+function drawTrain(){const tr=$("train");const kept=[...tr.querySelectorAll(".win")].map(w=>w.querySelector("span")?w.querySelector("span").innerHTML:"");tr.innerHTML="";
+ for(let i=0;i<4;i++){const c=document.createElement("div");c.className="car";c.style.setProperty("--c",C[i]);c.innerHTML='<div class="win"><span>'+(kept[i]||"")+'</span></div><i class="wheel a"></i><i class="wheel b"></i>';tr.appendChild(c)}
+ const e=document.createElement("div");e.className="car engine";e.innerHTML='<span class="face">'+PIC(TR[cur].e)+'</span>';tr.appendChild(e)}
+function drawDots(){$("dots").innerHTML=trip.map((_,i)=>'<i class="'+(i<stop?"on":"")+'"></i>').join("")}
+
+/* ---------- clouds (project convention: puff clusters, drift independently) ---------- */
+const cloudBox=$("clouds"),clouds=[];
+function makeCloud(x){
+ const w=90+Math.random()*130,h=w*.5,top=10+Math.random()*68;
+ const el=document.createElement("div");el.className="cloud";el.style.width=w+"px";el.style.height=h+"px";el.style.top=top+"%";
+ const puffs=[[0,.55,.46,.6],[.22,.15,.42,.7],[.46,0,.46,.8],[.78,.28,.32,.55],[.16,.62,.7,.5]];
+ puffs.forEach(([px,py,pw,ph])=>{const i=document.createElement("i");i.style.left=(px*w)+"px";i.style.top=(py*h)+"px";i.style.width=(pw*w)+"px";i.style.height=(ph*h)+"px";el.appendChild(i)});
+ el.style.opacity=.75+Math.random()*.2;
+ el.dataset.speed=4+Math.random()*10;
+ el.dataset.w=w;
+ el.style.left=x+"px";
+ cloudBox.appendChild(el);clouds.push(el);
+}
+function initClouds(){const n=5;for(let i=0;i<n;i++)makeCloud(Math.random()*(scene.clientWidth||400));}
+function stepClouds(dt){clouds.forEach(el=>{let x=parseFloat(el.style.left)-el.dataset.speed*dt;
+ if(x<-parseFloat(el.dataset.w))x=(scene.clientWidth||400)+Math.random()*100;
+ el.style.left=x+"px"})}
+
+/* ---------- motion ---------- */
+const MAX=240;let v=0,mode="idle",driveT=0,sx=null,off=[0,0,0,0],chugAcc=0,smokeAcc=0,rot=0,last=0;
+const st=$("station"),scene=$("scene");
+initClouds();
+function stopX(){const tr=$("train").getBoundingClientRect(),sc=scene.getBoundingClientRect();return Math.max(tr.left-sc.left+tr.width/2-110,20)}
+function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);last=t;
+ if(mode=="drive"){v=Math.min(MAX,v+160*dt);driveT+=dt;
+  if(sx===null&&driveT>2.5){sx=scene.clientWidth+40;st.style.display="block";$("signtxt").textContent="?"}
+  if(sx!==null){const target=stopX(),dist=sx-target;if(dist<420)v=Math.max(22,MAX*dist/420);if(dist<170&&!st.braked){st.braked=1;brakes()}
+   sx-=v*dt;if(sx<=target){sx=target;v=0;mode="stopped";arrive()}}}
+ else if(mode=="leave"){v=Math.min(MAX,v+120*dt);sx-=v*dt;if(sx<-260){sx=null;st.style.display="none";mode="drive";driveT=0;st.braked=0}}
+ else if(mode=="end"){v=Math.max(0,v-200*dt)}
+ stepClouds(dt);
+ off.b-=v*dt*.16;off.f-=v*dt*.32;off[2]-=v*dt*.6;off[3]-=v*dt;
+ $("l1b").style.backgroundPositionX=off.b+"px";$("l1f").style.backgroundPositionX=off.f+"px";
+ $("l2").style.backgroundPositionX=off[2]+"px, "+(off[2]+37)+"px";
+ $("l3").style.backgroundPositionX=off[3]+"px, "+off[3]+"px";
+ if(sx!==null)st.style.left=sx+"px";
+ rot+=v*dt*4;document.querySelectorAll(".wheel").forEach(w=>w.style.transform="rotate("+rot+"deg)");
+ $("train").style.transform=v>5?"translateY("+(Math.sin(t/60)*1.2)+"px)":"none";
+ chugAcc+=v*dt;if(chugAcc>55){chugAcc=0;chug()}
+ if(TR[cur].s=="steam"){smokeAcc+=dt*(v>5?(2+v/MAX*4):.6);if(smokeAcc>1){smokeAcc=0;puff()}}
+ requestAnimationFrame(frame)}
+function puff(){const e=$("train").lastChild.getBoundingClientRect(),sc=scene.getBoundingClientRect(),p=document.createElement("div");p.className="puff";p.style.left=(e.left-sc.left+e.width*.62)+"px";p.style.top=(e.top-sc.top-6)+"px";scene.appendChild(p);setTimeout(()=>p.remove(),1700)}
+
+/* ---------- game ---------- */
+function newTrip(){trip=[...W].sort(()=>Math.random()-.5).slice(0,4);stop=0;target=null;drawTrain();$("train").querySelectorAll(".win").forEach(w=>w.textContent="");drawDots();
+ $("overlay").hidden=true;A();whistle();say(L[lang].go,1200);mode="drive";driveT=0;v=0}
+function arrive(){target=trip[stop];dingdong();setTimeout(doors,900);
+ setTimeout(()=>{$("signtxt").textContent=word(target);const opts=[target,...W.filter(w=>w!=target).sort(()=>Math.random()-.5).slice(0,2)].sort(()=>Math.random()-.5);
+  const ch=$("choices");ch.innerHTML="";opts.forEach(o=>{const b=document.createElement("button");b.innerHTML=PIC(o.e);b.setAttribute("aria-label",word(o));b.onclick=()=>guess(o,b);ch.appendChild(b)});ask()},1500)}
+function ask(){$("signtxt").textContent=word(target);say(L[lang].find(word(target)))}
+let busy=false,lastWrong=0;
+function guess(o,b){if(busy||!target)return;
+ if(o!==target){const now=performance.now();if(now-lastWrong<120)return;lastWrong=now;
+  boing();b.classList.remove("no");void b.offsetWidth;b.classList.add("no");say(word(target),300);return}
+ busy=true;b.classList.add("yes");yay();say(L[lang].yes+" "+word(target),200);
+ const win=$("train").querySelectorAll(".win")[stop];win.innerHTML="<span>"+PIC(target.e)+"</span>";stop++;drawDots();
+ setTimeout(()=>{$("choices").innerHTML="";target=null;busy=false;
+  if(stop>=trip.length){finish();return}
+  doors();setTimeout(()=>{whistle();mode="leave"},900)},1800)}
+function finish(){fanfare();say(L[lang].end,300);mode="end";
+ for(let i=0;i<40;i++){const c=document.createElement("div");c.className="conf";c.textContent=["🎉","⭐","🎈","✨"][i%4];c.style.left=Math.random()*100+"%";c.style.animationDelay=Math.random()*1.5+"s";scene.appendChild(c);setTimeout(()=>c.remove(),4200)}
+ setTimeout(()=>{const o=$("overlay");o.innerHTML='<div class="cheer">'+L[lang].end+'<button class="big" id="start">▶ '+L[lang].again+'</button></div>';o.hidden=false;
+  $("start").onclick=()=>{st.style.display="none";sx=null;st.braked=0;newTrip()}},2200)}
+$("again").onclick=()=>{if(target)ask()};
+$("start").onclick=newTrip;
+
+/* ---------- smash-friendly input ----------
+   A toddler mashes the keyboard, taps everywhere, or bangs several
+   choice buttons at once. Any key on the keyboard picks a choice (or
+   starts/restarts the ride), pointer taps anywhere near a choice still
+   count via the buttons themselves, and nothing here can get "stuck"
+   waiting for a precise click. */
+function smashPick(){
+ const opts=[...document.querySelectorAll(".choices button")];
+ if(opts.length){opts[Math.floor(Math.random()*opts.length)].click();return true}
+ return false;
+}
+window.addEventListener("keydown",e=>{
+ if(e.metaKey||e.ctrlKey||e.altKey)return;
+ if(smashPick())return;
+ const startBtn=document.getElementById("start");
+ if(startBtn&&!$("overlay").hidden)startBtn.click();
+});
+// Tapping or clicking ANYWHERE in the scene while choices are up counts as a
+// smash too, not just a precise hit on a picture button — a toddler's palm
+// landing between the pictures should still do something fun.
+scene.addEventListener("pointerdown",e=>{
+ if(e.target.closest(".choices button,.langsel,.ctl,.big,.say"))return;
+ smashPick();
+});
+
+/* ---------- big pointing-finger cursor ---------- */
+const cursor=$("cursor");let cursorSeen=false;
+window.addEventListener("pointermove",e=>{
+ if(e.pointerType==="touch")return;
+ cursorSeen=true;cursor.style.transform="translate("+e.clientX+"px,"+e.clientY+"px)";
+ const t=e.target,tap=t.closest("button,select,.choices button");
+ cursor.classList.toggle("hover",!!tap);
+});
+window.addEventListener("pointerdown",e=>{if(e.pointerType!=="touch")cursor.classList.add("down")});
+window.addEventListener("pointerup",()=>cursor.classList.remove("down"));
+window.addEventListener("pointerleave",()=>{if(cursorSeen)cursor.style.opacity="0"});
+window.addEventListener("pointerenter",()=>{cursor.style.opacity="1"});
+cursor.style.transform="translate(-100px,-100px)";
+
+drawCtl();drawTrain();trip=[0,0,0,0];drawDots();requestAnimationFrame(frame);
+</script>
+
+</body></html>
