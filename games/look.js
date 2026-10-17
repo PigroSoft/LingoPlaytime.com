@@ -6,7 +6,7 @@
    - gradients usable as fill="url(#k-<name>)" in any inline SVG on the page */
 (function () {
   var C = {
-    night: "#140f3a", night2: "#241c63", night3: "#3a2a86", hill1: "#2c2275", hill2: "#3d2f99", hill3: "#5240b8",
+    night: "#1d4690", night2: "#2a5fb0", night3: "#3d86d8", hill1: "#2f6bc0", hill2: "#3f84d6", hill3: "#58a0e6",
     yellow: "#ffd23f", orange: "#ff8a3d", pink: "#ff4f8b", red: "#ff4d5e", teal: "#20c9b0", green: "#58d26b",
     blue: "#3aa0ff", violet: "#8b5cf6", cream: "#fff2d8", white: "#f7f4ff", brown: "#b96a3c", grey: "#9aa3c7", ink: "#1a1440"
   };
