@@ -229,7 +229,7 @@ function puff(){const e=$("train").lastChild.getBoundingClientRect(),sc=scene.ge
 function newTrip(){trip=[...W].sort(()=>Math.random()-.5).slice(0,4);stop=0;target=null;drawTrain();$("train").querySelectorAll(".win").forEach(w=>w.textContent="");drawDots();
  $("overlay").hidden=true;A();whistle();say(L[lang].go,1200);mode="drive";driveT=0;v=0}
 function arrive(){target=trip[stop];dingdong();setTimeout(doors,900);
- setTimeout(()=>{$("signtxt").textContent=word(target);const opts=[target,...W.filter(w=>w!=target).sort(()=>Math.random()-.5).slice(0,2)].sort(()=>Math.random()-.5);
+ setTimeout(()=>{$("signtxt").textContent=word(target);const opts=[target,...W.filter(w=>w!=target).sort(()=>Math.random()-.5).slice(0,((window.LP_SETTINGS||{}).age||0)<1?1:((window.LP_SETTINGS||{}).age||0)>=2?3:2)].sort(()=>Math.random()-.5);
   const ch=$("choices");ch.innerHTML="";opts.forEach(o=>{const b=document.createElement("button");b.innerHTML=PIC(o.e);b.setAttribute("aria-label",word(o));b.onclick=()=>guess(o,b);ch.appendChild(b)});ask()},1500)}
 function ask(){$("signtxt").textContent=word(target);say(L[lang].find(word(target)))}
 let busy=false,lastWrong=0;

@@ -223,6 +223,7 @@ LP.mash((e,x,y)=>{
  const g=e.target.closest&&e.target.closest(".obj");
  if(g&&g.dataset.done){const c=g.dataset.c;g.classList.remove("wig");void g.getBBox();g.classList.add("wig");splatSound(NOTE[c]);bubble(word(c),others(c));LP.say(word(c));return}
  // a tap anywhere paints the next grey thing, so the smallest hands always get colour
+ if(!g&&LP.age>=2){const n=next();if(n){n.classList.remove("wig");void n.getBBox();n.classList.add("wig")}return} // big kids have to aim; a stray tap only wiggles a grey thing
  const t=g&&!g.dataset.done?g:next();if(t)paint(t,g?x:null,g?y:null);
 });
 </script>

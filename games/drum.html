@@ -118,7 +118,7 @@ function hit(i,user){
  }
 }
 // copy mode
-let pattern=[],got=0,state='idle',level=2;
+let pattern=[],got=0,state='idle',level=((window.LP_SETTINGS||{}).age||0)>=2?3:2;
 function renderLights(n){lights.innerHTML='';for(let k=0;k<n;k++)lights.appendChild(document.createElement('span'))}
 function round(){
  if(mode!=='copy')return;state='play';got=0;
@@ -130,11 +130,13 @@ function round(){
 function win(){
  show(L[lang].yay);say(L[lang].yay+(kid?' '+kid:''));
  for(let k=0;k<18;k++){const c=document.createElement('div');c.className='conf';c.textContent=['🎉','⭐','🥁','🎊'][k%4];c.style.left=Math.random()*100+'vw';c.style.top=Math.random()*20+'vh';document.body.appendChild(c);setTimeout(()=>c.remove(),1500)}
- level=level>=5?2:level+1;setTimeout(round,2200);
+ level=level>=5?SL:level+1;setTimeout(round,2200);
 }
+const SL=((window.LP_SETTINGS||{}).age||0)>=2?3:2;
+const START=((window.LP_SETTINGS||{}).age||0)>=1?'copy':'free';
 function setMode(m){mode=m;document.getElementById('mFree').classList.toggle('on',m==='free');document.getElementById('mCopy').classList.toggle('on',m==='copy');
  lights.innerHTML='';hint.textContent='';word.textContent='';
- if(m==='copy'){level=2;round()}else{hint.textContent='🥁 🥁 🥁'}}
+ if(m==='copy'){level=SL;round()}else{hint.textContent='🥁 🥁 🥁'}}
 document.getElementById('mFree').onclick=()=>setMode('free');
 document.getElementById('mCopy').onclick=()=>setMode('copy');
 
@@ -146,7 +148,7 @@ Object.keys(L).forEach(k=>{const b=document.createElement('button');b.className=
 addEventListener('keydown',e=>{if(e.repeat||!ac)return;if(e.key==='Tab')return;e.preventDefault();hit((e.key.charCodeAt(0)||0)%4,true)});
 
 // start
-document.getElementById('go').onclick=()=>{ac=new (window.AudioContext||window.webkitAudioContext)();if(window.LPS)LPS.warm(ac);document.getElementById('start').hidden=true;hint.textContent='🥁 🥁 🥁';say(kid?`${kid}!`:L[lang].drums[0])};
+document.getElementById('go').onclick=()=>{ac=new (window.AudioContext||window.webkitAudioContext)();if(window.LPS)LPS.warm(ac);document.getElementById('start').hidden=true;hint.textContent='🥁 🥁 🥁';say(kid?`${kid}!`:L[lang].drums[0]);if(START==='copy')setTimeout(()=>setMode('copy'),1800)};
 
 // cursor
 const cur=document.getElementById('cursor');

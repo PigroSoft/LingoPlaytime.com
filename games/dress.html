@@ -40,6 +40,7 @@ body.out .rail{opacity:0;pointer-events:none}
 .item svg{width:100%;height:100%}
 .item:hover{transform:translateY(-3px)}
 .item:focus-visible{outline:4px solid var(--sky);outline-offset:3px}
+.item.no{animation:nope .4s}.item.hint{box-shadow:0 0 0 6px #ffd23f,0 0 30px #ffd23f}@keyframes nope{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .item.used{opacity:.25;pointer-events:none;transform:scale(.85)}
 @media (prefers-reduced-motion:reduce){.drop,.flake{animation:none}.cl,#kidwrap{transition:none}}
 </style>
@@ -143,17 +144,24 @@ function weatherFx(el,kind,n){
  if(kind==="sun"){el.innerHTML=`<div class="bigsun" style="${n<20?"width:46%;height:46%;right:12%;top:12%":""}"></div>`;return}
  for(let i=0;i<n;i++){const d=document.createElement("div");d.className=kind==="rain"?"drop":"flake";d.style.left=Math.random()*100+"%";d.style.animationDuration=(kind==="rain"?.6+Math.random()*.5:3+Math.random()*3)+"s";d.style.animationDelay=-Math.random()*4+"s";el.appendChild(d)}
 }
+// 5 to 7 year olds get a few clothes that do not belong to the weather mixed in, and have to choose
+function railItems(){
+ const own=ROUNDS[weather];if(LP.age<2)return own;
+ const decoy=[...new Set(Object.values(ROUNDS).flat())].filter(i=>!own.includes(i)).sort(()=>Math.random()-.5).slice(0,3);
+ return [...own,...decoy].sort(()=>Math.random()-.5);
+}
 function startRound(){
  weather=ORDER[round%ORDER.length];worn=new Set();busy=false;
  document.body.classList.remove("out");
  document.querySelectorAll(".cl").forEach(g=>g.classList.remove("on"));
  weatherFx($("win"),weather,14);
  $("outside").className="outside "+weather;
- $("rail").innerHTML=ROUNDS[weather].map(id=>`<button type="button" class="item" data-item="${id}" aria-label="${word(id)}" data-tap>${icon(id)}</button>`).join("");
+ $("rail").innerHTML=railItems().map(id=>`<button type="button" class="item" data-item="${id}" aria-label="${word(id)}" data-tap>${icon(id)}</button>`).join("");
  bubble(L()[weather]);LP.say(L()[weather]);
 }
 function wear(id){
- if(busy||worn.has(id)||!ROUNDS[weather].includes(id))return;
+ if(busy||worn.has(id))return;
+ if(!ROUNDS[weather].includes(id)){const b=document.querySelector(`[data-item="${id}"]`);if(b){b.classList.remove("no");void b.offsetWidth;b.classList.add("no")}LP.sfx.boing&&LP.sfx.boing();bubble(word(id));LP.say(word(id));return}
  worn.add(id);
  document.querySelector(`[data-cl="${id}"]`).classList.add("on");
  const b=document.querySelector(`[data-item="${id}"]`);if(b){b.classList.add("used");const r=b.getBoundingClientRect();LP.burst(r.left+r.width/2,r.top,6)}
@@ -185,6 +193,7 @@ LP.mash((e)=>{
  if(busy)return;
  const b=e.target.closest&&e.target.closest("[data-item]");
  if(b){wear(b.dataset.item);return}
+ if(LP.age>=2){const n=ROUNDS[weather].find(i=>!worn.has(i)),nb=n&&document.querySelector(`[data-item="${n}"]`);if(nb){nb.classList.remove("no");nb.classList.add("hint");setTimeout(()=>nb.classList.remove("hint"),1200)}return}
  nextItem(); // a tap anywhere else dresses the next layer
 });
 </script>

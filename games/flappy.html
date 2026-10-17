@@ -123,7 +123,7 @@ let charKey="bird";try{charKey=localStorage.getItem("fw-char")||charKey}catch(e)
 if(!CHARS[charKey])charKey="bird";charSel.value=charKey;
 charSel.onchange=()=>{charKey=charSel.value;try{localStorage.setItem("fw-char",charKey)}catch(e){};charSel.blur()};
 
-const modeBtn=document.getElementById("mode");let toddler=true;
+const modeBtn=document.getElementById("mode");let toddler=((window.LP_SETTINGS||{}).age||0)<2;modeBtn.setAttribute("aria-pressed",toddler);modeBtn.textContent=toddler?"🧸 Toddler":"🎯 Big Kids";
 modeBtn.onclick=()=>{toddler=!toddler;modeBtn.setAttribute("aria-pressed",toddler);modeBtn.textContent=toddler?"🧸 Toddler":"🎯 Big Kids";modeBtn.blur();bag=[];reset()};
 function words(){return toddler?W:HARD}
 

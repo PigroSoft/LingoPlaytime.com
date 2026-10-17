@@ -1231,6 +1231,7 @@ nav{background:linear-gradient(#4fc777,#3fae6a)}
     const d = freshBus();
     if (ctx) later(350, () => jingle(now() + .02, d));
     setTimeout(() => { doors.hidden = true; }, 1100);
+    if (((window.LP_SETTINGS || {}).age || 0) >= 1) setTimeout(() => setMode('find'), 2600);
   });
   $('#barnHome').addEventListener('click', () => {
     audio();

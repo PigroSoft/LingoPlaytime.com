@@ -230,6 +230,7 @@ LP.mash((e)=>{
  let el=e.target.closest&&e.target.closest("[data-id]");
  let id=el?el.dataset.id:null;
  const again=id&&id===lastPt&&Date.now()-lastPtAt<8000;lastPt=id;lastPtAt=Date.now();
+ if(!id&&LP.age>=2){const c=LP.next("arkhint",DATA.words.filter(w=>!aboard.has(w.id))).id,cd=document.querySelector(`[data-id="${c}"]`);if(cd){cd.classList.remove("pop");void cd.offsetWidth;cd.classList.add("pop")}return} // big kids aim at an animal
  if(!id||again){ // a tap anywhere, or any key, picks an animal that isn't aboard yet
   const left=DATA.words.filter(w=>!aboard.has(w.id));
   const pool0=left.length?left:DATA.words,pool=pool0.filter(w=>w.id!==lastPt);id=LP.next("ark",pool.length?pool:pool0).id;el=null;

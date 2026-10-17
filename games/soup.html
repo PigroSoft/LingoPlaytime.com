@@ -212,7 +212,7 @@ const cook=()=>st.name||P[lang()].chef;
 // setup
 $("name").value=st.name;
 $("chips").innerHTML=Object.entries(LANGS).map(([k,v])=>`<label><input type="checkbox" id="l_${k}" value="${k}" ${st.langs.includes(k)?"checked":""}>${v.name}</label>`).join("");
-$(st.mode==="order"?"m_order":"m_free").checked=true;
+st.mode=((window.LP_SETTINGS||{}).age||0)>=1?"order":"free";$(st.mode==="order"?"m_order":"m_free").checked=true;
 $("form").addEventListener("submit",e=>{e.preventDefault();
   st.name=$("name").value.trim();
   const picked=[...document.querySelectorAll("#chips input:checked")].map(i=>i.value);
