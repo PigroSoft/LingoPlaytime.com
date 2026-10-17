@@ -21,6 +21,8 @@ svg#scene{width:100%;height:100%}
 .food.no{animation:nope .4s}
 .food.glow .hit{stroke:#F6C033;stroke-width:5;fill:#F6C03333}
 .pop{transform-box:fill-box;transform-origin:center;animation:pop .5s cubic-bezier(.3,1.6,.5,1)}
+.shake{transform-box:fill-box;transform-origin:50% 100%;animation:shk .22s ease-in-out 16}
+@keyframes shk{25%{transform:rotate(-3deg) scale(1.03)}75%{transform:rotate(3deg) scale(1.03)}}
 .wobble{transform-box:fill-box;transform-origin:50% 0;animation:wob 1s ease-in-out infinite}
 .flap{transform-box:fill-box;transform-origin:center;animation:flap .35s ease-in-out infinite}
 @keyframes bob{50%{translate:0 -8px}}
@@ -28,7 +30,7 @@ svg#scene{width:100%;height:100%}
 @keyframes pop{0%{transform:scale(.2)}100%{transform:scale(1)}}
 @keyframes wob{25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
 @keyframes flap{50%{transform:scaleX(.45)}}
-@media (prefers-reduced-motion:reduce){.food,.food.bob,.pop,.wobble,.flap{animation:none!important;transition:none}}
+@media (prefers-reduced-motion:reduce){.food,.food.bob,.pop,.wobble,.flap,.shake{animation:none!important;transition:none}}
 </style>
 </head>
 <body>
@@ -93,17 +95,19 @@ let slots=[],want=null,misses=0,busy=false,eaten=0,goal=3,fed=0;
 const lastFoods=[];
 
 function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
-const headX=()=>150+(eaten+1)*56;
+const rad=()=>28+eaten*2.6, step=()=>38+eaten*2.4, base=()=>130;
+const headX=()=>base()+(eaten+1)*step();
+const catY=()=>516-12-rad();
 
-/* the caterpillar: tail, a round body segment for every bite, and a yellow face */
+/* the caterpillar: tail, a round body segment for every bite (all of it fatter after each meal), and a yellow face */
 function drawCat(popLast){
- let s="";
+ let s="";const r=rad(),cy=catY();
  for(let i=0;i<=eaten;i++){
-  const x=150+i*56,col=i%2?"#9b7bff":"#ff7eb6",last=popLast&&i===eaten;
-  s+=`<g${last?' class="pop"':""}><circle cx="${x}" cy="478" r="34" fill="${col}"/><circle cx="${x-8}" cy="466" r="8" fill="#ffffff44"/><path d="M${x-14} 508v14M${x+14} 508v14" stroke="#18264A" stroke-width="6" stroke-linecap="round"/></g>`;
+  const x=base()+i*step(),col=i%2?"#9b7bff":"#ff7eb6",last=popLast&&i===eaten;
+  s+=`<g${last?' class="pop"':""}><circle cx="${x}" cy="${cy}" r="${r}" fill="${col}"/><circle cx="${x-r*.25}" cy="${cy-r*.35}" r="${r*.24}" fill="#ffffff44"/><path d="M${x-r*.4} ${cy+r-2}v14M${x+r*.4} ${cy+r-2}v14" stroke="#18264A" stroke-width="6" stroke-linecap="round"/></g>`;
  }
- const hx=headX();
- s+=`<g><circle cx="${hx}" cy="470" r="40" fill="#ffd23f"/><circle cx="${hx+14}" cy="458" r="9" fill="#fff"/><circle cx="${hx-10}" cy="458" r="9" fill="#fff"/><circle cx="${hx+16}" cy="459" r="4.5" fill="#18264A"/><circle cx="${hx-8}" cy="459" r="4.5" fill="#18264A"/><ellipse cx="${hx+22}" cy="480" rx="14" ry="${busy?9:6}" fill="#c1342a"/><path d="M${hx-12} 436l-8-30M${hx+14} 434l8-30" stroke="#18264A" stroke-width="5" stroke-linecap="round"/><circle cx="${hx-20}" cy="404" r="8" fill="#4a9bf5"/><circle cx="${hx+22}" cy="404" r="8" fill="#4a9bf5"/><path d="M${hx+8} 500v14" stroke="#18264A" stroke-width="6" stroke-linecap="round"/></g>`;
+ const hx=headX(),hr=r+8,hy=cy-4;
+ s+=`<g><circle cx="${hx}" cy="${hy}" r="${hr}" fill="#ffd23f"/><circle cx="${hx+hr*.35}" cy="${hy-hr*.25}" r="${hr*.23}" fill="#fff"/><circle cx="${hx-hr*.25}" cy="${hy-hr*.25}" r="${hr*.23}" fill="#fff"/><circle cx="${hx+hr*.4}" cy="${hy-hr*.22}" r="${hr*.11}" fill="#18264A"/><circle cx="${hx-hr*.2}" cy="${hy-hr*.22}" r="${hr*.11}" fill="#18264A"/><ellipse cx="${hx+hr*.55}" cy="${hy+hr*.25}" rx="${hr*.34}" ry="${busy?hr*.22:hr*.15}" fill="#c1342a"/><path d="M${hx-hr*.3} ${hy-hr*.9}l-8-30M${hx+hr*.35} ${hy-hr*.9}l8-30" stroke="#18264A" stroke-width="5" stroke-linecap="round"/><circle cx="${hx-hr*.3-8}" cy="${hy-hr*.9-30}" r="8" fill="#4a9bf5"/><circle cx="${hx+hr*.35+8}" cy="${hy-hr*.9-30}" r="8" fill="#4a9bf5"/><path d="M${hx+hr*.2} ${hy+hr-2}v14" stroke="#18264A" stroke-width="6" stroke-linecap="round"/></g>`;
  $("cat").innerHTML=s;$("cat").style.opacity=1;
 }
 function place(slot,i,n){return {x:450+(i-(n-1)/2)*(n>4?150:175)-50*S,y:150}}
@@ -127,16 +131,16 @@ function eat(slot){
  if(busy||!slots.includes(slot))return;busy=true;want=null;misses=0;
  document.querySelectorAll(".glow").forEach(x=>x.classList.remove("glow"));
  const id=slot.id,el=slot.el;
- el.style.transform=`translate(${headX()+22-50*.25}px,${478-50*.25}px) scale(.25)`;LP.sfx.whoosh();
+ el.style.transform=`translate(${headX()+rad()*.5-12}px,${catY()-16}px) scale(.25)`;LP.sfx.whoosh();
  setTimeout(()=>{
   el.style.opacity=0;munchSound();eaten++;fed++;drawCat(true);
   const r=$("cat").getBoundingClientRect();LP.burst(r.right-60,r.top+40,10);
   bubble(cap(w(id))+"  "+eaten);
-  LP.say(w(id));LP.say(L()["n"+eaten],true);
+  LP.say(w(id));
  },650);
  setTimeout(()=>{
   slot.el.remove();slots.splice(slots.indexOf(slot),1);
-  if(eaten>=TARGET){metamorph();return}
+  if(eaten>=TARGET){fullBelly();return}
   // a new food takes the empty place so there are always the same number to pick from
   const ids=Object.keys(T).filter(i=>!slots.some(s=>s.id===i));
   const nid=LP.next("munch-new",ids);const ns=addFood(nid,slot.i,goal);
@@ -145,8 +149,19 @@ function eat(slot){
  },1500);
 }
 function ask(){if(!slots.length)return;want=LP.next("munch-ask",slots.map(s=>s.id));misses=0;const t=fill(L().where,want);bubble(t);LP.say(t)}
+function burp(t){LP.tone(150,.35,"sawtooth",.12,t,60);LP.noise(.3,.12,"lowpass",300,1,t)}
+function fullBelly(){
+ // after the seventh bite: a happy hum, a burp, a squeak and a yawn, with a wiggle, before the cocoon
+ busy=true;want=null;$("foods").style.transition="opacity .5s";$("foods").style.opacity=0;const c=$("cat");c.classList.add("shake");bubble("Mmmm...");
+ [0,.35,.7].forEach((t,i)=>LP.tone(220+i*60,.3,"sine",.12,t,260+i*60));
+ burp(1.3);LP.tone(900,.15,"triangle",.1,2.1,1500);LP.tone(1100,.15,"triangle",.1,2.35,1800);
+ LP.tone(420,.6,"sine",.1,2.9,160);
+ setTimeout(()=>{bubble("Hmpf!")},1300);setTimeout(()=>{bubble("Hee hee!")},2100);setTimeout(()=>{bubble("Aaah...")},2900);
+ setTimeout(()=>{c.classList.remove("shake");metamorph()},3700);
+}
 function metamorph(){
- busy=true;
+ busy=true;want=null;
+ $("foods").style.transition="opacity .5s";$("foods").style.opacity=0;
  // the caterpillar hangs up a cocoon, rests, and a butterfly flies out
  $("cat").style.transition="opacity .6s";$("cat").style.opacity=0;
  const c=$("cocoon");c.innerHTML=`<g class="wobble"><path d="M450 150v90" stroke="#8a4724" stroke-width="5"/><ellipse cx="450" cy="300" rx="44" ry="78" fill="#c9a97d"/><path d="M412 270c24 14 52 14 76 0M408 300c26 14 58 14 84 0M412 332c24 12 52 12 76 0" stroke="#a58455" stroke-width="5" fill="none" stroke-linecap="round"/></g>`;
@@ -163,7 +178,7 @@ function metamorph(){
  setTimeout(()=>{$("fly").style.opacity=0;newRound()},6800);
 }
 function newRound(){
- eaten=0;goal=[3,4,5][Math.min(2,LP.age)];$("cat").style.opacity=1;drawCat(false);
+ eaten=0;goal=[3,4,5][Math.min(2,LP.age)];$("foods").style.opacity=1;$("cat").style.opacity=1;drawCat(false);
  setFoods();busy=false;want=null;
  const t=L().title;bubble(t);
  if(LP.age>=2)setTimeout(ask,600);
