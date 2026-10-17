@@ -160,7 +160,7 @@ LP.mash((e)=>{
  // a tap off the child: little ones get a random part named; when asked, it points them to the answer
  if(want&&LP.age<2){tapPart(want);return}
  if(want){document.querySelector(`[data-part="${want}"]`).classList.add("glow");return}
- const ids=DATA.words.map(x=>x.id);tapPart(ids[Math.floor(Math.random()*ids.length)]);
+ tapPart(LP.next("face",DATA.words.map(x=>x.id)));
 });
 document.querySelectorAll("[data-part]").forEach(g=>g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.stopPropagation();e.preventDefault();tapPart(g.dataset.part)}}));
 </script>

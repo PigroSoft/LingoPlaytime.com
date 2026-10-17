@@ -453,22 +453,22 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
   // Settings-bar copy, in the home language.
   const B = {
     en:{playing:"Playing in",back:"All games",save:"Save",cancel:"Cancel",locked:"Name, age and languages are locked",sub:"Hold to change",
-      active:"Games play in",voices:"Voices",voicesHint:"Pick the voice that sounds right for each language. Tap ▶ to hear it.",hear:"Hear it",auto:"Best available",none:"No voice for this language on this device. Words will show without sound.",
+      active:"Games play in",voices:"Voices",voicesHint:"Pick the voice that sounds right for each language. Tap ▶ to hear it.",hear:"Hear it",recorded:"Recorded voice (best)",auto:"Best available",none:"No voice for this language on this device. Words will show without sound.",
       note:(g,w,h)=>`${g} doesn't speak ${w} yet, so it's playing in ${h}.`},
     de:{playing:"Spielt auf",back:"Alle Spiele",save:"Speichern",cancel:"Abbrechen",locked:"Name, Alter und Sprachen gesperrt",sub:"Zum Ändern gedrückt halten",
-      active:"Spiele laufen auf",voices:"Stimmen",voicesHint:"Wähle für jede Sprache die Stimme, die richtig klingt. Tippe auf ▶ zum Anhören.",hear:"Anhören",auto:"Beste verfügbare",none:"Auf diesem Gerät gibt es keine Stimme für diese Sprache. Die Wörter erscheinen ohne Ton.",
+      active:"Spiele laufen auf",voices:"Stimmen",voicesHint:"Wähle für jede Sprache die Stimme, die richtig klingt. Tippe auf ▶ zum Anhören.",hear:"Anhören",recorded:"Aufgenommene Stimme (beste)",auto:"Beste verfügbare",none:"Auf diesem Gerät gibt es keine Stimme für diese Sprache. Die Wörter erscheinen ohne Ton.",
       note:(g,w,h)=>`${g} gibt es noch nicht auf ${w}. Es läuft auf ${h}.`},
     es:{playing:"Jugando en",back:"Todos los juegos",save:"Guardar",cancel:"Cancelar",locked:"Nombre, edad e idiomas bloqueados",sub:"Mantén pulsado para cambiar",
-      active:"Los juegos van en",voices:"Voces",voicesHint:"Elige la voz que suene bien en cada idioma. Toca ▶ para oírla.",hear:"Escuchar",auto:"La mejor disponible",none:"No hay voz para este idioma en este dispositivo. Las palabras se verán sin sonido.",
+      active:"Los juegos van en",voices:"Voces",voicesHint:"Elige la voz que suene bien en cada idioma. Toca ▶ para oírla.",hear:"Escuchar",recorded:"Voz grabada (la mejor)",auto:"La mejor disponible",none:"No hay voz para este idioma en este dispositivo. Las palabras se verán sin sonido.",
       note:(g,w,h)=>`${g} aún no está en ${w}, así que se juega en ${h}.`},
     fr:{playing:"On joue en",back:"Tous les jeux",save:"Enregistrer",cancel:"Annuler",locked:"Prénom, âge et langues verrouillés",sub:"Maintenir pour modifier",
-      active:"Les jeux sont en",voices:"Voix",voicesHint:"Choisissez la voix qui sonne juste pour chaque langue. Touchez ▶ pour l'écouter.",hear:"Écouter",auto:"La meilleure disponible",none:"Aucune voix pour cette langue sur cet appareil. Les mots s'affichent sans son.",
+      active:"Les jeux sont en",voices:"Voix",voicesHint:"Choisissez la voix qui sonne juste pour chaque langue. Touchez ▶ pour l'écouter.",hear:"Écouter",recorded:"Voix enregistrée (la meilleure)",auto:"La meilleure disponible",none:"Aucune voix pour cette langue sur cet appareil. Les mots s'affichent sans son.",
       note:(g,w,h)=>`${g} n'existe pas encore en ${w}, on joue donc en ${h}.`},
     it:{playing:"Si gioca in",back:"Tutti i giochi",save:"Salva",cancel:"Annulla",locked:"Nome, età e lingue bloccati",sub:"Tieni premuto per cambiare",
-      active:"I giochi sono in",voices:"Voci",voicesHint:"Scegli la voce giusta per ogni lingua. Tocca ▶ per sentirla.",hear:"Ascolta",auto:"La migliore disponibile",none:"Nessuna voce per questa lingua su questo dispositivo. Le parole appariranno senza suono.",
+      active:"I giochi sono in",voices:"Voci",voicesHint:"Scegli la voce giusta per ogni lingua. Tocca ▶ per sentirla.",hear:"Ascolta",recorded:"Voce registrata (la migliore)",auto:"La migliore disponibile",none:"Nessuna voce per questa lingua su questo dispositivo. Le parole appariranno senza suono.",
       note:(g,w,h)=>`${g} non è ancora in ${w}, quindi si gioca in ${h}.`},
     pt:{playing:"A jogar em",back:"Todos os jogos",save:"Guardar",cancel:"Cancelar",locked:"Nome, idade e línguas bloqueados",sub:"Segure para mudar",
-      active:"Os jogos são em",voices:"Vozes",voicesHint:"Escolha a voz que soa bem em cada língua. Toque em ▶ para ouvir.",hear:"Ouvir",auto:"A melhor disponível",none:"Não há voz para esta língua neste aparelho. As palavras aparecem sem som.",
+      active:"Os jogos são em",voices:"Vozes",voicesHint:"Escolha a voz que soa bem em cada língua. Toque em ▶ para ouvir.",hear:"Ouvir",recorded:"Voz gravada (a melhor)",auto:"A melhor disponível",none:"Não há voz para esta língua neste aparelho. As palavras aparecem sem som.",
       note:(g,w,h)=>`${g} ainda não está em ${w}, por isso joga-se em ${h}.`}
   };
   // What the Settings voice check says, per language.
@@ -576,13 +576,21 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
       const vs=LPVoice.list(LPVoice.tag(c)),pick=(draft.voices||{})[c]||"";
       const head=`<span class="lname" lang="${c}"><span class="code">${c.toUpperCase()}</span>${esc(L[c].own)}</span>`;
       if(!vs.length)return `<div class="vrow">${head}<span class="none">${esc(x.none)}</span></div>`;
-      const opts=`<option value="">${esc(x.auto)} (${esc(vs[0].name)})</option>`+vs.map(v=>`<option value="${esc(v.name)}"${v.name===pick?" selected":""}>${esc(v.name)}</option>`).join("");
+      const rec=REC.includes(c),opts=`<option value="">${rec?esc(x.recorded||B.en.recorded):esc(x.auto)+" ("+esc(vs[0].name)+")"}</option>`+vs.map(v=>`<option value="${esc(v.name)}"${v.name===pick?" selected":""}>${esc(v.name)}</option>`).join("");
       return `<div class="vrow">${head}<select id="v-${c}" data-voice="${c}" aria-label="${esc(x.voices)}: ${esc(L[c].own)}">${opts}</select><button type="button" class="hear" data-hear="${c}" aria-label="${esc(x.hear)}: ${esc(L[c].own)}">▶</button></div>`;
     }).join("");
+  }
+  const REC=["de","en","es","fr","it","pt","nl","pl","sv","el","zh","ru"];
+  // the default voice is the recorded one: play a clip from a game's bank, the same voice the games use
+  function hearRecorded(c){
+    const play=()=>{const bank=(window.LP_CLIPS||{})[c];const k=bank&&Object.keys(bank)[0];if(!k)return;try{new Audio("data:audio/mpeg;base64,"+bank[k]).play()}catch(e){}};
+    if((window.LP_CLIPS||{})[c])return play();
+    const s=document.createElement("script");s.src="games/audio/"+(["de","en","es","fr","it","pt"].includes(c)?"ark":"sky")+"."+c+".js";s.onload=play;document.head.appendChild(s);
   }
   function hear(c){
     try{
       speechSynthesis.cancel();
+      if(REC.includes(c)&&!(draft.voices||{})[c]){hearRecorded(c);return}
       const v=LPVoice.best(LPVoice.tag(c),(draft.voices||{})[c]);if(!v)return;
       const u=new SpeechSynthesisUtterance(SAMPLE[c]||L[c].hi);u.voice=v;u.lang=v.lang;u.rate=.9;u.pitch=1;speechSynthesis.speak(u);
     }catch(e){}

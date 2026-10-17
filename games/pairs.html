@@ -121,7 +121,7 @@ LP.start(L().title,()=>{});
 LP.mash((e)=>{
  const c=e.target.closest&&e.target.closest("[data-i]");
  if(c){flip(+c.dataset.i);return}
- if(e.type==="keydown"){const free=[...document.querySelectorAll(".card:not(.up)")];if(free.length)flip(+free[Math.floor(Math.random()*free.length)].dataset.i)}
+ if(e.type==="keydown"){const free=[...document.querySelectorAll(".card:not(.up)")];if(free.length)flip(+LP.next("pairs",free).dataset.i)}
 });
 </script>
 </body>

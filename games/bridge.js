@@ -30,7 +30,9 @@
     function fire(u, ev) { try { if (u["on" + ev]) u["on" + ev](new Event(ev)); } catch (e) {} }
     function langOf(u) { return (u.lang || (u.voice && u.voice.lang) || "").replace("_", "-"); }
     function clipFor(u) {
-      var bank = (window.LP_CLIPS || {})[langOf(u).slice(0, 2).toLowerCase()];
+      var lc = langOf(u).slice(0, 2).toLowerCase();
+      if ((S.voices || {})[lc]) return null; // a voice picked in Settings replaces the recordings
+      var bank = (window.LP_CLIPS || {})[lc];
       return bank ? bank[window.LPVoice.key(u.text, S.name)] || null : null;
     }
     function advance(my) { if (my !== gen) return; cur = null; next(); }

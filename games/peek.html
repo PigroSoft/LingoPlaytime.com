@@ -139,7 +139,7 @@ function closeAll(){SPOTS.forEach(s=>open[s]&&closeSpot(s))}
 function ask(){
  if(LP.age<1){want=null;return}
  const closed=SPOTS.filter(s=>!open[s]);if(!closed.length){setTimeout(ask,800);return}
- want=hidden[closed[Math.floor(Math.random()*closed.length)]];misses=0;
+ want=hidden[LP.next("peek",closed)];misses=0;
  const t=fill(L().where,want);bubble(t);LP.say(t);
 }
 function giveHint(){if(!want)return;const s=SPOTS.find(x=>hidden[x]===want);const el=document.querySelector(`[data-spot="${s}"]`);if(el){el.classList.remove("hint");void el.offsetWidth;el.classList.add("hint")}}

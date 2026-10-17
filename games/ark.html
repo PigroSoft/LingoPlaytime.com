@@ -228,7 +228,7 @@ LP.mash((e)=>{
  let id=el?el.dataset.id:null;
  if(!id){ // a tap anywhere, or any key, picks an animal that isn't aboard yet
   const left=DATA.words.filter(w=>!aboard.has(w.id));
-  const pool=left.length?left:DATA.words;id=pool[Math.floor(Math.random()*pool.length)].id;
+  const pool=left.length?left:DATA.words;id=LP.next("ark",pool).id;
  }
  tap(id,el);
 });

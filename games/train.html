@@ -255,7 +255,7 @@ $("start").onclick=newTrip;
    waiting for a precise click. */
 function smashPick(){
  const opts=[...document.querySelectorAll(".choices button")];
- if(opts.length){opts[Math.floor(Math.random()*opts.length)].click();return true}
+ if(opts.length){LP.next("train",opts).click();return true}
  return false;
 }
 window.addEventListener("keydown",e=>{

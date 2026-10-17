@@ -340,8 +340,8 @@ document.addEventListener("keydown",e=>{if(!$("setup").hidden)return;e.preventDe
   if(st.mode==="order"&&R.target){ // keyboard mashers get the right answer after one miss
     const right=$("shelf").querySelector(`.ing[data-i="${R.foods.indexOf(R.target)}"]`);
     const left=[...$("shelf").querySelectorAll(".ing:not(.gone)")];
-    return tapFood(R.misses>=1?right:left[Math.floor(Math.random()*left.length)]);}
-  const left=[...$("shelf").querySelectorAll(".ing:not(.gone)")];tapFood(left[Math.floor(Math.random()*left.length)]);});
+    return tapFood(R.misses>=1?right:LP.next("soup",left));}
+  const left=[...$("shelf").querySelectorAll(".ing:not(.gone)")];tapFood(LP.next("soup",left));});
 
 // cursor
 const cur=$("cursor");

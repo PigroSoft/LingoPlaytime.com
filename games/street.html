@@ -49,6 +49,14 @@ svg#street{width:100%;height:100%}
       <rect y="410" width="900" height="150" fill="#3a3263"/>
       <path d="M0 448h900M0 456h900" stroke="#2a2350" stroke-width="3"/>
       <path d="M0 520h900" stroke="#fff" stroke-width="5" stroke-dasharray="40 30"/>
+      <!-- plane in the sky -->
+      <g class="thing" data-thing="plane" tabindex="0" role="button"><g class="art">
+        <path d="M312 62c0-9 8-16 20-16h70c14 0 26 6 32 16-6 10-18 16-32 16h-70c-12 0-20-7-20-16Z" fill="url(#k-white)"/><path d="M318 52l-16-22h18l20 22Z" fill="url(#k-red)"/><path d="M356 60l-22 26h30l22-26ZM356 54l-18-22h24l16 22Z" fill="url(#k-blue)"/><g fill="#7ec8ff"><circle cx="350" cy="60" r="4"/><circle cx="366" cy="60" r="4"/><circle cx="382" cy="60" r="4"/><path d="M408 56c6 0 12 3 14 6h-14Z"/></g>
+        <rect class="hit" x="296" y="22" width="150" height="72" rx="14"/></g></g>
+      <!-- helicopter in the sky -->
+      <g class="thing" data-thing="heli" tabindex="0" role="button"><g class="art">
+        <path d="M620 56h-14l-22-14v-6h16l20 12Z" fill="url(#k-red)"/><ellipse cx="660" cy="60" rx="38" ry="22" fill="url(#k-red)"/><path d="M650 48h28c6 0 10 4 12 10h-40Z" fill="#bfe6fb"/><rect x="654" y="26" width="8" height="12" fill="#18264A"/><path d="M606 22h112" stroke="#18264A" stroke-width="5" stroke-linecap="round"/><path d="M632 84h60M642 82v-6M682 82v-6" stroke="#18264A" stroke-width="4" stroke-linecap="round"/>
+        <rect class="hit" x="580" y="14" width="150" height="82" rx="14"/></g></g>
       <!-- bird on the tree -->
       <g class="thing" data-thing="bird" tabindex="0" role="button"><g class="art">
         <ellipse cx="520" cy="180" rx="22" ry="17" fill="url(#k-blue)"/><circle cx="536" cy="168" r="11" fill="url(#k-blue)"/><path d="M546 168l12 4-12 4Z" fill="url(#k-yellow)"/><circle cx="539" cy="166" r="2.5" fill="#18264A"/><path d="M500 178l-14-8 4 14Z" fill="#2c6fae"/></g>
@@ -97,6 +105,8 @@ const DATA={
   {id:"bike",en:{w:"the bike",s:"Ring ring!"},de:{w:"das Fahrrad",s:"Kling kling!"},es:{w:"la bicicleta",s:"¡Ring ring!"},fr:{w:"le vélo",s:"Dring dring !"},it:{w:"la bicicletta",s:"Drin drin!"},pt:{w:"a bicicleta",s:"Trim trim!"}},
   {id:"car",en:{w:"the car",s:"Beep beep!"},de:{w:"das Auto",s:"Tut tut!"},es:{w:"el coche",s:"¡Pi pi!"},fr:{w:"la voiture",s:"Pouet pouet !"},it:{w:"la macchina",s:"Bip bip!"},pt:{w:"o carro",s:"Pi pi!"}},
   {id:"dog",en:{w:"the dog",s:"Woof woof!"},de:{w:"der Hund",s:"Wau wau!"},es:{w:"el perro",s:"¡Guau guau!"},fr:{w:"le chien",s:"Ouaf ouaf !"},it:{w:"il cane",s:"Bau bau!"},pt:{w:"o cão",s:"Ão ão!"}},
+  {id:"plane",en:{w:"the plane",s:"Whoosh!"},de:{w:"das Flugzeug",s:"Wuusch!"},es:{w:"el avión",s:"¡Fiuuu!"},fr:{w:"l'avion",s:"Vroum !"},it:{w:"l'aereo",s:"Fiuuu!"},pt:{w:"o avião",s:"Vuuum!"}},
+  {id:"heli",en:{w:"the helicopter",s:"Whop whop!"},de:{w:"der Hubschrauber",s:"Wumm wumm!"},es:{w:"el helicóptero",s:"¡Chop chop!"},fr:{w:"l'hélicoptère",s:"Flap flap !"},it:{w:"l'elicottero",s:"Whop whop!"},pt:{w:"o helicóptero",s:"Pá pá pá!"}},
   {id:"bird",en:{w:"the bird",s:"Tweet tweet!"},de:{w:"der Vogel",s:"Piep piep!"},es:{w:"el pájaro",s:"¡Pío pío!"},fr:{w:"l'oiseau",s:"Cui cui !"},it:{w:"l'uccellino",s:"Cip cip!"},pt:{w:"o pássaro",s:"Piu piu!"}}
  ],
  lines:{
@@ -124,6 +134,8 @@ const SYN={
  bike(){[0,.28].forEach(t=>{LP.tone(2900,.6,"sine",.1,t);LP.tone(4100,.4,"sine",.05,t);LP.tone(3500,.5,"triangle",.04,t)})},
  car(){[0,.3].forEach(t=>{LP.tone(350,.2,"square",.07,t);LP.tone(440,.2,"square",.07,t)})},
  dog(){[0,.3].forEach(t=>{LP.noise(.12,.25,"bandpass",900,2,t);LP.tone(420,.14,"square",.12,t,200)})},
+ plane(){LP.noise(1.8,.22,"bandpass",300,1.2,0,1800);LP.tone(110,1.6,"sawtooth",.05,0,260)},
+ heli(){for(let i=0;i<12;i++)LP.noise(.08,.28,"lowpass",260,1,i*.1);LP.tone(75,1.3,"sawtooth",.05)},
  bird(){[0,.18,.36].forEach(t=>LP.tone(3000,.12,"sine",.08,t,4600))}
 };
 
@@ -135,7 +147,7 @@ const SND=new Proxy({},{get:(_,id)=>()=>{if(!LP.sample(id,2.4))SYN[id]()}});
 function play(id){
  const now=Date.now();if(now-lastTap<500)return;lastTap=now;
  const g=document.querySelector(`[data-thing="${id}"]`);
- const anim=["dog","bird","bike"].includes(id)?"hop":"go";
+ const anim=["dog","bird","bike","heli"].includes(id)?"hop":"go";
  g.classList.remove("go","hop");void g.getBBox();g.classList.add(anim);
  g.querySelectorAll(".blue").forEach(b=>{b.classList.remove("blue");void b.getBBox();b.classList.add("blue")});
  document.querySelectorAll(".glow").forEach(x=>x.classList.remove("glow"));
@@ -146,7 +158,7 @@ function play(id){
   misses++;if(misses>=2)document.querySelector(`[data-thing="${want}"]`).classList.add("glow");
  }
  bubble(w(id).w+"  "+w(id).s);
- setTimeout(()=>{LP.say(w(id).w);LP.say(w(id).s,true)},({fire:2300,police:2300,bus:2000,bird:1900,dog:1800,tram:1500,bike:1200,car:1000})[id]||1000);
+ setTimeout(()=>{LP.say(w(id).w);LP.say(w(id).s,true)},({fire:2300,police:2300,bus:2000,plane:1900,heli:1900,bird:1900,dog:1800,tram:1500,bike:1200,car:1000})[id]||1000);
  if(want)setTimeout(()=>{if(want){bubble(fill(L().where,want));LP.say(fill(L().where,want))}},3600);
 }
 function ask(){
@@ -163,7 +175,7 @@ LP.mash((e)=>{
  const g=e.target.closest&&e.target.closest("[data-thing]");
  if(g){play(g.dataset.thing);return}
  if(want&&LP.age<2){play(want);return} // little ones: a stray tap finds the answer
- const ids=DATA.words.map(x=>x.id);play(want?ids[Math.floor(Math.random()*ids.length)]:ids[Math.floor(Math.random()*ids.length)]);
+ play(LP.next("street",DATA.words.map(x=>x.id)));
 });
 </script>
 </body>
