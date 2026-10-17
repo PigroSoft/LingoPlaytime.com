@@ -261,7 +261,7 @@
     ".k-stars{position:absolute;inset:0;width:100%;height:100%;z-index:-2;pointer-events:none}" +
     ".k-hills{position:absolute;left:0;right:0;bottom:0;height:38%;z-index:-1;pointer-events:none}.k-hills svg{width:100%;height:100%;display:block}" +
     ".k-moon{position:absolute;left:4%;top:3%;width:min(8vw,64px);aspect-ratio:1;border-radius:50%;z-index:-1;pointer-events:none;background:radial-gradient(circle at 38% 34%,#fffbe6,#ffe58a 55%,#f2b938);box-shadow:0 0 40px 14px #ffd23f55,0 0 120px 50px #ffd23f22}" +
-    ".k-bubble{font-family:'Fredoka','Baloo 2',system-ui,sans-serif;font-weight:600;color:#1c3f4a;background:#f6ead0;border:2px dashed #b8401f88;border-radius:26px;padding:8px 28px;text-align:center;box-shadow:0 4px 0 #c9b583,0 10px 20px #0004}" +
+    ".k-bubble{unicode-bidi:plaintext;font-family:'Fredoka','Baloo 2',system-ui,sans-serif;font-weight:600;color:#1c3f4a;background:#f6ead0;border:2px dashed #b8401f88;border-radius:26px;padding:8px 28px;text-align:center;box-shadow:0 4px 0 #c9b583,0 10px 20px #0004}" +
     ".k-day{background:linear-gradient(#2f6fe8 0%,#4f9cff 45%,#9fdcff 100%)}" +
     ".k-morning{background:linear-gradient(#5b6ee8 0%,#f08fb0 55%,#ffd29a 100%)}" +
     ".k-evening{background:linear-gradient(#3a2a86 0%,#d9607e 55%,#ffad66 100%)}" +

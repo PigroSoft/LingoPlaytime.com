@@ -106,17 +106,18 @@
   function css(t) { var s = document.createElement("style"); s.textContent = t; (document.head || document.documentElement).appendChild(s); }
   function ready(fn) { if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn); else fn(); }
 
-  var NAMES = { en: "English", de: "Deutsch", es: "Español", fr: "Français", it: "Italiano", pt: "Português" };
+  var ALL = window.ALLLANGS = ["en", "de", "es", "fr", "it", "pt", "nl", "pl", "sv", "el", "zh", "ar", "ja", "ko", "ru", "tr", "hi"];
+  var NAMES = { en: "English", de: "Deutsch", es: "Español", fr: "Français", it: "Italiano", pt: "Português", nl: "Nederlands", pl: "Polski", sv: "Svenska", el: "Ελληνικά", zh: "中文", ar: "العربية", ja: "日本語", ko: "한국어", ru: "Русский", tr: "Türkçe", hi: "हिन्दी" };
 
   var A = {
     farm: {
-      langs: ["en", "de", "it", "es", "pt", "fr"],
+      langs: ALL,
       hide: ".langs,#nameGate{display:none!important}#doors:not(.open) .open-btn{opacity:1!important;pointer-events:auto!important}",
       pre: function (s, l) { set("farm-lang", l); set("farm-child-name", s.name || ""); },
       live: function (s, l) { var b = document.querySelector('.lang[data-lang="' + l + '"]'); if (b) b.click(); return true; }
     },
     sky: {
-      langs: ["en", "de", "es", "fr", "it"],
+      langs: ALL,
       hide: ".langs,#levels{display:none!important}",
       pre: function (s, l) { set("skyLang", l); set("skyLevel", ["easy", "hard", "big"][s.age] || "easy"); },
       live: function (s, l) {
@@ -126,7 +127,7 @@
       }
     },
     drum: {
-      langs: ["en", "de", "es", "it", "fr"],
+      langs: ALL,
       hide: "#langs{display:none!important}",
       pre: function () {},
       live: function (s, l) {
@@ -136,7 +137,7 @@
       }
     },
     train: {
-      langs: ["en", "de", "es", "fr", "it", "pt", "nl", "pl", "sv", "el", "zh", "ar", "ja", "ko", "ru", "tr", "hi"],
+      langs: ALL,
       hide: "#langsel{display:none!important}",
       pre: function () {},
       live: function (s, l) {
@@ -146,7 +147,7 @@
       }
     },
     flappy: {
-      langs: ["en", "de", "es", "fr", "it", "pt", "nl", "tr", "ja", "zh", "ar", "hi"],
+      langs: ALL,
       hide: "#lang,#lang2,#mode{display:none!important}",
       second: function (s, l) {
         var pool = [s.home].concat(s.learn).filter(function (c) { return c !== l && A.flappy.langs.indexOf(c) > -1; });
@@ -164,7 +165,7 @@
       }
     },
     soup: {
-      langs: ["en", "de", "es", "fr", "it"],
+      langs: ALL,
       hide: "#gear,#form .lbl,#form #name,#form .chips{display:none!important}",
       pre: function (s, l) {
         var old = get("soupPot") || {};
@@ -176,7 +177,7 @@
 
   // Games built on kit.js handle settings themselves through window.LP_onSettings.
   var a = A[GAME] || {
-    langs: ["en", "de", "es", "fr", "it", "pt"], hide: "", pre: function () {},
+    langs: ALL, hide: "", pre: function () {},
     live: function (s) { if (window.LP_onSettings) window.LP_onSettings(s); return true; }
   };
 

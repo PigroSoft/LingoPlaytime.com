@@ -61,25 +61,25 @@ body.out .rail{opacity:0;pointer-events:none}
 /* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
 const DATA={
  words:[
-  {id:"socks",en:"socks",de:"die Socken",es:"los calcetines",fr:"les chaussettes",it:"i calzini",pt:"as meias"},
-  {id:"trousers",en:"trousers",de:"die Hose",es:"los pantalones",fr:"le pantalon",it:"i pantaloni",pt:"as calças"},
-  {id:"shorts",en:"shorts",de:"die kurze Hose",es:"los pantalones cortos",fr:"le short",it:"i pantaloncini",pt:"os calções"},
-  {id:"tshirt",en:"T-shirt",de:"das T-Shirt",es:"la camiseta",fr:"le tee-shirt",it:"la maglietta",pt:"a t-shirt"},
-  {id:"jumper",en:"jumper",de:"der Pullover",es:"el jersey",fr:"le pull",it:"il maglione",pt:"a camisola"},
-  {id:"coat",en:"winter coat",de:"die Winterjacke",es:"el abrigo",fr:"le manteau",it:"il cappotto",pt:"o casaco"},
-  {id:"raincoat",en:"raincoat",de:"die Regenjacke",es:"el chubasquero",fr:"l'imperméable",it:"l'impermeabile",pt:"o impermeável"},
-  {id:"wellies",en:"wellies",de:"die Gummistiefel",es:"las botas de agua",fr:"les bottes de pluie",it:"gli stivali di gomma",pt:"as galochas"},
-  {id:"boots",en:"boots",de:"die Stiefel",es:"las botas",fr:"les bottes",it:"gli stivali",pt:"as botas"},
-  {id:"sandals",en:"sandals",de:"die Sandalen",es:"las sandalias",fr:"les sandales",it:"i sandali",pt:"as sandálias"},
-  {id:"sunhat",en:"sun hat",de:"der Sonnenhut",es:"el sombrero",fr:"le chapeau",it:"il cappello",pt:"o chapéu"},
-  {id:"sunglasses",en:"sunglasses",de:"die Sonnenbrille",es:"las gafas de sol",fr:"les lunettes de soleil",it:"gli occhiali da sole",pt:"os óculos de sol"},
-  {id:"hat",en:"woolly hat",de:"die Mütze",es:"el gorro",fr:"le bonnet",it:"il berretto",pt:"o gorro"},
-  {id:"scarf",en:"scarf",de:"der Schal",es:"la bufanda",fr:"l'écharpe",it:"la sciarpa",pt:"o cachecol"},
-  {id:"gloves",en:"gloves",de:"die Handschuhe",es:"los guantes",fr:"les gants",it:"i guanti",pt:"as luvas"},
-  {id:"umbrella",en:"umbrella",de:"der Regenschirm",es:"el paraguas",fr:"le parapluie",it:"l'ombrello",pt:"o guarda-chuva"}
+  {id:"socks",en:"socks",nl:"sokken",pl:"skarpetki",sv:"strumpor",el:"κάλτσες",zh:"袜子",ar:"جوارب",ja:"くつした",ko:"양말",ru:"носки",tr:"çorap",hi:"मोज़े",de:"die Socken",es:"los calcetines",fr:"les chaussettes",it:"i calzini",pt:"as meias"},
+  {id:"trousers",en:"trousers",nl:"broek",pl:"spodnie",sv:"byxor",el:"παντελόνι",zh:"裤子",ar:"بنطال",ja:"ズボン",ko:"바지",ru:"штаны",tr:"pantolon",hi:"पैंट",de:"die Hose",es:"los pantalones",fr:"le pantalon",it:"i pantaloni",pt:"as calças"},
+  {id:"shorts",en:"shorts",nl:"korte broek",pl:"szorty",sv:"shorts",el:"σορτσάκι",zh:"短裤",ar:"شورت",ja:"はんズボン",ko:"반바지",ru:"шорты",tr:"şort",hi:"शॉर्ट्स",de:"die kurze Hose",es:"los pantalones cortos",fr:"le short",it:"i pantaloncini",pt:"os calções"},
+  {id:"tshirt",en:"T-shirt",nl:"t-shirt",pl:"koszulka",sv:"t-shirt",el:"μπλουζάκι",zh:"T恤",ar:"تيشيرت",ja:"Tシャツ",ko:"티셔츠",ru:"футболка",tr:"tişört",hi:"टी-शर्ट",de:"das T-Shirt",es:"la camiseta",fr:"le tee-shirt",it:"la maglietta",pt:"a t-shirt"},
+  {id:"jumper",en:"jumper",nl:"trui",pl:"sweter",sv:"tröja",el:"πουλόβερ",zh:"毛衣",ar:"كنزة",ja:"セーター",ko:"스웨터",ru:"свитер",tr:"kazak",hi:"स्वेटर",de:"der Pullover",es:"el jersey",fr:"le pull",it:"il maglione",pt:"a camisola"},
+  {id:"coat",en:"winter coat",nl:"winterjas",pl:"kurtka zimowa",sv:"vinterjacka",el:"χειμωνιάτικο μπουφάν",zh:"冬大衣",ar:"معطف شتوي",ja:"ふゆのコート",ko:"겨울 코트",ru:"зимняя куртка",tr:"kışlık mont",hi:"सर्दी का कोट",de:"die Winterjacke",es:"el abrigo",fr:"le manteau",it:"il cappotto",pt:"o casaco"},
+  {id:"raincoat",en:"raincoat",nl:"regenjas",pl:"płaszcz przeciwdeszczowy",sv:"regnjacka",el:"αδιάβροχο",zh:"雨衣",ar:"معطف المطر",ja:"レインコート",ko:"비옷",ru:"дождевик",tr:"yağmurluk",hi:"रेनकोट",de:"die Regenjacke",es:"el chubasquero",fr:"l'imperméable",it:"l'impermeabile",pt:"o impermeável"},
+  {id:"wellies",en:"wellies",nl:"regenlaarzen",pl:"kalosze",sv:"gummistövlar",el:"γαλότσες",zh:"雨靴",ar:"حذاء المطر",ja:"ながぐつ",ko:"장화",ru:"резиновые сапоги",tr:"yağmur botu",hi:"रेन बूट",de:"die Gummistiefel",es:"las botas de agua",fr:"les bottes de pluie",it:"gli stivali di gomma",pt:"as galochas"},
+  {id:"boots",en:"boots",nl:"laarzen",pl:"buty zimowe",sv:"stövlar",el:"μπότες",zh:"靴子",ar:"جزمة",ja:"ブーツ",ko:"부츠",ru:"ботинки",tr:"bot",hi:"जूते",de:"die Stiefel",es:"las botas",fr:"les bottes",it:"gli stivali",pt:"as botas"},
+  {id:"sandals",en:"sandals",nl:"sandalen",pl:"sandały",sv:"sandaler",el:"σανδάλια",zh:"凉鞋",ar:"صنادل",ja:"サンダル",ko:"샌들",ru:"сандалии",tr:"sandalet",hi:"सैंडल",de:"die Sandalen",es:"las sandalias",fr:"les sandales",it:"i sandali",pt:"as sandálias"},
+  {id:"sunhat",en:"sun hat",nl:"zonnehoed",pl:"kapelusz przeciwsłoneczny",sv:"solhatt",el:"καπέλο ηλίου",zh:"太阳帽",ar:"قبعة الشمس",ja:"ぼうし",ko:"햇빛 모자",ru:"панамка",tr:"güneş şapkası",hi:"धूप की टोपी",de:"der Sonnenhut",es:"el sombrero",fr:"le chapeau",it:"il cappello",pt:"o chapéu"},
+  {id:"sunglasses",en:"sunglasses",nl:"zonnebril",pl:"okulary przeciwsłoneczne",sv:"solglasögon",el:"γυαλιά ηλίου",zh:"太阳镜",ar:"نظارة شمسية",ja:"サングラス",ko:"선글라스",ru:"солнечные очки",tr:"güneş gözlüğü",hi:"धूप का चश्मा",de:"die Sonnenbrille",es:"las gafas de sol",fr:"les lunettes de soleil",it:"gli occhiali da sole",pt:"os óculos de sol"},
+  {id:"hat",en:"woolly hat",nl:"muts",pl:"czapka",sv:"mössa",el:"σκουφάκι",zh:"毛线帽",ar:"قبعة صوف",ja:"ニットぼうし",ko:"털모자",ru:"шапка",tr:"bere",hi:"ऊनी टोपी",de:"die Mütze",es:"el gorro",fr:"le bonnet",it:"il berretto",pt:"o gorro"},
+  {id:"scarf",en:"scarf",nl:"sjaal",pl:"szalik",sv:"halsduk",el:"κασκόλ",zh:"围巾",ar:"وشاح",ja:"マフラー",ko:"목도리",ru:"шарф",tr:"atkı",hi:"मफलर",de:"der Schal",es:"la bufanda",fr:"l'écharpe",it:"la sciarpa",pt:"o cachecol"},
+  {id:"gloves",en:"gloves",nl:"handschoenen",pl:"rękawiczki",sv:"handskar",el:"γάντια",zh:"手套",ar:"قفازات",ja:"てぶくろ",ko:"장갑",ru:"перчатки",tr:"eldiven",hi:"दस्ताने",de:"die Handschuhe",es:"los guantes",fr:"les gants",it:"i guanti",pt:"as luvas"},
+  {id:"umbrella",en:"umbrella",nl:"paraplu",pl:"parasol",sv:"paraply",el:"ομπρέλα",zh:"雨伞",ar:"مظلة",ja:"かさ",ko:"우산",ru:"зонтик",tr:"şemsiye",hi:"छाता",de:"der Regenschirm",es:"el paraguas",fr:"le parapluie",it:"l'ombrello",pt:"o guarda-chuva"}
  ],
  lines:{
-  en:{title:"Get dressed",rain:"It's raining!",sun:"The sun is shining!",snow:"It's snowing!",done:"All dressed! Let's go!"},
+  en:{title:"Get dressed",rain:"It's raining!",sun:"The sun is shining!",snow:"It's snowing!",done:"All dressed! Let's go!"},nl:{title:"Aankleden",rain:"Het regent!",sun:"De zon schijnt!",snow:"Het sneeuwt!",done:"Aangekleed! Kom, we gaan!"},pl:{title:"Ubieramy się",rain:"Pada deszcz!",sun:"Świeci słońce!",snow:"Pada śnieg!",done:"Gotowe! Idziemy!"},sv:{title:"Klä på dig",rain:"Det regnar!",sun:"Solen skiner!",snow:"Det snöar!",done:"Färdig! Nu går vi!"},el:{title:"Ντύσιμο",rain:"Βρέχει!",sun:"Λάμπει ο ήλιος!",snow:"Χιονίζει!",done:"Έτοιμοι! Πάμε!"},zh:{title:"穿衣服",rain:"下雨了！",sun:"太阳出来了！",snow:"下雪了！",done:"穿好啦！出发！"},ar:{title:"ارتدِ ملابسك",rain:"تمطر!",sun:"الشمس مشرقة!",snow:"تثلج!",done:"انتهينا! هيا بنا!"},ja:{title:"きがえ",rain:"あめが ふってる！",sun:"おひさまが でてるよ！",snow:"ゆきが ふってる！",done:"きがえたよ！いこう！"},ko:{title:"옷 입기",rain:"비가 와요!",sun:"해가 떴어요!",snow:"눈이 와요!",done:"다 입었어요! 가자!"},ru:{title:"Одеваемся",rain:"Идёт дождь!",sun:"Светит солнце!",snow:"Идёт снег!",done:"Готово! Пойдём!"},tr:{title:"Giyin",rain:"Yağmur yağıyor!",sun:"Güneş parlıyor!",snow:"Kar yağıyor!",done:"Hazırız! Hadi gidelim!"},hi:{title:"कपड़े पहनो",rain:"बारिश हो रही है!",sun:"धूप निकली है!",snow:"बर्फ़ गिर रही है!",done:"तैयार! चलो!"},
   de:{title:"Anziehen!",rain:"Es regnet!",sun:"Die Sonne scheint!",snow:"Es schneit!",done:"Fertig! Los geht's!"},
   es:{title:"¡A vestirse!",rain:"¡Está lloviendo!",sun:"¡Hace sol!",snow:"¡Está nevando!",done:"¡Listo! ¡Vamos!"},
   fr:{title:"On s'habille !",rain:"Il pleut !",sun:"Il fait soleil !",snow:"Il neige !",done:"C'est prêt ! On y va !"},
@@ -97,7 +97,7 @@ const CL={
  tshirt:{box:[40,140,160,108],svg:`<path d="M68 166c0-16 20-26 52-26s52 10 52 26v82H68Z" fill="url(#k-red)"/><path d="M70 160l-26 22 14 18 16-12M170 160l26 22-14 18-16-12" fill="url(#k-red)"/><path d="M106 146c4 8 24 8 28 0" stroke="#c2412b" stroke-width="3" fill="none"/>`},
  jumper:{box:[24,140,192,116],svg:`<path d="M68 166c0-16 20-26 52-26s52 10 52 26v84H68Z" fill="url(#k-green)"/><path d="M74 168c-22 10-32 30-36 50M166 168c22 10 32 30 36 50" stroke="#4f9a3a" stroke-width="22" stroke-linecap="round" fill="none"/><path d="M68 242h104" stroke="#3f8a2d" stroke-width="8"/><path d="M92 190l10 10 10-10 10 10 10-10 10 10 10-10" stroke="#F6C033" stroke-width="4" fill="none"/>`},
  coat:{box:[20,136,200,128],svg:`<path d="M64 166c0-18 22-30 56-30s56 12 56 30v94H64Z" fill="url(#k-dark)"/><path d="M70 168c-24 10-34 32-38 52M170 168c24 10 34 32 38 52" stroke="#27406e" stroke-width="26" stroke-linecap="round" fill="none"/><path d="M120 146v114" stroke="#F6C033" stroke-width="4"/><circle cx="104" cy="190" r="4" fill="url(#k-yellow)"/><circle cx="104" cy="220" r="4" fill="url(#k-yellow)"/><path d="M64 254h112" stroke="#d6e2f2" stroke-width="8"/>`},
- raincoat:{box:[20,92,200,192],svg:`<path d="M60 166c0-18 24-30 60-30s60 12 60 30l6 112H54Z" fill="url(#k-yellow)"/><path d="M70 168c-24 10-34 32-38 52M170 168c24 10 34 32 38 52" stroke="#F6C033" stroke-width="26" stroke-linecap="round" fill="none"/><path d="M72 120c0-30 22-44 48-44s48 14 48 44c-8-6-14-8-14-8-6-14-20-20-34-20s-28 6-34 20c0 0-6 2-14 8Z" fill="url(#k-yellow)"/><path d="M120 146v130" stroke="#d99a13" stroke-width="3"/><circle cx="110" cy="196" r="4" fill="#d99a13"/><circle cx="110" cy="230" r="4" fill="#d99a13"/>`},
+ raincoat:{box:[20,8,200,270],svg:`<path d="M60 166c0-18 24-30 60-30s60 12 60 30l6 112H54Z" fill="url(#k-yellow)"/><path d="M70 168c-24 10-34 32-38 52M170 168c24 10 34 32 38 52" stroke="#F6C033" stroke-width="26" stroke-linecap="round" fill="none"/><path d="M52 152C32 96 52 14 120 12c68 2 88 84 68 140l-26-4c8-36 6-84-42-102-48 18-50 66-42 102Z" fill="url(#k-yellow)"/><path d="M62 130C52 90 66 38 120 28" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".35" fill="none"/><circle cx="104" cy="156" r="4" fill="#d99a13"/><circle cx="136" cy="156" r="4" fill="#d99a13"/><path d="M120 146v130" stroke="#d99a13" stroke-width="3"/><circle cx="110" cy="196" r="4" fill="#d99a13"/><circle cx="110" cy="230" r="4" fill="#d99a13"/>`},
  wellies:{box:[78,290,90,62],svg:`<path d="M82 296h30v40h6v14H80v-14h2Z" fill="url(#k-red)"/><path d="M128 296h30v40h6v14h-38v-14h2Z" fill="url(#k-red)"/><path d="M82 302h30M128 302h30" stroke="#fff6" stroke-width="4"/>`},
  boots:{box:[78,296,90,56],svg:`<path d="M82 302h30v34h6v14H80v-14h2Z" fill="url(#k-brown)"/><path d="M128 302h30v34h6v14h-38v-14h2Z" fill="url(#k-brown)"/><path d="M80 304h34M126 304h34" stroke="#f1e6d6" stroke-width="7"/>`},
  sandals:{box:[70,330,100,24],svg:`<path d="M76 346h40M124 346h40" stroke="#8A5A33" stroke-width="6" stroke-linecap="round"/><path d="M86 334l8 12M100 334l-6 12M134 334l8 12M148 334l-6 12" stroke="#8A5A33" stroke-width="4" stroke-linecap="round"/>`},
@@ -181,7 +181,7 @@ function goOut(){
 }
 function nextItem(){const id=ROUNDS[weather].find(i=>!worn.has(i));if(id)wear(id)}
 
-LP.init({langs:["en","de","es","fr","it","pt"],
+LP.init({langs:ALLLANGS,
  onLang:()=>{document.title=L().title;document.querySelectorAll("[data-item]").forEach(b=>b.setAttribute("aria-label",word(b.dataset.item)));bubble(L()[weather])}});
 document.title=L().title;
 drawKid();

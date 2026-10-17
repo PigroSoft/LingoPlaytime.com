@@ -224,7 +224,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
 <div class="wrap">
   <header>
     <button class="logo" id="logo" type="button" aria-label="LingoPlaytime home">
-      <img src="felt/logo.webp" alt="LingoPlaytime" width="900" height="301">
+      <img src="felt/logo.webp" alt="LingoPlaytime" width="900" height="207">
     </button>
     <nav aria-label="Main">
       <button type="button" data-view="games" id="nav-games"></button>
@@ -302,6 +302,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
         <div class="eyebrow" id="g-eyebrow"></div>
         <h1 id="g-title"></h1>
         <div class="hello" id="hello"></div>
+        <button type="button" class="cta" id="g-cta"></button>
       </div>
       <div class="filter">
         <span class="quiet" id="g-filter"></span>
@@ -377,6 +378,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     {c:"hi",n:"Hindi",own:"हिन्दी",hi:"नमस्ते"}
   ];
   const L = Object.fromEntries(LANGS.map(l=>[l.c,l]));
+  const ALLL = LANGS.map(l=>l.c);
   const MAX_LEARN = 4;
 
   // UI copy follows the child's home language; English is the fallback.
@@ -388,7 +390,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
       home:"Main language",homeHint:"The language your child hears most. The whole site, including the blog, uses it too.",learn:"Languages to play in",learnHint:"Pick up to 4.",
       go:"Let's play!",privacyNote:"Saved only on this device. We never see it.",
       errName:"Add a name first.",errLearn:"Pick at least one language to play in.",
-      gEyebrow:"Pick a game",gTitle:n=>`${n}'s playroom`,filter:(a,l)=>`Showing games for ${a} kids, in ${l}.`,
+      gEyebrow:"Pick a game",gCta:"Start playing",gTitle:n=>`${n}'s playroom`,filter:(a,l)=>`Showing games for ${a} kids, in ${l}.`,
       plays:"Plays in",sound:"Real sounds",
       gateTitle:"Grown-ups only",gateText:"Hold the button for 3 seconds to change settings.",hold:"Hold to open",close:"Back to the games"},
     de:{games:"Spiele",parents:"Blog",app:"iPad-App",privacy:"Datenschutz",merch:"Shop",settings:"Einstellungen",
@@ -398,7 +400,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
       home:"Hauptsprache",homeHint:"Die Sprache, die dein Kind am meisten hört. Die ganze Seite, auch der Blog, ist dann in dieser Sprache.",learn:"Sprachen zum Spielen",learnHint:"Bis zu 4 auswählen.",
       go:"Los geht's!",privacyNote:"Nur auf diesem Gerät gespeichert. Wir sehen es nie.",
       errName:"Bitte zuerst einen Namen eingeben.",errLearn:"Bitte mindestens eine Sprache wählen.",
-      gEyebrow:"Such dir ein Spiel aus",gTitle:n=>`${n}s Spielzimmer`,filter:(a,l)=>`Spiele für ${a}, auf ${l}.`,
+      gEyebrow:"Such dir ein Spiel aus",gCta:"Los geht's",gTitle:n=>`${n}s Spielzimmer`,filter:(a,l)=>`Spiele für ${a}, auf ${l}.`,
       plays:"Spielt auf",sound:"Echte Geräusche",
       gateTitle:"Nur für Erwachsene",gateText:"Halte den Knopf 3 Sekunden gedrückt, um die Einstellungen zu ändern.",hold:"Gedrückt halten",close:"Zurück zu den Spielen"},
     es:{games:"Juegos",parents:"Blog",app:"App para iPad",privacy:"Privacidad",merch:"Tienda",settings:"Ajustes",
@@ -408,7 +410,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
       home:"Idioma principal",homeHint:"El idioma que tu hijo oye más. Todo el sitio, también el blog, aparece en este idioma.",learn:"Idiomas para jugar",learnHint:"Elige hasta 4.",
       go:"¡A jugar!",privacyNote:"Se guarda solo en este dispositivo. Nunca lo vemos.",
       errName:"Primero escribe un nombre.",errLearn:"Elige al menos un idioma.",
-      gEyebrow:"Elige un juego",gTitle:n=>`La sala de juegos de ${n}`,filter:(a,l)=>`Juegos para ${a}, en ${l}.`,
+      gEyebrow:"Elige un juego",gCta:"¡A jugar!",gTitle:n=>`La sala de juegos de ${n}`,filter:(a,l)=>`Juegos para ${a}, en ${l}.`,
       plays:"Se juega en",sound:"Sonidos reales",
       gateTitle:"Solo adultos",gateText:"Mantén pulsado el botón 3 segundos para cambiar los ajustes.",hold:"Mantén pulsado",close:"Volver a los juegos"},
     fr:{games:"Jeux",parents:"Blog",app:"App iPad",privacy:"Confidentialité",merch:"Boutique",settings:"Réglages",
@@ -418,7 +420,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
       home:"Langue principale",homeHint:"La langue que votre enfant entend le plus. Tout le site, blog compris, s'affiche dans cette langue.",learn:"Langues pour jouer",learnHint:"Jusqu'à 4.",
       go:"On joue !",privacyNote:"Enregistré seulement sur cet appareil. Nous ne le voyons jamais.",
       errName:"Ajoutez d'abord un prénom.",errLearn:"Choisissez au moins une langue.",
-      gEyebrow:"Choisis un jeu",gTitle:n=>`La salle de jeux de ${n}`,filter:(a,l)=>`Jeux pour ${a}, en ${l}.`,
+      gEyebrow:"Choisis un jeu",gCta:"On joue !",gTitle:n=>`La salle de jeux de ${n}`,filter:(a,l)=>`Jeux pour ${a}, en ${l}.`,
       plays:"Se joue en",sound:"Vrais sons",
       gateTitle:"Réservé aux adultes",gateText:"Maintenez le bouton 3 secondes pour modifier les réglages.",hold:"Maintenir",close:"Retour aux jeux"},
     it:{games:"Giochi",parents:"Blog",app:"App per iPad",privacy:"Privacy",merch:"Negozio",settings:"Impostazioni",
@@ -428,7 +430,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
       home:"Lingua principale",homeHint:"La lingua che tuo figlio sente di più. Tutto il sito, anche il blog, sarà in questa lingua.",learn:"Lingue per giocare",learnHint:"Scegline fino a 4.",
       go:"Giochiamo!",privacyNote:"Salvato solo su questo dispositivo. Noi non lo vediamo mai.",
       errName:"Scrivi prima un nome.",errLearn:"Scegli almeno una lingua.",
-      gEyebrow:"Scegli un gioco",gTitle:n=>`La stanza dei giochi di ${n}`,filter:(a,l)=>`Giochi per ${a}, in ${l}.`,
+      gEyebrow:"Scegli un gioco",gCta:"Giochiamo!",gTitle:n=>`La stanza dei giochi di ${n}`,filter:(a,l)=>`Giochi per ${a}, in ${l}.`,
       plays:"Si gioca in",sound:"Suoni veri",
       gateTitle:"Solo per adulti",gateText:"Tieni premuto il pulsante per 3 secondi per cambiare le impostazioni.",hold:"Tieni premuto",close:"Torna ai giochi"},
     pt:{games:"Jogos",parents:"Blog",app:"App para iPad",privacy:"Privacidade",merch:"Loja",settings:"Definições",
@@ -438,7 +440,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
       home:"Língua principal",homeHint:"A língua que o teu filho mais ouve. Todo o site, incluindo o blog, fica nessa língua.",learn:"Línguas para brincar",learnHint:"Escolha até 4.",
       go:"Vamos brincar!",privacyNote:"Guardado só neste aparelho. Nós nunca vemos.",
       errName:"Primeiro escreva um nome.",errLearn:"Escolha pelo menos uma língua.",
-      gEyebrow:"Escolha um jogo",gTitle:n=>`A sala de brincar de ${n}`,filter:(a,l)=>`Jogos para ${a}, em ${l}.`,
+      gEyebrow:"Escolha um jogo",gCta:"Vamos brincar!",gTitle:n=>`A sala de brincar de ${n}`,filter:(a,l)=>`Jogos para ${a}, em ${l}.`,
       plays:"Joga-se em",sound:"Sons reais",
       gateTitle:"Só para adultos",gateText:"Segure o botão por 3 segundos para mudar as definições.",hold:"Segure",close:"Voltar aos jogos"}
   };
@@ -457,22 +459,22 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     $("g-sample").innerHTML=x.sample.replace("{settings}",esc(t().settings));
   }
   const GAMES = [
-    {id:"peek",name:"Kuckuck",blurb:"Peekaboo! Curtains, boxes and bushes hide animals. Any tap opens one.",min:0,sound:true,langs:["en","de","es","fr","it","pt"],art:"peek"},
-    {id:"face",name:"Where's your nose?",blurb:"Tap a nose, eyes or toes and hear the word, then point to your own.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"face"},
-    {id:"street",name:"Street sounds",blurb:"Buses, bikes, a plane, a helicopter and a dog. Tap anything to hear it and its name.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"street"},
-    {id:"dress",name:"Get dressed",blurb:"Rain, sun or snow? Put on the right clothes, one word at a time, then head outside.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"dress"},
-    {id:"night",name:"Goodnight room",blurb:"Say goodnight to the moon, the lamp and the teddy. The last game before bed; it ends by itself.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"night"},
-    {id:"sky",name:"Sky Words",blurb:"Planes fly past carrying pictures. Tap the one you hear.",min:0,sound:false,langs:["en","de","es","fr","it"],art:"sky"},
-    {id:"farm",name:"Old MacDonald's Farm",blurb:"Tap an animal, hear its real sound and its name, then sing the song.",min:0,sound:true,langs:["en","de","it","es","pt","fr"],art:"farm"},
-    {id:"drum",name:"Drum Parade",blurb:"Bang the drums, or any key. Every hit is a beat, a word or a number.",min:0,sound:false,langs:["en","de","es","it","fr"],art:"drum"},
-    {id:"train",name:"Word Train",blurb:"Ride from station to station and find the word at each stop.",min:0,sound:false,langs:["en","de","es","fr","it","pt","nl","pl","sv","el","zh","ar","ja","ko","ru","tr","hi"],art:"train"},
-    {id:"paint",name:"Paint the World",blurb:"Everything starts grey. Each tap splashes in a color and says its name.",min:1,sound:false,langs:["en","de","es","fr","it"],art:"paint"},
-    {id:"soup",name:"Little Soup Pot",blurb:"A hungry friend wants soup. Add food, stir, and serve.",min:1,sound:false,langs:["en","de","es","fr","it"],art:"soup"},
-    {id:"flappy",name:"Flappy Words",blurb:"Tap to fly through the gaps, catch pictures, hear each word two ways.",min:1,sound:false,langs:["en","de","es","fr","it","pt","nl","tr","ja","zh","ar","hi"],art:"flappy"},
-    {id:"ark",name:"Noah's Ark",blurb:"Tap an animal and two hop aboard, two by two. Hear each name, and the number two.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"ark"},
-    {id:"helper",name:"Helper truck",blurb:"A little truck rolls out to help buses, bikes and cars that are stuck. Tap to hitch up and pull.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"helper"},
-    {id:"munch",name:"Munch munch",blurb:"A hungry caterpillar eats fruit, counts the bites, and turns into a butterfly.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"munch"},
-    {id:"pairs",name:"Pairs",blurb:"A memory game where every pair is a picture and its word in another language.",min:2,sound:false,langs:["en","de","es","fr","it","pt"],art:"pairs"},
+    {id:"peek",name:"Kuckuck",blurb:"Peekaboo! Curtains, boxes and bushes hide animals. Any tap opens one.",min:0,sound:true,langs:ALLL,art:"peek"},
+    {id:"face",name:"Where's your nose?",blurb:"Tap a nose, eyes or toes and hear the word, then point to your own.",min:0,sound:false,langs:ALLL,art:"face"},
+    {id:"street",name:"Street sounds",blurb:"Buses, bikes, a plane, a helicopter and a dog. Tap anything to hear it and its name.",min:0,sound:false,langs:ALLL,art:"street"},
+    {id:"dress",name:"Get dressed",blurb:"Rain, sun or snow? Put on the right clothes, one word at a time, then head outside.",min:0,sound:false,langs:ALLL,art:"dress"},
+    {id:"night",name:"Goodnight room",blurb:"Say goodnight to the moon, the lamp and the teddy. The last game before bed; it ends by itself.",min:0,sound:false,langs:ALLL,art:"night"},
+    {id:"sky",name:"Sky Words",blurb:"Planes fly past carrying pictures. Tap the one you hear.",min:0,sound:false,langs:ALLL,art:"sky"},
+    {id:"farm",name:"Old MacDonald's Farm",blurb:"Tap an animal, hear its real sound and its name, then sing the song.",min:0,sound:true,langs:ALLL,art:"farm"},
+    {id:"drum",name:"Drum Parade",blurb:"Bang the drums, or any key. Every hit is a beat, a word or a number.",min:0,sound:false,langs:ALLL,art:"drum"},
+    {id:"train",name:"Word Train",blurb:"Ride from station to station and find the word at each stop.",min:0,sound:false,langs:ALLL,art:"train"},
+    {id:"paint",name:"Paint the World",blurb:"Everything starts grey. Each tap splashes in a color and says its name.",min:1,sound:false,langs:ALLL,art:"paint"},
+    {id:"soup",name:"Little Soup Pot",blurb:"A hungry friend wants soup. Add food, stir, and serve.",min:1,sound:false,langs:ALLL,art:"soup"},
+    {id:"flappy",name:"Flappy Words",blurb:"Tap to fly through the gaps, catch pictures, hear each word two ways.",min:1,sound:false,langs:ALLL,art:"flappy"},
+    {id:"ark",name:"Noah's Ark",blurb:"Tap an animal and two hop aboard, two by two. Hear each name, and the number two.",min:0,sound:false,langs:ALLL,art:"ark"},
+    {id:"helper",name:"Helper truck",blurb:"A little truck rolls out to help buses, bikes and cars that are stuck. Tap to hitch up and pull.",min:0,sound:false,langs:ALLL,art:"helper"},
+    {id:"munch",name:"Munch munch",blurb:"A hungry caterpillar eats fruit, counts the bites, and turns into a butterfly.",min:0,sound:false,langs:ALLL,art:"munch"},
+    {id:"pairs",name:"Pairs",blurb:"A memory game where every pair is a picture and its word in another language.",min:2,sound:false,langs:ALLL,art:"pairs"},
   ];
   const GAME = Object.fromEntries(GAMES.map(g=>[g.id,g]));
   // shelf thumbnails: a shared drawing on a day or night sky, like the games themselves
@@ -653,6 +655,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     const s=t(),p=profile;
     $("g-eyebrow").textContent=s.gEyebrow;
     $("g-title").textContent=s.gTitle(p.name);
+    $("g-cta").textContent=s.gCta+" →";
     // the child's name, greeted in every language they play in
     $("hello").innerHTML=[p.home,...p.learn].map(c=>`<span lang="${c}" dir="${L[c].rtl?"rtl":"ltr"}">${esc(L[c].hi)}, ${esc(p.name)}!</span>`).join("");
     const names=p.learn.map(c=>L[c].own).join(", ");
@@ -664,6 +667,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
       return `<button type="button" class="game${tooBig?" dim":""}" data-game="${g.id}">
         <div class="art ${TILE[g.id][1]}">${LPLook.pic(TILE[g.id][0])||ART[g.art]}</div>
         <h3>${esc(gname(g))}</h3><p>${esc(gblurb(g))}</p>
+        <span class="playnow">${esc(T[profile.home]?T[profile.home].gCta:T.en.gCta)}</span>
 </button>`;
     }).join("");
   }
@@ -761,6 +765,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   // voice choices in the settings sheet
   $("voiceRows").addEventListener("change",e=>{const sel=e.target.closest("[data-voice]");if(!sel)return;draft.voices=draft.voices||{};if(sel.value)draft.voices[sel.dataset.voice]=sel.value;else delete draft.voices[sel.dataset.voice];hear(sel.dataset.voice)});
   $("voiceRows").addEventListener("click",e=>{const b=e.target.closest("[data-hear]");if(b)hear(b.dataset.hear)});
+  $("g-cta").addEventListener("click",()=>{const g=document.querySelector("#gameGrid [data-game]");if(g)openGame(g.dataset.game)});
   $("gameGrid").addEventListener("click",e=>{const g=e.target.closest("[data-game]");if(g)openGame(g.dataset.game)});
   $("backBtn").addEventListener("click",()=>show("games"));
   document.querySelectorAll("nav [data-view]").forEach(btn=>btn.addEventListener("click",()=>show(btn.dataset.view)));

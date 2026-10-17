@@ -40,25 +40,25 @@ body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch
 /* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
 const DATA={
  words:[
-  {id:"apple",e:"🍎",en:"the apple",de:"der Apfel",es:"la manzana",fr:"la pomme",it:"la mela",pt:"a maçã"},
-  {id:"banana",e:"🍌",en:"the banana",de:"die Banane",es:"el plátano",fr:"la banane",it:"la banana",pt:"a banana"},
-  {id:"dog",e:"🐶",en:"the dog",de:"der Hund",es:"el perro",fr:"le chien",it:"il cane",pt:"o cão"},
-  {id:"cat",e:"🐱",en:"the cat",de:"die Katze",es:"el gato",fr:"le chat",it:"il gatto",pt:"o gato"},
-  {id:"ball",e:"⚽",en:"the ball",de:"der Ball",es:"la pelota",fr:"le ballon",it:"la palla",pt:"a bola"},
-  {id:"car",e:"🚗",en:"the car",de:"das Auto",es:"el coche",fr:"la voiture",it:"la macchina",pt:"o carro"},
-  {id:"house",e:"🏠",en:"the house",de:"das Haus",es:"la casa",fr:"la maison",it:"la casa",pt:"a casa"},
-  {id:"tree",e:"🌳",en:"the tree",de:"der Baum",es:"el árbol",fr:"l'arbre",it:"l'albero",pt:"a árvore"},
-  {id:"sun",e:"☀️",en:"the sun",de:"die Sonne",es:"el sol",fr:"le soleil",it:"il sole",pt:"o sol"},
-  {id:"moon",e:"🌙",en:"the moon",de:"der Mond",es:"la luna",fr:"la lune",it:"la luna",pt:"a lua"},
-  {id:"fish",e:"🐟",en:"the fish",de:"der Fisch",es:"el pez",fr:"le poisson",it:"il pesce",pt:"o peixe"},
-  {id:"star",e:"⭐",en:"the star",de:"der Stern",es:"la estrella",fr:"l'étoile",it:"la stella",pt:"a estrela"},
-  {id:"flower",e:"🌸",en:"the flower",de:"die Blume",es:"la flor",fr:"la fleur",it:"il fiore",pt:"a flor"},
-  {id:"book",e:"📖",en:"the book",de:"das Buch",es:"el libro",fr:"le livre",it:"il libro",pt:"o livro"},
-  {id:"shoe",e:"👟",en:"the shoe",de:"der Schuh",es:"el zapato",fr:"la chaussure",it:"la scarpa",pt:"o sapato"},
-  {id:"cake",e:"🎂",en:"the cake",de:"der Kuchen",es:"la tarta",fr:"le gâteau",it:"la torta",pt:"o bolo"}
+  {id:"apple",e:"🍎",en:"the apple",nl:"de appel",pl:"jabłko",sv:"äpplet",el:"το μήλο",zh:"苹果",ar:"التفاحة",ja:"りんご",ko:"사과",ru:"яблоко",tr:"elma",hi:"सेब",de:"der Apfel",es:"la manzana",fr:"la pomme",it:"la mela",pt:"a maçã"},
+  {id:"banana",e:"🍌",en:"the banana",nl:"de banaan",pl:"banan",sv:"bananen",el:"η μπανάνα",zh:"香蕉",ar:"الموزة",ja:"バナナ",ko:"바나나",ru:"банан",tr:"muz",hi:"केला",de:"die Banane",es:"el plátano",fr:"la banane",it:"la banana",pt:"a banana"},
+  {id:"dog",e:"🐶",en:"the dog",nl:"de hond",pl:"pies",sv:"hunden",el:"ο σκύλος",zh:"狗",ar:"الكلب",ja:"いぬ",ko:"강아지",ru:"собака",tr:"köpek",hi:"कुत्ता",de:"der Hund",es:"el perro",fr:"le chien",it:"il cane",pt:"o cão"},
+  {id:"cat",e:"🐱",en:"the cat",nl:"de kat",pl:"kot",sv:"katten",el:"η γάτα",zh:"猫",ar:"القطة",ja:"ねこ",ko:"고양이",ru:"кошка",tr:"kedi",hi:"बिल्ली",de:"die Katze",es:"el gato",fr:"le chat",it:"il gatto",pt:"o gato"},
+  {id:"ball",e:"⚽",en:"the ball",nl:"de bal",pl:"piłka",sv:"bollen",el:"η μπάλα",zh:"球",ar:"الكرة",ja:"ボール",ko:"공",ru:"мяч",tr:"top",hi:"गेंद",de:"der Ball",es:"la pelota",fr:"le ballon",it:"la palla",pt:"a bola"},
+  {id:"car",e:"🚗",en:"the car",nl:"de auto",pl:"samochód",sv:"bilen",el:"το αυτοκίνητο",zh:"汽车",ar:"السيارة",ja:"くるま",ko:"자동차",ru:"машина",tr:"araba",hi:"गाड़ी",de:"das Auto",es:"el coche",fr:"la voiture",it:"la macchina",pt:"o carro"},
+  {id:"house",e:"🏠",en:"the house",nl:"het huis",pl:"dom",sv:"huset",el:"το σπίτι",zh:"房子",ar:"البيت",ja:"いえ",ko:"집",ru:"дом",tr:"ev",hi:"घर",de:"das Haus",es:"la casa",fr:"la maison",it:"la casa",pt:"a casa"},
+  {id:"tree",e:"🌳",en:"the tree",nl:"de boom",pl:"drzewo",sv:"trädet",el:"το δέντρο",zh:"树",ar:"الشجرة",ja:"き",ko:"나무",ru:"дерево",tr:"ağaç",hi:"पेड़",de:"der Baum",es:"el árbol",fr:"l'arbre",it:"l'albero",pt:"a árvore"},
+  {id:"sun",e:"☀️",en:"the sun",nl:"de zon",pl:"słońce",sv:"solen",el:"ο ήλιος",zh:"太阳",ar:"الشمس",ja:"おひさま",ko:"해",ru:"солнце",tr:"güneş",hi:"सूरज",de:"die Sonne",es:"el sol",fr:"le soleil",it:"il sole",pt:"o sol"},
+  {id:"moon",e:"🌙",en:"the moon",nl:"de maan",pl:"księżyc",sv:"månen",el:"το φεγγάρι",zh:"月亮",ar:"القمر",ja:"おつきさま",ko:"달",ru:"луна",tr:"ay",hi:"चाँद",de:"der Mond",es:"la luna",fr:"la lune",it:"la luna",pt:"a lua"},
+  {id:"fish",e:"🐟",en:"the fish",nl:"de vis",pl:"ryba",sv:"fisken",el:"το ψάρι",zh:"鱼",ar:"السمكة",ja:"さかな",ko:"물고기",ru:"рыба",tr:"balık",hi:"मछली",de:"der Fisch",es:"el pez",fr:"le poisson",it:"il pesce",pt:"o peixe"},
+  {id:"star",e:"⭐",en:"the star",nl:"de ster",pl:"gwiazda",sv:"stjärnan",el:"το αστέρι",zh:"星星",ar:"النجمة",ja:"ほし",ko:"별",ru:"звезда",tr:"yıldız",hi:"तारा",de:"der Stern",es:"la estrella",fr:"l'étoile",it:"la stella",pt:"a estrela"},
+  {id:"flower",e:"🌸",en:"the flower",nl:"de bloem",pl:"kwiatek",sv:"blomman",el:"το λουλούδι",zh:"花",ar:"الزهرة",ja:"はな",ko:"꽃",ru:"цветок",tr:"çiçek",hi:"फूल",de:"die Blume",es:"la flor",fr:"la fleur",it:"il fiore",pt:"a flor"},
+  {id:"book",e:"📖",en:"the book",nl:"het boek",pl:"książka",sv:"boken",el:"το βιβλίο",zh:"书",ar:"الكتاب",ja:"ほん",ko:"책",ru:"книга",tr:"kitap",hi:"किताब",de:"das Buch",es:"el libro",fr:"le livre",it:"il libro",pt:"o livro"},
+  {id:"shoe",e:"👟",en:"the shoe",nl:"de schoen",pl:"but",sv:"skon",el:"το παπούτσι",zh:"鞋子",ar:"الحذاء",ja:"くつ",ko:"신발",ru:"ботинок",tr:"ayakkabı",hi:"जूता",de:"der Schuh",es:"el zapato",fr:"la chaussure",it:"la scarpa",pt:"o sapato"},
+  {id:"cake",e:"🎂",en:"the cake",nl:"de taart",pl:"ciasto",sv:"tårtan",el:"η τούρτα",zh:"蛋糕",ar:"الكعكة",ja:"ケーキ",ko:"케이크",ru:"торт",tr:"pasta",hi:"केक",de:"der Kuchen",es:"la tarta",fr:"le gâteau",it:"la torta",pt:"o bolo"}
  ],
  lines:{
-  en:{title:"Pairs",match:"A pair!",win:"You found them all!"},
+  en:{title:"Pairs",match:"A pair!",win:"You found them all!"},nl:{title:"Memory",match:"Een paar!",win:"Je hebt ze allemaal gevonden!"},pl:{title:"Pary",match:"Para!",win:"Znalazłeś wszystkie!"},sv:{title:"Par",match:"Ett par!",win:"Du hittade alla!"},el:{title:"Ζευγάρια",match:"Ζευγάρι!",win:"Τα βρήκες όλα!"},zh:{title:"配对",match:"一对！",win:"你全找到了！"},ar:{title:"الأزواج",match:"زوج!",win:"وجدتها كلها!"},ja:{title:"ペアあわせ",match:"ペアだ！",win:"ぜんぶ みつけたね！"},ko:{title:"짝 맞추기",match:"짝이야!",win:"다 찾았어요!"},ru:{title:"Пары",match:"Пара!",win:"Ты нашёл все!"},tr:{title:"Eşleştirme",match:"Bir çift!",win:"Hepsini buldun!"},hi:{title:"जोड़ियाँ",match:"जोड़ी!",win:"तुमने सब ढूँढ लिए!"},
   de:{title:"Paare finden",match:"Ein Paar!",win:"Du hast alle gefunden!"},
   es:{title:"Parejas",match:"¡Una pareja!",win:"¡Las encontraste todas!"},
   fr:{title:"Paires",match:"Une paire !",win:"Tu les as toutes trouvées !"},
@@ -66,7 +66,7 @@ const DATA={
   pt:{title:"Pares",match:"Um par!",win:"Encontraste todos!"}
  }
 };
-const LANGS=["en","de","es","fr","it","pt"];
+const LANGS=ALLLANGS;
 const W=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
 const $=id=>document.getElementById(id);
 const L=()=>LP.t(DATA.lines);

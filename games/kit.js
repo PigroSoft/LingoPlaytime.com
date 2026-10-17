@@ -4,8 +4,8 @@
    start screen, keyboard mashing, the big pointing-finger cursor and a star burst. */
 (function () {
   var LP = window.LP = { lang: "en", age: 0, name: "", langs: ["en"] };
-  var TAGS = { en: "en-GB", de: "de-DE", es: "es-ES", fr: "fr-FR", it: "it-IT", pt: "pt-PT" };
-  var START = { en: "Tap to play", de: "Tippen zum Spielen", es: "Toca para jugar", fr: "Touche pour jouer", it: "Tocca per giocare", pt: "Toca para jogar" };
+  var TAGS = { en: "en-GB", de: "de-DE", es: "es-ES", fr: "fr-FR", it: "it-IT", pt: "pt-PT", nl: "nl-NL", pl: "pl-PL", sv: "sv-SE", el: "el-GR", zh: "zh-CN", ar: "ar-SA", ja: "ja-JP", ko: "ko-KR", ru: "ru-RU", tr: "tr-TR", hi: "hi-IN" };
+  var START = { en: "Tap to play", de: "Tippen zum Spielen", es: "Toca para jugar", fr: "Touche pour jouer", it: "Tocca per giocare", pt: "Toca para jogar", nl: "Tik om te spelen", pl: "Dotknij, aby zagrać", sv: "Tryck för att spela", el: "Άγγιξε για να παίξεις", zh: "点一下开始玩", ar: "المس للعب", ja: "タップして あそぼう", ko: "눌러서 놀아요", ru: "Нажми, чтобы играть", tr: "Oynamak için dokun", hi: "खेलने के लिए छुओ" };
   var onLang = function () {}, onAge = function () {};
 
   function pick(s) {

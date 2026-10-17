@@ -720,6 +720,48 @@ nav{background:linear-gradient(#4fc777,#3fae6a)}
     }
   };
 
+  /* languages that share one simple verse: the title, then each animal and its sound */
+  const GEN = {
+    nl: { code: "nl-NL", hello: "Hallo!", title: "Boer Teun had een boerderij", tap: "Tik op een dier!", sing: "Zing het lied", stop: "Stop", find: "Wie zegt dat?", free: "Vrij spelen", open: "Open de schuur!", sound: "Geluid aan", all: "Je hebt ze allemaal gevonden!", animals: { cow: ["koe", "boe", "de"], pig: ["varken", "knor", "het"], duck: ["eend", "kwak", "de"], sheep: ["schaap", "mee", "het"], horse: ["paard", "hihihi", "het"], chicken: ["kip", "tok", "de"] },
+      says: (a, w) => `${a.art} ${a.name} zegt ${w}!`, call: a => cap(a.name) + '!', who: w => `Wie zegt ${w}?`, yes: (a, w) => `Ja! ${a.art} ${a.name} zegt ${w}!` },
+    pl: { code: "pl-PL", hello: "Cześć!", title: "Dziadek Jan miał farmę", tap: "Dotknij zwierzątka!", sing: "Zaśpiewaj piosenkę", stop: "Stop", find: "Kto tak robi?", free: "Swobodna zabawa", open: "Otwórz stodołę!", sound: "Dźwięk włączony", all: "Znalazłeś wszystkie!", animals: { cow: ["krowa", "muu", ""], pig: ["świnia", "chrum", ""], duck: ["kaczka", "kwa", ""], sheep: ["owca", "bee", ""], horse: ["koń", "i-ha", ""], chicken: ["kura", "ko ko", ""] },
+      says: (a, w) => `${cap(a.name)} robi ${w}!`, call: a => cap(a.name) + '!', who: w => `Kto robi ${w}?`, yes: (a, w) => `Tak! ${cap(a.name)} robi ${w}!` },
+    sv: { code: "sv-SE", hello: "Hej!", title: "Per Olsson hade en bondgård", tap: "Tryck på ett djur!", sing: "Sjung sången", stop: "Stopp", find: "Vem säger så?", free: "Fritt spel", open: "Öppna ladan!", sound: "Ljud på", all: "Du hittade alla!", animals: { cow: ["kon", "mu", ""], pig: ["grisen", "nöff", ""], duck: ["ankan", "kvack", ""], sheep: ["fåret", "bää", ""], horse: ["hästen", "gnägg", ""], chicken: ["hönan", "pock", ""] },
+      says: (a, w) => `${cap(a.name)} säger ${w}!`, call: a => cap(a.name) + '!', who: w => `Vem säger ${w}?`, yes: (a, w) => `Ja! ${cap(a.name)} säger ${w}!` },
+    el: { code: "el-GR", hello: "Γεια!", title: "Ο παππούς Νίκος είχε φάρμα", tap: "Άγγιξε ένα ζώο!", sing: "Τραγούδα το τραγούδι", stop: "Στοπ", find: "Ποιος το λέει;", free: "Ελεύθερο παιχνίδι", open: "Άνοιξε τον αχυρώνα!", sound: "Ήχος ανοιχτός", all: "Τα βρήκες όλα!", animals: { cow: ["αγελάδα", "μουου", "η"], pig: ["γουρούνι", "γκρουν", "το"], duck: ["πάπια", "κουάκ", "η"], sheep: ["πρόβατο", "μπεεε", "το"], horse: ["άλογο", "ιιιι", "το"], chicken: ["κότα", "κο κο", "η"] },
+      says: (a, w) => `${cap(a.art)} ${a.name} κάνει ${w}!`, call: a => cap(a.name) + '!', who: w => `Ποιος κάνει ${w};`, yes: (a, w) => `Ναι! ${cap(a.art)} ${a.name} κάνει ${w}!` },
+    zh: { code: "zh-CN", hello: "你好！", title: "王老先生有块地", tap: "点一点小动物！", sing: "唱首歌", stop: "停", find: "谁这样叫？", free: "自由玩", open: "打开谷仓！", sound: "声音已开", all: "你全找到了！", animals: { cow: ["奶牛", "哞", ""], pig: ["小猪", "哼哼", ""], duck: ["鸭子", "嘎嘎", ""], sheep: ["绵羊", "咩咩", ""], horse: ["马", "嘶嘶", ""], chicken: ["小鸡", "咯咯", ""] },
+      says: (a, w) => `${a.name}说${w}！`, call: a => cap(a.name) + '!', who: w => `谁说${w}？`, yes: (a, w) => `对！ ${a.name}说${w}！` },
+    ar: { code: "ar-SA", hello: "مرحبا!", title: "للمزارع مزرعة", tap: "المس حيوانا!", sing: "غنِّ الأغنية", stop: "توقف", find: "من يقول هذا؟", free: "لعب حر", open: "افتح الحظيرة!", sound: "الصوت مفعل", all: "وجدتها كلها!", animals: { cow: ["البقرة", "موو", ""], pig: ["الخنزير", "غرغر", ""], duck: ["البطة", "بط بط", ""], sheep: ["الخروف", "ماع", ""], horse: ["الحصان", "صهيل", ""], chicken: ["الدجاجة", "قاق", ""] },
+      says: (a, w) => `${a.name}: ${w}!`, call: a => cap(a.name) + '!', who: w => `من يقول ${w}؟`, yes: (a, w) => `نعم! ${a.name}: ${w}!` },
+    ja: { code: "ja-JP", hello: "こんにちは！", title: "まきばの うた", tap: "どうぶつを タップ！", sing: "うたを うたう", stop: "とめる", find: "だれの こえ？", free: "じゆうに あそぶ", open: "こやを あけよう！", sound: "おとが でるよ", all: "ぜんぶ みつけたね！", animals: { cow: ["うし", "モー", ""], pig: ["ぶた", "ブーブー", ""], duck: ["あひる", "ガーガー", ""], sheep: ["ひつじ", "メェー", ""], horse: ["うま", "ヒヒーン", ""], chicken: ["にわとり", "コケコッコー", ""] },
+      says: (a, w) => `${a.name}は ${w}！`, call: a => cap(a.name) + '!', who: w => `だれが ${w}？`, yes: (a, w) => `そう！ ${a.name}は ${w}！` },
+    ko: { code: "ko-KR", hello: "안녕!", title: "맥도날드 할아버지 농장에", tap: "동물을 눌러 봐요!", sing: "노래 부르기", stop: "멈춤", find: "누구 소리일까요?", free: "자유롭게 놀기", open: "헛간을 열어요!", sound: "소리 켜짐", all: "다 찾았어요!", animals: { cow: ["소", "음메", ""], pig: ["돼지", "꿀꿀", ""], duck: ["오리", "꽥꽥", ""], sheep: ["양", "매에", ""], horse: ["말", "히잉", ""], chicken: ["닭", "꼬꼬댁", ""] },
+      says: (a, w) => `${a.name}: ${w}!`, call: a => cap(a.name) + '!', who: w => `누가 ${w} 해요?`, yes: (a, w) => `맞아요! ${a.name}: ${w}!` },
+    ru: { code: "ru-RU", hello: "Привет!", title: "Жил-был фермер Ваня", tap: "Нажми на животное!", sing: "Спеть песенку", stop: "Стоп", find: "Кто так говорит?", free: "Свободная игра", open: "Открой сарай!", sound: "Звук включён", all: "Ты нашёл все!", animals: { cow: ["корова", "му-у", ""], pig: ["свинья", "хрю-хрю", ""], duck: ["утка", "кря-кря", ""], sheep: ["овца", "бе-е", ""], horse: ["лошадь", "иго-го", ""], chicken: ["курица", "ко-ко-ко", ""] },
+      says: (a, w) => `${cap(a.name)} говорит ${w}!`, call: a => cap(a.name) + '!', who: w => `Кто говорит ${w}?`, yes: (a, w) => `Да! ${cap(a.name)} говорит ${w}!` },
+    tr: { code: "tr-TR", hello: "Merhaba!", title: "Çiftçi Ahmet'in bir çiftliği var", tap: "Bir hayvana dokun!", sing: "Şarkıyı söyle", stop: "Dur", find: "Bunu kim söyler?", free: "Serbest oyun", open: "Ahırı aç!", sound: "Ses açık", all: "Hepsini buldun!", animals: { cow: ["inek", "möö", ""], pig: ["domuz", "hoh hoh", ""], duck: ["ördek", "vak vak", ""], sheep: ["koyun", "mee", ""], horse: ["at", "ihaa", ""], chicken: ["tavuk", "gıt gıt", ""] },
+      says: (a, w) => `${cap(a.name)} ${w} der!`, call: a => cap(a.name) + '!', who: w => `Kim ${w} der?`, yes: (a, w) => `Evet! ${cap(a.name)} ${w} der!` },
+    hi: { code: "hi-IN", hello: "नमस्ते!", title: "किसान रामू का एक खेत था", tap: "किसी जानवर को छुओ!", sing: "गाना गाओ", stop: "रुको", find: "यह कौन कहता है?", free: "खुला खेल", open: "खलिहान खोलो!", sound: "आवाज़ चालू", all: "तुमने सब ढूँढ लिए!", animals: { cow: ["गाय", "मूं", ""], pig: ["सूअर", "घुर्र घुर्र", ""], duck: ["बत्तख", "क्वैक", ""], sheep: ["भेड़", "में में", ""], horse: ["घोड़ा", "हिन हिन", ""], chicken: ["मुर्गी", "कुक कुक", ""] },
+      says: (a, w) => `${a.name}: ${w}!`, call: a => cap(a.name) + '!', who: w => `कौन कहता है ${w}?`, yes: (a, w) => `हाँ! ${a.name}: ${w}!` }
+  };
+  Object.keys(GEN).forEach(k => {
+    const g = GEN[k];
+    LANGS[k] = Object.assign({ pitch: 1.1, eio: ['E', 'I', 'E', 'I', 'O'] }, g, {
+      verse(a, L) {
+        const S = a.word;
+        const first = () => [tk(g.title + ', ', 5, 'G4'), ...chorus(L)];
+        return [
+          first(),
+          [tk(a.name + ', ', 3, 'D4'), ...chorus(L)],
+          [snd(S + ' ', 1), snd(S + ' ', 1), snd(S + ' ', 1), snd(S + ' ', 1)],
+          [snd(S + ', ', 1), snd(S + ', ', 1), snd(S + ' ', .5), snd(S, .5)],
+          first()
+        ];
+      }
+    });
+  });
+
   let lang = 'en';
   try {
     const saved = localStorage.getItem('farm-lang');
@@ -742,7 +784,7 @@ nav{background:linear-gradient(#4fc777,#3fae6a)}
   let childName = '';
   try { childName = sanitizeChildName(localStorage.getItem('farm-child-name') || ''); } catch (e) { /* ignore */ }
   const withName = (text) => childName ? `${childName}, ${text[0].toLowerCase()}${text.slice(1)}` : text;
-  const NAME_Q = { en: "What's your name?", de: 'Wie heißt du?', it: 'Come ti chiami?', es: '¿Cómo te llamas?', pt: 'Qual é o teu nome?', fr: "Comment tu t'appelles ?" };
+  const NAME_Q = { en: "What's your name?",nl:"Hoe heet je?",pl:"Jak masz na imię?",sv:"Vad heter du?",el:"Πώς σε λένε;",zh:"你叫什么名字？",ar:"ما اسمك؟",ja:"なまえは？",ko:"이름이 뭐예요?",ru:"Как тебя зовут?",tr:"Adın ne?",hi:"तुम्हारा नाम क्या है?", de: 'Wie heißt du?', it: 'Come ti chiami?', es: '¿Cómo te llamas?', pt: 'Qual é o teu nome?', fr: "Comment tu t'appelles ?" };
 
   function localizeAnimals() {
     ANIMALS.forEach(a => { const [name, word, art] = T().animals[a.id]; a.name = name; a.word = word; a.art = art || ''; });

@@ -95,7 +95,19 @@ const LANGS={
  de:{name:"Deutsch",code:"de-DE",ask:"Wo ist",yes:["Ja!","Super!","Toll gemacht!"],no:"Nochmal"},
  es:{name:"Español",code:"es-ES",ask:"Busca",yes:["¡Sí!","¡Muy bien!","¡Genial!"],no:"Otra vez"},
  fr:{name:"Français",code:"fr-FR",ask:"Trouve",yes:["Oui !","Bravo !","Super !"],no:"Encore"},
- it:{name:"Italiano",code:"it-IT",ask:"Trova",yes:["Sì!","Bravo!","Bravissimo!"],no:"Riprova"}
+ it:{name:"Italiano",code:"it-IT",ask:"Trova",yes:["Sì!","Bravo!","Bravissimo!"],no:"Riprova"},
+ pt:{name:"Português",code:"pt-PT",ask:"Onde está",yes:["Sim!","Muito bem!","Boa!"],no:"Outra vez"},
+ nl:{name:"Nederlands",code:"nl-NL",ask:"Zoek",end:"!",yes:["Ja!","Goed gedaan!","Goed zo!"],no:"Probeer opnieuw"},
+ pl:{name:"Polski",code:"pl-PL",ask:"Gdzie jest",yes:["Tak!","Świetnie!","Udało się!"],no:"Spróbuj jeszcze raz"},
+ sv:{name:"Svenska",code:"sv-SE",ask:"Hitta",end:"!",yes:["Ja!","Bra jobbat!","Du fixade det!"],no:"Försök igen"},
+ el:{name:"Ελληνικά",code:"el-GR",ask:"Πού είναι",yes:["Ναι!","Μπράβο!","Το βρήκες!"],no:"Δοκίμασε ξανά"},
+ zh:{name:"中文",code:"zh-CN",ask:"找一找",end:"！",yes:["对！","真棒！","你找到了！"],no:"再试一次"},
+ ar:{name:"العربية",code:"ar-SA",ask:"أين",end:"؟",rtl:true,yes:["نعم!","عمل رائع!","أصبت!"],no:"حاول مرة أخرى"},
+ ja:{name:"日本語",code:"ja-JP",ask:"さがして",end:"！",yes:["そう！","すごい！","あたり！"],no:"もういちど"},
+ ko:{name:"한국어",code:"ko-KR",ask:"찾아 봐요:",end:"!",yes:["맞아요!","잘했어요!","맞혔어요!"],no:"다시 해 봐요"},
+ ru:{name:"Русский",code:"ru-RU",ask:"Где",yes:["Да!","Молодец!","Правильно!"],no:"Попробуй ещё раз"},
+ tr:{name:"Türkçe",code:"tr-TR",ask:"Nerede",yes:["Evet!","Aferin!","Buldun!"],no:"Tekrar dene"},
+ hi:{name:"हिन्दी",code:"hi-IN",ask:"ढूँढो",end:"!",yes:["हाँ!","शाबाश!","सही जवाब!"],no:"फिर से कोशिश करो"}
 };
 const WORDS_EASY=[
  {e:"🍎",en:"apple",de:"der Apfel",es:"la manzana",fr:"la pomme",it:"la mela",pt:"a maçã",nl:"de appel",pl:"jabłko",sv:"äpplet",el:"το μήλο",zh:"苹果",ar:"تفاحة",ja:"りんご",ko:"사과",ru:"яблоко",tr:"elma",hi:"सेब"},
@@ -190,7 +202,7 @@ function startDrone(){const o=ac.createOscillator(),lfo=ac.createOscillator(),lg
 function chime(){const t=ac.currentTime;[523,659,784,1047].forEach((fr,i)=>{const o=ac.createOscillator(),g=ac.createGain();o.type="triangle";o.frequency.value=fr;g.gain.setValueAtTime(0,t+i*.09);g.gain.linearRampToValueAtTime(.25,t+i*.09+.02);g.gain.exponentialRampToValueAtTime(.001,t+i*.09+.5);o.connect(g).connect(ac.destination);o.start(t+i*.09);o.stop(t+i*.09+.6)})}
 function boop(){const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.frequency.setValueAtTime(300,t);o.frequency.exponentialRampToValueAtTime(140,t+.3);g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.001,t+.35);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.4)}
 
-function sentence(){return LANGS[lang].ask+" "+target[lang]+"?"}
+function sentence(){return LANGS[lang].ask+" "+target[lang]+(LANGS[lang].end||"?")}
 function newRound(){
  planes.forEach(p=>p.el.remove());planes=[];
  const cfg=LEVELS[level];
