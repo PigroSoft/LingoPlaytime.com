@@ -10,6 +10,35 @@
 
   window.LP_SETTINGS = S;
 
+  /* Master mute, shared with the site's sound button (localStorage + postMessage "lp-mute").
+     Web Audio: every context's destination is a master gain. Recorded clips and browser speech
+     are skipped while muted, and speech still reports start and end so games keep their rhythm. */
+  var MKEY = "lingoplaytime.muted", muted = false, ctxs = [];
+  try { muted = localStorage.getItem(MKEY) === "1"; } catch (e) {}
+  window.LP_MUTED = function () { return muted; };
+  ["AudioContext", "webkitAudioContext"].forEach(function (n) {
+    var O = window[n]; if (!O) return;
+    var W = function () {
+      var c = new (Function.prototype.bind.apply(O, [null].concat([].slice.call(arguments))))();
+      try { var g = c.createGain(), real = c.destination; g.gain.value = muted ? 0 : 1; g.connect(real); Object.defineProperty(c, "destination", { value: g }); ctxs.push(g); } catch (e) {}
+      return c;
+    };
+    W.prototype = O.prototype; window[n] = W;
+  });
+  (function () {
+    var pl = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function () { this.muted = muted; return pl.apply(this, arguments); };
+  })();
+  function applyMute() {
+    ctxs.forEach(function (g) { try { g.gain.value = muted ? 0 : 1; } catch (e) {} });
+    Array.prototype.forEach.call(document.querySelectorAll("audio,video"), function (m) { m.muted = muted; });
+    if (muted) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+  }
+  window.addEventListener("message", function (e) {
+    var d = e.data; if (!d || d.type !== "lp-mute" || e.source !== window.parent) return;
+    muted = !!d.muted; applyMute();
+  });
+
   /* Speech layer: every game's speechSynthesis.speak goes through here.
      1. If the phrase has a recording (games/audio/<game>.<lang>.js), play the recording.
         Recordings come from a native voice model, so pronunciation is the same on every device.
@@ -39,6 +68,7 @@
     function next() {
       if (cur || !q.length) return;
       var u = q.shift(), my = gen; cur = u;
+      if (muted) { fire(u, "start"); setTimeout(function () { if (my !== gen) return; fire(u, "end"); advance(my); }, 450); return; }
       var clip = clipFor(u);
       if (clip) {
         audio = new Audio("data:audio/mpeg;base64," + clip);

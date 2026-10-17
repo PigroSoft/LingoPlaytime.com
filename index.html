@@ -237,6 +237,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   <div class="lpbar" id="lpbar" hidden>
     <div class="who" id="barWho"><svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><b id="barName"></b><small id="barAge"></small></div>
     <div class="play" role="group" aria-labelledby="barPlayLbl"><span id="barPlayLbl"></span><span class="langs" id="barLangs"></span></div>
+    <button type="button" class="fsbtn sndbtn" id="sndBtn" aria-pressed="false" aria-label="Sound" title="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor"/><path class="on" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/><path class="off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
     <button type="button" class="fsbtn" id="fsBtn" aria-label="Fullscreen" title="Fullscreen" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
     <button type="button" class="setbtn" id="nav-settings"><i class="fill" id="setFill" aria-hidden="true"></i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span><span id="barSettings"></span><small id="barSettingsSub"></small></span></button>
     <div class="note" id="barNote" hidden></div>
@@ -660,14 +661,10 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     const sorted=[...GAMES];
     $("gameGrid").innerHTML=sorted.map(g=>{
       const tooBig=false;
-      const match=g.langs.filter(c=>playable(p).includes(c));
       return `<button type="button" class="game${tooBig?" dim":""}" data-game="${g.id}">
         <div class="art ${TILE[g.id][1]}">${LPLook.pic(TILE[g.id][0])||ART[g.art]}</div>
         <h3>${esc(gname(g))}</h3><p>${esc(gblurb(g))}</p>
-        <div class="tags">
-          ${g.sound?`<span class="tag sound">${esc(s.sound)}</span>`:""}
-          ${match.map(c=>`<span class="tag">${c.toUpperCase()}</span>`).join("")}
-        </div></button>`;
+</button>`;
     }).join("");
   }
 
@@ -679,6 +676,12 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   function fsExit(){try{const r=(document.exitFullscreen||document.webkitExitFullscreen).call(document);if(r&&r.catch)r.catch(()=>{})}catch(x){}}
   function fsPref(v){try{if(v===undefined)return localStorage.getItem(FSK)==="1";localStorage.setItem(FSK,v?"1":"0")}catch(e){return false}}
   function fsLabel(){const l=FSL[profile&&profile.home]||FSL.en;$("fsBtn").title=l;$("fsBtn").setAttribute("aria-label",l)}
+  const SNL={en:["Sound on","Sound off"],de:["Ton an","Ton aus"],es:["Sonido activado","Sonido desactivado"],fr:["Son activé","Son coupé"],it:["Audio attivo","Audio disattivato"],pt:["Som ligado","Som desligado"]};
+  const MKEY="lingoplaytime.muted";
+  function mutedNow(){try{return localStorage.getItem(MKEY)==="1"}catch(e){return false}}
+  function sndPaint(){const m=mutedNow(),l=SNL[profile&&profile.home]||SNL.en,b=$("sndBtn");b.setAttribute("aria-pressed",String(m));b.classList.toggle("muted",m);b.title=l[m?1:0];b.setAttribute("aria-label",l[m?1:0])}
+  $("sndBtn").addEventListener("click",()=>{const m=!mutedNow();try{localStorage.setItem(MKEY,m?"1":"0")}catch(e){}sndPaint();try{$("frame").contentWindow.postMessage({type:"lp-mute",muted:m},"*")}catch(e){}});
+  sndPaint();
   $("fsBtn").hidden=!fsCan();
   $("fsBtn").addEventListener("click",()=>{if(fsEl()){fsPref(false);fsExit()}else{fsPref(true);fsEnter()}});
   document.addEventListener("fullscreenchange",()=>{if(!fsEl()&&view==="play"){/* left with Esc: respect it */fsPref(false)}});
@@ -693,7 +696,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     $("frame").title=gname(g);
     $("frame").src=`games/${id}.html?${q}`;
     show("play");
-    fsLabel();
+    fsLabel();sndPaint();
     if(fsCan()&&fsPref()&&!fsEl())fsEnter();
     setTimeout(()=>{try{$("frame").focus()}catch(e){}},300);
   }
