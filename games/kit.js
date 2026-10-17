@@ -119,11 +119,11 @@
 
   /* mash: every tap and every key does something. fn(event, x, y) */
   /* mashing rotates: LP.next(key, list) returns the item picked longest ago (ties random), so no repeats until all have had a turn */
-  var hist = {}, tick = 0;
+  var hist = {}, nTick = 0;
   LP.next = function (key, list) {
     var h = hist[key] || (hist[key] = new Map()), best = null, bt = Infinity;
     list.slice().sort(function () { return Math.random() - 0.5; }).forEach(function (x) { var t = h.get(x) || 0; if (t < bt) { bt = t; best = x; } });
-    h.set(best, ++tick); return best;
+    h.set(best, ++nTick); return best;
   };
 
   LP.mash = function (fn) {

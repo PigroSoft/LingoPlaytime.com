@@ -1017,7 +1017,7 @@ nav{background:linear-gradient(#4fc777,#3fae6a)}
     b.setAttribute('aria-label', a.name);
     b.innerHTML = (window.LPLook && LPLook.has(a.id) ? LPLook.animal(a.id) : `<svg viewBox="0 0 120 120" aria-hidden="true">${ART[a.id]}</svg>`) + `<span class="bubble"></span>`;
     b.querySelectorAll('.eye').forEach(e => e.style.animationDelay = `${(i * .9 + Math.random() * 2).toFixed(2)}s`);
-    b.addEventListener('pointerdown', e => { e.preventDefault(); tapAnimal(a); });
+    b.addEventListener('pointerdown', e => { e.preventDefault(); tapAnimal(rotate(a)); });
     b.addEventListener('click', e => { if (e.detail === 0) tapAnimal(a); });
     b.addEventListener('contextmenu', e => e.preventDefault());
     grid.appendChild(b);
@@ -1051,6 +1051,17 @@ nav{background:linear-gradient(#4fc777,#3fae6a)}
   const singBtn = $('#singBtn'), findBtn = $('#findBtn');
   const B = w => `<b>${w}</b>`;
 
+  // pointing at an animal plays it; pointing at the same one again moves on to the animal that has waited longest
+  let lastPoint = null, lastPointAt = 0; const heard = new Map(); let heardN = 0;
+  function rotate(a) {
+    const t = Date.now(), again = lastPoint === a && t - lastPointAt < 8000;
+    lastPoint = a; lastPointAt = t;
+    if (again && mode !== 'find') {
+      const pool = ANIMALS.filter(x => x !== a).sort(() => Math.random() - .5);
+      let best = pool[0], bt = Infinity; pool.forEach(x => { const h = heard.get(x) || 0; if (h < bt) { bt = h; best = x; } }); a = best;
+    }
+    heard.set(a, ++heardN); return a;
+  }
   function tapAnimal(a) {
     if (!audio()) { boing(a); bubble(a, a.word); return; }
     if (singing) endSong(false);

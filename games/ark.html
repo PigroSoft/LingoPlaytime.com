@@ -87,15 +87,15 @@ body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch
 const DATA={
  words:[
   {id:"unicorn",art:"unicorn",snd:"unicorn",en:"the unicorn",de:"das Einhorn",es:"el unicornio",fr:"la licorne",it:"il liocorno",pt:"o unicórnio"},
-  {id:"cat",art:"cat",snd:"cat",en:"the cat",de:"die Katze",es:"el gato",fr:"le chat",it:"il gatto",pt:"o gato"},
-  {id:"mouse",art:"mouse",snd:"mouse",en:"the mouse",de:"die Maus",es:"el ratón",fr:"la souris",it:"il topo",pt:"o rato"},
-  {id:"elephant",art:"elephant",snd:"elephant",en:"the elephant",de:"der Elefant",es:"el elefante",fr:"l'éléphant",it:"l'elefante",pt:"o elefante"},
-  {id:"crocodile",art:"crocodile",snd:"croc",en:"the crocodile",de:"das Krokodil",es:"el cocodrilo",fr:"le crocodile",it:"il coccodrillo",pt:"o crocodilo"},
-  {id:"penguin",art:"penguin",snd:"penguin",en:"the penguin",de:"der Pinguin",es:"el pingüino",fr:"le pingouin",it:"il pinguino",pt:"o pinguim"},
-  {id:"snake",art:"snake",snd:"snake",en:"the snake",de:"die Schlange",es:"la serpiente",fr:"le serpent",it:"il serpente",pt:"a cobra"},
-  {id:"lion",art:"lion",snd:"lion",en:"the lion",de:"der Löwe",es:"el león",fr:"le lion",it:"il leone",pt:"o leão"},
+  {id:"cat",s:{en:"Meow!",de:"Miau!",es:"¡Miau!",fr:"Miaou !",it:"Miao!",pt:"Miau!"},art:"cat",snd:"cat",en:"the cat",de:"die Katze",es:"el gato",fr:"le chat",it:"il gatto",pt:"o gato"},
+  {id:"mouse",s:{en:"Squeak!",de:"Piep piep!",es:"¡Ii ii!",fr:"Couic !",it:"Squit!",pt:"Quic quic!"},art:"mouse",snd:"mouse",en:"the mouse",de:"die Maus",es:"el ratón",fr:"la souris",it:"il topo",pt:"o rato"},
+  {id:"elephant",s:{en:"Toot toot!",de:"Töröö!",es:"¡Prrr!",fr:"Pouet !",it:"Prrr!",pt:"Prruu!"},art:"elephant",snd:"elephant",en:"the elephant",de:"der Elefant",es:"el elefante",fr:"l'éléphant",it:"l'elefante",pt:"o elefante"},
+  {id:"crocodile",s:{en:"Snap!",de:"Schnapp!",es:"¡Ñam!",fr:"Clac !",it:"Boh!",pt:"Nhac!"},art:"crocodile",snd:"croc",en:"the crocodile",de:"das Krokodil",es:"el cocodrilo",fr:"le crocodile",it:"il coccodrillo",pt:"o crocodilo"},
+  {id:"penguin",s:{en:"Honk honk!",de:"Quak quak!",es:"¡Cuac cuac!",fr:"Coin coin !",it:"Qua qua!",pt:"Quá quá!"},art:"penguin",snd:"penguin",en:"the penguin",de:"der Pinguin",es:"el pingüino",fr:"le pingouin",it:"il pinguino",pt:"o pinguim"},
+  {id:"snake",s:{en:"Sss!",de:"Sss!",es:"¡Sss!",fr:"Sss !",it:"Sss!",pt:"Sss!"},art:"snake",snd:"snake",en:"the snake",de:"die Schlange",es:"la serpiente",fr:"le serpent",it:"il serpente",pt:"a cobra"},
+  {id:"lion",s:{en:"Roar!",de:"Rrroar!",es:"¡Grrr!",fr:"Grrr !",it:"Roar!",pt:"Rugido!"},art:"lion",snd:"lion",en:"the lion",de:"der Löwe",es:"el león",fr:"le lion",it:"il leone",pt:"o leão"},
   {id:"turtle",art:"turtle",snd:"turtle",en:"the turtle",de:"die Schildkröte",es:"la tortuga",fr:"la tortue",it:"la tartaruga",pt:"a tartaruga"},
-  {id:"parrot",art:"parrot",snd:"parrot",en:"the parrot",de:"der Papagei",es:"el loro",fr:"le perroquet",it:"il pappagallo",pt:"o papagaio"}
+  {id:"parrot",s:{en:"Squawk!",de:"Krah krah!",es:"¡Cra cra!",fr:"Coco !",it:"Cra cra!",pt:"Crá crá!"},art:"parrot",snd:"parrot",en:"the parrot",de:"der Papagei",es:"el loro",fr:"le perroquet",it:"il pappagallo",pt:"o papagaio"}
  ],
  lines:{
   en:{title:"Noah's Ark",one:"one",two:"two",all:"All aboard!",rain:"rain",rainbow:"the rainbow"},
@@ -110,6 +110,7 @@ const W=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
 const $=id=>document.getElementById(id);
 const L=()=>LP.t(DATA.lines);
 const word=id=>W[id][LP.lang]||W[id].en;
+const snd=id=>(W[id].s&&(W[id].s[LP.lang]||W[id].s.en))||"";
 function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
 
 const aboard=new Set();let finishing=false,raining=false,musicOn=false;
@@ -163,7 +164,8 @@ function tap(id,card){
  card.classList.remove("pop");void card.offsetWidth;card.classList.add("pop");
  animalSound(id);
  const r=card.getBoundingClientRect();LP.burst(r.left+r.width/2,r.top+r.height/2,first?16:8);
- bubble(word(id));LP.say(word(id),id==="crocodile"&&!!L().boh);
+ bubble(word(id)+(snd(id)?"  "+snd(id):""));LP.say(word(id),id==="crocodile"&&!!L().boh);
+ if(snd(id)&&!(id==="crocodile"&&L().boh))setTimeout(()=>LP.say(snd(id),true),1500);
  if(first){
   aboard.add(id);card.classList.add("aboard");fly(card,id);
   LP.say(L().two,true);
@@ -222,13 +224,15 @@ LPLook.sky($("app"),{mode:"day",hills:false});
 document.querySelector("body").insertAdjacentHTML("afterbegin",'<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs></defs></svg>');
 build();bubble(L().title);$("sea").classList.add("rock");
 LP.start(L().title,()=>{LP.say(L().title)});
+let lastPt=null,lastPtAt=0;
 LP.mash((e)=>{
  if(e.target.closest&&e.target.closest(".tool"))return;
- const el=e.target.closest&&e.target.closest("[data-id]");
+ let el=e.target.closest&&e.target.closest("[data-id]");
  let id=el?el.dataset.id:null;
- if(!id){ // a tap anywhere, or any key, picks an animal that isn't aboard yet
+ const again=id&&id===lastPt&&Date.now()-lastPtAt<8000;lastPt=id;lastPtAt=Date.now();
+ if(!id||again){ // a tap anywhere, or any key, picks an animal that isn't aboard yet
   const left=DATA.words.filter(w=>!aboard.has(w.id));
-  const pool=left.length?left:DATA.words;id=LP.next("ark",pool).id;
+  const pool0=left.length?left:DATA.words,pool=pool0.filter(w=>w.id!==lastPt);id=LP.next("ark",pool.length?pool:pool0).id;el=null;
  }
  tap(id,el);
 });

@@ -52,17 +52,17 @@ body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch
 /* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
 const DATA={
  words:[
-  {id:"cow",e:"🐮",snd:"cow",en:"the cow",de:"die Kuh",es:"la vaca",fr:"la vache",it:"la mucca",pt:"a vaca"},
-  {id:"pig",e:"🐷",snd:"pig",en:"the pig",de:"das Schwein",es:"el cerdo",fr:"le cochon",it:"il maiale",pt:"o porco"},
-  {id:"duck",e:"🦆",snd:"duck",en:"the duck",de:"die Ente",es:"el pato",fr:"le canard",it:"l'anatra",pt:"o pato"},
-  {id:"sheep",e:"🐑",snd:"sheep",en:"the sheep",de:"das Schaf",es:"la oveja",fr:"le mouton",it:"la pecora",pt:"a ovelha"},
-  {id:"horse",e:"🐴",snd:"horse",en:"the horse",de:"das Pferd",es:"el caballo",fr:"le cheval",it:"il cavallo",pt:"o cavalo"},
-  {id:"chicken",e:"🐔",snd:"chicken",en:"the chicken",de:"das Huhn",es:"la gallina",fr:"la poule",it:"la gallina",pt:"a galinha"},
-  {id:"cat",e:"🐱",snd:"cat",en:"the cat",de:"die Katze",es:"el gato",fr:"le chat",it:"il gatto",pt:"o gato"},
-  {id:"dog",e:"🐶",snd:"dog",en:"the dog",de:"der Hund",es:"el perro",fr:"le chien",it:"il cane",pt:"o cão"},
-  {id:"mouse",e:"🐭",snd:"mouse",en:"the mouse",de:"die Maus",es:"el ratón",fr:"la souris",it:"il topo",pt:"o rato"},
+  {id:"cow",s:{en:"Moo!",de:"Muh!",es:"¡Muu!",fr:"Meuh !",it:"Muuu!",pt:"Muuu!"},e:"🐮",snd:"cow",en:"the cow",de:"die Kuh",es:"la vaca",fr:"la vache",it:"la mucca",pt:"a vaca"},
+  {id:"pig",s:{en:"Oink oink!",de:"Grunz grunz!",es:"¡Oinc oinc!",fr:"Groin groin !",it:"Oink oink!",pt:"Oinc oinc!"},e:"🐷",snd:"pig",en:"the pig",de:"das Schwein",es:"el cerdo",fr:"le cochon",it:"il maiale",pt:"o porco"},
+  {id:"duck",s:{en:"Quack quack!",de:"Quak quak!",es:"¡Cuac cuac!",fr:"Coin coin !",it:"Qua qua!",pt:"Quá quá!"},e:"🦆",snd:"duck",en:"the duck",de:"die Ente",es:"el pato",fr:"le canard",it:"l'anatra",pt:"o pato"},
+  {id:"sheep",s:{en:"Baa baa!",de:"Mäh mäh!",es:"¡Bee bee!",fr:"Bêê bêê !",it:"Bee bee!",pt:"Méé méé!"},e:"🐑",snd:"sheep",en:"the sheep",de:"das Schaf",es:"la oveja",fr:"le mouton",it:"la pecora",pt:"a ovelha"},
+  {id:"horse",s:{en:"Neigh!",de:"Iiih!",es:"¡Iiiih!",fr:"Hiii !",it:"Iiih!",pt:"Iiirr!"},e:"🐴",snd:"horse",en:"the horse",de:"das Pferd",es:"el caballo",fr:"le cheval",it:"il cavallo",pt:"o cavalo"},
+  {id:"chicken",s:{en:"Cluck cluck!",de:"Gack gack!",es:"¡Co co co!",fr:"Cot cot !",it:"Coccodè!",pt:"Có có có!"},e:"🐔",snd:"chicken",en:"the chicken",de:"das Huhn",es:"la gallina",fr:"la poule",it:"la gallina",pt:"a galinha"},
+  {id:"cat",s:{en:"Meow!",de:"Miau!",es:"¡Miau!",fr:"Miaou !",it:"Miao!",pt:"Miau!"},e:"🐱",snd:"cat",en:"the cat",de:"die Katze",es:"el gato",fr:"le chat",it:"il gatto",pt:"o gato"},
+  {id:"dog",s:{en:"Woof woof!",de:"Wau wau!",es:"¡Guau guau!",fr:"Ouaf ouaf !",it:"Bau bau!",pt:"Au au!"},e:"🐶",snd:"dog",en:"the dog",de:"der Hund",es:"el perro",fr:"le chien",it:"il cane",pt:"o cão"},
+  {id:"mouse",s:{en:"Squeak!",de:"Piep piep!",es:"¡Ii ii!",fr:"Couic !",it:"Squit!",pt:"Quic quic!"},e:"🐭",snd:"mouse",en:"the mouse",de:"die Maus",es:"el ratón",fr:"la souris",it:"il topo",pt:"o rato"},
   {id:"rabbit",e:"🐰",snd:"rabbit",en:"the rabbit",de:"der Hase",es:"el conejo",fr:"le lapin",it:"il coniglio",pt:"o coelho"},
-  {id:"frog",e:"🐸",snd:"frog",en:"the frog",de:"der Frosch",es:"la rana",fr:"la grenouille",it:"la rana",pt:"a rã"},
+  {id:"frog",s:{en:"Ribbit!",de:"Quak quak!",es:"¡Cua cua!",fr:"Coa coa !",it:"Gra gra!",pt:"Croac!"},e:"🐸",snd:"frog",en:"the frog",de:"der Frosch",es:"la rana",fr:"la grenouille",it:"la rana",pt:"a rã"},
   {id:"teddy",e:"🧸",snd:"teddy",en:"the teddy",de:"der Teddy",es:"el osito",fr:"le nounours",it:"l'orsacchiotto",pt:"o ursinho"}
  ],
  lines:{
@@ -89,6 +89,7 @@ let hidden={},open={},want=null,busy=false;
 
 const L=()=>LP.t(DATA.lines);
 const word=id=>W[id][LP.lang]||W[id].en;
+const snd=id=>(W[id].s&&(W[id].s[LP.lang]||W[id].s.en))||"";
 const fill=(tpl,id)=>tpl.replace("{w}",word(id));
 function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
 
@@ -120,13 +121,13 @@ function reveal(spot){
  const r=el.getBoundingClientRect();
  if(want&&id===want){
   want=null;LP.sfx.chime();animalSound(id);LP.burst(r.left+r.width/2,r.top+r.height/2,22);
-  const t=fill(L().found,id);bubble(t);setTimeout(()=>LP.say(t),350);
+  const t=fill(L().found,id);bubble(t+(snd(id)?"  "+snd(id):""));setTimeout(()=>LP.say(t),350);if(snd(id))setTimeout(()=>LP.say(snd(id),true),1900);
   setTimeout(()=>{closeAll();setTimeout(ask,1300)},2600);
   return;
  }
  LP.sfx.whoosh();setTimeout(()=>animalSound(id),180);LP.burst(r.left+r.width/2,r.top+r.height*.3,8);
- bubble(L().peek+" "+word(id));
- LP.say(L().peek);LP.say(word(id),true);
+ bubble(L().peek+" "+word(id)+(snd(id)?"  "+snd(id):""));
+ LP.say(L().peek);LP.say(word(id),true);if(snd(id))setTimeout(()=>LP.say(snd(id),true),1700);
  setTimeout(()=>closeSpot(spot),3000);
 }
 function closeSpot(spot){
