@@ -29,6 +29,8 @@ svg#scene{position:relative;width:100%;height:100%;display:block}
 .wobble{transform-box:fill-box;transform-origin:50% 0;animation:wob 1.2s ease-in-out infinite}
 .flap{transform-box:fill-box;transform-origin:center;animation:flap .35s ease-in-out infinite}
 .shake{transform-box:fill-box;transform-origin:50% 100%;animation:shk .22s ease-in-out 16}
+.ring{animation:rays 1s ease-in-out infinite}
+.dotpop{transform-box:fill-box;transform-origin:center;animation:pop .45s cubic-bezier(.3,1.6,.5,1)}
 .cardpop{transform-box:fill-box;transform-origin:center;animation:cpop .35s cubic-bezier(.3,1.6,.5,1)}
 @keyframes nope{25%{translate:-8px 0}75%{translate:8px 0}}
 @keyframes pop{0%{transform:scale(.2)}100%{transform:scale(1)}}
@@ -127,6 +129,7 @@ svg#scene{position:relative;width:100%;height:100%;display:block}
       <g id="foods"></g>
       <g id="cat"></g>
       <g id="fly" opacity="0"></g>
+      <g id="dots"></g>
       <g id="card" class="card"></g>
     </svg>
   </div>
@@ -145,12 +148,12 @@ const DATA={
   {id:"blueberries",en:"the blueberries",de:"die Heidelbeeren",es:"los arándanos",fr:"les myrtilles",it:"i mirtilli",pt:"os mirtilos"}
  ],
  lines:{
-  en:{title:"Munch munch!",where:"Where is {w}?",whereP:"Where are {w}?",n1:"one",n2:"two",n3:"three",n4:"four",n5:"five",n6:"six",n7:"seven",butterfly:"The butterfly!",bye:"Bye bye!"},
-  de:{title:"Mampf mampf!",where:"Wo ist {w}?",whereP:"Wo sind {w}?",n1:"eins",n2:"zwei",n3:"drei",n4:"vier",n5:"fünf",n6:"sechs",n7:"sieben",butterfly:"Der Schmetterling!",bye:"Tschüss!"},
-  es:{title:"¡Ñam ñam!",where:"¿Dónde está {w}?",whereP:"¿Dónde están {w}?",n1:"uno",n2:"dos",n3:"tres",n4:"cuatro",n5:"cinco",n6:"seis",n7:"siete",butterfly:"¡La mariposa!",bye:"¡Adiós!"},
-  fr:{title:"Miam miam !",where:"Où est {w} ?",whereP:"Où sont {w} ?",n1:"un",n2:"deux",n3:"trois",n4:"quatre",n5:"cinq",n6:"six",n7:"sept",butterfly:"Le papillon !",bye:"Au revoir !"},
-  it:{title:"Gnam gnam!",where:"Dov'è {w}?",whereP:"Dove sono {w}?",n1:"uno",n2:"due",n3:"tre",n4:"quattro",n5:"cinque",n6:"sei",n7:"sette",butterfly:"La farfalla!",bye:"Ciao ciao!"},
-  pt:{title:"Nham nham!",where:"Onde está {w}?",whereP:"Onde estão {w}?",n1:"um",n2:"dois",n3:"três",n4:"quatro",n5:"cinco",n6:"seis",n7:"sete",butterfly:"A borboleta!",bye:"Adeus!"}
+  en:{title:"Munch munch!",please:"{w}, please!",thanks:"Thank you!",help:"Help the butterfly out!",where:"Where is {w}?",whereP:"Where are {w}?",n1:"one",n2:"two",n3:"three",n4:"four",n5:"five",n6:"six",n7:"seven",butterfly:"The butterfly!",bye:"Bye bye!"},
+  de:{title:"Mampf mampf!",please:"{w}, bitte!",thanks:"Danke!",help:"Hilf dem Schmetterling heraus!",where:"Wo ist {w}?",whereP:"Wo sind {w}?",n1:"eins",n2:"zwei",n3:"drei",n4:"vier",n5:"fünf",n6:"sechs",n7:"sieben",butterfly:"Der Schmetterling!",bye:"Tschüss!"},
+  es:{title:"¡Ñam ñam!",please:"¡{w}, por favor!",thanks:"¡Gracias!",help:"¡Ayuda a la mariposa a salir!",where:"¿Dónde está {w}?",whereP:"¿Dónde están {w}?",n1:"uno",n2:"dos",n3:"tres",n4:"cuatro",n5:"cinco",n6:"seis",n7:"siete",butterfly:"¡La mariposa!",bye:"¡Adiós!"},
+  fr:{title:"Miam miam !",please:"{w}, s'il te plaît !",thanks:"Merci !",help:"Aide le papillon à sortir !",where:"Où est {w} ?",whereP:"Où sont {w} ?",n1:"un",n2:"deux",n3:"trois",n4:"quatre",n5:"cinq",n6:"six",n7:"sept",butterfly:"Le papillon !",bye:"Au revoir !"},
+  it:{title:"Gnam gnam!",please:"{w}, per favore!",thanks:"Grazie!",help:"Aiuta la farfalla a uscire!",where:"Dov'è {w}?",whereP:"Dove sono {w}?",n1:"uno",n2:"due",n3:"tre",n4:"quattro",n5:"cinque",n6:"sei",n7:"sette",butterfly:"La farfalla!",bye:"Ciao ciao!"},
+  pt:{title:"Nham nham!",please:"{w}, por favor!",thanks:"Obrigado!",help:"Ajuda a borboleta a sair!",where:"Onde está {w}?",whereP:"Onde estão {w}?",n1:"um",n2:"dois",n3:"três",n4:"quatro",n5:"cinco",n6:"seis",n7:"sete",butterfly:"A borboleta!",bye:"Adeus!"}
  }
 };
 const T=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
@@ -224,6 +227,7 @@ function fit(){
  $("bd").src=uri(BACK(v),v.x,v.y,v.w,v.h);if(card.t)drawCard();
 }
 let fitT=0;addEventListener("resize",()=>{clearTimeout(fitT);fitT=setTimeout(fit,150)});
+let stage="play",relT=0,cardBot=90;
 let slots=[],want=null,misses=0,busy=false,eaten=0,goal=3,card={t:"",sub:""};
 const lastFoods=[];
 
@@ -251,9 +255,20 @@ function drawCard(){
  $("say").setAttribute("transform",`translate(${x0+W-6} ${y0+H/2})`);
  // tall phones get a bigger card, scaled from its top centre
  const k=Math.max(.7,Math.min(1.6,Math.max(1,(VB.h/VB.w)/1.34),(VB.w-40)/(W+40)));$("card").setAttribute("transform",`translate(450 ${y0}) scale(${k}) translate(-450 ${-y0})`);
+ cardBot=y0+H*k;drawDots(false);
  const ci=$("cardin");ci.classList.remove("cardpop");void ci.getBoundingClientRect();ci.classList.add("cardpop");
 }
 
+/* seven felt dots under the card fill up with every bite */
+function drawDots(pop){
+ const y=cardBot+26,x0=450-(TARGET-1)*19;let s="";
+ for(let i=0;i<TARGET;i++){
+  const x=x0+i*38,on=i<eaten,last=pop&&i===eaten-1;
+  s+=on?`<g${last?' class="dotpop"':""}>`+pic(`<circle cx="${x}" cy="${y}" r="13" fill="#c4562a" filter="url(#puff)"/><circle cx="${x}" cy="${y}" r="8" ${stitch("#f6d2b8")}/>`,x-24,y-24,48,56)+"</g>"
+   :`<circle cx="${x}" cy="${y}" r="12" fill="#f6e8cc66" stroke="#fbe6c4" stroke-width="2.5" stroke-dasharray="4 4"/>`;
+ }
+ $("dots").innerHTML=s;
+}
 /* the caterpillar: a stuffed felt toy, fatter after every bite */
 const rad=()=>28+eaten*2.6, step=()=>38+eaten*2.4, base=()=>110;
 const headX=()=>base()+(eaten+1)*step();
@@ -313,7 +328,7 @@ function eat(slot){
  setTimeout(()=>{
   el.style.opacity=0;munchSound();eaten++;busy=true;drawCat(true);
   const r=$("cat").getBoundingClientRect();LP.burst(r.right-60,r.top+40,10);
-  say(cap(w(id)),cap(hw(id)));
+  say(cap(w(id)),cap(hw(id)));drawDots(true);LP.say(L().thanks,true);
  },650);
  setTimeout(()=>{
   slot.el.remove();slots.splice(slots.indexOf(slot),1);
@@ -322,13 +337,16 @@ function eat(slot){
   const ids=Object.keys(T).filter(i=>!slots.some(s=>s.id===i));
   addFood(LP.next("munch-new",ids),slot.i,goal);
   busy=false;drawCat(false);
-  if(LP.age>=2)ask();
+  ask();
  },1500);
 }
 function ask(){if(!slots.length)return;want=LP.next("munch-ask",slots.map(s=>s.id));misses=0;sayWhere()}
 // grapes, cherries and blueberries need "where are" (Italian l'uva stays singular)
 const plural=(id,lang)=>["grapes","cherries","blueberries"].includes(id)&&!(id==="grapes"&&lang==="it");
-function sayWhere(speak){const a=L(),b=HL();say(fill(plural(want,LP.lang)?a.whereP:a.where,want),fill(plural(want,LP.home)?b.whereP:b.where,want,hw(want)),speak)}
+function sayWhere(speak){
+ const a=L(),b=HL(),q=LP.age===2; // the youngest and the 3 to 4 year olds are asked politely, the oldest are asked where it is
+ const ta=q?(plural(want,LP.lang)?a.whereP:a.where):a.please,tb=q?(plural(want,LP.home)?b.whereP:b.where):b.please;
+ say(fill(ta,want),fill(tb,want,hw(want)),speak)}
 function burp(t){LP.tone(150,.35,"sawtooth",.12,t,60);LP.noise(.3,.12,"lowpass",300,1,t)}
 function fullBelly(){
  // after the seventh bite: a happy hum, a burp, a squeak and a yawn, with a wiggle, before the cocoon
@@ -345,8 +363,17 @@ function metamorph(){
  // the caterpillar hangs a felt cocoon under the shelf, rests, and a butterfly flies out
  $("cat").style.transition="opacity .6s";$("cat").style.opacity=0;
  const c=$("cocoon");c.innerHTML=`<g class="wobble">${pic(`<path d="M450 370v34" stroke="#f4e6c8" stroke-width="4"/><g filter="url(#puff)"><ellipse cx="450" cy="460" rx="42" ry="64" fill="#b98a55"/></g><path d="M416 438c22 12 46 12 68 0M412 466c24 13 52 13 76 0M418 494c20 10 44 10 64 0" ${stitch("#f1d6a8")}/>`,390,366,130,190)}</g>`;
- c.style.transition="opacity .6s";c.style.opacity=1;LP.sfx.twinkle();say("...","",false);
- setTimeout(()=>{
+ c.style.transition="opacity .6s";c.style.opacity=1;LP.sfx.twinkle();
+ setTimeout(()=>{ // the cocoon is ready: tap it (or press any key) to help the butterfly out
+  say(L().help,HL().help);stage="cocoon";
+  c.insertAdjacentHTML("beforeend",`<ellipse class="ring" cx="450" cy="460" rx="62" ry="84" fill="none" stroke="#fff0c4" stroke-width="5" stroke-dasharray="9 8"/>`);
+  relT=setTimeout(release,14000);
+ },1600);
+}
+function release(){
+ if(stage!=="cocoon")return;stage="play";clearTimeout(relT);
+ const c=$("cocoon");LP.sfx.whoosh();c.classList.add("shake");
+ setTimeout(()=>{c.classList.remove("shake");
   c.style.opacity=0;
   const f=$("fly");
   // both wings sit inside one felt filter, so the mirrored wing is shaded the same way as the other
@@ -358,39 +385,38 @@ function metamorph(){
   for(let i=0;i<10;i++)setTimeout(()=>LP.burst(innerWidth*(.25+Math.random()*.5),innerHeight*(.25+Math.random()*.4),8),i*160);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{$("bf").style.transform="translate(760px,-60px)"}));
   setTimeout(()=>LP.say(L().bye,true),1800);
- },2400);
- setTimeout(()=>{$("fly").style.opacity=0;newRound()},6800);
+ },700);
+ setTimeout(()=>{$("fly").style.opacity=0;newRound()},5100);
 }
 function newRound(){
- eaten=0;goal=[3,4,5][Math.min(2,LP.age)];$("foods").style.opacity=1;$("plates").style.opacity=1;busy=false;drawCat(false);
+ eaten=0;drawDots(false);goal=[3,4,5][Math.min(2,LP.age)];$("foods").style.opacity=1;$("plates").style.opacity=1;busy=false;drawCat(false);
  setFoods();want=null;
  say(L().title,HL().title,false);
- if(LP.age>=2)setTimeout(ask,600);
+ setTimeout(ask,600);
 }
 
-LP.init({langs:["en","de","es","fr","it","pt"],onLang:()=>{document.title=L().title;slots.forEach(s=>s.el.setAttribute("aria-label",w(s.id)));if(want)sayWhere(false);else say(L().title,HL().title,false)},
- onAge:()=>{if(!busy&&eaten===0){goal=[3,4,5][Math.min(2,LP.age)];setFoods();want=null;if(LP.age>=2)ask()}}});
+LP.init({langs:["en","de","es","fr","it","pt"],onLang:()=>{document.title=L().title;slots.forEach(s=>s.el.setAttribute("aria-label",w(s.id)));if(want)sayWhere(false);else if(stage==="cocoon")say(L().help,HL().help,false);else say(L().title,HL().title,false)},
+ onAge:()=>{if(!busy&&eaten===0){goal=[3,4,5][Math.min(2,LP.age)];setFoods();want=null;ask()}}});
 document.title=L().title;
 goal=[3,4,5][Math.min(2,LP.age)];fit();drawCat(false);setFoods();
 document.fonts&&document.fonts.ready.then(()=>{fit();drawCard()});
 say(L().title,HL().title,false);
-LP.start(L().title,()=>{LP.say(L().title);if(LP.age>=2)setTimeout(ask,1200)});
+LP.start(L().title,()=>{LP.say(L().title);setTimeout(ask,1200)});
 LP.mash((e)=>{
  if(e.target.closest&&e.target.closest("#say")){if(card.t)LP.say(card.t);return}
+ if(stage==="cocoon"){release();return}
  if(busy||!slots.length)return;
  const g=e.target.closest&&e.target.closest("[data-food]");
  const pointed=g&&slots.find(s=>s.el===g);
- const hint=()=>{misses++;if(misses>=2){const t=slots.find(s=>s.id===want);if(t)t.el.classList.add("glow")}};
- if(LP.age>=2){ // big kids: feed the one that was asked for
-  if(!want){ask();return}
-  if(pointed){
-   if(pointed.id===want)eat(pointed);
-   else{pointed.el.classList.remove("no");void pointed.el.getBoundingClientRect();pointed.el.classList.add("no");say(cap(w(pointed.id)),cap(hw(pointed.id)));hint();setTimeout(()=>{if(want)sayWhere()},1800)}
-  }else{hint();sayWhere()}
-  return;
- }
- // little ones: tap a food to feed it, or tap anywhere (or press any key) and the caterpillar picks one
- eat(pointed||slots.find(s=>s.id===LP.next("munch",slots.map(x=>x.id))));
+ if(!want){ask();return}
+ const asked=slots.find(s=>s.id===want);
+ // 1 to 2 year olds can't get it wrong: tap a food, or anything else, or any key, and the caterpillar eats
+ if(LP.age===0){eat(pointed||asked);return}
+ const hint=()=>{misses++;if(misses>=(LP.age===1?1:2)&&asked)asked.el.classList.add("glow")};
+ if(pointed){
+  if(pointed.id===want)eat(pointed);
+  else{pointed.el.classList.remove("no");void pointed.el.getBoundingClientRect();pointed.el.classList.add("no");say(cap(w(pointed.id)),cap(hw(pointed.id)));hint();setTimeout(()=>{if(want&&!busy)sayWhere()},1800)}
+ }else{hint();sayWhere()}
 });
 </script>
 </body>
