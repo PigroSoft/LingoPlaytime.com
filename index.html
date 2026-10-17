@@ -53,6 +53,7 @@ nav button[aria-current="page"]{color:var(--ink);background:var(--paper);box-sha
 .eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
 .lede{color:var(--muted);max-width:60ch;margin:10px 0 0}
 
+.sample{margin:10px 0 0;padding:10px 14px;border-radius:14px;background:#fff5d6;color:var(--ink);font-size:15px;line-height:1.5;max-width:60ch}
 /* setup */
 .setup h1{font-size:clamp(32px,5vw,48px);margin-top:6px}
 .field{display:grid;gap:10px;margin-top:30px}
@@ -268,6 +269,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
       </div>
       <div class="filter">
         <span class="quiet" id="g-filter"></span>
+        <p class="sample" id="g-sample" hidden>This is a sample setup. To add your child's name and the languages your family speaks, hold <b>Settings</b> for 3 seconds.</p>
       </div>
       <div class="grid" id="gameGrid"></div>
     </section>
@@ -419,7 +421,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
   const GAMES = [
     {id:"peek",name:"Kuckuck",blurb:"Peekaboo! Curtains, boxes and bushes hide animals. Any tap opens one.",min:0,sound:true,langs:["en","de","es","fr","it","pt"],art:"peek"},
     {id:"face",name:"Where's your nose?",blurb:"Tap a nose, eyes or toes and hear the word, then point to your own.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"face"},
-    {id:"street",name:"Street sounds",blurb:"Buses, bikes, a fire engine and a dog. Tap anything to hear it and its name.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"street"},
+    {id:"street",name:"Street sounds",blurb:"Buses, bikes, a plane, a helicopter and a dog. Tap anything to hear it and its name.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"street"},
     {id:"dress",name:"Get dressed",blurb:"Rain, sun or snow? Put on the right clothes, one word at a time, then head outside.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"dress"},
     {id:"night",name:"Goodnight room",blurb:"Say goodnight to the moon, the lamp and the teddy. The last game before bed; it ends by itself.",min:0,sound:false,langs:["en","de","es","fr","it","pt"],art:"night"},
     {id:"sky",name:"Sky Words",blurb:"Planes fly past carrying pictures. Tap the one you hear.",min:0,sound:false,langs:["en","de","es","fr","it"],art:"sky"},
@@ -483,13 +485,15 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
   function wipe(){try{localStorage.removeItem(KEY)}catch(e){}}
 
   const $ = id=>document.getElementById(id);
-  let profile = load();
+  // first visit: a sample setup, so families see the games before filling anything in
+  const SAMPLE_PROFILE={name:"Friend",age:0,home:"en",learn:["it","fr","es","de"],active:"es",voices:{},demo:true};
+  let profile = load() || {...SAMPLE_PROFILE,learn:[...SAMPLE_PROFILE.learn]};
   if(profile && !playable(profile).includes(profile.active)) profile.active=profile.learn[0];
   let draft = fresh();
-  let view = profile ? "games" : "setup";
+  let view = "games";
   let editing = false, current = null;
 
-  function fresh(){return profile?{...profile,learn:[...profile.learn],voices:{...(profile.voices||{})}}:{name:"",age:0,home:guessHome(),learn:[],voices:{}}}
+  function fresh(){if(profile&&profile.demo){const {demo,...d}=profile;return {...d,name:"",learn:[...d.learn],voices:{}}}return profile?{...profile,learn:[...profile.learn],voices:{...(profile.voices||{})}}:{name:"",age:0,home:guessHome(),learn:[],voices:{}}}
   function guessHome(){const nav=(navigator.language||"en").slice(0,2);return L[nav]?nav:"en"}
   function playable(p){return [...p.learn,p.home]}
   function t(){return T[(profile||draft).home]||T.en}
@@ -606,6 +610,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
     $("hello").innerHTML=[p.home,...p.learn].map(c=>`<span lang="${c}" dir="${L[c].rtl?"rtl":"ltr"}">${esc(L[c].hi)}, ${esc(p.name)}!</span>`).join("");
     const names=p.learn.map(c=>L[c].own).join(", ");
     $("g-filter").textContent=s.filter(s.ages[p.age].toLowerCase()+" ("+s.ageSub[p.age]+")",names);
+    $("g-sample").hidden=!p.demo;
     const sorted=[...GAMES].sort((a,b)=>(a.min>p.age)-(b.min>p.age));
     $("gameGrid").innerHTML=sorted.map(g=>{
       const tooBig=g.min>p.age;
@@ -719,7 +724,7 @@ footer{line-height:1.8;margin-top:40px;text-align:center;font-size:14px;color:va
   $("forget").addEventListener("click",()=>{$("forgetConfirm").hidden=false;$("forgetDone").textContent=""});
   $("forgetNo").addEventListener("click",()=>{$("forgetConfirm").hidden=true});
   $("forgetYes").addEventListener("click",()=>{
-    wipe();profile=null;draft=fresh();
+    wipe();profile={...SAMPLE_PROFILE,learn:[...SAMPLE_PROFILE.learn]};draft=fresh();
     $("forgetConfirm").hidden=true;$("forgetDone").textContent="Done. Nothing about your child is stored on this device now.";
     applyLang();
   });
