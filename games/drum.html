@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<script>window.LP_GAME="drum"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="look.js"></script>
+<script>window.LP_GAME="drum"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="look.js"></script><script src="audio/sfx.drum.js"></script><script src="sfx.js"></script>
 <title>Drum Parade</title>
 <link rel="stylesheet" href="/assets/fonts.css">
 <style>
@@ -85,6 +85,7 @@ if(kid) document.getElementById('title').textContent=`${kid}'s Drum Parade`;
 // audio
 let ac;
 function tone(i){
+ if(window.LPS&&LPS.play(ac,["bigdrum","snare","bongo","cymbal"][i],i===3?1.8:1.2))return;
  const t=ac.currentTime,g=ac.createGain();g.connect(ac.destination);
  if(i===0){const o=ac.createOscillator();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+.4);g.gain.setValueAtTime(1,t);g.gain.exponentialRampToValueAtTime(.001,t+.5);o.connect(g);o.start(t);o.stop(t+.5)}
  else if(i===2){const o=ac.createOscillator();o.frequency.setValueAtTime(320,t);o.frequency.exponentialRampToValueAtTime(200,t+.15);g.gain.setValueAtTime(.8,t);g.gain.exponentialRampToValueAtTime(.001,t+.25);o.connect(g);o.start(t);o.stop(t+.3)}
@@ -145,7 +146,7 @@ Object.keys(L).forEach(k=>{const b=document.createElement('button');b.className=
 addEventListener('keydown',e=>{if(e.repeat||!ac)return;if(e.key==='Tab')return;e.preventDefault();hit((e.key.charCodeAt(0)||0)%4,true)});
 
 // start
-document.getElementById('go').onclick=()=>{ac=new (window.AudioContext||window.webkitAudioContext)();document.getElementById('start').hidden=true;hint.textContent='🥁 🥁 🥁';say(kid?`${kid}!`:L[lang].drums[0])};
+document.getElementById('go').onclick=()=>{ac=new (window.AudioContext||window.webkitAudioContext)();if(window.LPS)LPS.warm(ac);document.getElementById('start').hidden=true;hint.textContent='🥁 🥁 🥁';say(kid?`${kid}!`:L[lang].drums[0])};
 
 // cursor
 const cur=document.getElementById('cursor');

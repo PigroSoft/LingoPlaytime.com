@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<script>window.LP_GAME="train"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="look.js"></script>
+<script>window.LP_GAME="train"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="look.js"></script><script src="audio/sfx.train.js"></script><script src="sfx.js"></script>
 <title>Word Train</title>
 <link rel="stylesheet" href="/assets/fonts.css">
 <style>
@@ -159,6 +159,7 @@ function chug(){const s=TR[cur].s;chugN++;
  if(s=="steam"){noise(0,.16,chugN%2?.35:.55,"lowpass",700);if(chugN%4==0)noise(0,.25,.12,"highpass",3000)}
  else{ if(chugN%2==0){tone(90,0,.08,"triangle",.35);tone(90,.07,.08,"triangle",.3)} noise(0,.05,.08,"bandpass",2500,4)}}
 function whistle(){const s=TR[cur].s;
+ if(window.LPS&&LPS.play(A(),{steam:"whistle",fast:"horn",tram:"tram"}[s],2))return;
  if(s=="steam"){[523,622,784].forEach(f=>{tone(f,0,1.1,"triangle",.09,f*.98);tone(f*2,0,1.1,"sine",.02)});noise(0,1.1,.06,"bandpass",1500,2)}
  else if(s=="fast"){tone(440,0,.4,"sawtooth",.06);tone(554,0,.4,"sawtooth",.05);tone(349,.45,.6,"sawtooth",.06);tone(440,.45,.6,"sawtooth",.05)}
  else if(s=="tram"){for(let k=0;k<3;k++){tone(1318,k*.2,.5,"sine",.2);tone(2637,k*.2,.25,"sine",.05)}}

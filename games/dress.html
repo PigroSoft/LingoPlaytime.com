@@ -45,7 +45,7 @@ body.out .rail{opacity:0;pointer-events:none}
 </style>
 </head>
 <body>
-<script>window.LP_GAME="dress"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
+<script>window.LP_GAME="dress"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="audio/sfx.dress.js"></script>
 <div class="room"></div>
 <div class="outside" id="outside"></div>
 <div class="app" id="app">
@@ -165,7 +165,8 @@ function goOut(){
  document.body.classList.add("out");
  LP.sfx.chime();bubble(L().done);LP.say(L().done);
  const r=$("kid").getBoundingClientRect();setTimeout(()=>LP.burst(r.left+r.width/2,r.top+r.height/3,24),500);
- if(weather==="rain"){for(let i=0;i<6;i++)LP.noise(1,.05,"lowpass",3000,1,i*.8)}
+ if(LP.sample(weather==="rain"?"rain":weather==="sun"?"birds":"wind",4.5)){}
+ else if(weather==="rain"){for(let i=0;i<6;i++)LP.noise(1,.05,"lowpass",3000,1,i*.8)}
  else if(weather==="sun"){for(let i=0;i<5;i++){LP.tone(2400+Math.random()*800,.12,"sine",.05,i*.5,3200);LP.tone(2800,.08,"sine",.04,i*.5+.15,2200)}}
  else {LP.noise(4,.04,"bandpass",500,.6,0,300)}
  setTimeout(()=>{round++;startRound()},6000);
