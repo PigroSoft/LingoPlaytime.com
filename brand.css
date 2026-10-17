@@ -17,7 +17,7 @@
   --tomato-soft:#ffd9c2;--sun-soft:#ffe9a8;--teal-soft:#bfe6f4;--lilac-soft:#d4ebc3;color-scheme:light}}
 
 body{background-color:var(--page);color:var(--ink);
-  background-image:radial-gradient(120% 60% at 50% -10%,#ffffff40,transparent 60%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}
+  background-image:radial-gradient(120% 60% at 50% -10%,#ffffff40,transparent 60%),url(felt/weave.webp);background-blend-mode:normal,overlay;background-size:auto,560px 420px}
 body::before{background:var(--page)!important}
 a{color:var(--blue)}
 
@@ -79,8 +79,8 @@ html.playing footer{background:var(--paper)}
 
 /* tactile layer: everything looks sewn, cut or glued, and has a texture */
 :root{
-  --fuzz:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='3' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)'/%3E%3C/svg%3E");
-  --card-board:repeating-linear-gradient(90deg,#c58a4e 0 5px,#b87a40 5px 9px);
+  --fuzz:url(felt/paper.webp);
+  --card-board:url(felt/cardboard-strip.webp);
 }
 /* wool texture on every cream surface */
 .card,header,.lpbar,.game,.pill,.chip,.back,.fsbtn,.sample,.tag,#name{background-image:var(--fuzz);background-blend-mode:multiply}
@@ -93,11 +93,11 @@ html.playing .lpbar{box-shadow:0 3px 0 #a88f58}
 .go{box-shadow:inset 0 3px 2px #ffffff66,inset 0 -5px 4px #00000033,0 6px 0 #96201c}
 .go:active{box-shadow:inset 0 3px 6px #00000044,0 1px 0 #96201c}
 /* cardboard: tile pictures sit in a corrugated cardboard frame, the footer is a cardboard strip */
-.game .art{box-shadow:inset 0 0 0 3px #fff4dc,0 0 0 7px transparent;outline:7px solid transparent;border:7px solid transparent;border-image:var(--card-board) 7;border-image-slice:7;background-clip:padding-box;border-radius:6px}
+.game .art{box-shadow:inset 0 0 0 3px #fff4dc;border:10px solid transparent;border-image:url(felt/cardboard-tile.webp) 12 round;background-clip:padding-box;border-radius:6px}
 .game:hover .art{transform:rotate(-.8deg)}
-footer{background:var(--card-board);color:#fff8e6;border-radius:14px 14px 0 0;padding:10px 12px;font-weight:700;text-shadow:0 1px 0 #6b4220;box-shadow:inset 0 3px 0 #e0a869,inset 0 -3px 0 #0000002b}
+footer{background:var(--card-board) repeat-x 0 0/auto 100%,#b87a40;color:#fff8e6;border-radius:14px 14px 0 0;padding:18px 12px 12px;font-weight:700;text-shadow:0 1px 0 #6b4220;box-shadow:inset 0 3px 0 #e0a869,inset 0 -3px 0 #0000002b}
 footer a,footer a.tiny{color:#fff8e6}
-html.playing footer{background:var(--card-board);border-radius:0}
+html.playing footer{background:var(--card-board) repeat-x 0 0/auto 100%,#b87a40;border-radius:0}
 /* stitching: a second thread line on tiles and wells, heavier on cards */
 .card::after{border-width:2.5px;border-style:dashed}
 .game{border:3px dashed var(--stitch);box-shadow:inset 0 2px 0 #fffbe9,0 5px 0 #cfb57c,0 7px 0 #a88f58}
