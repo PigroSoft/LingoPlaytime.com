@@ -112,3 +112,8 @@ html.playing footer{background:var(--card-board) repeat-x 0 0/auto 100%,#b87a40;
 /* hero CTA: red felt with a stitched edge */
 .cta{background:var(--red);background-image:var(--fuzz),radial-gradient(120% 90% at 50% 0%,#ffffff40,transparent 60%);background-blend-mode:multiply,normal;color:#fff;border:2px dashed #ffffffb0;outline:3px solid var(--red);outline-offset:-1px;text-shadow:0 1px 0 #7a1814;box-shadow:inset 0 3px 2px #ffffff66,inset 0 -5px 4px #00000033,0 6px 0 #96201c,0 14px 22px -10px #000a}
 .cta:active{box-shadow:inset 0 3px 6px #00000044,0 1px 0 #96201c}
+a.cta{display:inline-block;text-decoration:none}
+
+/* blue felt with the same stitched edge: active nav, Settings, sound */
+nav a[aria-current="page"],nav button[aria-current="page"],.setbtn,.sndbtn:not(.muted){border:2px dashed #ffffffb0;outline:3px solid var(--blue);outline-offset:-1px;text-shadow:0 1px 0 #0a4766;background-color:var(--blue);background-image:var(--fuzz),radial-gradient(120% 90% at 50% 0%,#ffffff40,transparent 60%);background-blend-mode:multiply,normal;box-shadow:inset 0 3px 2px #ffffff66,inset 0 -4px 3px #00000033,0 4px 0 #0b5a7d}
+.sndbtn.muted{border:2px dashed #ffffffb0;outline:3px solid var(--red);outline-offset:-1px}
