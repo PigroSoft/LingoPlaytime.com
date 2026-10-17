@@ -108,3 +108,7 @@ html.playing footer{background:var(--card-board) repeat-x 0 0/auto 100%,#b87a40;
 .sndbtn{background:var(--blue);border-color:#0b5a7d;color:#fff;width:34px;height:34px}
 .sndbtn .off{display:none}.sndbtn.muted{background:var(--red);border-color:#96201c}.sndbtn.muted .on{display:none}.sndbtn.muted .off{display:inline}
 .sndbtn:hover{border-color:var(--yellow)}
+
+/* hero CTA: red felt with a stitched edge */
+.cta{background:var(--red);background-image:var(--fuzz),radial-gradient(120% 90% at 50% 0%,#ffffff40,transparent 60%);background-blend-mode:multiply,normal;color:#fff;border:2px dashed #ffffffb0;outline:3px solid var(--red);outline-offset:-1px;text-shadow:0 1px 0 #7a1814;box-shadow:inset 0 3px 2px #ffffff66,inset 0 -5px 4px #00000033,0 6px 0 #96201c,0 14px 22px -10px #000a}
+.cta:active{box-shadow:inset 0 3px 6px #00000044,0 1px 0 #96201c}
