@@ -104,7 +104,6 @@ nav button[aria-current="page"]{color:var(--ink);background:var(--paper);box-sha
 .filter{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:22px}
 
 /* prose pages */
-#v-privacy{padding-bottom:clamp(120px,18vw,160px)}#v-privacy .rc{position:absolute;right:clamp(14px,4vw,44px);bottom:14px;width:clamp(90px,16vw,140px);height:auto;filter:drop-shadow(0 8px 6px #0003);animation:rcf 3.2s ease-in-out infinite;pointer-events:none}@keyframes rcf{0%,100%{transform:scaleX(-1) translateY(0)}50%{transform:scaleX(-1) translateY(-10px) rotate(-2deg)}}@media(prefers-reduced-motion:reduce){#v-privacy .rc{animation:none;transform:scaleX(-1)}}
 .prose h1{font-size:clamp(32px,5vw,46px);margin-top:6px}
 .prose h2{font-size:24px;margin-top:30px}
 .prose p,.prose li{max-width:64ch}
@@ -325,7 +324,6 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
 
     <!-- PRIVACY -->
     <section class="card prose" id="v-privacy" hidden>
-      <img class="rc" src="/felt/raccoon-brown-side.webp" width="398" height="405" alt="">
       <div class="eyebrow" id="priv-0"></div>
       <h1 id="priv-1"></h1>
       <ul class="facts" id="facts"></ul>
