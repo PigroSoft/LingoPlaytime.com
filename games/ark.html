@@ -102,7 +102,7 @@ const DATA={
   de:{title:"Die Arche Noah",one:"eins",two:"zwei",all:"Alle an Bord!",rain:"Regen",rainbow:"der Regenbogen"},
   es:{title:"El arca de Noé",one:"uno",two:"dos",all:"¡Todos a bordo!",rain:"lluvia",rainbow:"el arcoíris"},
   fr:{title:"L'arche de Noé",one:"un",two:"deux",all:"Tout le monde à bord !",rain:"la pluie",rainbow:"l'arc-en-ciel"},
-  it:{title:"L'Arca di Noè",one:"uno",two:"due",all:"Tutti a bordo!",rain:"la pioggia",rainbow:"l'arcobaleno"},
+  it:{title:"L'Arca di Noè",one:"uno",two:"due",all:"Tutti a bordo!",rain:"la pioggia",rainbow:"l'arcobaleno",boh:"Boh!"},
   pt:{title:"A arca de Noé",one:"um",two:"dois",all:"Todos a bordo!",rain:"a chuva",rainbow:"o arco-íris"}
  }
 };
@@ -123,7 +123,8 @@ function relabel(){document.querySelectorAll(".card").forEach(c=>{const t=word(c
 
 /* real recordings win (LP.sample looks in sounds.js); otherwise a simple synthesized call */
 function animalSound(id){
- const w=W[id];if(LP.sample(w.snd,1.6))return;
+ const w=W[id];if(w.snd==="croc"&&L().boh){LP.say(L().boh);return}
+ if(LP.sample(w.snd,1.6))return;
  const T=LP.tone;
  switch(w.snd){
   case"unicorn":[523,659,784,1047,1319].forEach((f,i)=>T(f,.4,"sine",.11,i*.08));break;
@@ -162,7 +163,7 @@ function tap(id,card){
  card.classList.remove("pop");void card.offsetWidth;card.classList.add("pop");
  animalSound(id);
  const r=card.getBoundingClientRect();LP.burst(r.left+r.width/2,r.top+r.height/2,first?16:8);
- bubble(word(id));LP.say(word(id));
+ bubble(word(id));LP.say(word(id),id==="crocodile"&&!!L().boh);
  if(first){
   aboard.add(id);card.classList.add("aboard");fly(card,id);
   LP.say(L().two,true);
