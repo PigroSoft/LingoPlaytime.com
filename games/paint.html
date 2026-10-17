@@ -35,7 +35,7 @@ body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch
 </style>
 </head>
 <body>
-<script>window.LP_GAME="paint"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
+<script>window.LP_GAME="paint"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
 <div class="app" id="app">
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
   <div class="frame"><div id="world"></div></div>
@@ -203,7 +203,7 @@ function paint(g,x,y){
  g.classList.remove("wig");void g.getBBox();g.classList.add("wig");
  g.dataset.done="1";
  const pot=document.querySelector(`[data-pot="${c}"]`);if(pot&&objs.filter(o=>o.dataset.c===c).every(o=>o.dataset.done)){pot.classList.add("done");pot.style.background=hex;pot.style.color=hex}
- bubble(word(c),others(c));LP.say(word(c));
+ bubble(word(c),others(c));LP.say(word(c));LPLearn.heard(c,LP.lang);
  if(objs.every(o=>o.dataset.done))finish();
 }
 function finish(){

@@ -43,7 +43,7 @@ body{background:#1d4690;color:#fff;font-family:var(--body);overflow:hidden;touch
 </style>
 </head>
 <body>
-<script>window.LP_GAME="peek"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="sounds.js"></script><script src="audio/sfx.peek.js"></script><script src="look.js"></script>
+<script>window.LP_GAME="peek"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="sounds.js"></script><script src="audio/sfx.peek.js"></script><script src="look.js"></script>
 <div class="app" id="app">
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
   <div class="grid" id="grid"></div>
@@ -127,7 +127,7 @@ function reveal(spot){
  }
  LP.sfx.whoosh();setTimeout(()=>animalSound(id),180);LP.burst(r.left+r.width/2,r.top+r.height*.3,8);
  bubble(L().peek+" "+word(id)+(snd(id)?"  "+snd(id):""));
- LP.say(L().peek);LP.say(word(id),true);if(snd(id))setTimeout(()=>LP.say(snd(id),true),1700);
+ LP.say(L().peek);LP.say(word(id),true);LPLearn.heard(id,LP.lang);if(snd(id))setTimeout(()=>LP.say(snd(id),true),1700);
  setTimeout(()=>closeSpot(spot),3000);
 }
 function closeSpot(spot){

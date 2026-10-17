@@ -33,7 +33,7 @@ svg#street{width:100%;height:100%}
 </style>
 </head>
 <body>
-<script>window.LP_GAME="street"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="sounds.js"></script>
+<script>window.LP_GAME="street"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="sounds.js"></script>
 <div class="app" id="app">
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
   <div class="stage">
@@ -154,16 +154,16 @@ function play(id){
  SND[id]();
  const r=g.getBoundingClientRect();
  if(want){
-  if(id===want){want=null;misses=0;LP.sfx.chime();LP.burst(r.left+r.width/2,r.top,20);const t=fill(L().found,id);bubble(t);setTimeout(()=>LP.say(t),900);setTimeout(ask,4000);return}
-  misses++;if(misses>=2)document.querySelector(`[data-thing="${want}"]`).classList.add("glow");
+  if(id===want){LPLearn.asked(id,LP.lang,true);want=null;misses=0;LP.sfx.chime();LP.burst(r.left+r.width/2,r.top,20);const t=fill(L().found,id);bubble(t);setTimeout(()=>LP.say(t),900);setTimeout(ask,4000);return}
+  LPLearn.asked(want,LP.lang,false);misses++;if(misses>=2)document.querySelector(`[data-thing="${want}"]`).classList.add("glow");
  }
- bubble(w(id).w+"  "+w(id).s);
+ bubble(w(id).w+"  "+w(id).s);LPLearn.heard(id,LP.lang);
  setTimeout(()=>{LP.say(w(id).w);LP.say(w(id).s,true)},({fire:2300,police:2300,bus:2000,plane:1900,heli:1900,bird:1900,dog:1800,tram:1500,bike:1200,car:1000})[id]||1000);
  if(want)setTimeout(()=>{if(want){bubble(fill(L().where,want));LP.say(fill(L().where,want))}},3600);
 }
 function ask(){
- if(LP.age<1){want=null;bubble(L().title);return}
- const ids=DATA.words.map(x=>x.id).filter(i=>i!==last);want=ids[Math.floor(Math.random()*ids.length)];last=want;misses=0;
+ if(LP.age<1&&LPLearn.summary(LP.lang).met<8){want=null;bubble(L().title);return}
+ const ids=DATA.words.map(x=>x.id).filter(i=>i!==last);want=LPLearn.pick(ids,x=>x,1,LP.lang)[0];last=want;misses=0;
  const t=fill(L().where,want);bubble(t);LP.say(t);
 }
 

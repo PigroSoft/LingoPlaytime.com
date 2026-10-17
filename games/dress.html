@@ -46,7 +46,7 @@ body.out .rail{opacity:0;pointer-events:none}
 </style>
 </head>
 <body>
-<script>window.LP_GAME="dress"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="audio/sfx.dress.js"></script>
+<script>window.LP_GAME="dress"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="audio/sfx.dress.js"></script>
 <div class="room"></div>
 <div class="outside" id="outside"></div>
 <div class="app" id="app">
@@ -165,7 +165,7 @@ function wear(id){
  worn.add(id);
  document.querySelector(`[data-cl="${id}"]`).classList.add("on");
  const b=document.querySelector(`[data-item="${id}"]`);if(b){b.classList.add("used");const r=b.getBoundingClientRect();LP.burst(r.left+r.width/2,r.top,6)}
- LP.sfx.whoosh();bubble(word(id));LP.say(word(id));
+ LP.sfx.whoosh();bubble(word(id));LP.say(word(id));LPLearn.heard(id,LP.lang);
  if(worn.size===ROUNDS[weather].length){busy=true;setTimeout(goOut,1500)}
 }
 function goOut(){

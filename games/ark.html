@@ -64,7 +64,7 @@ body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch
 </style>
 </head>
 <body>
-<script>window.LP_GAME="ark"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="sounds.js"></script><script src="look.js"></script>
+<script>window.LP_GAME="ark"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="sounds.js"></script><script src="look.js"></script>
 <div class="app" id="app">
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div>
   <div class="tools">
@@ -164,7 +164,7 @@ function tap(id,card){
  card.classList.remove("pop");void card.offsetWidth;card.classList.add("pop");
  animalSound(id);
  const r=card.getBoundingClientRect();LP.burst(r.left+r.width/2,r.top+r.height/2,first?16:8);
- bubble(word(id)+(snd(id)?"  "+snd(id):""));LP.say(word(id),id==="crocodile"&&!!L().boh);
+ bubble(word(id)+(snd(id)?"  "+snd(id):""));LP.say(word(id),id==="crocodile"&&!!L().boh);LPLearn.heard(id,LP.lang);
  if(snd(id)&&!(id==="crocodile"&&L().boh))setTimeout(()=>LP.say(snd(id),true),1500);
  if(first){
   aboard.add(id);card.classList.add("aboard");fly(card,id);

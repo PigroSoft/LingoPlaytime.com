@@ -31,7 +31,7 @@ body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch
 </style>
 </head>
 <body>
-<script>window.LP_GAME="pairs"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
+<script>window.LP_GAME="pairs"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
 <div class="app" id="app">
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
   <div class="board"><div class="grid" id="grid"></div></div>
@@ -81,7 +81,7 @@ function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump"
 
 function deal(){
  pairs=[3,4,6][LP.age]||6;
- const pick=[...DATA.words].sort(()=>Math.random()-.5).slice(0,pairs),two=second();
+ const two=second(),pick=LPLearn.pick(DATA.words,w=>w.id,pairs,LP.lang);
  cards=[];pick.forEach(w=>{cards.push({id:w.id,kind:"pic"});cards.push({id:w.id,kind:"word",lang:two})});
  cards.sort(()=>Math.random()-.5);
  const n=cards.length,c=n<=6?3:4,r=Math.ceil(n/c);
@@ -99,17 +99,18 @@ function flip(i){
  el.classList.add("up");LP.sfx.pop();
  const text=k.kind==="pic"?W[k.id][LP.lang]:W[k.id][k.lang];
  el.setAttribute("aria-label",text);
- LP.say(text,false,k.kind==="pic"?LP.lang:k.lang);
+ LP.say(text,false,k.kind==="pic"?LP.lang:k.lang);LPLearn.heard(k.id,k.kind==="pic"?LP.lang:k.lang);
  up.push(i);
  if(up.length<2)return;
  const [a,b]=up;up=[];
  if(cards[a].id===cards[b].id&&cards[a].kind!==cards[b].kind){
-  found++;
+  found++;LPLearn.asked(cards[a].id,LP.lang,true);
   setTimeout(()=>{[a,b].forEach(j=>document.querySelector(`[data-i="${j}"]`).classList.add("done"));LP.sfx.chime();
    const r=el.getBoundingClientRect();LP.burst(r.left+r.width/2,r.top+r.height/2,16);
    bubble(L().match+" "+W[cards[a].id].e);LP.say(L().match);LP.say(W[cards[a].id][LP.lang],true);
    if(found===pairs)setTimeout(()=>{bubble(L().win);LP.say(L().win);LP.burst(innerWidth/2,innerHeight/2,40);setTimeout(deal,4500)},1800)},700);
  }else{
+  LPLearn.asked(cards[a].id,LP.lang,false);LPLearn.asked(cards[b].id,LP.lang,false);
   lock=true;setTimeout(()=>{[a,b].forEach(j=>{const e=document.querySelector(`[data-i="${j}"]`);e.classList.remove("up");e.setAttribute("aria-label","?")});lock=false},1700);
  }
 }

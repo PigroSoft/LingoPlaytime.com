@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<script>window.LP_GAME="sky"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="look.js"></script>
+<script>window.LP_GAME="sky"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="look.js"></script>
 <title>Sky Words</title>
 <link rel="stylesheet" href="/assets/fonts.css">
 <style>
@@ -207,8 +207,8 @@ function newRound(){
  planes.forEach(p=>p.el.remove());planes=[];
  const cfg=LEVELS[level];
  const n=cfg.planes||3;
- const pool=[...cfg.words].sort(()=>Math.random()-.5).slice(0,n);
- target=pool[Math.floor(Math.random()*n)];
+ const pool=LPLearn.pick(cfg.words,w=>w.en,n,lang);
+ target=LPLearn.pick(pool,w=>w.en,1,lang)[0];
  document.getElementById("ask").textContent=LANGS[lang].ask;
  document.getElementById("target").textContent="❓";
  document.getElementById("word").hidden=!!cfg.textMode;
@@ -228,13 +228,13 @@ function newRound(){
 function hit(p){
  if(p.done)return;
  if(p.w===target){
-  p.done=true;p.el.classList.add("right");score++;
+  p.done=true;p.el.classList.add("right");score++;LPLearn.asked(target.en,lang,true);
   const sc=document.getElementById("score");sc.textContent="⭐ "+score;sc.classList.remove("pop");void sc.offsetWidth;sc.classList.add("pop");
   document.getElementById("target").innerHTML=LPLook.fromEmoji(target.e)||target.e;
   chime();flyby(1.6);
   const y=LANGS[lang].yes;say(y[Math.floor(Math.random()*y.length)]+" "+target[lang]+"!");
   p.speed=9;setTimeout(newRound,2600);
- }else{boop();say(LANGS[lang].no+". "+sentence())}
+ }else{LPLearn.asked(target.en,lang,false);boop();say(LANGS[lang].no+". "+sentence())}
 }
 let lastFly=0;
 function loop(ts){

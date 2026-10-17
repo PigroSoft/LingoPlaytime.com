@@ -52,6 +52,7 @@
     [S.home].concat(S.learn || []).forEach(function (l) {
       if (!RECORDED[l]) return;
       var sc = document.createElement("script"); sc.src = "audio/" + GAME + "." + l + ".js";
+      sc.onload = function () { if (window.LP_warm) window.LP_warm(); };
       (document.head || document.documentElement).appendChild(sc);
     });
     var origSpeak = ss.speak.bind(ss), origCancel = ss.cancel.bind(ss);
@@ -65,24 +66,88 @@
       return bank ? bank[window.LPVoice.key(u.text, S.name)] || null : null;
     }
     function advance(my) { if (my !== gen) return; cur = null; next(); }
+    /* Recordings play through Web Audio: each clip is decoded to a buffer ahead of time (in small
+       idle slices, active language first), so a tap starts its sound on the same frame instead of
+       building a data-URL audio element first. HTMLAudio stays as the fallback. */
+    var ac = null, bufs = {}, decoding = {}, srcNow = null, warmed = {};
+    function getAC() {
+      if (ac) return ac;
+      var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+      try { ac = new AC(); } catch (e) { ac = null; }
+      return ac;
+    }
+    function unlock() { var c = getAC(); if (c && c.state === "suspended") { try { c.resume(); } catch (e) {} } }
+    ["pointerdown", "touchstart", "mousedown", "keydown"].forEach(function (ev) { window.addEventListener(ev, unlock, { capture: true, passive: true }); });
+    function toBuf(b64) {
+      var bin = atob(b64), n = bin.length, a = new Uint8Array(n);
+      for (var i = 0; i < n; i++) a[i] = bin.charCodeAt(i);
+      return a.buffer;
+    }
+    function decode(lc, key, cb) {
+      var id = lc + "|" + key;
+      if (bufs[id]) { cb && cb(bufs[id]); return; }
+      var c = getAC(), bank = (window.LP_CLIPS || {})[lc];
+      if (!c || !bank || !bank[key]) { cb && cb(null); return; }
+      if (decoding[id]) { if (cb) decoding[id].push(cb); return; }
+      decoding[id] = cb ? [cb] : [];
+      var done = function (b) { if (b) bufs[id] = b; var l = decoding[id] || []; delete decoding[id]; l.forEach(function (f) { f(b || null); }); };
+      try {
+        var p = c.decodeAudioData(toBuf(bank[key]), done, function () { done(null); });
+        if (p && p.catch) p.catch(function () {});
+      } catch (e) { done(null); }
+    }
+    function warm(lc) {
+      var bank = (window.LP_CLIPS || {})[lc]; if (!bank || warmed[lc] || !getAC()) return;
+      warmed[lc] = 1;
+      var keys = Object.keys(bank), i = 0, busy = 0;
+      // two decodes at a time, so a tap's own clip never waits behind a long queue
+      function pump() {
+        while (busy < 2 && i < keys.length) {
+          busy++;
+          decode(lc, keys[i++], function () { busy--; (window.requestIdleCallback ? requestIdleCallback(pump, { timeout: 300 }) : setTimeout(pump, 10)); });
+        }
+      }
+      pump();
+    }
+    window.LP_warm = function () { [window.LP_LANG].concat([S.active, S.home], S.learn || []).forEach(function (l) { if (l) warm(String(l).slice(0, 2)); }); };
+    function note() { window.LP_LASTPLAY = performance.now(); }
+    function playBuf(b, u, my) {
+      var c = ac, src = c.createBufferSource(), finished = false;
+      src.buffer = b; src.connect(c.destination); srcNow = src;
+      src.onended = function () { if (finished || my !== gen) return; finished = true; srcNow = null; fire(u, "end"); advance(my); };
+      fire(u, "start"); note(); src.start(0);
+    }
+    function playClip(u, my, lc, key, clip) {
+      if (getAC()) {
+        unlock();
+        decode(lc, key, function (b) {
+          if (my !== gen) return;
+          if (b) playBuf(b, u, my); else htmlAudio(u, my, clip);
+        });
+        return;
+      }
+      htmlAudio(u, my, clip);
+    }
+    function htmlAudio(u, my, clip) {
+      audio = new Audio("data:audio/mpeg;base64," + clip);
+      var finished = false;
+      var end = function () { if (finished || my !== gen) return; finished = true; fire(u, "end"); advance(my); };
+      audio.onended = end;
+      audio.onerror = function () { if (finished || my !== gen) return; finished = true; tts(u, my); };
+      audio.onplaying = note;
+      fire(u, "start");
+      var p = audio.play(); if (p && p.catch) p.catch(end);
+    }
     function next() {
       if (cur || !q.length) return;
       var u = q.shift(), my = gen; cur = u;
       if (muted) { fire(u, "start"); setTimeout(function () { if (my !== gen) return; fire(u, "end"); advance(my); }, 450); return; }
       var clip = clipFor(u);
-      if (clip) {
-        audio = new Audio("data:audio/mpeg;base64," + clip);
-        var finished = false;
-        var end = function () { if (finished || my !== gen) return; finished = true; fire(u, "end"); advance(my); };
-        audio.onended = end;
-        audio.onerror = function () { if (finished || my !== gen) return; finished = true; tts(u, my); };
-        fire(u, "start");
-        var p = audio.play(); if (p && p.catch) p.catch(end);
-        return;
-      }
+      if (clip) { var lc = langOf(u).slice(0, 2).toLowerCase(); playClip(u, my, lc, window.LPVoice.key(u.text, S.name), clip); return; }
       tts(u, my);
     }
-    function tts(u, my) {
+    function tts(u, my) { window.LPVoice.ready(function () { if (my === gen) ttsGo(u, my); }); }
+    function ttsGo(u, my) {
       var code = langOf(u);
       var v = code ? window.LPVoice.best(code, (S.voices || {})[code.slice(0, 2).toLowerCase()]) : null;
       if (code && !v) { setTimeout(function () { if (my !== gen) return; fire(u, "end"); advance(my); }, 300); return; }
@@ -93,10 +158,11 @@
       u.addEventListener("error", function () { advance(my); });
       origSpeak(u);
     }
-    ss.speak = function (u) { q.push(u); window.LPVoice.ready(next); };
+    ss.speak = function (u) { q.push(u); next(); }; // recordings never wait for the voice list
     ss.cancel = function () {
       gen++; q = []; cur = null;
       if (audio) { try { audio.pause(); } catch (e) {} audio = null; }
+      if (srcNow) { try { srcNow.onended = null; srcNow.stop(); } catch (e) {} srcNow = null; }
       origCancel();
     };
   })();
@@ -188,7 +254,7 @@
   }
 
   var lang = pick(S);
-  function announce(l) { window.LP_LANG = l; try { dispatchEvent(new CustomEvent("lp-lang", { detail: l })); } catch (e) {} }
+  function announce(l) { window.LP_LANG = l; if (window.LP_warm) setTimeout(window.LP_warm, 0); try { dispatchEvent(new CustomEvent("lp-lang", { detail: l })); } catch (e) {} }
   announce(lang);
   a.pre(S, lang);
   css(a.hide);

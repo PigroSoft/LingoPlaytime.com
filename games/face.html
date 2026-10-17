@@ -29,7 +29,7 @@ svg#kid{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 </style>
 </head>
 <body>
-<script>window.LP_GAME="face"</script><script src="voice.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
+<script>window.LP_GAME="face"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
 <div class="app" id="app">
   <div id="bubble" class="k-bubble" aria-live="polite"></div>
   <div class="stage">
@@ -131,20 +131,20 @@ function tapPart(id){
  document.querySelectorAll(".glow").forEach(x=>x.classList.remove("glow"));
  if(want){
   if(id===want){
-   want=null;misses=0;LP.sfx.chime();const [x,y]=centre(g);LP.burst(x,y,20);
+   LPLearn.asked(id,LP.lang,true);want=null;misses=0;LP.sfx.chime();const [x,y]=centre(g);LP.burst(x,y,20);
    bubble(L().yes+" "+L().show);LP.say(L().yes);LP.say(L().show,true);
    setTimeout(ask,4200);return;
   }
-  misses++;LP.sfx.pop();bubble(w(id).w);LP.say(w(id).w);
+  LPLearn.asked(want,LP.lang,false);misses++;LP.sfx.pop();bubble(w(id).w);LP.say(w(id).w);
   if(misses>=2)setTimeout(()=>document.querySelector(`[data-part="${want}"]`).classList.add("glow"),900);
   setTimeout(()=>{if(want){bubble(w(want).q);LP.say(w(want).q)}},1600);
   return;
  }
- LP.sfx.pop();const [x,y]=centre(g);LP.burst(x,y,8);bubble(w(id).w);LP.say(w(id).w);
+ LP.sfx.pop();const [x,y]=centre(g);LP.burst(x,y,8);bubble(w(id).w);LP.say(w(id).w);LPLearn.heard(id,LP.lang);
 }
 function ask(){
- if(LP.age<1){want=null;bubble(L().title);return}
- const ids=DATA.words.map(x=>x.id).filter(i=>i!==lastPart);want=ids[Math.floor(Math.random()*ids.length)];lastPart=want;misses=0;
+ if(LP.age<1&&LPLearn.summary(LP.lang).met<8){want=null;bubble(L().title);return}
+ const ids=DATA.words.map(x=>x.id).filter(i=>i!==lastPart);want=LPLearn.pick(ids,x=>x,1,LP.lang)[0];lastPart=want;misses=0;
  bubble(w(want).q);LP.say(w(want).q);
 }
 
