@@ -261,7 +261,7 @@
     ".k-stars{position:absolute;inset:0;width:100%;height:100%;z-index:-2;pointer-events:none}" +
     ".k-hills{position:absolute;left:0;right:0;bottom:0;height:38%;z-index:-1;pointer-events:none}.k-hills svg{width:100%;height:100%;display:block}" +
     ".k-moon{position:absolute;left:4%;top:3%;width:min(8vw,64px);aspect-ratio:1;border-radius:50%;z-index:-1;pointer-events:none;background:radial-gradient(circle at 38% 34%,#fffbe6,#ffe58a 55%,#f2b938);box-shadow:0 0 40px 14px #ffd23f55,0 0 120px 50px #ffd23f22}" +
-    ".k-bubble{font-family:'Fredoka','Baloo 2',system-ui,sans-serif;font-weight:600;color:#fff;background:#ffffff1f;border:2px solid #ffffff33;border-radius:999px;padding:8px 28px;text-align:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);box-shadow:0 8px 24px #0004}" +
+    ".k-bubble{font-family:'Fredoka','Baloo 2',system-ui,sans-serif;font-weight:600;color:#1c3f4a;background:#f6ead0;border:2px dashed #b8401f88;border-radius:26px;padding:8px 28px;text-align:center;box-shadow:0 4px 0 #c9b583,0 10px 20px #0004}" +
     ".k-day{background:linear-gradient(#2f6fe8 0%,#4f9cff 45%,#9fdcff 100%)}" +
     ".k-morning{background:linear-gradient(#5b6ee8 0%,#f08fb0 55%,#ffd29a 100%)}" +
     ".k-evening{background:linear-gradient(#3a2a86 0%,#d9607e 55%,#ffad66 100%)}" +
@@ -275,7 +275,7 @@
     ".k-cloud{position:absolute;width:calc(160px*var(--s,1));opacity:.95;animation:k-drift linear infinite}.k-cloud svg{width:100%;display:block}" +
     "@keyframes k-drift{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}" +
     ".k-sun{position:absolute;right:6%;top:6%;width:min(10vw,84px);aspect-ratio:1;border-radius:50%;z-index:-1;pointer-events:none;background:radial-gradient(circle at 38% 34%,#fffbe6,#ffe066 50%,#ffb000);box-shadow:0 0 50px 20px #ffe06688,0 0 140px 60px #ffd23f33}" +
-    ".k-day .k-bubble{background:#1a14404d;border-color:#ffffff55}" +
+    ".k-day .k-bubble{background:#f6ead0;border-color:#b8401f88}" +
     ".k-btn{font-family:'Fredoka','Baloo 2',system-ui,sans-serif;font-weight:600;color:#fff;background:#ffffff22;border:2px solid #ffffff44;border-radius:999px;padding:8px 18px;cursor:pointer;box-shadow:0 6px 16px #0003}" +
     ".k-btn.on,.k-btn[aria-pressed=true]{background:linear-gradient(#ffe27a,#ffc23d);color:#1a1440;border-color:#fff8}" +
     "@media (prefers-reduced-motion:reduce){.k-cloud{animation:none}}" +
