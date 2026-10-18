@@ -259,8 +259,13 @@ function smashPick(){
  if(opts.length){LP.next("train",opts).click();return true}
  return false;
 }
+// While the train is rolling, any key sounds the horn (whistle, horn or tram bell for the chosen train).
+// A short cooldown stops a held or mashed key from stacking dozens of horns on top of each other.
+let lastHonk=0;
+function honk(){const now=performance.now();if(now-lastHonk<900)return;lastHonk=now;whistle()}
 window.addEventListener("keydown",e=>{
  if(e.metaKey||e.ctrlKey||e.altKey)return;
+ if(mode=="drive"||mode=="leave"){if(!e.repeat)honk();return}
  if(smashPick())return;
  const startBtn=document.getElementById("start");
  if(startBtn&&!$("overlay").hidden)startBtn.click();
