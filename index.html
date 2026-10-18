@@ -3,6 +3,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LingoPlaytime: language games for toddlers in bilingual and multilingual families</title>
 <meta name="description" content="Free language games for toddlers in multilingual families. Your child taps, mashes and hears real words in up to four languages, with their own name. No ads, no accounts.">
 <link rel="canonical" href="https://lingoplaytime.com/">
+<meta name="lp-home-title" content="LingoPlaytime: language games for toddlers in bilingual and multilingual families">
 <meta property="og:site_name" content="LingoPlaytime"><meta property="og:type" content="website"><meta property="og:title" content="LingoPlaytime: little games, lots of languages"><meta property="og:description" content="Free language games for toddlers in multilingual families. Your child taps, mashes and hears real words in up to four languages, with their own name. No ads, no accounts."><meta property="og:url" content="https://lingoplaytime.com/"><meta property="og:image" content="https://lingoplaytime.com/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://lingoplaytime.com/assets/og.png">
 <link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -220,12 +221,12 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
 </style>
-<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="/brand.css">
 
 <div class="wrap">
   <header>
     <button class="logo" id="logo" type="button" aria-label="LingoPlaytime home">
-      <img src="felt/logo.webp" alt="LingoPlaytime" width="900" height="207">
+      <img src="/felt/logo.webp" alt="LingoPlaytime" width="900" height="207">
     </button>
     <nav aria-label="Main">
       <button type="button" data-view="games" id="nav-games"></button>
@@ -340,7 +341,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
 
   </main>
 
-  <footer>LingoPlaytime · <span id="ft-0"></span> · <span id="ft-1"></span><span class="sep"> · </span><span id="ft-2"></span><span class="sep"> · </span><span id="ft-4"></span> <a href="https://pigrosoft.com" target="_blank" rel="noopener" id="ft-5"></a> <a class="tiny" href="impressum.html">Impressum</a></footer>
+  <footer>LingoPlaytime · <span id="ft-0"></span> · <span id="ft-1"></span><span class="sep"> · </span><span id="ft-2"></span><span class="sep"> · </span><span id="ft-4"></span> <a href="https://pigrosoft.com" target="_blank" rel="noopener" id="ft-5"></a> <a class="tiny" href="/impressum.html">Impressum</a></footer>
 </div>
 
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="s-title"></div>
@@ -354,8 +355,8 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   </div>
 </div>
 
-<script src="games/voice.js"></script>
-<script src="games/look.js"></script>
+<script src="/games/voice.js"></script>
+<script src="/games/look.js"></script>
 <script>
 (function(){
   /* ---------- data ---------- */
@@ -454,7 +455,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   function applyStatic(){
     const x=ST(),set=(id,v)=>{const e=$(id);if(e)e.textContent=v};
     x.app.forEach((v,i)=>set("app-"+i,v));x.priv.forEach((v,i)=>set("priv-"+i,v));
-    $("facts").innerHTML=x.facts.map(([k,v],i)=>`<li><span class="k${i===2||i===3?" no":""}">${esc(k)}</span><span>${esc(v).replace("{imp}",'<a href="impressum.html">Impressum</a>').replace("{pigro}",'<a href="https://pigrosoft.com" target="_blank" rel="noopener">Pigrosoft</a>')}</span></li>`).join("");
+    $("facts").innerHTML=x.facts.map(([k,v],i)=>`<li><span class="k${i===2||i===3?" no":""}">${esc(k)}</span><span>${esc(v).replace("{imp}",'<a href="/impressum.html">Impressum</a>').replace("{pigro}",'<a href="https://pigrosoft.com" target="_blank" rel="noopener">Pigrosoft</a>')}</span></li>`).join("");
     ["fg-0","fg-1","forget","fg-3","forgetYes","forgetNo"].forEach((id,i)=>set(id,x.forget[i]));
     x.foot.forEach((v,i)=>set("ft-"+i,v));
     $("g-sample").innerHTML=x.sample.replace("{settings}",esc(t().settings));
@@ -478,6 +479,14 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     {id:"pairs",name:"Pairs",blurb:"A memory game where every pair is a picture and its word in another language.",min:2,sound:false,langs:ALLL,art:"pairs"},
   ];
   const GAME = Object.fromEntries(GAMES.map(g=>[g.id,g]));
+  /* every game has its own address, lingoplaytime.com/<slug>/, for sharing and search.
+     The folder pages are copies of this page made by tools/game-pages.py. */
+  const SLUG={peek:"peekaboo",face:"nose",street:"street-sounds",dress:"get-dressed",night:"goodnight",sky:"sky-words",farm:"farm",drum:"drum-parade",train:"word-train",paint:"paint",soup:"soup",flappy:"flappy-words",ark:"noahs-ark",market:"market",munch:"munch",pairs:"pairs"};
+  const BYSLUG=Object.fromEntries(Object.entries(SLUG).map(([k,v])=>[v,k]));
+  const routeGame=()=>BYSLUG[location.pathname.replace(/^\/+|\/+$/g,"").split("/")[0]]||null;
+  const HOME_TITLE=(document.querySelector('meta[name="lp-home-title"]')||{}).content||document.title;
+  // swap the game frame without adding browser history, so Back leaves the game instead of stepping inside it
+  function frameTo(url){const f=$("frame");try{f.contentWindow.location.replace(url)}catch(e){f.src=url}}
   // shelf thumbnails: a shared drawing on a day or night sky, like the games themselves
   const TILE={peek:["rabbit","night"],face:["teddy","night"],street:["bus","day"],dress:["umbrella","day"],night:["moon","night"],sky:["rocket","day"],farm:["cow","day"],drum:["star","night"],train:["train","day"],paint:["flower","night"],soup:["bear","night"],flappy:["duck","day"],pairs:["apple","night"],ark:["lion","day"],market:["apple","day"],munch:["caterpillar","day"]};
   const ART = {
@@ -557,7 +566,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     const s=t();
     ["games","parents","app","privacy"].forEach(k=>$("nav-"+k).textContent=s[k]);
     $("nav-games").disabled=!profile;
-    $("nav-parents").setAttribute("href",(["de","es","fr","it","pt"].includes(home)?home+"/":"")+"blog/"+(location.protocol==="file:"?"index.html":""));
+    $("nav-parents").setAttribute("href","/"+(["de","es","fr","it","pt"].includes(home)?home+"/":"")+"blog/"+(location.protocol==="file:"?"index.html":""));
     applyStatic();
     renderBar();
   }
@@ -581,7 +590,8 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   function show(v){
     if((v==="games"||v==="play")&&!profile) v="setup";
     if(v==="setup"&&profile&&!editing) v="games";
-    if(view==="play"&&v!=="play"){$("frame").src="about:blank";current=null}
+    if(view==="play"&&v!=="play"){frameTo("about:blank");current=null;document.title=HOME_TITLE}
+    if(v!=="play"&&v!=="setup"&&routeGame())history.pushState(null,"","/");
     view=v;
     document.documentElement.classList.toggle("playing",v==="play");
     const bb=$("backBtn");
@@ -641,7 +651,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   function hearRecorded(c){
     const play=()=>{const bank=(window.LP_CLIPS||{})[c];const k=bank&&Object.keys(bank)[0];if(!k)return;try{new Audio("data:audio/mpeg;base64,"+bank[k]).play()}catch(e){}};
     if((window.LP_CLIPS||{})[c])return play();
-    const s=document.createElement("script");s.src="games/audio/"+(["de","en","es","fr","it","pt"].includes(c)?"ark":"sky")+"."+c+".js";s.onload=play;document.head.appendChild(s);
+    const s=document.createElement("script");s.src="/games/audio/"+(["de","en","es","fr","it","pt"].includes(c)?"ark":"sky")+"."+c+".js";s.onload=play;document.head.appendChild(s);
   }
   function hear(c){
     try{
@@ -692,14 +702,16 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   document.addEventListener("fullscreenchange",()=>{if(!fsEl()&&view==="play"){/* left with Esc: respect it */fsPref(false)}});
 
   /* ---------- the game stage ---------- */
-  function openGame(id){
+  function openGame(id,replace){
     const g=GAME[id];if(!g||!profile)return;
     current=id;
+    const path="/"+SLUG[id]+"/";if(location.pathname!==path)history[replace?"replaceState":"pushState"](null,"",path);
+    document.title=gname(g)+" | LingoPlaytime";
     $("playTitle").textContent=gname(g);
     $("backLbl").textContent=b().back;
     const q=new URLSearchParams({lp:JSON.stringify(settings()),name:profile.name});
     $("frame").title=gname(g);
-    $("frame").src=`games/${id}.html?${q}`;
+    frameTo(`/games/${id}.html?${q}`);
     show("play");
     fsLabel();sndPaint();
     if(fsCan()&&fsPref()&&!fsEl())fsEnter();
@@ -750,6 +762,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     profile={...draft,learn:[...draft.learn],active:keep,voices:{...(draft.voices||{})}};
     save(profile);
     if(editing){closeSettings();tellGame();renderBar();}
+    else if(routeGame())openGame(routeGame(),true);
     else show("games");
   });
   $("s-cancel").addEventListener("click",closeSettings);
@@ -798,9 +811,11 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   });
 
   applyLang();
-  const hv=(location.hash||"").slice(1);
-  show(["games","app","privacy"].includes(hv)?hv:view);
+  const hv=(location.hash||"").slice(1),r0=routeGame();
+  if(r0&&profile&&!hv)openGame(r0,true);
+  else show(["games","app","privacy"].includes(hv)?hv:view);
   // links like /#play or /#play/farm jump straight into a game
-  if(hv==="play"||hv.startsWith("play/")){const id=hv.slice(5),el=document.querySelector("#gameGrid [data-game]");const t=GAME[id]?id:(el&&el.dataset.game);if(t)openGame(t)}
+  if(hv==="play"||hv.startsWith("play/")){const id=hv.slice(5),el=document.querySelector("#gameGrid [data-game]");const t=GAME[id]?id:(el&&el.dataset.game);if(t)openGame(t,true)}
+  addEventListener("popstate",()=>{const r=routeGame();if(r){if(r!==current)openGame(r,true)}else if(view==="play")show("games")});
 })();
 </script>
