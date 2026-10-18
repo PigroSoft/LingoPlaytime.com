@@ -160,7 +160,6 @@ function ask(){
  const t=fill(L().please,id);bubble(t);LP.say(t);talk();
 }
 function reask(){if(!want)return;const t=fill(plural(want,LP.lang)?L().whereP:L().where,want);bubble(t);LP.say(t,true)}
-function hint(){const c=set.find(x=>x.id===want);if(c)c.el.classList.add("glow")}
 const need=()=>LP.age>=2?2:1;
 
 function take(id){
@@ -195,7 +194,7 @@ function wrong(c){
  c.el.classList.remove("no");void c.el.getBoundingClientRect();c.el.classList.add("no");
  LPLearn.heard(c.id,LP.lang);LPLearn.asked(want,LP.lang,false);
  bubble(cap(w(c.id)));LP.say(w(c.id));
- misses++;if(misses>=need())hint();
+ misses++;
  setTimeout(()=>{if(want)reask()},2000);
 }
 
@@ -210,7 +209,7 @@ LP.mash((e)=>{
  if(LP.age>=1){ // asked for one food: the right crate goes in the basket, any other names itself
   if(!want){ask();return}
   if(hit){hit.id===want?(LPLearn.asked(want,LP.lang,true),take(want)):wrong(hit)}
-  else{misses++;if(misses>=need())hint();reask()}
+  else{misses++;reask()}
   return;
  }
  // little ones: a tap on a crate takes it, any other tap or key takes the next
