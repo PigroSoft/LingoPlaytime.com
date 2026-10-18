@@ -17,23 +17,31 @@ body{background:#3a8bf0;color:#fff;font-family:var(--body);overflow:hidden;touch
 svg#scene{width:100%;height:100%;overflow:visible}
 /* layer 1: the cardboard town fills the whole screen behind the stall */
 .app{background:#7fb6ea url(../felt/bg-market-town.webp) center 78%/cover no-repeat}
-.crate{transition:transform .5s cubic-bezier(.3,1.4,.5,1),opacity .4s}
+.top,.stage{position:relative;z-index:1}
+/* a felt fox pedals across the town square behind the stall, in stop-motion hops, a little out of focus like the town */
+#passer{position:absolute;left:0;top:0;width:100%;height:0;z-index:0;pointer-events:none}
+#passer img{position:absolute;left:0;bottom:0;filter:blur(1.4px);animation:ride 46s steps(368) infinite}
+#passer img.back{animation-name:rideBack}
+#passer span{position:absolute;inset:0;animation:pedal .25s steps(1) infinite}
+@keyframes ride{from{transform:translateX(-25vw)}to{transform:translateX(110vw)}}
+@keyframes rideBack{from{transform:translateX(110vw) scaleX(-1)}to{transform:translateX(-25vw) scaleX(-1)}}
+.crate{transition:transform .5s steps(4),opacity .4s steps(3)}
 .crate.pre{transform:translateY(40px);opacity:0}
 .crate .hit{fill:#0000;cursor:pointer}
 .crate:focus{outline:none}
 .crate:focus-visible .hit{stroke:#fff;stroke-width:4}
 .crate .art{transform-box:fill-box;transform-origin:center bottom}
-.crate.no .art{animation:nope .4s}
+.crate.no .art{animation:nope .48s steps(1)}
 .crate.glow .hit{stroke:#F6C033;stroke-width:6;fill:#F6C03333}
-.crate.emptied .heap{opacity:0;transition:opacity .35s}
-.flyer{transition:transform .75s cubic-bezier(.3,.1,.3,1)}
+.crate.emptied .heap{opacity:0;transition:opacity .35s steps(2)}
+.flyer{transition:transform .75s steps(6)}
 .cust{transform-box:fill-box;transform-origin:center bottom}
-.cust.talk{animation:rock .5s}
-.cust.jig{animation:jig .18s 6}
-@keyframes nope{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-@keyframes rock{30%{transform:rotate(-3deg) translateY(-6px)}70%{transform:rotate(3deg)}}
-@keyframes jig{50%{transform:translateY(-10px)}}
-@media (prefers-reduced-motion:reduce){.crate,.flyer{transition:none}.cust{animation:none!important}.crate .art{animation:none!important}}
+.cust.talk{animation:rock .5s steps(1)}
+.cust.jig{animation:jig .24s steps(1) 5}
+@keyframes nope{0%{transform:translateX(-8px)}33%{transform:translateX(8px)}66%{transform:translateX(-4px)}}
+@keyframes rock{0%{transform:rotate(-3deg) translateY(-6px)}40%{transform:rotate(3deg)}80%{transform:none}}
+@keyframes jig{0%{transform:translateY(-10px)}50%{transform:none}}
+@media (prefers-reduced-motion:reduce){#passer{display:none}.crate,.flyer{transition:none}.cust{animation:none!important}.crate .art{animation:none!important}}
 </style>
 </head>
 <body>
@@ -201,6 +209,15 @@ function wrong(c){
 LP.init({langs:ALLLANGS,onLang:()=>{document.title=L().title;set.forEach(c=>c.el.setAttribute("aria-label",w(c.id)));bubble(want?fill(L().please,want):L().title)},onAge:()=>{want=null;clearGlow();if(!busy&&set.length&&LP.age>=1)ask()}});
 document.title=L().title;bubble(L().title);
 LP.start(L().title,()=>{spawn()});
+/* the passer-by rides along the cobbles of the town picture (just in front of the low wall, above the crates) */
+(function(){
+ const app=$("app"),box=document.createElement("div");box.id="passer";
+ const im=document.createElement("img");im.src="../felt/market-fox-bike.webp";im.alt="";box.appendChild(im);app.insertBefore(box,app.firstChild);
+ let n=0;im.addEventListener("animationiteration",()=>{n++;im.classList.toggle("back",n%2===1)}); // there and back again
+ function place(){const W=app.clientWidth,H=app.clientHeight,s=Math.max(W/1536,H/864),top=(H-864*s)*.78;
+  box.style.top=(top+864*s*.685)+"px";im.style.height=(864*s*.11)+"px";}
+ addEventListener("resize",place);place();
+})();
 LP.mash((e)=>{
  if(busy||!set.length)return;
  const g=e.target.closest&&e.target.closest("[data-food]");
