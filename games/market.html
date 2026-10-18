@@ -15,12 +15,13 @@ body{background:#3a8bf0;color:#fff;font-family:var(--body);overflow:hidden;touch
 #bubble.bump{transform:scale(1.08)}
 .stage{flex:1;min-height:0;display:flex;align-items:flex-end;position:relative;z-index:1}
 svg#scene{width:100%;height:100%;overflow:visible}
-/* the felt stall plate fills the whole screen softly; the sharp copy sits in the scene */
-.app{isolation:isolate}
-.app::before{content:"";position:absolute;inset:-30px;z-index:-1;background:#c98d55 url(../felt/bd-market.webp) center 70%/cover;filter:blur(18px) brightness(.85)}
+/* layer 1: the cardboard town fills the whole screen behind the stall */
+.app{background:#7fb6ea url(../felt/bg-market-town.webp) center 78%/cover no-repeat}
 .crate{transition:transform .5s cubic-bezier(.3,1.4,.5,1),opacity .4s}
 .crate.pre{transform:translateY(40px);opacity:0}
 .crate .hit{fill:#0000;cursor:pointer}
+.crate:focus{outline:none}
+.crate:focus-visible .hit{stroke:#fff;stroke-width:4}
 .crate .art{transform-box:fill-box;transform-origin:center bottom}
 .crate.no .art{animation:nope .4s}
 .crate.glow .hit{stroke:#F6C033;stroke-width:6;fill:#F6C03333}
@@ -41,8 +42,7 @@ svg#scene{width:100%;height:100%;overflow:visible}
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
   <div class="stage">
     <svg id="scene" viewBox="0 0 900 560" preserveAspectRatio="xMidYMax meet" role="img" aria-label="A market stall with crates of food and a raccoon shopping">
-      <g id="skyline"></g>
-      <g id="cust-g"><image class="cust" id="cust" href="../felt/raccoon-grey.webp" x="22" y="222" width="228" height="260"/></g>
+      <g id="cust-g"><image class="cust" id="cust" href="../felt/raccoon-grey.webp" x="60" y="214" width="228" height="260"/></g>
       <g id="stall"></g>
       <g id="crates"></g>
       <g id="front"></g>
@@ -123,11 +123,10 @@ const DRAW={
 const art=id=>FELT.includes(id)?`<image href="../felt/food-${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMax meet"/>`:DRAW[id]();
 
 /* The stall: a placeholder in the felt style. The final scene plate and language backdrops swap in here. */
-/* Backdrop: a felt-and-cardboard stall plate. The counter strip is drawn again in front of the raccoon so she stands behind it. */
-const BD=`<image href="../felt/bd-market.webp" x="0" y="-4" width="900" height="600" preserveAspectRatio="none"/>`;
-$("skyline").innerHTML=BD;
-$("stall").innerHTML=`<defs><clipPath id="counter"><rect x="0" y="432" width="900" height="200"/></clipPath></defs><g clip-path="url(#counter)">${BD}</g>`;
-$("front").innerHTML=`<g id="basket" transform="translate(150 506)"><g id="bitems"></g><image href="../felt/market-basket.webp" x="-75" y="-148" width="150" height="150"/></g>`;
+/* layer 2: the cardboard stall, cut out, so the town shows through it and the raccoon stands behind the counter */
+$("stall").innerHTML=`<image href="../felt/market-stall.webp" x="10" y="58" width="880" height="581"/>`;
+const BY=470;
+$("front").innerHTML=`<g id="basket" transform="translate(150 ${BY})"><image href="../felt/market-basket.webp" x="-75" y="-148" width="150" height="150"/><g id="bitems"></g><image href="../felt/market-basket-front.webp" x="-75" y="-148" width="150" height="150"/></g>`;
 
 const SLOTS=[400,570,740],CY=470;
 let set=[],want=null,misses=0,busy=false,last=[],bag=0;
@@ -142,7 +141,7 @@ function mk(id,i){
  const cx=SLOTS[i],g=document.createElementNS(NS,"g");
  g.setAttribute("class","crate pre");g.dataset.food=id;g.setAttribute("role","button");g.setAttribute("tabindex","0");g.setAttribute("aria-label",w(id));
  g.innerHTML=`<g class="art" transform="translate(${cx} 0)">`+
-  `<image href="../felt/market-crate.webp" x="-85" y="304" width="170" height="170"/><g class="heap" transform="translate(0 44)">${heap(id)}</g><g transform="translate(-13 436) scale(.26)">${art(id)}</g>`+
+  `<image href="../felt/market-crate.webp" x="-85" y="304" width="170" height="170"/><g class="heap" transform="translate(0 56)">${heap(id)}</g><image href="../felt/market-crate-front.webp" x="-85" y="304" width="170" height="170"/><g transform="translate(-13 436) scale(.26)">${art(id)}</g>`+
   `<rect class="hit" x="-82" y="290" width="164" height="184" rx="14"/></g>`;
  $("crates").appendChild(g);
  setTimeout(()=>g.classList.remove("pre"),80+i*130);
@@ -169,14 +168,14 @@ function take(id){
  c.done=true;busy=true;want=null;clearGlow();
  LP.sfx.pop();bubble(cap(w(id)));LP.say(w(id));
  // the food hops from the crate into the basket
- const cx=SLOTS[c.slot],i=bag++%5,bx=150+[-26,-9,9,26,0][i],by=506-128-(i>3?10:0);
+ const cx=SLOTS[c.slot],i=bag++%5,bx=150+[-26,-9,9,26,0][i],by=BY-91-(i>3?10:0);
  const f=document.createElementNS(NS,"g");f.setAttribute("class","flyer");
  f.innerHTML=`<g>${art(id)}</g>`;f.style.transform=`translate(${cx-28}px,${CY-120}px) scale(.56)`;$("front").appendChild(f);
  requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transform=`translate(${bx-20}px,${by}px) scale(.4)`}));
  c.el.classList.add("emptied");
  setTimeout(()=>{
   const r=$("basket").getBoundingClientRect();LP.burst(r.left+r.width/2,r.top,8);LP.sfx.twinkle();
-  $("bitems").appendChild(f);f.style.transition="none";f.style.transform=`translate(${bx-150-20}px,${by-506}px) scale(.4)`;
+  $("bitems").appendChild(f);f.style.transition="none";f.style.transform=`translate(${bx-150-20}px,${by-BY}px) scale(.4)`;
  },800);
  setTimeout(()=>{
   busy=false;
