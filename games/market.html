@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>At the market</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{color-scheme:light;--ink:#18264A;--display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif}
+html,body{height:100%;margin:0}
+body{background:#3a8bf0;color:#fff;font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.app{position:relative;height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:max(12px,env(safe-area-inset-top,0px)) 0 0 0}
+.top{display:flex;justify-content:center;min-height:60px;position:relative;z-index:2;padding:0 16px}
+#bubble{font-size:clamp(22px,4.2vw,40px);min-height:1.2em;transition:transform .15s;text-align:center}
+#bubble.bump{transform:scale(1.08)}
+.stage{flex:1;min-height:0;display:flex;align-items:flex-end;position:relative;z-index:1}
+svg#scene{width:100%;height:100%}
+.crate{transition:transform .5s cubic-bezier(.3,1.4,.5,1),opacity .4s}
+.crate.pre{transform:translateY(40px);opacity:0}
+.crate .hit{fill:#0000;cursor:pointer}
+.crate .art{transform-box:fill-box;transform-origin:center bottom}
+.crate.no .art{animation:nope .4s}
+.crate.glow .hit{stroke:#F6C033;stroke-width:6;fill:#F6C03333}
+.crate.emptied .heap{opacity:0;transition:opacity .35s}
+.flyer{transition:transform .75s cubic-bezier(.3,.1,.3,1)}
+.cust{transform-box:fill-box;transform-origin:center bottom}
+.cust.talk{animation:rock .5s}
+.cust.jig{animation:jig .18s 6}
+@keyframes nope{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes rock{30%{transform:rotate(-3deg) translateY(-6px)}70%{transform:rotate(3deg)}}
+@keyframes jig{50%{transform:translateY(-10px)}}
+@media (prefers-reduced-motion:reduce){.crate,.flyer{transition:none}.cust{animation:none!important}.crate .art{animation:none!important}}
+</style>
+</head>
+<body>
+<script>window.LP_GAME="market"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="sounds.js"></script>
+<div class="app" id="app">
+  <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
+  <div class="stage">
+    <svg id="scene" viewBox="0 0 900 560" preserveAspectRatio="xMidYMax meet" role="img" aria-label="A market stall with crates of food and a raccoon shopping">
+      <g id="skyline"></g>
+      <g id="cust-g"><image class="cust" id="cust" href="../felt/raccoon-grey.webp" x="22" y="222" width="228" height="260"/></g>
+      <g id="stall"></g>
+      <g id="crates"></g>
+      <g id="front"></g>
+    </svg>
+  </div>
+</div>
+<script>
+/* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
+const DATA={
+ words:[
+  {"id":"apple","en":"the apple","nl":"de appel","pl":"jabłko","sv":"äpplet","el":"το μήλο","zh":"苹果","ar":"التفاحة","ja":"りんご","ko":"사과","ru":"яблоко","tr":"elma","hi":"सेब","de":"der Apfel","es":"la manzana","fr":"la pomme","it":"la mela","pt":"a maçã"},
+  {"id":"pear","en":"the pear","nl":"de peer","pl":"gruszka","sv":"päronet","el":"το αχλάδι","zh":"梨","ar":"الكمثرى","ja":"なし","ko":"배","ru":"груша","tr":"armut","hi":"नाशपाती","de":"die Birne","es":"la pera","fr":"la poire","it":"la pera","pt":"a pera"},
+  {"id":"banana","en":"the banana","nl":"de banaan","pl":"banan","sv":"bananen","el":"η μπανάνα","zh":"香蕉","ar":"الموزة","ja":"バナナ","ko":"바나나","ru":"банан","tr":"muz","hi":"केला","de":"die Banane","es":"el plátano","fr":"la banane","it":"la banana","pt":"a banana"},
+  {"id":"orange","en":"the orange","nl":"de sinaasappel","pl":"pomarańcza","sv":"apelsinen","el":"το πορτοκάλι","zh":"橙子","ar":"البرتقالة","ja":"オレンジ","ko":"오렌지","ru":"апельсин","tr":"portakal","hi":"संतरा","de":"die Orange","es":"la naranja","fr":"l'orange","it":"l'arancia","pt":"a laranja"},
+  {"id":"strawberry","en":"the strawberry","nl":"de aardbei","pl":"truskawka","sv":"jordgubben","el":"η φράουλα","zh":"草莓","ar":"الفراولة","ja":"いちご","ko":"딸기","ru":"клубника","tr":"çilek","hi":"स्ट्रॉबेरी","de":"die Erdbeere","es":"la fresa","fr":"la fraise","it":"la fragola","pt":"o morango"},
+  {"id":"grapes","en":"the grapes","nl":"de druiven","pl":"winogrona","sv":"druvorna","el":"τα σταφύλια","zh":"葡萄","ar":"العنب","ja":"ぶどう","ko":"포도","ru":"виноград","tr":"üzüm","hi":"अंगूर","de":"die Trauben","es":"las uvas","fr":"les raisins","it":"l'uva","pt":"as uvas"},
+  {"id":"lemon","en":"the lemon","nl":"de citroen","pl":"cytryna","sv":"citronen","el":"το λεμόνι","zh":"柠檬","ar":"الليمونة","ja":"レモン","ko":"레몬","ru":"лимон","tr":"limon","hi":"नींबू","de":"die Zitrone","es":"el limón","fr":"le citron","it":"il limone","pt":"o limão"},
+  {"id":"cherries","en":"the cherries","nl":"de kersen","pl":"wiśnie","sv":"körsbären","el":"τα κεράσια","zh":"樱桃","ar":"الكرز","ja":"さくらんぼ","ko":"체리","ru":"вишни","tr":"kirazlar","hi":"चेरी","de":"die Kirschen","es":"las cerezas","fr":"les cerises","it":"le ciliegie","pt":"as cerejas"},
+  {"id":"watermelon","en":"the watermelon","nl":"de watermeloen","pl":"arbuz","sv":"vattenmelonen","el":"το καρπούζι","zh":"西瓜","ar":"البطيخة","ja":"すいか","ko":"수박","ru":"арбуз","tr":"karpuz","hi":"तरबूज़","de":"die Wassermelone","es":"la sandía","fr":"la pastèque","it":"l'anguria","pt":"a melancia"},
+  {"id":"carrot","en":"the carrot","nl":"de wortel","pl":"marchewka","sv":"moroten","el":"το καρότο","zh":"胡萝卜","ar":"الجزرة","ja":"にんじん","ko":"당근","ru":"морковка","tr":"havuç","hi":"गाजर","de":"die Karotte","es":"la zanahoria","fr":"la carotte","it":"la carota","pt":"a cenoura"},
+  {"id":"tomato","en":"the tomato","nl":"de tomaat","pl":"pomidor","sv":"tomaten","el":"η ντομάτα","zh":"西红柿","ar":"الطماطم","ja":"トマト","ko":"토마토","ru":"помидор","tr":"domates","hi":"टमाटर","de":"die Tomate","es":"el tomate","fr":"la tomate","it":"il pomodoro","pt":"o tomate"},
+  {"id":"potato","en":"the potato","nl":"de aardappel","pl":"ziemniak","sv":"potatisen","el":"η πατάτα","zh":"土豆","ar":"البطاطس","ja":"じゃがいも","ko":"감자","ru":"картошка","tr":"patates","hi":"आलू","de":"die Kartoffel","es":"la patata","fr":"la pomme de terre","it":"la patata","pt":"a batata"},
+  {"id":"bread","en":"the bread","nl":"het brood","pl":"chleb","sv":"brödet","el":"το ψωμί","zh":"面包","ar":"الخبز","ja":"パン","ko":"빵","ru":"хлеб","tr":"ekmek","hi":"ब्रेड","de":"das Brot","es":"el pan","fr":"le pain","it":"il pane","pt":"o pão"},
+  {"id":"cheese","en":"the cheese","nl":"de kaas","pl":"ser","sv":"osten","el":"το τυρί","zh":"奶酪","ar":"الجبن","ja":"チーズ","ko":"치즈","ru":"сыр","tr":"peynir","hi":"पनीर","de":"der Käse","es":"el queso","fr":"le fromage","it":"il formaggio","pt":"o queijo"},
+  {"id":"egg","en":"the egg","nl":"het ei","pl":"jajko","sv":"ägget","el":"το αυγό","zh":"鸡蛋","ar":"البيضة","ja":"たまご","ko":"달걀","ru":"яйцо","tr":"yumurta","hi":"अंडा","de":"das Ei","es":"el huevo","fr":"l'œuf","it":"l'uovo","pt":"o ovo"},
+  {"id":"milk","en":"the milk","nl":"de melk","pl":"mleko","sv":"mjölken","el":"το γάλα","zh":"牛奶","ar":"الحليب","ja":"ぎゅうにゅう","ko":"우유","ru":"молоко","tr":"süt","hi":"दूध","de":"die Milch","es":"la leche","fr":"le lait","it":"il latte","pt":"o leite"}
+ ],
+ lines:{
+  "en":{"title":"At the market","please":"{w}, please!","thanks":"Thank you!","where":"Where is {w}?","whereP":"Where are {w}?"},
+  "nl":{"title":"Op de markt","please":"{w}, alsjeblieft!","thanks":"Dank je wel!","where":"Waar is {w}?","whereP":"Waar zijn {w}?"},
+  "pl":{"title":"Na targu","please":"{w}, poproszę!","thanks":"Dziękuję!","where":"Gdzie jest {w}?","whereP":"Gdzie są {w}?"},
+  "sv":{"title":"På marknaden","please":"{w}, tack!","thanks":"Tack!","where":"Var är {w}?","whereP":"Var är {w}?"},
+  "el":{"title":"Στην αγορά","please":"{w}, παρακαλώ!","thanks":"Ευχαριστώ!","where":"Πού είναι {w};","whereP":"Πού είναι {w};"},
+  "zh":{"title":"去菜市场","please":"请给我{w}！","thanks":"谢谢！","where":"{w}在哪里？","whereP":"{w}在哪里？"},
+  "ar":{"title":"في السوق","please":"{w}، من فضلك!","thanks":"شكرا!","where":"أين {w}؟","whereP":"أين {w}؟"},
+  "ja":{"title":"いちばへいこう","please":"{w}、ください！","thanks":"ありがとう！","where":"{w}はどこ？","whereP":"{w}はどこ？"},
+  "ko":{"title":"시장에 가요","please":"{w} 주세요!","thanks":"고마워요!","where":"{w} 어디 있어?","whereP":"{w} 어디 있어?"},
+  "ru":{"title":"На рынке","please":"{w}, пожалуйста!","thanks":"Спасибо!","where":"Где {w}?","whereP":"Где {w}?"},
+  "tr":{"title":"Pazarda","please":"{w}, lütfen!","thanks":"Teşekkürler!","where":"{w} nerede?","whereP":"{w} nerede?"},
+  "hi":{"title":"बाज़ार में","please":"{w}, कृपया!","thanks":"धन्यवाद!","where":"{w} कहाँ है?","whereP":"{w} कहाँ हैं?"},
+  "de":{"title":"Auf dem Markt","please":"{w}, bitte!","thanks":"Danke!","where":"Wo ist {w}?","whereP":"Wo sind {w}?"},
+  "es":{"title":"En el mercado","please":"¡{w}, por favor!","thanks":"¡Gracias!","where":"¿Dónde está {w}?","whereP":"¿Dónde están {w}?"},
+  "fr":{"title":"Au marché","please":"{w}, s'il te plaît !","thanks":"Merci !","where":"Où est {w} ?","whereP":"Où sont {w} ?"},
+  "it":{"title":"Al mercato","please":"{w}, per favore!","thanks":"Grazie!","where":"Dov'è {w}?","whereP":"Dove sono {w}?"},
+  "pt":{"title":"No mercado","please":"{w}, por favor!","thanks":"Obrigado!","where":"Onde está {w}?","whereP":"Onde estão {w}?"}
+ }
+};
+const T=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
+const IDS=DATA.words.map(w=>w.id);
+const $=id=>document.getElementById(id);
+const L=()=>LP.t(DATA.lines);
+const w=id=>T[id][LP.lang]||T[id].en;
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const plural=(id,lang)=>["grapes","cherries"].includes(id)&&!(id==="grapes"&&lang==="it");
+const fill=(tpl,id)=>cap(tpl.replace("{w}",w(id)));
+const NS="http://www.w3.org/2000/svg";
+
+/* Food pictures, each drawn in a 100 x 100 box. When felt art exists for a food (felt/food-<id>.webp), list its id
+   in FELT and the picture is used instead of the drawing. */
+const FELT=[];
+const sh=(rx=28)=>`<ellipse cx="50" cy="92" rx="${rx}" ry="5" fill="#0002"/>`;
+const look=id=>LPLook.pic(id).replace(/^<svg[^>]*>/,"").replace(/<\/svg>$/,"");
+const DRAW={
+ apple:()=>look("apple"),banana:()=>look("banana"),strawberry:()=>look("strawberry"),milk:()=>look("milk"),
+ pear:()=>sh(26)+`<path d="M50 12c-9 0-12 9-12 17 0 11-17 19-17 40 0 15 11 24 29 24s29-9 29-24c0-21-17-29-17-40 0-8-3-17-12-17Z" fill="url(#k-green)"/><path d="M50 13c0-6 2-9 6-11" stroke="#8a4724" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="36" cy="62" rx="5" ry="11" fill="#fff" opacity=".3"/>`,
+ orange:()=>sh(30)+`<circle cx="50" cy="56" r="34" fill="url(#k-orange)"/><path d="M50 22c4-6 12-8 18-4-4 6-10 8-18 4Z" fill="url(#k-green)"/><ellipse cx="37" cy="44" rx="6" ry="10" fill="#fff" opacity=".3"/><g fill="#e2602a" opacity=".45"><circle cx="62" cy="60" r="1.8"/><circle cx="52" cy="74" r="1.8"/><circle cx="68" cy="48" r="1.8"/><circle cx="40" cy="66" r="1.8"/></g>`,
+ lemon:()=>sh(34)+`<path d="M8 56 16 50C24 34 38 28 50 28s26 6 34 22l8 6-8 6C76 78 62 84 50 84S24 78 16 62Z" fill="url(#k-yellow)"/><ellipse cx="38" cy="46" rx="8" ry="5" fill="#fff" opacity=".35"/>`,
+ grapes:()=>sh(26)+`<path d="M50 24c0-8 2-12 8-14" stroke="#8a4724" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M52 16c6-8 16-8 22-2-8 6-16 6-22 2Z" fill="url(#k-green)"/><g fill="url(#k-violet)"><circle cx="30" cy="38" r="13"/><circle cx="50" cy="36" r="13"/><circle cx="70" cy="38" r="13"/><circle cx="38" cy="56" r="13"/><circle cx="62" cy="56" r="13"/><circle cx="50" cy="74" r="13"/></g><g fill="#fff" opacity=".35"><ellipse cx="26" cy="34" rx="3" ry="4"/><ellipse cx="46" cy="32" rx="3" ry="4"/><ellipse cx="34" cy="52" rx="3" ry="4"/></g>`,
+ cherries:()=>sh(30)+`<path d="M32 58C34 34 44 18 54 12M68 62C66 38 60 22 54 12" stroke="#4f9a3a" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M54 12c8-6 18-4 22 2-8 4-16 4-22-2Z" fill="url(#k-green)"/><circle cx="32" cy="72" r="17" fill="url(#k-red)"/><circle cx="68" cy="76" r="17" fill="url(#k-red)"/><ellipse cx="26" cy="66" rx="4" ry="6" fill="#fff" opacity=".35"/><ellipse cx="62" cy="70" rx="4" ry="6" fill="#fff" opacity=".35"/>`,
+ watermelon:()=>sh(40)+`<path d="M6 46a44 44 0 0 0 88 0Z" fill="#33a24f"/><path d="M12 46a38 38 0 0 0 76 0Z" fill="#fff6e0"/><path d="M16 46a34 34 0 0 0 68 0Z" fill="url(#k-red)"/><g fill="#18264A"><ellipse cx="36" cy="58" rx="2.4" ry="4"/><ellipse cx="50" cy="66" rx="2.4" ry="4"/><ellipse cx="64" cy="58" rx="2.4" ry="4"/><ellipse cx="50" cy="54" rx="2.4" ry="4" /></g>`,
+ carrot:()=>sh(16)+`<path d="M50 28c-8-10-8-18-4-24 6 4 8 14 4 24ZM50 28c2-12 8-18 16-18-2 10-8 16-16 18Z" fill="url(#k-green)"/><path d="M33 28h34c4 0 6 4 5 8L55 88c-1 3-5 3-6 0L28 36c-1-4 1-8 5-8Z" fill="url(#k-orange)"/><path d="M38 44h10M52 58h10M42 70h8" stroke="#c24d1c" stroke-width="3" stroke-linecap="round" opacity=".7"/>`,
+ tomato:()=>sh(30)+`<ellipse cx="50" cy="58" rx="36" ry="32" fill="url(#k-red)"/><path d="M50 26l8 8 11-4-5 10 9 6-12 2-3 10-8-8-8 8-3-10-12-2 9-6-5-10 11 4Z" fill="url(#k-green)"/><ellipse cx="32" cy="52" rx="6" ry="10" fill="#fff" opacity=".3"/>`,
+ potato:()=>sh(34)+`<path d="M14 58c0-18 18-28 36-28s36 10 36 28-18 28-38 28S14 76 14 58Z" fill="#d1a766"/><g fill="#a87e45"><circle cx="34" cy="52" r="3"/><circle cx="62" cy="46" r="3.4"/><circle cx="52" cy="68" r="3"/><circle cx="74" cy="64" r="2.6"/><circle cx="28" cy="68" r="2.4"/></g><ellipse cx="34" cy="42" rx="9" ry="5" fill="#fff" opacity=".28"/>`,
+ bread:()=>sh(36)+`<path d="M10 62c0-22 16-36 40-36s40 14 40 36v12c0 8-6 12-12 12H22c-6 0-12-4-12-12Z" fill="#e0a85a"/><path d="M10 66c0-22 16-36 40-36" fill="none" stroke="#c4823a" stroke-width="4" opacity=".6"/><path d="M30 42l10 14M48 38l10 16M66 42l8 12" stroke="#b06f2c" stroke-width="5" stroke-linecap="round"/><ellipse cx="30" cy="44" rx="8" ry="4" fill="#fff" opacity=".25"/>`,
+ cheese:()=>sh(36)+`<path d="M8 74V50L74 28l18 18v28Z" fill="#f6c945"/><path d="M8 50 74 28l18 18-66 6Z" fill="#fde58a"/><g fill="#e0a925"><circle cx="28" cy="64" r="5"/><circle cx="56" cy="60" r="6"/><circle cx="76" cy="66" r="4"/></g>`,
+ egg:()=>sh(24)+`<ellipse cx="50" cy="54" rx="27" ry="35" fill="#fff6e0" stroke="#e8d9b4" stroke-width="3"/><ellipse cx="40" cy="40" rx="6" ry="11" fill="#fff" opacity=".7"/>`
+};
+const art=id=>FELT.includes(id)?`<image href="../felt/food-${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMax meet"/>`:DRAW[id]();
+
+/* The stall: a placeholder in the felt style. The final scene plate and language backdrops swap in here. */
+$("skyline").innerHTML=`<path d="M0 330h900v140H0Z" fill="#e8c49a"/>`+[[40,200,120,140,"#d9754a"],[170,230,110,110,"#f0c75e"],[300,190,130,150,"#c95b3c"],[450,240,110,100,"#f0c75e"],[580,205,140,135,"#d9754a"],[730,225,130,115,"#e7a86a"]].map(([x,y,wd,h,c])=>`<rect x="${x}" y="${y}" width="${wd}" height="${h}" rx="6" fill="${c}"/><rect x="${x+16}" y="${y+22}" width="22" height="30" rx="10" fill="#7fc0f0"/><rect x="${x+wd-38}" y="${y+22}" width="22" height="30" rx="10" fill="#7fc0f0"/>`).join("");
+$("stall").innerHTML=
+ `<rect x="0" y="0" width="22" height="480" fill="#c8955a"/><rect x="878" y="0" width="22" height="480" fill="#c8955a"/><path d="M6 0v480M894 0v480" stroke="#a9733c" stroke-width="3" stroke-dasharray="10 6"/>`+
+ `<rect x="0" y="0" width="900" height="48" fill="#d9483b"/>`+Array.from({length:10},(_,i)=>`<circle cx="${45+90*i}" cy="48" r="45" fill="${i%2?"#f6e6c6":"#d9483b"}"/>`).join("")+
+ `<rect x="0" y="470" width="900" height="90" fill="#a9703c"/><rect x="0" y="470" width="900" height="12" fill="#c8955a"/><path d="M0 500h900M0 530h900" stroke="#8a5a30" stroke-width="3" opacity=".6"/>`;
+$("front").innerHTML=`<g id="basket" transform="translate(150 506)"><g id="bitems"></g><path d="M-40 -24Q0 -96 40 -24" fill="none" stroke="#c9ced8" stroke-width="5" stroke-linecap="round"/><path d="M-50 -24h100l-12 44h-76Z" fill="url(#k-red)"/><rect x="-54" y="-30" width="108" height="11" rx="5" fill="#b8352b"/><path d="M-44 -4h88M-46 10h92" stroke="#fff" stroke-width="3" stroke-dasharray="6 5" opacity=".7"/></g>`;
+
+const SLOTS=[400,570,740],CY=470;
+let set=[],want=null,misses=0,busy=false,last=[],bag=0;
+
+function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
+function talk(){const c=$("cust");c.classList.remove("talk");void c.getBoundingClientRect();c.classList.add("talk")}
+function heap(id){
+ const spots=[[-46,-8],[0,-8],[46,-8],[-23,-38],[23,-38]];
+ return spots.map(([x,y],i)=>`<g transform="translate(${x-28} ${CY-96+y-30}) scale(.56) rotate(${i*17-30} 50 50)">${art(id)}</g>`).join("");
+}
+function mk(id,i){
+ const cx=SLOTS[i],g=document.createElementNS(NS,"g");
+ g.setAttribute("class","crate pre");g.dataset.food=id;g.setAttribute("role","button");g.setAttribute("tabindex","0");g.setAttribute("aria-label",w(id));
+ g.innerHTML=`<g class="art" transform="translate(${cx} 0)"><g class="heap">${heap(id)}</g>`+
+  `<path d="M-78 396h156l-7 74H-71Z" fill="#c8955a"/><path d="M-78 396h156" stroke="#a9733c" stroke-width="6"/><path d="M-75 420h150M-73 444h146" stroke="#a9733c" stroke-width="3" opacity=".55"/>`+
+  `<g transform="translate(-40 410)"><rect width="80" height="50" rx="4" fill="#f4ead0"/><rect x="4" y="4" width="72" height="42" rx="2" fill="none" stroke="#d9483b" stroke-width="2" stroke-dasharray="5 4"/><g transform="translate(20 4) scale(.4)">${art(id)}</g></g>`+
+  `<rect class="hit" x="-82" y="290" width="164" height="184" rx="14"/></g>`;
+ $("crates").appendChild(g);
+ setTimeout(()=>g.classList.remove("pre"),80+i*130);
+ return {id,el:g,slot:i,done:false};
+}
+function spawn(){
+ $("crates").innerHTML="";
+ const pool=IDS.filter(i=>!last.includes(i)),pick=LPLearn.pick(pool,x=>x,3,LP.lang);last=pick;
+ set=pick.map(mk);LP.sfx.whoosh();
+ setTimeout(()=>{busy=false;if(LP.age>=1)ask();else{bubble(L().title);talk()}},900);
+}
+function clearGlow(){document.querySelectorAll(".glow").forEach(x=>x.classList.remove("glow"))}
+function ask(){
+ const open=set.filter(c=>!c.done);if(!open.length)return;
+ const id=LPLearn.pick(open.map(c=>c.id),x=>x,1,LP.lang)[0];want=id;misses=0;
+ const t=fill(L().please,id);bubble(t);LP.say(t);talk();
+}
+function reask(){if(!want)return;const t=fill(plural(want,LP.lang)?L().whereP:L().where,want);bubble(t);LP.say(t,true)}
+function hint(){const c=set.find(x=>x.id===want);if(c)c.el.classList.add("glow")}
+const need=()=>LP.age>=2?2:1;
+
+function take(id){
+ const c=set.find(x=>x.id===id);if(!c||c.done)return;
+ c.done=true;busy=true;want=null;clearGlow();
+ LP.sfx.pop();bubble(cap(w(id)));LP.say(w(id));
+ // the food hops from the crate into the basket
+ const cx=SLOTS[c.slot],i=bag++%5,bx=150+[-26,-9,9,26,0][i],by=506-52-(i>3?10:0);
+ const f=document.createElementNS(NS,"g");f.setAttribute("class","flyer");
+ f.innerHTML=`<g>${art(id)}</g>`;f.style.transform=`translate(${cx-28}px,${CY-120}px) scale(.56)`;$("front").appendChild(f);
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transform=`translate(${bx-20}px,${by}px) scale(.4)`}));
+ c.el.classList.add("emptied");
+ setTimeout(()=>{
+  const r=$("basket").getBoundingClientRect();LP.burst(r.left+r.width/2,r.top,8);LP.sfx.twinkle();
+  $("bitems").appendChild(f);f.style.transition="none";f.style.transform=`translate(${bx-150-20}px,${by-506}px) scale(.4)`;
+ },800);
+ setTimeout(()=>{
+  busy=false;
+  if(set.every(x=>x.done))finish();else if(LP.age>=1)ask();
+ },1300);
+}
+function finish(){
+ busy=true;
+ setTimeout(()=>{
+  const t=cap(L().thanks);bubble(t);LP.say(L().thanks);LP.sfx.chime();
+  const e=$("cust");e.classList.remove("jig");void e.getBoundingClientRect();e.classList.add("jig");
+  const r=e.getBoundingClientRect();LP.burst(r.left+r.width/2,r.top+30,16);
+ },400);
+ setTimeout(()=>{$("bitems").innerHTML="";bag=0;spawn()},3000);
+}
+function wrong(c){
+ c.el.classList.remove("no");void c.el.getBoundingClientRect();c.el.classList.add("no");
+ LPLearn.heard(c.id,LP.lang);LPLearn.asked(want,LP.lang,false);
+ bubble(cap(w(c.id)));LP.say(w(c.id));
+ misses++;if(misses>=need())hint();
+ setTimeout(()=>{if(want)reask()},2000);
+}
+
+LP.init({langs:ALLLANGS,onLang:()=>{document.title=L().title;set.forEach(c=>c.el.setAttribute("aria-label",w(c.id)));bubble(want?fill(L().please,want):L().title)},onAge:()=>{want=null;clearGlow();if(!busy&&set.length&&LP.age>=1)ask()}});
+LPLook.sky($("app"),{mode:"day",hills:false});
+document.title=L().title;bubble(L().title);
+LP.start(L().title,()=>{spawn()});
+LP.mash((e)=>{
+ if(busy||!set.length)return;
+ const g=e.target.closest&&e.target.closest("[data-food]");
+ const open=set.filter(c=>!c.done);if(!open.length)return;
+ const hit=g&&open.find(c=>c.id===g.dataset.food);
+ if(LP.age>=1){ // asked for one food: the right crate goes in the basket, any other names itself
+  if(!want){ask();return}
+  if(hit){hit.id===want?(LPLearn.asked(want,LP.lang,true),take(want)):wrong(hit)}
+  else{misses++;if(misses>=need())hint();reask()}
+  return;
+ }
+ // little ones: a tap on a crate takes it, any other tap or key takes the next
+ const id=hit?hit.id:LP.next("market-free",open.map(c=>c.id));
+ LPLearn.heard(id,LP.lang);take(id);
+});
+</script>
+</body>
+</html>
