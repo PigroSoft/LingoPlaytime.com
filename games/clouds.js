@@ -7,7 +7,7 @@
 (function () {
   var css = document.createElement("style");
   css.textContent =
-    ".lp-clouds{position:absolute;left:0;right:0;top:0;height:40%;overflow:visible;pointer-events:none;z-index:0}" +
+    ".lp-clouds{position:absolute;left:0;right:0;top:0;height:40%;overflow:visible;pointer-events:none;z-index:0;container-type:size}" +
     // stop motion: the cloud jumps a little at a time (about 8 frames a second) and wobbles like a hand-moved puppet
     ".lp-clouds .lp-c{position:absolute;left:0;will-change:transform;animation-name:lp-drift;animation-iteration-count:infinite}" +
     ".lp-clouds img{display:block;width:100%;height:auto;filter:drop-shadow(0 6px 6px rgba(20,40,80,.18));animation:lp-boil .75s steps(1) infinite}" +
@@ -32,8 +32,10 @@
       im.style.animationDelay = (-Math.random() * 0.75) + "s";
       var dur = 110 + Math.random() * 90;                    // seconds to cross: slow and calm
       var size = [18, 14, 10][i % 3] * (0.85 + Math.random() * 0.3);
-      c.style.width = "min(" + size + "vw," + Math.round(size * 13) + "px)";
-      c.style.top = (4 + ((i * 37) % 44)) + "%";            // spread up and down the sky band
+      // never taller than the sky band, and placed so the whole cloud stays inside it (never over the roofs)
+      var wv = "min(" + size + "vw," + Math.round(size * 13) + "px,130cqh)";
+      c.style.width = wv;
+      c.style.top = "calc((100cqh - " + wv + " * .56) * " + (0.08 + ((i * 37) % 80) / 100).toFixed(2) + ")";
       c.style.animationDuration = dur + "s";
       c.style.animationTimingFunction = "steps(" + Math.round(dur * 8) + ")"; // one small hop per frame
       c.style.animationDelay = (-dur * ((i + Math.random() * 0.5) / n)) + "s"; // already spread across the sky

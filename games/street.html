@@ -25,18 +25,12 @@ svg#street{width:100%;height:100%;overflow:visible}
 .thing.hop>.art{animation:hop .66s steps(2,jump-none)}
 .art{transform-box:fill-box;transform-origin:center bottom}
 @keyframes drive{0%,100%{transform:none}20%{transform:translateY(-4px) rotate(-1deg)}55%{transform:translateX(40px) rotate(.6deg)}80%{transform:translateX(14px)}}
-/* stop motion: everything moves in held frames, and every puppet "boils" a little between frames like a hand-moved model */
-.thing .art image{transform-box:fill-box;transform-origin:center bottom;animation:boil .75s steps(1) infinite}
-.thing:nth-child(3n) .art image{animation-delay:-.25s}.thing:nth-child(3n+1) .art image{animation-delay:-.5s}
-@keyframes boil{0%{transform:rotate(-.35deg)}33%{transform:rotate(.3deg) translateY(.6px)}66%{transform:translateY(-.6px)}}
-[data-thing="heli"] .art image{animation:boil .75s steps(1) infinite,heliBob 2s steps(4) infinite}
-[data-thing="plane"] .art image{animation:boil .75s steps(1) infinite,heliBob 3s steps(5) infinite}
-@keyframes heliBob{0%,100%{translate:0 0}50%{translate:0 -6px}}
+/* stop motion: a tapped thing moves in a few held frames, like a hand-moved model */
 @keyframes hop{40%{transform:translateY(-22px) scale(1.06)}}
 .thing.glow .hit{stroke:#F6C033;stroke-width:6;fill:#F6C03333}
 .blue{animation:flash .3s steps(2) 6}
 @keyframes flash{50%{fill:#9fd3ff}}
-@media (prefers-reduced-motion:reduce){.thing.go>.art,.thing.hop>.art,.blue,.thing .art image{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.thing.go>.art,.thing.hop>.art,.blue}
 </style>
 </head>
 <body>
@@ -144,7 +138,7 @@ function placeTown(){
  const W=innerWidth, s=Math.max(W/1536, y/(864*.86), 0.2);
  $("app").style.backgroundSize=(1536*s)+"px "+(864*s)+"px";
  $("app").style.backgroundPosition=((W-1536*s)/2)+"px "+(y-864*.86*s)+"px";
- sky.style.height=Math.max(80,y-864*.86*s+864*.5*s)+"px";
+ sky.style.height=Math.max(60,y-864*.86*s+864*.33*s)+"px"; // the open sky above the chimneys
 }
 addEventListener("resize",placeTown);requestAnimationFrame(placeTown);setTimeout(placeTown,300);
 label();document.title=L().title;bubble(L().title);
