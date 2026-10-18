@@ -70,3 +70,54 @@
 
   window.LPVoice = { list: list, best: best, ready: ready, key: key, tag: function (c) { return TAGS[c] || c; } };
 })();
+
+/* Loading screen, shared by every game (voice.js is the first script on each game page).
+   Three felt speech bubbles pop up in turn until the page, its pictures and its recorded word
+   audio have all arrived (the audio packs bridge.js adds hold back the window load event).
+   It fades in only after a short pause, so a quick or cached load never flashes it, and it
+   gives up after 12 seconds so a slow connection can't trap a child behind it. While it shows,
+   taps and keys are held back, so nobody starts a game whose words haven't loaded yet. */
+(function () {
+  if (!document.body || window.LP_NO_LOADER) return;
+  var css = document.createElement("style");
+  css.textContent =
+    "#lp-loading{position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;background:#fff4dc;" +
+    "opacity:0;animation:lpl-in .3s ease .25s forwards;transition:opacity .35s ease}" +
+    "#lp-loading.lpl-done{opacity:0!important;animation:none;pointer-events:none}" +
+    "#lp-loading .lpl-row{display:flex;gap:clamp(12px,3vw,22px);align-items:flex-end;height:110px}" +
+    "#lp-loading i{position:relative;display:block;width:clamp(48px,12vw,74px);height:clamp(36px,9vw,54px);border-radius:50%;" +
+    "box-shadow:inset 0 -5px 0 rgba(0,0,0,.12),0 6px 0 rgba(90,60,20,.12);animation:lpl-pop 1.2s ease-in-out infinite}" +
+    "#lp-loading i::after{content:'';position:absolute;left:22%;bottom:-9px;border:9px solid transparent;border-top-color:currentColor;border-bottom:0;border-left-width:4px}" +
+    "#lp-loading i::before{content:'';position:absolute;inset:5px;border-radius:50%;border:2px dashed rgba(255,255,255,.55)}" +
+    "#lp-loading i:nth-child(1){background:#d92b25;color:#d92b25}" +
+    "#lp-loading i:nth-child(2){background:#f8b81f;color:#f8b81f;animation-delay:.18s}" +
+    "#lp-loading i:nth-child(3){background:#137aa6;color:#137aa6;animation-delay:.36s}" +
+    "@keyframes lpl-in{to{opacity:1}}" +
+    "@keyframes lpl-pop{0%,60%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-26px) scale(1.08)}}" +
+    "@media (prefers-reduced-motion:reduce){#lp-loading i{animation:lpl-fade 1.4s ease-in-out infinite}" +
+    "@keyframes lpl-fade{0%,100%{opacity:.45}50%{opacity:1}}}";
+  document.head.appendChild(css);
+
+  var el = document.createElement("div");
+  el.id = "lp-loading";
+  el.setAttribute("role", "status");
+  el.setAttribute("aria-label", "Loading");
+  el.innerHTML = '<div class="lpl-row"><i></i><i></i><i></i></div>';
+  document.body.appendChild(el);
+
+  var loading = true;
+  function block(e) { if (loading) { e.stopImmediatePropagation(); e.preventDefault(); } }
+  ["keydown", "keyup", "pointerdown", "pointerup", "click", "touchstart"].forEach(function (t) {
+    window.addEventListener(t, block, { capture: true, passive: false });
+  });
+  function done() {
+    if (!loading) return;
+    loading = false;
+    el.classList.add("lpl-done");
+    setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 400);
+  }
+  if (document.readyState === "complete") done();
+  else window.addEventListener("load", done);
+  setTimeout(done, 12000);
+  window.LPLoading = { done: done };
+})();
