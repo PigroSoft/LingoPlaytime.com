@@ -102,19 +102,14 @@
     soft: function () { LP.tone(392, 0.6, "sine", 0.12); LP.tone(587, 0.6, "sine", 0.06, 0.05); }
   };
 
-  /* start screen: a big friendly button; any tap or key starts (and unlocks sound) */
+  /* start: games begin at once. The first touch or key unlocks sound (see bridge.js),
+     and also counts as a normal tap in the game. */
   LP.start = function (title, cb) {
-    var o = document.createElement("div");
-    o.className = "lp-start";
-    o.innerHTML = '<button type="button" class="lp-go"><span class="lp-go-t"></span><small></small></button>';
-    o.querySelector(".lp-go-t").textContent = title;
-    o.querySelector("small").textContent = LP.t(START);
-    document.body.appendChild(o);
-    var done = false;
-    function go(e) { if (done) return; done = true; if (e) e.preventDefault(); LP.ac(); LP._started = Date.now(); o.remove(); removeEventListener("keydown", go); cb(); }
-    o.addEventListener("pointerdown", go);
-    addEventListener("keydown", go);
-    setTimeout(function () { try { o.querySelector("button").focus(); } catch (e) {} }, 50);
+    LP._started = 0;
+    function unlock() { LP.ac(); }
+    ["pointerdown", "touchend", "click", "keydown"].forEach(function (ev) { addEventListener(ev, unlock, { capture: true, passive: true }); });
+    LP.ac();
+    cb();
   };
 
   /* mash: every tap and every key does something. fn(event, x, y) */

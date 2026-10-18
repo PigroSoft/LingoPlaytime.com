@@ -13,13 +13,36 @@
   /* Master mute, shared with the site's sound button (localStorage + postMessage "lp-mute").
      Web Audio: every context's destination is a master gain. Recorded clips and browser speech
      are skipped while muted, and speech still reports start and end so games keep their rhythm. */
-  var MKEY = "lingoplaytime.muted", muted = false, ctxs = [];
+  var MKEY = "lingoplaytime.muted", muted = false, ctxs = [], allCtx = [];
+  /* Games start straight away, with no "tap to play" screen. Browsers keep sound locked until the
+     first touch or key, so that first gesture resumes every audio context, and any line a game tried
+     to say before it (the opening question) is played then, unless the tap itself said something. */
+  var gestured = false, pending = [];
+  try { gestured = !!(navigator.userActivation && navigator.userActivation.hasBeenActive); } catch (e) {}
+  /* Safari on iPad and iPhone only unlocks sound when a finger lifts (touchend, click), not when it
+     lands, so the unlock listens for those too and wakes each context with a silent blip. */
+  function wake(c) {
+    try { if (c.state === "suspended") c.resume(); var b = c.createBuffer(1, 1, 22050), s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); } catch (e) {}
+  }
+  function firstGesture(e) {
+    var t = e.type;
+    if (t === "touchstart" || (t === "pointerdown" && e.pointerType !== "mouse") || (t === "pointerup" && e.pointerType === "mouse")) return;
+    allCtx.forEach(wake);
+    if (gestured) return;
+    gestured = true;
+    if (window.LP_primeSpeech) window.LP_primeSpeech();
+    // replay the latest line the game tried to say while sound was locked (the tap's own line if it said one)
+    var u = pending.pop(); pending = [];
+    if (u && window.speechSynthesis) window.speechSynthesis.speak(u);
+  }
+  ["pointerdown", "pointerup", "touchend", "mousedown", "click", "keydown"].forEach(function (ev) { window.addEventListener(ev, firstGesture, { capture: true, passive: true }); });
   try { muted = localStorage.getItem(MKEY) === "1"; } catch (e) {}
   window.LP_MUTED = function () { return muted; };
   ["AudioContext", "webkitAudioContext"].forEach(function (n) {
     var O = window[n]; if (!O) return;
     var W = function () {
       var c = new (Function.prototype.bind.apply(O, [null].concat([].slice.call(arguments))))();
+      allCtx.push(c);
       try { var g = c.createGain(), real = c.destination; g.gain.value = muted ? 0 : 1; g.connect(real); Object.defineProperty(c, "destination", { value: g }); ctxs.push(g); } catch (e) {}
       return c;
     };
@@ -77,7 +100,9 @@
       return ac;
     }
     function unlock() { var c = getAC(); if (c && c.state === "suspended") { try { c.resume(); } catch (e) {} } }
-    ["pointerdown", "touchstart", "mousedown", "keydown"].forEach(function (ev) { window.addEventListener(ev, unlock, { capture: true, passive: true }); });
+    ["pointerdown", "touchstart", "touchend", "mousedown", "click", "keydown"].forEach(function (ev) { window.addEventListener(ev, unlock, { capture: true, passive: true }); });
+    // iOS keeps browser speech locked until something is spoken inside a tap: say a silent space then
+    window.LP_primeSpeech = function () { unlock(); try { var u = new SpeechSynthesisUtterance(" "); u.volume = 0; origSpeak(u); } catch (e) {} };
     function toBuf(b64) {
       var bin = atob(b64), n = bin.length, a = new Uint8Array(n);
       for (var i = 0; i < n; i++) a[i] = bin.charCodeAt(i);
@@ -158,9 +183,12 @@
       u.addEventListener("error", function () { advance(my); });
       origSpeak(u);
     }
-    ss.speak = function (u) { q.push(u); next(); }; // recordings never wait for the voice list
+    ss.speak = function (u) {
+      if (!gestured) { pending.push(u); return; } // sound is still locked: hold the line for the first tap
+      q.push(u); next(); // recordings never wait for the voice list
+    };
     ss.cancel = function () {
-      gen++; q = []; cur = null;
+      gen++; q = []; cur = null; if (!gestured) pending = [];
       if (audio) { try { audio.pause(); } catch (e) {} audio = null; }
       if (srcNow) { try { srcNow.onended = null; srcNow.stop(); } catch (e) {} srcNow = null; }
       origCancel();
@@ -184,6 +212,7 @@
     },
     sky: {
       langs: ALL,
+      go: function () { var b = document.getElementById("go"); if (b) b.click(); },
       hide: ".langs,#levels{display:none!important}",
       pre: function (s, l) { set("skyLang", l); set("skyLevel", ["easy", "hard", "big"][s.age] || "easy"); },
       live: function (s, l) {
@@ -194,6 +223,7 @@
     },
     drum: {
       langs: ALL,
+      go: function () { var b = document.getElementById("go"); if (b) b.click(); },
       hide: "#langs{display:none!important}",
       pre: function () {},
       live: function (s, l) {
@@ -204,6 +234,7 @@
     },
     train: {
       langs: ALL,
+      go: function () { var o = document.getElementById("overlay"), b = document.getElementById("start"); if (b) b.click(); if (o) o.hidden = true; },
       hide: "#langsel{display:none!important}",
       pre: function () {},
       live: function (s, l) {
@@ -232,6 +263,7 @@
     },
     soup: {
       langs: ALL,
+      go: function () { var f = document.getElementById("form"); if (!f) return; if (f.requestSubmit) f.requestSubmit(); else f.dispatchEvent(new Event("submit", { cancelable: true })); },
       hide: "#gear,#form .lbl,#form #name,#form .chips{display:none!important}",
       pre: function (s, l) {
         var old = get("soupPot") || {};
@@ -259,6 +291,8 @@
   a.pre(S, lang);
   css(a.hide);
   ready(function () { if (a.live) a.live(S, lang); });
+  // older games with their own start button: press it once the loading screen has let go of clicks
+  if (a.go) { if (document.readyState === "complete") setTimeout(a.go, 0); else window.addEventListener("load", function () { setTimeout(a.go, 0); }); }
 
   window.addEventListener("message", function (e) {
     var d = e.data;
