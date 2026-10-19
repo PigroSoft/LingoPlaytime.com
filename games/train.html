@@ -1,98 +1,79 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<script>window.LP_GAME="train"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="look.js"></script><script src="audio/sfx.train.js"></script><script src="sfx.js"></script>
+<script>window.LP_GAME="train"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="look.js"></script><script src="audio/sfx.train.js"></script><script src="sfx.js"></script><script src="clouds.js"></script>
 <title>Word Train</title>
 <link rel="stylesheet" href="/assets/fonts.css">
 <style>
-:root{--sky:#bfe6f5;--sky2:#e4f5fb;--hill:#7cc36a;--hill2:#5aa84f;--grass:#8fcf6b;--rail:#6b4a2f;--ink:#23324a;--paper:#fffdf6;--red:#e0463a;color-scheme:light}
+:root{--ink:#3b2a14;--paper:#fff3d6;--gh:clamp(150px,27vh,260px);--u:min(clamp(92px,15.5vw,190px),calc((100vw - 40px)/5.6));--felt-red:url(../felt/btn-red.webp);--felt-blue:url(../felt/btn-blue.webp);--felt-beige:url(../felt/btn-beige.webp);color-scheme:light}
 html,body{height:100%}
 [hidden]{display:none!important}
-body{margin:0;background:var(--sky);color:var(--ink);font-family:"Baloo 2",system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent;cursor:none}
+body{margin:0;background:#7fb3dc;color:var(--ink);font-family:"Fredoka","Baloo 2",system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;cursor:none}
 button{font:inherit;color:var(--ink);cursor:none}
 .bigcursor{position:fixed;top:0;left:0;font-size:46px;line-height:1;z-index:99;pointer-events:none;transform:translate(-6px,-4px) rotate(0deg) scale(1);filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 10px #fff);transition:transform .12s cubic-bezier(.34,1.6,.64,1);will-change:transform}
 .bigcursor.hover{transform:translate(-6px,-4px) rotate(-14deg) scale(1.28)}
 .bigcursor.down{transform:translate(-6px,-4px) rotate(-14deg) scale(.85)}
 @media (hover:none){.bigcursor{display:none}body,button{cursor:auto}}
-button:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
+button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 .app{height:100%;display:flex;flex-direction:column}
-.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:10px 16px}
-.top h1{margin:0;font-size:clamp(22px,5vw,32px);font-weight:800}
-.ctl{display:flex;gap:6px;flex-wrap:wrap}
-.ctl button{font-weight:800;font-size:17px;border:3px solid var(--ink);background:var(--paper);border-radius:14px;padding:2px 12px}
-.ctl button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-.ctl .t{font-size:24px;padding:0 8px}
-.langsel{font-family:inherit;font-weight:800;font-size:16px;border:3px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:14px;padding:3px 10px}
+/* felt pill buttons: the same photographed wool pill as the rest of the site */
+.fpill{--fh:46px;--felt:var(--felt-beige);position:relative;isolation:isolate;height:var(--fh);border:0;background:none;padding:0 18px;color:#4a3213;text-shadow:0 1px 0 #fff8;font-weight:700;display:inline-flex;align-items:center;justify-content:center;transition:transform .12s}
+.fpill::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border:solid transparent;border-width:calc(var(--fh)*.5);border-image:var(--felt) 157 fill/calc(var(--fh)*.58)/calc(var(--fh)*.0926) round;filter:drop-shadow(0 3px 2px #3a1d0a66)}
+.fpill:active{transform:translateY(2px) scale(.985)}
+.fpill[aria-pressed="true"]{--felt:var(--felt-blue);color:#fff;text-shadow:0 1px 0 #06415e}
+.top{position:absolute;top:max(8px,env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:20;display:flex;gap:8px;align-items:center}
+.top h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);margin:0}
+.ctl{display:flex;gap:10px}
+.ctl button{padding:0 14px}
+.ctl button img{height:30px;width:auto;display:block;filter:drop-shadow(0 1px 1px #0005)}
+.langsel{font:inherit;font-weight:700;border:0;border-radius:999px;padding:6px 12px;background:var(--paper)}
 [dir="rtl"] .top{flex-direction:row-reverse}
-[dir="rtl"] .choices,[dir="rtl"] .ctl{flex-direction:row}
-.scene{position:relative;flex:1;overflow:hidden;background:linear-gradient(var(--sky),var(--sky2))}
+.scene{position:relative;flex:1;overflow:hidden}
+.dio{position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;background-size:cover;background-position:center bottom}
+#dio-bg{background-image:url(../felt/sky-plate.webp);filter:blur(2px) saturate(1.05);transform:scale(1.03)}
+#dio-hills{background-image:url(../felt/sky-hills.webp);inset:0 0 calc(var(--gh)*.42) 0;background-position:center bottom}
+.lp-clouds{position:absolute!important;z-index:1!important}
 .layer{position:absolute;left:0;right:0;background-repeat:repeat-x}
-.clouds{top:0;height:46%;overflow:visible}
-.cloud{position:absolute;filter:drop-shadow(0 8px 10px #12345a1f)}
-.cloud i{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffffff,#eef6fc 75%)}
-.hills{bottom:118px;height:190px}
-.hillback,.hillfront{position:absolute;left:0;right:0;bottom:0;background-repeat:repeat-x}
-.hillback{height:150px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 150'%3E%3Cpath d='M0,92 C70,60 130,110 210,86 C300,58 360,104 440,80 C520,56 580,100 660,78 C740,58 810,92 900,92 L900,150 L0,150 Z' fill='%235aa84f'/%3E%3C/svg%3E");background-size:900px 150px;opacity:.85}
-.hillfront{height:120px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 760 120'%3E%3Cpath d='M0,70 C60,42 120,84 190,64 C270,42 320,80 400,60 C470,42 520,78 590,58 C650,42 700,66 760,70 L760,120 L0,120 Z' fill='%237cc36a'/%3E%3C/svg%3E");background-size:760px 120px}
-.hillfront::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(35,60,20,.12));pointer-events:none}
-.trees{bottom:112px;height:70px;background-image:radial-gradient(circle 22px at 40px 26px,#3f8f3a 96%,transparent),linear-gradient(#7a5231,#7a5231);background-size:260px 70px,6px 22px;background-position:0 0,37px 48px}
-.ground{position:absolute;left:0;right:0;bottom:0;height:120px;background:var(--grass)}
-.track{bottom:52px;height:16px;background-image:linear-gradient(var(--rail),var(--rail)),linear-gradient(90deg,#8a6443 0 12px,transparent 12px 30px);background-size:100% 4px,30px 16px;background-position:0 2px,0 0;background-repeat:repeat-x}
-.station{position:absolute;bottom:68px;width:220px;height:170px;display:none}
-.station .roof{position:absolute;top:0;left:-14px;right:-14px;height:44px;background:var(--red);clip-path:polygon(10% 0,90% 0,100% 100%,0 100%)}
-.station .wall{position:absolute;top:44px;left:0;right:0;bottom:0;background:#f3d9a4;border:4px solid #c9a064;border-bottom:0}
-.station .sign{position:absolute;top:54px;left:50%;transform:translateX(-50%);background:var(--paper);border:4px solid var(--ink);border-radius:12px;padding:0 14px;font-size:26px;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:6px}
-.station .clock{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--ink)}
-.train{position:absolute;bottom:60px;left:16px;display:flex;align-items:flex-end;gap:5px;z-index:3}
-.car{position:relative;width:clamp(58px,12vw,92px);height:clamp(50px,10vw,76px);background:var(--c);border-radius:10px 10px 4px 4px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.15)}
-.car .win{position:absolute;inset:10% 14% 34% 14%;background:#dff3ff;border-radius:8px;display:grid;place-items:center;font-size:clamp(22px,5vw,36px);overflow:hidden}
-.car .win span{animation:board .6s}
-@keyframes board{0%{transform:translateY(-60px) scale(2)}70%{transform:translateY(4px)}100%{transform:none}}
-.wheel{position:absolute;bottom:-14px;width:24px;height:24px;border-radius:50%;background:var(--ink);border:4px solid #aaa;box-sizing:border-box;background-image:linear-gradient(90deg,transparent 45%,#aaa 45% 55%,transparent 55%),linear-gradient(transparent 45%,#aaa 45% 55%,transparent 55%)}
-.wheel.a{left:8%}.wheel.b{right:8%}
-.engine{width:clamp(74px,16vw,120px);height:clamp(68px,14vw,104px);background:none;box-shadow:none;display:grid;place-items:end center;font-size:clamp(62px,13vw,100px);line-height:.9}
-.engine .face{display:block;transform:scaleX(-1)}
-.engine .wheel{display:none}
-.puff{position:absolute;width:26px;height:26px;border-radius:50%;background:#fff;opacity:.85;z-index:2;pointer-events:none;animation:puff 1.6s ease-out forwards}
+.clouds,.hills{display:none}
+.trees{bottom:calc(var(--gh)*.5);height:clamp(90px,24vh,190px);background-image:url(../felt/train-trees.webp);background-size:auto 100%;background-position:0 100%;z-index:1;filter:drop-shadow(0 3px 3px #0003)}
+.ground{position:absolute;left:0;right:0;bottom:0;height:var(--gh);background:url(../felt/train-ground.webp) repeat-x 0 100%/auto 100%;z-index:2;filter:drop-shadow(0 -2px 4px #0003)}
+.track{display:none}
+.station{position:absolute;bottom:calc(var(--gh)*.40);width:clamp(240px,34vw,420px);z-index:2;display:none}
+.station>img{display:block;width:100%;height:auto;filter:drop-shadow(0 6px 8px #0005)}
+/* the word hangs from the station roof on two strings, on a stitched felt sign */
+.station .sign{position:absolute;left:50%;bottom:calc(100% - 14px);transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:6px 16px 6px 22px;white-space:nowrap;font-size:clamp(24px,4.4vw,40px);font-weight:700;color:#4a3213;background:#fff3d6 url(../felt/paper.webp);background-blend-mode:multiply;border:3px dashed #b8401f99;outline:5px solid #fff3d6;outline-offset:-2px;border-radius:26px;box-shadow:0 6px 0 #c9b583,0 12px 18px #0006;text-shadow:0 1px 0 #fff9}
+.station .sign::before,.station .sign::after{content:"";position:absolute;bottom:-18px;width:3px;height:22px;background:#c9a064}
+.station .sign::before{left:24%}.station .sign::after{right:24%}
+.say{border:none;background:none;font-size:.8em;padding:0 2px}
+.train{position:absolute;bottom:calc(var(--gh)*.27);left:16px;display:flex;align-items:flex-end;z-index:3}
+.car{position:relative;width:var(--u);margin-left:calc(var(--u)*-.03)}
+.car>img.body{display:block;width:100%;height:auto;position:relative;z-index:2;filter:drop-shadow(0 5px 4px #0005)}
+.car .win{position:absolute;left:10%;right:10%;bottom:50%;height:120%;z-index:1;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
+.car .win span{display:block;height:100%;width:100%;animation:board .6s steps(6)}
+.car .win img{display:block;height:100%;width:100%;object-fit:contain;object-position:50% 100%}
+@keyframes board{0%{transform:translateY(-120px) scale(1.8)}70%{transform:translateY(4px)}100%{transform:none}}
+.car.engine{width:calc(var(--u)*var(--ew,1.15))}
+.car.engine>img.body{filter:drop-shadow(0 5px 4px #0005)}
+.puff{position:absolute;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#eee 70%);box-shadow:0 0 0 2px #ffffff88 inset;opacity:.9;z-index:4;pointer-events:none;animation:puff 1.6s steps(8) forwards}
 @keyframes puff{to{transform:translate(-80px,-120px) scale(3);opacity:0}}
-.choices{position:absolute;top:10px;left:0;right:0;bottom:0;display:flex;justify-content:center;align-items:flex-start;gap:clamp(10px,3vw,28px);padding-inline:12px;z-index:5}
-.choices button{flex:1;width:clamp(110px,30vw,220px);max-height:min(46vh,260px);aspect-ratio:1;max-width:32%;border:none;border-radius:28px;background:var(--paper);font-size:clamp(64px,18vw,120px);box-shadow:0 10px 0 rgba(35,50,74,.25);animation:rise .4s backwards}
+.choices{position:absolute;top:62px;left:0;right:0;bottom:0;display:flex;justify-content:center;align-items:flex-start;gap:clamp(10px,3vw,28px);padding-inline:12px;z-index:5;pointer-events:none}
+.choices button{pointer-events:auto;flex:none;width:clamp(104px,min(24vw,36vh),240px);aspect-ratio:1;border:3px dashed #b98a52;outline:6px solid #fff3d6;outline-offset:-3px;border-radius:30px;background:#fff3d6 url(../felt/paper.webp);background-blend-mode:multiply;box-shadow:0 10px 0 #c9b583,0 18px 26px #0006;padding:0;animation:rise .4s steps(5) backwards}
+.choices button img{width:76%;height:76%;object-fit:contain;display:block;margin:auto;filter:drop-shadow(0 4px 4px #0005)}
 .choices button:nth-child(2){animation-delay:.1s}.choices button:nth-child(3){animation-delay:.2s}
 @keyframes rise{from{transform:translateY(-40px);opacity:0}}
-.choices button.no{animation:shake .4s}
+.choices button.no{animation:shake .4s steps(4)}
 @keyframes shake{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
-.choices button.yes{background:#fff3a8;transform:scale(1.15)}
-.say{border:none;background:none;font-size:26px;padding:0}
-.overlay{position:absolute;inset:0;display:grid;place-items:center;z-index:9;background:rgba(191,230,245,.6)}
-.big{font-weight:800;font-size:clamp(26px,7vw,40px);background:var(--red);color:#fff;border:none;border-radius:50px;padding:12px 40px;box-shadow:0 8px 0 #a02b22}
-.big:active{transform:translateY(5px);box-shadow:0 3px 0 #a02b22}
-.cheer{text-align:center;font-weight:800;font-size:clamp(36px,10vw,64px);display:grid;gap:14px;justify-items:center}
+.choices button.yes{background-color:#fff3a8;transform:scale(1.12);box-shadow:0 0 0 6px #f6c343,0 0 40px #f6c343aa}
+@media (max-width:700px){.choices{gap:8px;padding-inline:8px}.choices button{width:21.5vw;border-radius:22px;outline-width:4px}}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;z-index:9;background:#2a1a0a66}
+.big{--fh:64px;--felt:var(--felt-red);position:relative;isolation:isolate;height:var(--fh);border:0;background:none;padding:0 44px;font-weight:700;font-size:clamp(24px,5vw,34px);color:#fff;text-shadow:0 1px 0 #6a120f}
+.big::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border:solid transparent;border-width:calc(var(--fh)*.5);border-image:var(--felt) 157 fill/calc(var(--fh)*.58)/calc(var(--fh)*.0926) round;filter:drop-shadow(0 4px 3px #0007)}
+.big:active{transform:translateY(3px) scale(.985)}
+.cheer{text-align:center;font-weight:700;font-size:clamp(36px,10vw,64px);display:grid;gap:18px;justify-items:center;color:#fff8e6;text-shadow:0 3px 0 #b8401f,0 6px 14px #0006}
 .conf{position:absolute;top:-20px;font-size:28px;z-index:8;animation:fall 2.4s linear forwards;pointer-events:none}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
-.dots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:10px;z-index:4}
-.dots i{width:18px;height:18px;border-radius:50%;background:var(--paper);border:3px solid var(--ink)}
-.dots i.on{background:#f6c343}
+.dots{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:12px;z-index:4}
+.dots i{width:22px;height:22px;border-radius:50%;background:#fff3d6 url(../felt/paper.webp);background-blend-mode:multiply;border:3px dashed #b98a52;box-shadow:0 3px 0 #c9b583}
+.dots i.on{background-color:#f6c343;border-color:#fff8}
 @media (prefers-reduced-motion:reduce){.puff,.conf{display:none}}
-
-/* LingoPlaytime look */
-:root{--grass:#4fc777;--paper:#fff;--ink:#1a1440;--red:#ff4d5e}
-body{background:#2f6fe8}
-.top{background:linear-gradient(#2a1f70,#3a2a86);color:#fff}
-.top h1{color:#fff}
-.ctl button{border:2px solid #ffffff55;background:#ffffff22;color:#fff;border-radius:999px}
-.ctl button[aria-pressed="true"]{background:linear-gradient(#ffe27a,#ffc23d);color:#1a1440;border-color:#fff8}
-.scene{background:none}
-.hillback,.hillfront,.clouds{display:none}
-.ground{background:linear-gradient(#58d26b,#3fae6a)}
-.choices button{background:linear-gradient(160deg,#ffffff,#e6defc);box-shadow:0 12px 24px #0005!important;border-radius:28px}
-.choices button svg,.car .win svg{width:78%;height:78%;display:block;margin:auto}
-.choices button.yes{background:linear-gradient(160deg,#eafff8,#b9f5e8);box-shadow:0 0 0 6px #20c9b0,0 0 40px #20c9b0aa!important}
-.car{background:linear-gradient(170deg,color-mix(in srgb,var(--c),#fff 35%),var(--c) 50%,color-mix(in srgb,var(--c),#000 22%));border-radius:14px 14px 6px 6px;box-shadow:0 8px 16px #0003}
-.car .win{background:linear-gradient(#e9f7ff,#bfe6fb)}
-.engine .face svg{width:clamp(74px,16vw,120px);height:auto;display:block}
-.station .roof{background:linear-gradient(#ff6b78,#d22f44)}
-.station .wall{background:linear-gradient(#fff2d8,#efd3a8);border:0}
-.station .sign{border:0;box-shadow:0 6px 16px #0003;color:#1a1440}
-.overlay{background:#140f3acc}
-.big{background:linear-gradient(#ffe27a,#ffc23d)!important;color:#1a1440!important;box-shadow:0 10px 0 #c98a12,0 0 60px #ffd23f66!important;border:0!important}
 </style>
 <div class="app">
   <div class="top"><h1>Word Train</h1>
@@ -100,13 +81,13 @@ body{background:#2f6fe8}
     <div class="ctl" id="pick"></div>
   </div>
   <div class="scene" id="scene">
+    <div class="dio" id="dio-bg"></div><div class="dio" id="dio-hills"></div>
     <div class="layer clouds" id="clouds"></div>
     <div class="layer hills" id="l1"><div class="hillback" id="l1b"></div><div class="hillfront" id="l1f"></div></div>
     <div class="layer trees" id="l2"></div>
-    <div class="ground"></div>
-    <div class="station" id="station"><div class="roof"></div><div class="clock"></div><div class="wall"></div>
+    <div class="ground" id="l3"></div>
+    <div class="station" id="station"><img src="../felt/train-station.webp" alt="" draggable="false">
       <div class="sign"><span id="signtxt">?</span><button class="say" id="again" aria-label="hear again">🔊</button></div></div>
-    <div class="layer track" id="l3"></div>
     <div class="train" id="train"></div>
     <div class="choices" id="choices"></div>
     <div class="dots" id="dots"></div>
@@ -115,7 +96,7 @@ body{background:#2f6fe8}
 </div>
 <div class="bigcursor" id="cursor">👆</div>
 <script>
-addEventListener("DOMContentLoaded",()=>{if(window.LPLook)LPLook.sky(document.getElementById("scene"),{mode:"day",hills:true})});
+addEventListener("DOMContentLoaded",()=>{if(window.LPClouds)LPClouds.add(document.getElementById("scene"),{count:4,top:"0",height:"38%"})});
 const EM="🐶 🐱 🍎 🚗 ⚽ 🐟 🌞 🌙 🍌 🐮 🦆 🌳 🏠 🐻 🍪 🌸 🐘 🥛 🚌 ⭐ 👟 🐑 🎈 🐸".split(" ");
 // Master language list (project doc). Article languages store the article with the word.
 // Fields: name, speech tag, 24 words (same order as EM), question template, yes, last stop, all aboard, new trip, tier
@@ -142,10 +123,11 @@ const W=EM.map((e,i)=>({e,i}));
 const word=(x)=>L[lang].words[x.i];
 function hasVoice(){try{const p=L[lang].tag.slice(0,2);const v=speechSynthesis.getVoices();return !v.length||v.some(x=>x.lang.replace("_","-").toLowerCase().startsWith(p))}catch(e){return false}}
 const RTL={ar:1};
-const TR=[{e:"🚂",s:"steam"},{e:"🚄",s:"fast"},{e:"🚋",s:"tram"}];
-const C=["#f6c343","#4fa3e0","#9b6cd6","#3fb58a"];
+const TR=[{e:"🚂",s:"steam",img:"train-steam",ew:1.2},{e:"🚄",s:"fast",img:"train-fast",ew:1.55},{e:"🚋",s:"tram",img:"train-tram",ew:1.05}];
+const C=["yellow","blue","purple","green"];
 const $=id=>document.getElementById(id);
-const PIC=e=>(window.LPLook&&LPLook.fromEmoji(e))||e;
+const FELT={"🐶":"peek-dog","🐱":"peek-cat","🍎":"food-apple","🚗":"street-car","⚽":"sky-ball","🐟":"sky-fish","🌞":"sky-sun","🌙":"sky-moon","🍌":"food-banana","🐮":"peek-cow","🦆":"peek-duck","🌳":"street-tree","🏠":"sky-house","🐻":"peek-teddy","🍪":"train-cookie","🌸":"train-flower","🐘":"sky-elephant","🥛":"food-milk","🚌":"street-bus","⭐":"sky-star","👟":"train-shoe","🐑":"peek-sheep","🎈":"train-balloon","🐸":"peek-frog"};
+const PIC=e=>FELT[e]?'<img src="../felt/'+FELT[e]+'.webp" alt="" draggable="false">':e;
 let lang="en",cur=0,trip=[],stop=0,target=null;
 
 /* ---------- sound (synthesized with Web Audio) ---------- */
@@ -175,11 +157,11 @@ function say(t,delay){if(!hasVoice()&&!(window.LP_CLIPS&&LP_CLIPS[lang]))return;
 /* ---------- controls ---------- */
 function drawCtl(){const sel=$("langsel");if(!sel.options.length){RAW.forEach(r=>{const o=document.createElement("option");o.value=r[0];o.textContent=r[1];sel.appendChild(o)});sel.onchange=()=>{lang=sel.value;document.documentElement.dir=RTL[lang]?"rtl":"ltr";drawCtl();if(target)ask()}}
  sel.value=lang;document.documentElement.dir=RTL[lang]?"rtl":"ltr";
- $("pick").innerHTML="";TR.forEach((t,i)=>{const b=document.createElement("button");b.className="t";b.textContent=t.e;b.setAttribute("aria-pressed",i==cur);b.setAttribute("aria-label","train "+(i+1));b.onclick=()=>{cur=i;drawCtl();drawTrain();A();whistle()};$("pick").appendChild(b)});
+ $("pick").innerHTML="";TR.forEach((t,i)=>{const b=document.createElement("button");b.className="t fpill";b.innerHTML='<img src="../felt/'+t.img+'.webp" alt="">';b.setAttribute("aria-pressed",i==cur);b.setAttribute("aria-label","train "+(i+1));b.onclick=()=>{cur=i;drawCtl();drawTrain();A();whistle()};$("pick").appendChild(b)});
  $("start").textContent="▶ "+L[lang].go}
 function drawTrain(){const tr=$("train");const kept=[...tr.querySelectorAll(".win")].map(w=>w.querySelector("span")?w.querySelector("span").innerHTML:"");tr.innerHTML="";
- for(let i=0;i<4;i++){const c=document.createElement("div");c.className="car";c.style.setProperty("--c",C[i]);c.innerHTML='<div class="win"><span>'+(kept[i]||"")+'</span></div><i class="wheel a"></i><i class="wheel b"></i>';tr.appendChild(c)}
- const e=document.createElement("div");e.className="car engine";e.innerHTML='<span class="face">'+PIC(TR[cur].e)+'</span>';tr.appendChild(e)}
+ for(let i=0;i<4;i++){const c=document.createElement("div");c.className="car";c.innerHTML='<div class="win"><span>'+(kept[i]||"")+'</span></div><img class="body" src="../felt/train-wagon-'+C[i]+'.webp" alt="" draggable="false">';tr.appendChild(c)}
+ const e=document.createElement("div");e.className="car engine";e.style.setProperty("--ew",TR[cur].ew);e.innerHTML='<img class="body" src="../felt/'+TR[cur].img+'.webp" alt="" draggable="false">';tr.appendChild(e)}
 function drawDots(){$("dots").innerHTML=trip.map((_,i)=>'<i class="'+(i<stop?"on":"")+'"></i>').join("")}
 
 /* ---------- clouds (project convention: puff clusters, drift independently) ---------- */
@@ -204,7 +186,7 @@ function stepClouds(dt){clouds.forEach(el=>{let x=parseFloat(el.style.left)-el.d
 const MAX=240;let v=0,mode="idle",driveT=0,sx=null,off=[0,0,0,0],chugAcc=0,smokeAcc=0,rot=0,last=0;
 const st=$("station"),scene=$("scene");
 initClouds();
-function stopX(){const tr=$("train").getBoundingClientRect(),sc=scene.getBoundingClientRect();return Math.max(tr.left-sc.left+tr.width/2-110,20)}
+function stopX(){const tr=$("train").getBoundingClientRect(),sc=scene.getBoundingClientRect(),sw=Math.max(240,Math.min(420,innerWidth*.34));return Math.max(tr.left-sc.left+tr.width/2-sw/2,20)}
 function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);last=t;
  if(mode=="drive"){v=Math.min(MAX,v+160*dt);driveT+=dt;
   if(sx===null&&driveT>2.5){sx=scene.clientWidth+40;st.style.display="block";$("signtxt").textContent="?"}
@@ -218,12 +200,12 @@ function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);last=t;
  $("l2").style.backgroundPositionX=off[2]+"px, "+(off[2]+37)+"px";
  $("l3").style.backgroundPositionX=off[3]+"px, "+off[3]+"px";
  if(sx!==null)st.style.left=sx+"px";
- rot+=v*dt*4;document.querySelectorAll(".wheel").forEach(w=>w.style.transform="rotate("+rot+"deg)");
- $("train").style.transform=v>5?"translateY("+(Math.sin(t/60)*1.2)+"px)":"none";
+ rot+=v*dt*4;
+ $("train").style.transform=v>5?"translateY("+(Math.round(Math.sin(t/90))*1.5)+"px)":"none";
  chugAcc+=v*dt;if(chugAcc>55){chugAcc=0;chug()}
  if(TR[cur].s=="steam"){smokeAcc+=dt*(v>5?(2+v/MAX*4):.6);if(smokeAcc>1){smokeAcc=0;puff()}}
  requestAnimationFrame(frame)}
-function puff(){const e=$("train").lastChild.getBoundingClientRect(),sc=scene.getBoundingClientRect(),p=document.createElement("div");p.className="puff";p.style.left=(e.left-sc.left+e.width*.62)+"px";p.style.top=(e.top-sc.top-6)+"px";scene.appendChild(p);setTimeout(()=>p.remove(),1700)}
+function puff(){const e=$("train").lastChild.getBoundingClientRect(),sc=scene.getBoundingClientRect(),p=document.createElement("div");p.className="puff";p.style.left=(e.left-sc.left+e.width*.17)+"px";p.style.top=(e.top-sc.top+e.height*.02)+"px";scene.appendChild(p);setTimeout(()=>p.remove(),1700)}
 
 /* ---------- game ---------- */
 function newTrip(){trip=[...W].sort(()=>Math.random()-.5).slice(0,4);stop=0;target=null;drawTrain();$("train").querySelectorAll(".win").forEach(w=>w.textContent="");drawDots();
@@ -254,9 +236,10 @@ $("start").onclick=newTrip;
    starts/restarts the ride), pointer taps anywhere near a choice still
    count via the buttons themselves, and nothing here can get "stuck"
    waiting for a precise click. */
+let smashN=-1;
 function smashPick(){
  const opts=[...document.querySelectorAll(".choices button")];
- if(opts.length){LP.next("train",opts).click();return true}
+ if(opts.length){smashN=(smashN+1)%opts.length;opts[smashN].click();return true}
  return false;
 }
 // While the train is rolling, any key sounds the horn (whistle, horn or tram bell for the chosen train).
