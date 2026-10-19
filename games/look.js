@@ -296,3 +296,59 @@
     eye: eye, eyes: eyes, shine: shine, defs: defsInner };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", defs); else defs();
 })();
+
+/* One look for every game: a stitched-paper title tag ("Charlie's" big, the game's name small)
+   and the same white stitched paper for every spoken line. */
+(function () {
+  var G = (location.pathname.match(/([a-z]+)\.html/) || [])[1] || "";
+  var TITLES = { ark: "Noah's Ark", dress: "Get dressed", drum: "Drum Parade", face: "Where's your nose?", farm: "Old MacDonald's Farm",
+    flappy: "Flappy Words", market: "At the market", munch: "Munch Munch", night: "Goodnight room", paint: "Paint the World",
+    pairs: "Pairs", peek: "Peekaboo", sky: "Sky Words", soup: "Little Soup Pot", street: "Street sounds", train: "Word Train" };
+  var title = TITLES[G] || document.title;
+  var PAPER = "background:#fffdf6!important;color:#1c3f4a!important;text-shadow:none!important;-webkit-text-stroke:0!important;border:0!important;border-radius:22px!important;" +
+    "outline:2px dashed #b8401f99;outline-offset:-6px;box-shadow:0 4px 0 #d9c9a2,0 10px 18px #0004!important;backdrop-filter:none!important;" +
+    "font-family:'Fredoka','Baloo 2',system-ui,sans-serif;font-weight:600;padding:8px 28px!important;";
+  var s = document.createElement("style");
+  s.textContent =
+    ":root{--lp-top:72px}" +
+    "#lpTitle{position:fixed;top:max(8px,env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%) rotate(-.5deg);z-index:900;pointer-events:none;white-space:nowrap;" +
+    "background:#fffdf6;border-radius:18px;padding:6px 28px 7px;text-align:center;line-height:1;outline:2px dashed #b8401f99;outline-offset:-6px;" +
+    "box-shadow:0 4px 0 #d9c9a2,0 10px 18px #0004;font-family:'Fredoka','Baloo 2',system-ui,sans-serif;color:#1c3f4a;max-width:92vw}" +
+    "#lpTitle b{display:block;font-size:clamp(22px,4vw,34px);font-weight:700;overflow:hidden;text-overflow:ellipsis}" +
+    "#lpTitle small{display:block;font-size:clamp(13px,1.9vw,17px);font-weight:600;opacity:.75;margin-top:3px;letter-spacing:.02em}" +
+    "html.lp-intro #lpTitle{display:none}" +
+    /* spoken lines */
+    "#bubble,.k-bubble,body.lp-drum #word,body.lp-sky #prompt,body.lp-soup .word,body.lp-soup .bubble-say,body.lp-farm #lyric,body.lp-flappy #word{" + PAPER + "}" +
+    "#bubble:empty,body.lp-drum #word:empty{visibility:hidden}" +
+    "body.lp-farm #lyric{width:max-content!important;max-width:94%!important;margin:0 auto!important;flex:none!important}body.lp-farm .ribbon{display:flex!important;justify-content:center;background:none!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important}" +
+    "body.lp-farm #lyric .tok{opacity:.55}body.lp-farm #lyric .tok.done,body.lp-farm #lyric .tok.on{opacity:1}" +
+    "body.lp-drum #word{font-size:clamp(34px,8vw,76px)!important;display:inline-block;padding:6px 34px!important;line-height:1.15}" +
+    "body.lp-drum header,body.lp-farm header h1,body.lp-farm .eio,body.lp-train .top h1,body.lp-sky header h1,body.lp-flappy #intro h1{display:none}" +
+    /* make room under the title tag */
+    "body.lp-ark .top,body.lp-market .top,body.lp-paint .top,body.lp-pairs .top,body.lp-street .top{margin-top:var(--lp-top)}" +
+    "body.lp-dress .top,body.lp-face .top,body.lp-night .top,body.lp-peek .top{top:calc(var(--lp-top) + max(0px,env(safe-area-inset-top,0px)))!important}" +
+    "body.lp-drum .wrap{padding-top:var(--lp-top)}body.lp-farm header{padding-top:var(--lp-top)}" +
+    "body.lp-sky #prompt{margin:0 auto}body.lp-sky header,body.lp-soup header{padding-top:var(--lp-top)!important}" +
+    "body.lp-flappy #bar{top:calc(var(--lp-top) + 4px)!important}" +
+    "body.lp-munch #bd{top:0}";
+  (document.head || document.documentElement).appendChild(s);
+
+  function poss(n) { return /s$/i.test(n) ? n + "’" : n + "’s"; }
+  function build() {
+    if (!document.body) return setTimeout(build, 30);
+    document.body.classList.add("lp-" + G);
+    var el = document.createElement("div"); el.id = "lpTitle"; el.setAttribute("aria-hidden", "true");
+    el.innerHTML = "<b></b><small></small>";
+    document.body.appendChild(el);
+    var last = null;
+    function upd() {
+      var n = ((window.LP && window.LP.name) || (window.LP_SETTINGS && window.LP_SETTINGS.name) || "").trim();
+      var home = (window.LP && window.LP.home) || (window.LP_SETTINGS && window.LP_SETTINGS.home) || "en";
+      var big = n ? (home === "en" ? poss(n) : n) : title, small = n ? title : "";
+      var k = big + "|" + small; if (k === last) return; last = k;
+      el.firstChild.textContent = big; el.lastChild.textContent = small; el.lastChild.style.display = small ? "" : "none";
+    }
+    upd(); setInterval(upd, 800);
+  }
+  build();
+})();
