@@ -57,7 +57,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding-blo
 .spoon::after{content:"";position:absolute;left:-12%;right:-12%;top:0;height:34%;background:radial-gradient(circle at 40% 35%,#e3b06b,#c58b48);border-radius:50%}
 .pot.stirring{animation:beacon 1.2s steps(2) infinite}
 @keyframes beacon{50%{filter:drop-shadow(0 0 18px var(--glow))}}
-.steam{position:absolute;border-radius:50%;background:#fbf3df;opacity:.85;pointer-events:none;animation:rise 1.2s steps(6) forwards;box-shadow:0 0 6px #fff8}
+.steam{position:absolute;background:url(../felt/cotton-puff.webp) center/contain no-repeat;pointer-events:none;animation:rise 1.2s steps(6) forwards;filter:drop-shadow(0 2px 2px #0003)}
 @keyframes rise{to{transform:translateY(-120px) scale(1.6);opacity:0}}
 .fly{position:fixed;width:72px;line-height:0;pointer-events:none;z-index:50;transition:transform .55s cubic-bezier(.3,-.4,.6,1),opacity .2s .5s}
 .fly img{width:100%;display:block}
@@ -302,7 +302,7 @@ function tapFood(btn){if(R.phase!=="fill"||!btn||btn.classList.contains("gone"))
   lastFood=f;showWord(cap(f.w[l]));say(f.w[l],l);
   requestAnimationFrame(()=>{fl.style.transform=`translate(${p.left+p.width/2-r.left-36}px,${p.top+p.height*.15-r.top}px) scale(.6) rotate(200deg)`;fl.style.opacity=0});
   setTimeout(()=>{fl.remove();splash(f.c)},560);}
-function steam(n){for(let i=0;i<n;i++){const b=document.createElement("div");b.className="steam";const s=10+Math.random()*22;
+function steam(n){for(let i=0;i<n;i++){const b=document.createElement("div");b.className="steam";const s=24+Math.random()*26;
   Object.assign(b.style,{width:s+"px",height:s+"px",left:20+Math.random()*60+"%",top:10+Math.random()*10+"%",animationDelay:Math.random()*.4+"s"});
   $("pot").appendChild(b);setTimeout(()=>b.remove(),1700);}}
 function paintSoup(rot=0){$("soup").style.background=`conic-gradient(from ${rot}deg,${R.colors.map((c,i)=>`${c} ${i*100/R.colors.length}% ${(i+1)*100/R.colors.length}%`).join(",")})`;}

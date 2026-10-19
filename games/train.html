@@ -52,7 +52,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 @keyframes board{0%{transform:translateY(-120px) scale(1.8)}70%{transform:translateY(4px)}100%{transform:none}}
 .car.engine{width:calc(var(--u)*var(--ew,1.15))}
 .car.engine>img.body{filter:drop-shadow(0 5px 4px #0005)}
-.puff{position:absolute;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#eee 70%);box-shadow:0 0 0 2px #ffffff88 inset;opacity:.9;z-index:4;pointer-events:none;animation:puff 1.6s steps(8) forwards}
+.puff{position:absolute;width:40px;height:36px;background:url(../felt/cotton-puff.webp) center/contain no-repeat;filter:drop-shadow(0 2px 2px #0003);z-index:4;pointer-events:none;animation:puff 1.6s steps(8) forwards}
 @keyframes puff{to{transform:translate(-80px,-120px) scale(3);opacity:0}}
 .choices{position:absolute;top:62px;left:0;right:0;bottom:0;display:flex;justify-content:center;align-items:flex-start;gap:clamp(10px,3vw,28px);padding-inline:12px;z-index:5;pointer-events:none}
 .choices button{pointer-events:auto;flex:none;width:clamp(104px,min(24vw,36vh),240px);aspect-ratio:1;border:3px dashed #b98a52;outline:6px solid #fff3d6;outline-offset:-3px;border-radius:30px;background:#fff3d6 url(../felt/paper.webp);background-blend-mode:multiply;box-shadow:0 10px 0 #c9b583,0 18px 26px #0006;padding:0;animation:rise .4s steps(5) backwards}
