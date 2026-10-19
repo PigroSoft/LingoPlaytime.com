@@ -268,6 +268,7 @@ function drawFlyer(b){
  let fr=0;if(f[1]>1){const step=b.vy<0?70:170;fr=Math.floor(now/step)%f[1]}
  cx.save();cx.translate(b.x,b.y);cx.rotate(charKey==="balloon"?b.rot*.35:b.rot);
  cx.shadowColor="#0004";cx.shadowBlur=6;cx.shadowOffsetY=4;
+ if(charKey==='bird')cx.scale(-1,1); // the bird art faces left
  cx.drawImage(im,fr*f[3],0,f[3],f[4],-w/2,-h/2,w,h);
  cx.restore();
 }
