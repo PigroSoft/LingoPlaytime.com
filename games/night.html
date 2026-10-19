@@ -36,8 +36,11 @@ body.tall #shade{display:block}
 @keyframes tws{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}30%{opacity:1}100%{opacity:0;transform:translate(-50%,-150%) scale(1.5) rotate(40deg)}}
 .zz{position:absolute;z-index:7;pointer-events:none;font-family:var(--display);font-weight:700;color:#dfe6ff;text-shadow:0 0 8px #3355ff;animation:zz 2.4s steps(12) forwards}
 @keyframes zz{0%{opacity:0;transform:translate(0,0) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translate(26px,-80px) scale(1.4)}}
-#again{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));z-index:900;font:inherit;font-size:14px;font-weight:700;color:#dfe6ff;background:#ffffff1f;border:0;border-radius:999px;padding:8px 14px;min-height:40px;cursor:pointer;opacity:0;transition:opacity 1s;pointer-events:none}
-body.done #again{opacity:.75;pointer-events:auto}
+#again{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:900;font:inherit;font-family:var(--display);font-size:clamp(20px,3.2vw,28px);font-weight:600;letter-spacing:.01em;color:#fff;min-height:64px;padding:12px 34px;cursor:pointer;opacity:0;transition:opacity 1s,transform .1s;pointer-events:none;border-radius:999px;
+ /* blue felt with a stitched edge, same as the Settings button */
+ border:2px dashed #ffffffb0;outline:3px solid #137aa6;outline-offset:-1px;text-shadow:0 1px 0 #0a4766;background-color:#137aa6;background-image:url(../felt/paper.webp),radial-gradient(120% 90% at 50% 0%,#ffffff40,transparent 60%);background-blend-mode:multiply,normal;box-shadow:inset 0 3px 2px #ffffff66,inset 0 -4px 3px #00000033,0 5px 0 #0b5a7d,0 12px 20px -8px #000a}
+#again:active{transform:translateY(3px);box-shadow:inset 0 3px 6px #00000044,0 2px 0 #0b5a7d}
+body.done #again{opacity:1;pointer-events:auto}
 @media (prefers-reduced-motion:reduce){.it .bob,.it.asleep .bob,.it.pop .bob,.tw,.zz{animation:none}#dark,.glow{transition:none}}
 #rooms{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));z-index:900;display:flex;gap:8px}
 #rooms button{width:44px;height:44px;border-radius:50%;border:3px solid #fff8;padding:0;cursor:pointer;background-size:cover;background-position:center;box-shadow:0 2px 6px #0008;opacity:.75}
@@ -165,9 +168,34 @@ function finish(){
  lullaby();bubble(L().end);setTimeout(()=>LP.say(L().end),400);
  setTimeout(()=>{$("bubble").style.opacity=".35";document.body.classList.add("done")},5000);
 }
-// a short original music-box tune
-function lullaby(){const n=[659,587,523,587,659,659,659,0,587,587,587,0,659,784,784,0,659,587,523,587,659,659,659,659,587,587,659,587,523];let t=.6;n.forEach(f=>{if(f)LP.tone(f,1.1,"sine",.06,t),LP.tone(f*2,.6,"sine",.015,t);t+=.42})}
-function reset(){setRoom(ROOMS[(ROOMS.indexOf(room)+1)%ROOMS.length]);asleep.clear();done=false;ORDER.forEach(id=>els[id].classList.remove("asleep"));Object.values(glows).forEach(g=>g.classList.remove("off"));$("dark").style.opacity="0";$("bubble").style.opacity="1";document.body.classList.remove("done");bubble(L().title);LP.say(L().title)}
+/* Sleepy music-box lullabies, played on soft sine bells with a warm drone. The first three are old folk tunes (public domain); the last two are originals. Notes are name:beats. */
+const TUNES=[
+ {n:"Brahms",bpm:58,t:"E4:1 E4:1 G4:2 E4:1 E4:1 G4:2 E4:1 G4:1 C5:1 B4:1 A4:2 A4:1 G4:1 D4:1 E4:1 F4:2 D4:1 D4:1 E4:1 F4:2 D4:1 F4:1 B4:1 A4:1 G4:2 E4:1 E4:1 G4:1 C5:2 B4:1 A4:2 G4:2 G4:1 A4:1 B4:1 C5:4"},
+ {n:"Twinkle",bpm:60,t:"C4:1 C4:1 G4:1 G4:1 A4:1 A4:1 G4:2 F4:1 F4:1 E4:1 E4:1 D4:1 D4:1 C4:2 G4:1 G4:1 F4:1 F4:1 E4:1 E4:1 D4:2 G4:1 G4:1 F4:1 F4:1 E4:1 E4:1 D4:2 C4:1 C4:1 G4:1 G4:1 A4:1 A4:1 G4:2 F4:1 F4:1 E4:1 E4:1 D4:1 D4:1 C4:4"},
+ {n:"Clair",bpm:56,t:"C4:1 C4:1 C4:1 D4:1 E4:2 D4:2 C4:1 E4:1 D4:1 D4:1 C4:4 C4:1 C4:1 C4:1 D4:1 E4:2 D4:2 C4:1 E4:1 D4:1 D4:1 C4:4 D4:1 D4:1 D4:1 D4:1 A3:2 A3:2 D4:1 C4:1 B3:1 A3:1 G3:4 C4:1 C4:1 C4:1 D4:1 E4:2 D4:2 C4:1 E4:1 D4:1 D4:1 C4:4"},
+ {n:"Moon",bpm:52,t:"G4:2 E4:1 D4:1 E4:2 G4:2 A4:2 G4:1 E4:1 D4:4 E4:2 D4:1 C4:1 D4:2 E4:2 G4:2 E4:2 C4:4 G4:2 A4:1 C5:1 A4:2 G4:2 E4:2 D4:1 E4:1 G4:4 A4:2 G4:1 E4:1 D4:2 C4:2 C4:6"},
+ {n:"Cradle",bpm:50,t:"E4:3 D4:1 C4:2 D4:2 E4:2 G4:2 E4:4 A4:3 G4:1 E4:2 D4:2 C4:2 D4:2 E4:4 G4:2 A4:2 C5:2 A4:2 G4:2 E4:2 D4:2 C4:2 D4:2 E4:2 D4:2 C4:2 A3:2 C4:2 C4:6"}
+];
+const SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+function freq(nm){const m=/^([A-G])(\d)$/.exec(nm);return 440*Math.pow(2,(SEMI[m[1]]+12*(+m[2]-4)-9)/12)}
+let tuneIx=Math.floor(Math.random()*TUNES.length);
+let lull=[];
+function lullaby(){
+ const T=TUNES[tuneIx];tuneIx=(tuneIx+1)%TUNES.length;
+ const spb=60/T.bpm,notes=T.t.split(" ").map(x=>x.split(":"));
+ const total=notes.reduce((a,x)=>a+ +x[1],0);
+ let t=.8,beat=0;
+ // warm drone on the low C, renewed every four beats and fading with the tune
+ for(let b=0;b<total;b+=4){const v=.034*(1-b/total*.7);lull.push(LP.tone(130.8,spb*4.6,"sine",v,.8+b*spb),LP.tone(196,spb*4.6,"sine",v*.5,.8+b*spb))}
+ notes.forEach((x,i)=>{
+  const f=freq(x[0]);let b=+x[1];
+  const left=notes.length-i,slow=left<=3?1+(4-left)*.12:1; // slow down a little at the very end
+  const fade=1-beat/total*.55,len=b*spb*slow;
+  lull.push(LP.tone(f,Math.max(1.6,len*1.7),"sine",.062*fade,t),LP.tone(f*1.004,Math.max(1.6,len*1.7),"sine",.03*fade,t),LP.tone(f*2,.7,"sine",.012*fade,t));
+  t+=len;beat+=b;
+ });
+}
+function reset(){lull.forEach(o=>{try{o&&o.stop()}catch(e){}});lull=[];setRoom(ROOMS[(ROOMS.indexOf(room)+1)%ROOMS.length]);asleep.clear();done=false;ORDER.forEach(id=>els[id].classList.remove("asleep"));Object.values(glows).forEach(g=>g.classList.remove("off"));$("dark").style.opacity="0";$("bubble").style.opacity="1";document.body.classList.remove("done");bubble(L().title);LP.say(L().title)}
 
 LP.init({langs:ALLLANGS,onLang:()=>{label();document.title=L().title;if(!done)bubble(L().title)}});
 label();document.title=L().title;bubble(L().title);
