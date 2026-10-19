@@ -72,16 +72,14 @@ button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
 /* LingoPlaytime felt diorama: a blurred felt sky with the countryside, the same picture cut out as a sharp
    cardboard-and-felt hills layer in front, felt clouds drifting in the open sky, felt planes towing stitched
    felt banners, and everything moving in stop-motion steps. */
-body{background:#7fb3dc!important;color:#1c3f4a;font-family:"Fredoka","Baloo 2",system-ui,sans-serif}
+body{background:#4db8d4!important;color:#1c3f4a;font-family:"Fredoka","Baloo 2",system-ui,sans-serif}
 #sky{background:none}
 #sky .sun,#sky .ray,#sky .cloud{display:none}
 .dio{position:fixed;inset:0;pointer-events:none;background-repeat:no-repeat;background-size:cover;background-position:center bottom}
 #dio-bg{z-index:0;background-image:url(../felt/sky-plate.webp);filter:blur(2px) saturate(1.05);transform:scale(1.03)}
-#dio-hills{z-index:1;background-image:url(../felt/sky-hills.webp);background-size:auto}
+#dio-hills{z-index:1;background-image:url(../felt/sky-hills.webp);background-size:100% auto;background-position:center bottom}
 .lp-clouds{position:fixed!important;z-index:1!important}
 #sky{z-index:2}
-#feltsun{position:fixed;right:7%;top:15%;width:min(13vw,120px);z-index:0;pointer-events:none;animation:sunboil 1.2s steps(1) infinite}
-@keyframes sunboil{0%{transform:rotate(-2deg)}50%{transform:rotate(2deg) translateY(1px)}}
 header,#prompt{position:relative;z-index:5}
 #keyhint{z-index:5}
 h1{color:#fff8e6;text-shadow:0 3px 0 #b8401f,0 6px 14px #0004}
@@ -123,7 +121,7 @@ button.on{background:#b8401f;color:#fff8e6;border-color:#fff8e699;box-shadow:0 3
 </style>
 
 <div id="bigcursor" hidden>👆</div>
-<div class="dio" id="dio-bg"></div><img id="feltsun" src="../felt/sky-sun.webp" alt=""><div class="dio" id="dio-hills"></div><div id="bird" aria-hidden="true"><img src="../felt/street-bird.webp" alt="" draggable="false"></div>
+<div class="dio" id="dio-bg"></div><div class="dio" id="dio-hills"></div><div id="bird" aria-hidden="true"><img src="../felt/street-bird.webp" alt="" draggable="false"></div>
 <div id="keyhint">Tap any key to fly the bird!</div>
 <div id="sky"><div class="sun"></div><div class="ray"></div></div>
 <header>
