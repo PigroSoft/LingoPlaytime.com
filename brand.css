@@ -145,7 +145,7 @@ nav a[aria-current="page"],nav button[aria-current="page"],.setbtn,.sndbtn:not(.
 :is(.go,.cta,.setbtn,.sndbtn,.shufbtn,.pill,.lpbar .chip,.back,.fsbtn,nav a[aria-current="page"],nav button[aria-current="page"])::before{
   content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
   border:solid transparent;border-width:calc(var(--fh)*.5);
-  border-image-source:var(--felt);border-image-slice:158;border-image-width:calc(var(--fh)*.5926);border-image-outset:calc(var(--fh)*.0926);border-image-repeat:round;
+  border-image-source:var(--felt);border-image-slice:157 fill;border-image-width:calc(var(--fh)*.58);border-image-outset:calc(var(--fh)*.0926);border-image-repeat:round;
   filter:drop-shadow(0 3px 2px #3a1d0a55)}
 /* red: the big one */
 :root :is(.go,.cta){--felt:var(--felt-red);--fh:60px;color:#fff;text-shadow:0 1px 0 #6a120f;padding-inline:34px}
