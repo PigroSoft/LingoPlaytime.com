@@ -245,7 +245,7 @@
     },
     flappy: {
       langs: ALL,
-      hide: "#lang,#lang2,#mode{display:none!important}",
+      hide: "#lang,#lang2,#mode,label:has(#lang),label:has(#lang2){display:none!important}",
       second: function (s, l) {
         var pool = [s.home].concat(s.learn).filter(function (c) { return c !== l && A.flappy.langs.indexOf(c) > -1; });
         return pool[0] || (l === "en" ? "de" : "en");

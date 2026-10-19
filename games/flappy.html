@@ -3,44 +3,47 @@
 <title>Flappy Words</title>
 <link rel="stylesheet" href="/assets/fonts.css">
 <style>
-:root{--sky:#8fd3f4;--sky2:#e3f6ff;--ink:#1d3557;--sun:#ffc93c;--leaf:#4caf6a;--leaf2:#2f8a4f;--card:#fffdf6;--pink:#ff6f91}
+:root{--felt-red:url(../felt/btn-red.webp);--felt-blue:url(../felt/btn-blue.webp);--felt-beige:url(../felt/btn-beige.webp);--ink:#3a2410;--paper:#f6ead0;--pop:#c8402f;--glow:#ffd84a}
 html,body{height:100%}
-body{margin:0;background:var(--sky);color:var(--ink);font-family:"Baloo 2",ui-rounded,system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+body{margin:0;background:#9cc9d8;color:var(--ink);font-family:"Fredoka","Baloo 2",ui-rounded,system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 #wrap{position:fixed;inset:0}
 canvas{display:block;width:100%;height:100%}
-#bar{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));left:16px;right:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-#bar select,#bar button{font:inherit;font-weight:700;font-size:16px;color:var(--ink);background:var(--card);border:3px solid var(--ink);border-radius:14px;padding:4px 12px;cursor:pointer}
-#bar button[aria-pressed="true"]{background:var(--sun)}
-#bar :focus-visible{outline:3px solid var(--pink);outline-offset:2px}
-#score{margin-left:auto;font-weight:800;font-size:22px;background:var(--card);border:3px solid var(--ink);border-radius:14px;padding:0 14px;font-variant-numeric:tabular-nums}
-#word{position:absolute;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) scale(.6);opacity:0;transition:transform .25s cubic-bezier(.3,1.6,.5,1),opacity .2s;background:var(--card);border:4px solid var(--ink);border-radius:22px;padding:6px 26px;text-align:center;pointer-events:none;max-width:calc(100% - 32px)}
-#word.show{opacity:1;transform:translateX(-50%) scale(1)}
+#bar{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));left:16px;right:16px;display:flex;gap:10px 12px;align-items:center;flex-wrap:wrap}
+.fb{--felt:var(--felt-beige);--fh:40px;position:relative;isolation:isolate;box-sizing:border-box;height:var(--fh);border:0;background:none;box-shadow:none;border-radius:0;color:#4a3213;text-shadow:0 1px 0 #fff8;padding:0 20px;font:800 18px/1 "Fredoka","Baloo 2",system-ui,sans-serif;cursor:pointer;display:inline-grid;align-items:center}
+.fb::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border:solid transparent;border-width:calc(var(--fh)*.5);border-image:var(--felt) 157 fill/calc(var(--fh)*.58)/calc(var(--fh)*.0926) round;filter:drop-shadow(0 3px 2px #1b0d0566)}
+.fb.sel{padding:0}
+.fb.sel select{appearance:none;-webkit-appearance:none;background:none;border:0;border-radius:0;font:inherit;color:inherit;text-shadow:inherit;height:100%;padding:0 32px 0 22px;cursor:pointer;max-width:46vw}
+.fb.sel select option{color:#3a2410;background:#fff;text-shadow:none}
+.fb.sel::after{content:"\25BE";position:absolute;right:13px;top:50%;transform:translateY(-52%);font-size:14px;pointer-events:none}
+#mode[aria-pressed="true"]{--felt:var(--felt-blue);color:#fff;text-shadow:0 1px 0 #0a2c4a}
+.fb:active{transform:translateY(2px)}
+#bar :focus-visible{outline:3px solid var(--pop);outline-offset:3px;border-radius:14px}
+.paper{background:var(--paper);border:2px dashed #b8401f88;box-shadow:0 4px 0 #0003,0 8px 14px #0003}
+#score{margin-left:auto;font-weight:800;font-size:24px;border-radius:14px;padding:0 16px;font-variant-numeric:tabular-nums;transform:rotate(1deg)}
+#word{position:absolute;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) scale(.6);opacity:0;transition:transform .25s cubic-bezier(.3,1.6,.5,1),opacity .2s;border-radius:22px;padding:6px 28px;text-align:center;pointer-events:none;max-width:calc(100% - 32px)}
+#word.show{opacity:1;transform:translateX(-50%) scale(1) rotate(-.6deg)}
 #word b{display:block;font-size:clamp(34px,8vw,64px);line-height:1.1}
 #word span{display:block;font-size:clamp(16px,3.4vw,24px);opacity:.75;font-weight:700;margin-top:2px}
 #word:after{content:"";position:absolute;top:8px;right:10px;font-size:15px}
-#word.mute:after{content:"🔇"}
-#intro{position:absolute;inset:0;display:grid;place-items:center;padding:16px}
-#intro div{background:var(--card);border:4px solid var(--ink);border-radius:26px;padding:22px 28px;text-align:center;max-width:420px}
+#word.mute:after{content:"\1F507"}
+#intro{position:absolute;inset:0;display:grid;place-items:center;padding:16px;background:#2a1a0a22}
+#intro div{border-radius:26px;padding:22px 28px;text-align:center;max-width:420px}
 #intro h1{margin:0;font-size:44px;line-height:1;text-wrap:balance}
-#intro p{margin:10px 0 0;font-size:18px}
-#intro kbd{background:var(--sun);border:2px solid var(--ink);border-radius:8px;padding:0 8px;font:inherit;font-weight:800}
-
-/* LingoPlaytime look */
-
-#bar select,#bar button{font-family:"Fredoka","Baloo 2",system-ui,sans-serif;border-radius:999px}
-#word{font-family:"Fredoka","Baloo 2",system-ui,sans-serif}
+#intro p{margin:10px 0 0;font-size:18px;line-height:1.3}
+#intro kbd{background:#e9d3a6;border:2px dashed #b8401f88;border-radius:8px;padding:0 8px;font:inherit;font-weight:800}
+@media(max-width:560px){.fb{--fh:36px;font-size:16px;padding:0 14px}.fb.sel select{padding:0 28px 0 16px}#score{font-size:20px}}
 </style>
 <div id="wrap">
   <canvas id="c"></canvas>
   <div id="bar">
-    <select id="lang" aria-label="First language"></select>
-    <select id="lang2" aria-label="Second language"></select>
-    <select id="char" aria-label="Character"></select>
-    <button id="mode" aria-pressed="true" title="Toddler mode: no crashing">🧸 Toddler</button>
-    <div id="score">0</div>
+    <label class="fb sel"><select id="lang" aria-label="First language"></select></label>
+    <label class="fb sel"><select id="lang2" aria-label="Second language"></select></label>
+    <label class="fb sel"><select id="char" aria-label="Character"></select></label>
+    <button id="mode" class="fb" aria-pressed="true" title="Toddler mode: no crashing">🧸 Toddler</button>
+    <div id="score" class="paper">0</div>
   </div>
-  <div id="word"><b id="wText"></b><span id="wSub"></span></div>
-  <div id="intro"><div>
+  <div id="word" class="paper"><b id="wText"></b><span id="wSub"></span></div>
+  <div id="intro"><div class="paper">
     <h1>Flappy Words</h1>
     <p>Press <kbd>any key</kbd> or tap to fly. Pick your flyer and two languages up top, then zoom through the gaps to catch pictures and hear each word said both ways.</p>
     <p>Toddler mode never crashes. Switch to Big Kids mode for the real thing.</p>
@@ -167,7 +170,7 @@ addEventListener("resize",size);size();
 
 const wordEl=document.getElementById("word"),wText=document.getElementById("wText"),wSub=document.getElementById("wSub"),scoreEl=document.getElementById("score"),intro=document.getElementById("intro");
 let bird,pipes,score,started,over,t0,spawnT,bag=[],clouds=[],hideT,shake=0,parts=[];
-for(let i=0;i<6;i++)clouds.push({x:Math.random()*2000,y:Math.random()*.5,s:.6+Math.random(),v:.2+Math.random()*.4});
+for(let i=0;i<6;i++){const sc=.6+Math.random();clouds.push({x:Math.random()*2000,y:Math.random()*.5,w:90+sc*90,k:i%3+1,v:.2+Math.random()*.4})}
 function nextWord(){if(!bag.length){const ws=words();bag=LPLearn.pick(ws,w=>w[1],ws.length,window.LP_LANG).map(w=>ws.indexOf(w)).reverse()}return bag.pop()}
 function reset(){bird={x:Math.min(Wd*.28,220),y:Ht*.45,vy:0,r:Math.max(18,Math.min(Wd,Ht)*.035),rot:0};pipes=[];score=0;over=false;spawnT=0;scoreEl.textContent=0}
 reset();
@@ -179,24 +182,24 @@ cv.addEventListener("pointerdown",flap);intro.addEventListener("pointerdown",fla
 
 function speed(){return (toddler?2.4:3.1+Math.min(score*.08,2.2))*Math.max(1,Wd/900)}
 function gapSize(){return toddler?Math.max(210,Ht*.42):Math.max(150,Ht*.3-Math.min(score*2,40))}
-function spawn(){const g=gapSize(),m=70,y=m+g/2+Math.random()*(Ht-2*m-g);pipes.push({x:Wd+60,gy:y,g,w:Math.max(64,Wd*.07),w_i:nextWord(),got:false,hue:[120,200,30,330][Math.floor(Math.random()*4)]})}
+function spawn(){const g=gapSize(),m=70,H=Ht-groundH()*.9,y=m+g/2+Math.random()*(H-2*m-g);pipes.push({x:Wd+60,gy:y,g,w:Math.max(70,Wd*.075),w_i:nextWord(),got:false,col:Math.floor(Math.random()*4)})}
 function show(i){
  const e=words()[i],k1=KEYS.indexOf(lang)+1,k2=KEYS.indexOf(lang2)+1;
- wText.textContent=e[0]+" "+e[k1];wText.dir=lang==="ar"?"rtl":"ltr";
+ wText.textContent="";const pi=pic(e[0]);if(ok(pi)){const im=document.createElement("img");im.src=pi.src;im.alt="";im.style.cssText="height:1.05em;width:auto;vertical-align:-.12em;margin-right:.25em";wText.appendChild(im)}else wText.appendChild(document.createTextNode(e[0]+" "));wText.appendChild(document.createTextNode(e[k1]));wText.dir=lang==="ar"?"rtl":"ltr";
  wSub.textContent=lang2===lang?"":e[k2];wSub.dir=lang2==="ar"?"rtl":"ltr";
  wordEl.classList.add("show");clearTimeout(hideT);hideT=setTimeout(()=>wordEl.classList.remove("show"),2800);
  sayBoth(e[k1],lang,e[k2],lang2);
 }
-function burst(x,y){for(let i=0;i<18;i++){const a=Math.random()*6.28,s=2+Math.random()*4;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:40,c:["#ffc93c","#ff6f91","#fff","#4caf6a"][i%4]})}}
+function burst(x,y){for(let i=0;i<18;i++){const a=Math.random()*6.28,s=2+Math.random()*4;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:40,c:["#f2b134","#e0584a","#fbf3df","#6aa84f"][i%4]})}}
 
 function step(){
  const g=Math.max(.34,Ht*.00062);
  if(started&&!over){
   bird.vy=Math.min(bird.vy+g,12);bird.y+=bird.vy;
   if(bird.y<bird.r){bird.y=bird.r;bird.vy=0}
-  const floor=Ht-40;
+  const floor=Ht-groundH()+10;
   if(bird.y>floor-bird.r){if(toddler){bird.y=floor-bird.r;bird.vy=-Math.max(5,Ht*.009)}else crash()}
-  spawnT-=speed();if(spawnT<=0){spawn();spawnT=toddler?Math.max(340,Wd*.45):Math.max(280,Wd*.36)}
+  gscroll+=speed();spawnT-=speed();if(spawnT<=0){spawn();spawnT=toddler?Math.max(340,Wd*.45):Math.max(280,Wd*.36)}
   for(const p of pipes){p.x-=speed();
    const inX=bird.x+bird.r*.8>p.x&&bird.x-bird.r*.8<p.x+p.w;
    if(inX){const top=p.gy-p.g/2,bot=p.gy+p.g/2;
@@ -205,142 +208,81 @@ function step(){
   pipes=pipes.filter(p=>p.x>-p.w-20);
  }else if(!started){bird.y=Ht*.45+Math.sin(performance.now()/300)*14}
  bird.rot+=((Math.max(-.5,Math.min(1.1,bird.vy*.08)))-bird.rot)*.2;
- for(const c of clouds){c.x-=c.v*(started&&!over?1:.3);if(c.x<-200)c.x=Wd+100+Math.random()*200}
+ for(const c of clouds){c.x-=c.v*(started&&!over?1:.3);if(c.x<-c.w-20)c.x=Wd+60+Math.random()*200}
  for(const q of parts){q.x+=q.vx;q.y+=q.vy;q.vy+=.15;q.l--}parts=parts.filter(q=>q.l>0);
  if(shake>0)shake*=.9;
 }
 function crash(){over=true;shake=12;blip(160,.4,"sawtooth");wText.textContent="💥 "+score;wText.dir="ltr";wSub.textContent="press any key";wordEl.classList.add("show");clearTimeout(hideT)}
 
+const F="../felt/",IMG={};
+function img(n){let i=IMG[n];if(!i){i=new Image();i.src=F+n;IMG[n]=i}return i}
+const ok=i=>i&&i.complete&&i.naturalWidth>0;
+const strip=e=>e.replace(/️/g,"");
+const PIC={};
+for(const [e,n] of [["🐶","peek-dog"],["🐱","sky-cat"],["🍎","food-apple"],["🍌","food-banana"],["⚽","sky-ball"],["🚗","night-car"],["🐟","sky-fish"],["🌙","sky-moon"],["⭐","sky-star"],["🐘","sky-elephant"],["🦆","sky-duck"],["🌸","train-flower"],["🍓","food-strawberry"],["🚂","train-steam"],["🐻","peek-teddy"],["☀️","sky-sun"],["🐸","peek-frog"],["🍪","train-cookie"],["🐮","peek-cow"],["🚀","fw-rocket"],
+ ["🌈","sky-rainbow"],["🦋","sky-butterfly"],["🦕","fw-dino"],["⛰️","fw-mountain"],["☂️","sky-umbrella"],["🚲","fw-bicycle"],["🌋","fw-volcano"],["🕷️","sky-spider"],["🏰","fw-castle"],["🐉","fw-dragon"],["🤖","fw-robot"],["🏝️","fw-island"],["🌲","fw-forest"],["⚡","fw-storm"],["🪐","fw-planet"],["🏴‍☠️","fw-pirate"],["🦄","fw-unicorn"],["🏞️","fw-waterfall"],["🐧","fw-penguin"],["👨‍🚀","fw-astronaut"]])PIC[strip(e)]=n+".webp";
+function pic(e){const n=PIC[strip(e)];return n?img(n):null}
+// flyers: [file, frames, width in r, frame width, frame height]
+const FLY={bird:["sky-bird.webp",4,3.7,141,150],plane:["sky-biplane.webp",1,4.5,218,142],rocket:["fw-rocket.webp",1,4.5,420,263],balloon:["fw-hotair.webp",1,3,238,391],bee:["fw-bee.webp",1,3.8,345,318]};
+const PIPE={CW:128,capH:57,SL:120,bw:95,capW:124,bx:16};
+const TINT={morning:"#ffd9b8",day:null,evening:"#ff9c7a",night:"#3c4a96"};
+const tod=()=>{const h=new Date().getHours();return h>=6&&h<10?"morning":h>=10&&h<17?"day":h>=17&&h<20?"evening":"night"};
+let gscroll=0;
+function groundH(){return Math.max(54,Ht*.115)}
+function tint(y,h,a){const c=TINT[tod()];a=tod()==='night'?a*.72:a;if(!c)return;cx.save();cx.globalCompositeOperation="multiply";cx.globalAlpha=a;cx.fillStyle=c;cx.fillRect(-20,y,Wd+40,h);cx.restore()}
+function drawBackdrop(){
+ const gH=groundH(),skyH=Ht-gH+8,sk=img("flappy-sky.webp"),gr=img("flappy-grass.webp");
+ if(ok(sk)){const s=Math.max(Wd/sk.naturalWidth,skyH/sk.naturalHeight),dw=sk.naturalWidth*s,dh=sk.naturalHeight*s;cx.drawImage(sk,(Wd-dw)/2,skyH-dh,dw,dh)}
+ else{cx.fillStyle="#bcd9e4";cx.fillRect(-20,-20,Wd+40,Ht+40)}
+ tint(-20,skyH+20,.75);
+ // sun or moon, wobbling a few degrees in stop-motion steps
+ const t=tod(),sm=img(t==="night"?"sky-moon.webp":"sky-sun.webp");
+ if(ok(sm)){const z=Math.max(70,Math.min(110,Wd*.09)),w=sm.naturalWidth/sm.naturalHeight*z;cx.save();cx.translate(Wd-z*1.1,z*1.5);cx.rotate((Math.floor(performance.now()/380)%2?.05:-.05));cx.globalAlpha=t==="evening"?.9:1;cx.drawImage(sm,-w/2,-z/2,w,z);cx.restore()}
+ cx.save();cx.globalAlpha=t==="night"?.6:.96;
+ for(const c of clouds){const im=img("cloud-"+c.k+".webp");if(!ok(im))continue;const w=c.w,h=w*im.naturalHeight/im.naturalWidth;cx.drawImage(im,c.x,c.y*Ht*.7+30,w,h)}
+ cx.restore();
+ if(ok(gr)){const gs=gH/gr.naturalHeight,tw=gr.naturalWidth*gs,off=gscroll%tw;for(let x=-off;x<Wd;x+=tw)cx.drawImage(gr,x,Ht-gH,tw+1,gH)}
+ else{cx.fillStyle="#6cbf3a";cx.fillRect(-20,Ht-gH,Wd+40,gH+20)}
+ tint(Ht-gH,gH+20,.75);
+}
+// one pipe half: cap at y=0 then felt body tiled down to len
+function pipeHalf(im,col,x,w,len){
+ const P=PIPE,s=w/P.capW,sx=col*P.CW,ch=P.capH*s,bw=P.bw*s,bx=x+w/2-bw/2;
+ for(let y=ch-1;y<len;y+=P.SL*s-1)cx.drawImage(im,sx+P.bx,P.capH,P.bw,P.SL,bx,y,bw,P.SL*s);
+ cx.drawImage(im,sx,0,P.CW,P.capH,x+w/2-P.CW*s/2,0,P.CW*s,ch);
+}
+function drawPipe(p,top,bot,im){
+ cx.save();cx.translate(0,bot);cx.beginPath();cx.rect(0,0,Wd+40,Ht);cx.clip();pipeHalf(im,p.col,p.x,p.w,Ht-bot);cx.restore();
+ cx.save();cx.translate(0,top);cx.scale(1,-1);pipeHalf(im,p.col,p.x,p.w,top+20);cx.restore();
+}
+function drawWordPic(p){
+ const e=words()[p.w_i][0],bob=Math.sin(performance.now()/250+p.x*.01)*6,z=Math.min(p.g*.6,150),im=pic(e);
+ if(ok(im)){const a=im.naturalWidth/im.naturalHeight,w=a>1?z:z*a,h=a>1?z/a:z;cx.save();cx.shadowColor="#0005";cx.shadowBlur=8;cx.shadowOffsetY=4;cx.drawImage(im,p.x+p.w/2-w/2,p.gy+bob-h/2,w,h);cx.restore();return}
+ const lk=window.LPLook&&LPLook.image(e);
+ if(lk&&lk.complete&&lk.naturalWidth){const q=z*.9;cx.drawImage(lk,p.x+p.w/2-q/2,p.gy+bob-q/2,q,q)}
+ else{cx.font=`${z*.6}px serif`;cx.textAlign="center";cx.textBaseline="middle";cx.fillText(e,p.x+p.w/2,p.gy+bob)}
+}
+function drawFlyer(b){
+ const f=FLY[charKey]||FLY.bird,im=img(f[0]);if(!ok(im))return;
+ const w=b.r*f[2],h=w*f[4]/f[3],now=performance.now();
+ let fr=0;if(f[1]>1){const step=b.vy<0?70:170;fr=Math.floor(now/step)%f[1]}
+ cx.save();cx.translate(b.x,b.y);cx.rotate(charKey==="balloon"?b.rot*.35:b.rot);
+ cx.shadowColor="#0004";cx.shadowBlur=6;cx.shadowOffsetY=4;
+ cx.drawImage(im,fr*f[3],0,f[3],f[4],-w/2,-h/2,w,h);
+ cx.restore();
+}
 function draw(){
  cx.save();if(shake>.5)cx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
- const sk=cx.createLinearGradient(0,0,0,Ht);const TD=SKYT[(()=>{const h=new Date().getHours();return h>=6&&h<10?"morning":h>=10&&h<17?"day":h>=17&&h<20?"evening":"night"})()];sk.addColorStop(0,TD[0]);sk.addColorStop(.5,TD[1]);sk.addColorStop(1,TD[2]);cx.fillStyle=sk;cx.fillRect(-20,-20,Wd+40,Ht+40);
- {const gl=cx.createRadialGradient(Wd-90,110,10,Wd-90,110,140);gl.addColorStop(0,"rgba(255,230,120,.7)");gl.addColorStop(1,"rgba(255,210,63,0)");cx.fillStyle=gl;cx.fillRect(Wd-240,-40,300,300);const sg=cx.createRadialGradient(Wd-104,96,4,Wd-90,110,46);sg.addColorStop(0,"#fffbe6");sg.addColorStop(.5,"#ffe066");sg.addColorStop(1,"#ffb000");cx.fillStyle=sg;cx.beginPath();cx.arc(Wd-90,110,46,0,7);cx.fill();}
- cx.fillStyle="#fff";for(const c of clouds){const x=c.x,y=c.y*Ht+60,s=c.s*30;cx.beginPath();cx.arc(x,y,s,0,7);cx.arc(x+s,y-s*.5,s*1.2,0,7);cx.arc(x+s*2.1,y,s,0,7);cx.fill()}
- for(const p of pipes){const top=p.gy-p.g/2,bot=p.gy+p.g/2,col=`hsl(${p.hue} 78% 60%)`,dk=`hsl(${p.hue} 70% 42%)`;
-  cx.fillStyle=col;cx.strokeStyle="rgba(0,0,0,0)";cx.lineWidth=4;
-  rr(p.x,-10,p.w,top+10,14);rr(p.x,bot,p.w,Ht-bot+10,14);
-  cx.fillStyle=dk;rr(p.x-6,top-26,p.w+12,26,10);rr(p.x-6,bot,p.w+12,26,10);
-  if(!p.got){const bob=Math.sin(performance.now()/250+p.x*.01)*6,fs=Math.min(p.g*.45,90);const im=window.LPLook&&LPLook.image(words()[p.w_i][0]);if(im&&im.complete&&im.naturalWidth){const z=fs*1.25;cx.drawImage(im,p.x+p.w/2-z/2,p.gy+bob-z/2,z,z)}else{cx.font=`${fs}px serif`;cx.textAlign="center";cx.textBaseline="middle";cx.fillText(words()[p.w_i][0],p.x+p.w/2,p.gy+bob)}}}
- cx.fillStyle="#4fc777";cx.fillRect(-20,Ht-40,Wd+40,60);cx.fillStyle="#3fae6a";const off=(performance.now()/10*(started&&!over?1:0))%40;for(let x=-off;x<Wd;x+=40){cx.beginPath();cx.moveTo(x,Ht-40);cx.lineTo(x+20,Ht-52);cx.lineTo(x+40,Ht-40);cx.fill()}
+ drawBackdrop();
+ const pim=img("flappy-pipes.webp");
+ for(const p of pipes){const top=p.gy-p.g/2,bot=p.gy+p.g/2;if(ok(pim))drawPipe(p,top,bot,pim);if(!p.got)drawWordPic(p)}
  for(const q of parts){cx.globalAlpha=q.l/40;cx.fillStyle=q.c;cx.beginPath();cx.arc(q.x,q.y,5,0,7);cx.fill()}cx.globalAlpha=1;
- const b=bird,r=b.r;cx.save();cx.translate(b.x,b.y);cx.rotate(b.rot);cx.lineWidth=4;cx.strokeStyle="rgba(0,0,0,0)";
- (DRAW[charKey]||DRAW.bird)(cx,r,b);
- cx.restore();cx.restore();
+ drawFlyer(bird);
+ cx.restore();
 }
-// Shared cute face: a big round eye (white + pupil highlight) and a small curved smile,
-// so every flyer reads as a character rather than a vehicle icon.
-const SKYT={morning:["#5b6ee8","#f08fb0","#ffd29a"],day:["#2f6fe8","#4f9cff","#9fdcff"],evening:["#3a2a86","#d9607e","#ffad66"],night:["#140f3a","#241c63","#3a2a86"]};
-function eye(cx,x,y,r,dir){cx.fillStyle="#fff";cx.beginPath();cx.arc(x,y,r,0,7);cx.fill();cx.stroke();
- cx.fillStyle="#1d3557";cx.beginPath();cx.arc(x+r*.32*(dir||1),y+r*.12,r*.42,0,7);cx.fill();
- cx.fillStyle="#fff";cx.beginPath();cx.arc(x+r*.42*(dir||1)+r*.1,y-r*.15,r*.12,0,7);cx.fill()}
-function smile(cx,x,y,w,h){cx.strokeStyle="rgba(0,0,0,0)";cx.lineWidth=3;cx.beginPath();cx.moveTo(x-w,y);cx.quadraticCurveTo(x,y+h,x+w,y);cx.stroke();cx.lineWidth=4}
-const DRAW={
- bird(cx,r,b){
-  cx.fillStyle=CHARS.bird.body;cx.beginPath();cx.ellipse(0,0,r*1.15,r,0,0,7);cx.fill();cx.stroke();
-  const wf=Math.sin(performance.now()/(b.vy<0?40:120))*r*.35;cx.fillStyle=CHARS.bird.trim;cx.beginPath();cx.ellipse(-r*.3,r*.1+wf*.3,r*.55,r*.35+Math.abs(wf)*.3,-.3,0,7);cx.fill();cx.stroke();
-  cx.fillStyle="#ffc93c";cx.beginPath();cx.moveTo(r*.85,0);cx.lineTo(r*1.5,r*.16);cx.lineTo(r*.85,r*.32);cx.closePath();cx.fill();cx.stroke();
-  eye(cx,r*.45,-r*.32,r*.32,1);smile(cx,r*.4,r*.12,r*.16,r*.1);
- },
- plane(cx,r,b){
-  // A side-view airliner silhouette: rounded nose, tapered tail, swept tail fin,
-  // a low wing with an engine pod, and a row of cabin windows — no face, it's a vehicle.
-  const c=CHARS.plane,navy="#28527a";
-  // horizontal stabilizer + vertical tail fin, drawn first so the fuselage overlaps them
-  cx.fillStyle=navy;cx.beginPath();cx.moveTo(-r*1.05,-r*.05);cx.lineTo(-r*1.55,-r*.85);cx.lineTo(-r*1.15,-r*.9);cx.lineTo(-r*.78,-r*.12);cx.closePath();cx.fill();cx.stroke();
-  cx.beginPath();cx.moveTo(-r*1.0,r*.05);cx.lineTo(-r*1.55,r*.35);cx.lineTo(-r*1.32,r*.4);cx.lineTo(-r*.85,r*.12);cx.closePath();cx.fill();cx.stroke();
-  // low swept wing with a small underslung engine
-  cx.fillStyle=c.body;cx.beginPath();cx.moveTo(r*.1,r*.28);cx.lineTo(-r*.35,r*1.15);cx.lineTo(r*.05,r*1.1);cx.lineTo(r*.55,r*.3);cx.closePath();cx.fill();cx.stroke();
-  cx.fillStyle="#455a64";cx.beginPath();cx.ellipse(-r*.05,r*.78,r*.24,r*.13,-.15,0,7);cx.fill();cx.stroke();
-  // fuselage: a smooth cylinder with a rounded nose cone and tapered tail cone
-  cx.fillStyle="#f4f7fa";cx.beginPath();
-  cx.moveTo(r*1.7,0);
-  cx.quadraticCurveTo(r*1.55,-r*.32,r*.9,-r*.34);
-  cx.lineTo(-r*.85,-r*.3);
-  cx.quadraticCurveTo(-r*1.55,-r*.22,-r*1.7,0);
-  cx.quadraticCurveTo(-r*1.55,r*.22,-r*.85,r*.3);
-  cx.lineTo(r*.9,r*.34);
-  cx.quadraticCurveTo(r*1.55,r*.32,r*1.7,0);
-  cx.closePath();cx.fill();cx.stroke();
-  // racing stripe along the body
-  cx.fillStyle=c.body;cx.beginPath();cx.moveTo(r*1.5,-r*.1);cx.lineTo(-r*1.2,-r*.08);cx.lineTo(-r*1.2,r*.03);cx.lineTo(r*1.55,r*.05);cx.closePath();cx.fill();
-  // cockpit glazing at the nose
-  cx.fillStyle="#9fd0e8";cx.beginPath();cx.ellipse(r*1.15,-r*.12,r*.22,r*.13,-.25,0,7);cx.fill();cx.lineWidth=4;cx.strokeStyle="rgba(0,0,0,0)";
-  // a neat row of cabin windows
-  cx.fillStyle=navy;for(let i=0;i<6;i++){cx.beginPath();cx.arc(r*.7-i*r*.34,-r*.14,r*.055,0,7);cx.fill()}
-  if(b.vy<-1)for(let i=0;i<3;i++){cx.strokeStyle="rgba(255,255,255,.8)";cx.lineWidth=3;cx.beginPath();cx.moveTo(-r*1.7-i*9,i*5-r*.1);cx.lineTo(-r*2.25-i*9,i*5-r*.1);cx.stroke();cx.lineWidth=4;cx.strokeStyle="rgba(0,0,0,0)"}
- },
- rocket(cx,r,b){
-  // Classic upright-style rocket flown on its side: red-and-white body, black nose cone,
-  // swept fins and a round porthole — like a storybook rocket, not a face with a hat on.
-  const c=CHARS.rocket;
-  cx.fillStyle=c.body;cx.beginPath();cx.moveTo(-r*.5,-r*.42);cx.lineTo(-r*1.3,-r*.1);cx.lineTo(-r*.42,0);cx.closePath();cx.fill();cx.stroke();
-  cx.beginPath();cx.moveTo(-r*.5,r*.42);cx.lineTo(-r*1.3,r*.1);cx.lineTo(-r*.42,0);cx.closePath();cx.fill();cx.stroke();
-  // main body: cylinder with a pointed nose cone
-  cx.fillStyle="#f1faee";cx.beginPath();cx.moveTo(-r*.55,-r*.5);cx.lineTo(r*.55,-r*.5);cx.quadraticCurveTo(r*.9,-r*.5,r*.9,0);cx.quadraticCurveTo(r*.9,r*.5,r*.55,r*.5);cx.lineTo(-r*.55,r*.5);cx.quadraticCurveTo(-r*.68,0,-r*.55,-r*.5);cx.closePath();cx.fill();cx.stroke();
-  cx.fillStyle="#2b2118";cx.beginPath();cx.moveTo(r*.55,-r*.5);cx.quadraticCurveTo(r*1.15,-r*.42,r*1.55,0);cx.quadraticCurveTo(r*1.15,r*.42,r*.55,r*.5);cx.quadraticCurveTo(r*.42,0,r*.55,-r*.5);cx.closePath();cx.fill();cx.stroke();
-  cx.fillStyle=c.body;cx.beginPath();cx.moveTo(-r*.55,-r*.3);cx.lineTo(r*.15,-r*.3);cx.lineTo(r*.15,r*.3);cx.lineTo(-r*.55,r*.3);cx.closePath();cx.fill();
-  cx.fillStyle="#a8dadc";cx.beginPath();cx.arc(-r*.05,0,r*.24,0,7);cx.fill();cx.stroke();
-  cx.fillStyle="rgba(255,255,255,.5)";cx.beginPath();cx.arc(-r*.12,-r*.08,r*.08,0,7);cx.fill();
-  const fl=8+Math.random()*12;cx.fillStyle="#ffb703";cx.beginPath();cx.moveTo(-r*.55,-r*.28);cx.lineTo(-r*.55-fl,0);cx.lineTo(-r*.55,r*.28);cx.closePath();cx.fill();
-  cx.fillStyle="#ff6f3c";cx.beginPath();cx.moveTo(-r*.55,-r*.14);cx.lineTo(-r*.55-fl*.55,0);cx.lineTo(-r*.55,r*.14);cx.closePath();cx.fill();
- },
- balloon(cx,r,b){
-  // A hot-air balloon: onion-domed envelope with vertical gores, a burner throat,
-  // and a real woven basket on four ropes rather than a floating smiley bulb.
-  const c=CHARS.balloon;
-  cx.strokeStyle="rgba(0,0,0,0)";cx.lineWidth=2.5;
-  cx.beginPath();cx.moveTo(-r*.36,r*.98);cx.lineTo(-r*.3,r*1.52);cx.stroke();
-  cx.beginPath();cx.moveTo(r*.36,r*.98);cx.lineTo(r*.3,r*1.52);cx.stroke();
-  cx.beginPath();cx.moveTo(-r*.15,r*1.05);cx.lineTo(-r*.28,r*1.52);cx.stroke();
-  cx.beginPath();cx.moveTo(r*.15,r*1.05);cx.lineTo(r*.28,r*1.52);cx.stroke();
-  cx.lineWidth=4;
-  // envelope: classic onion silhouette, wide shoulders tapering to a narrow throat
-  cx.fillStyle=c.body;cx.beginPath();
-  cx.moveTo(0,-r*1.45);
-  cx.bezierCurveTo(r*1.15,-r*1.35,r*1.15,-r*.15,r*.42,r*.55);
-  cx.lineTo(r*.22,r*.98);cx.lineTo(-r*.22,r*.98);
-  cx.lineTo(-r*.42,r*.55);
-  cx.bezierCurveTo(-r*1.15,-r*.15,-r*1.15,-r*1.35,0,-r*1.45);
-  cx.closePath();cx.fill();cx.stroke();
-  // gore panels: alternating shaded stripes following the envelope's curve
-  cx.save();cx.clip();
-  cx.fillStyle="rgba(29,53,87,.16)";
-  for(const gx of[-r*.72,-r*.24,r*.24,r*.72]){cx.beginPath();cx.ellipse(gx,-r*.3,r*.16,r*1.25,0,0,7);cx.fill()}
-  cx.restore();
-  cx.fillStyle="rgba(255,255,255,.4)";cx.beginPath();cx.ellipse(-r*.42,-r*.75,r*.2,r*.55,-.15,0,7);cx.fill();
-  cx.fillStyle="#c8a15c";cx.beginPath();cx.roundRect(-r*.36,r*1.5,r*.72,r*.42,5);cx.fill();cx.stroke();
-  cx.strokeStyle="rgba(29,53,87,.5)";cx.lineWidth=2;for(let i=1;i<4;i++){cx.beginPath();cx.moveTo(-r*.36,r*1.5+i*r*.1);cx.lineTo(r*.36,r*1.5+i*r*.1);cx.stroke()}
-  cx.lineWidth=4;cx.strokeStyle="rgba(0,0,0,0)";
- },
- bee(cx,r,b){
-  // A rounder, fuzzier bee: striped abdomen, a distinct dark head with real compound
-  // eyes (not cartoon ones), two sheer wing pairs, thin legs and curled antennae.
-  const wf=Math.sin(performance.now()/45)*.4+.6;
-  cx.save();cx.globalAlpha=.55;cx.fillStyle="#eef6fb";cx.strokeStyle="#c7d9e3";cx.lineWidth=2;
-  cx.beginPath();cx.ellipse(-r*.05,-r*.55-wf*r*.15,r*.55,r*.3,-.25,0,7);cx.fill();cx.stroke();
-  cx.beginPath();cx.ellipse(r*.35,-r*.4-wf*r*.1,r*.4,r*.22,-.1,0,7);cx.fill();cx.stroke();
-  cx.restore();cx.strokeStyle="rgba(0,0,0,0)";cx.lineWidth=4;
-  // thin legs
-  cx.lineWidth=2.5;for(const lx of[-r*.3,0,r*.3]){cx.beginPath();cx.moveTo(lx,r*.55);cx.lineTo(lx-r*.1,r*.95);cx.stroke()}
-  cx.lineWidth=4;
-  // striped abdomen (back half) then head (front half), slightly offset so it reads as two body parts
-  cx.fillStyle=CHARS.bee.body;cx.beginPath();cx.ellipse(-r*.15,0,r*.95,r*.72,0,0,7);cx.fill();cx.stroke();
-  cx.save();cx.beginPath();cx.ellipse(-r*.15,0,r*.95,r*.72,0,0,7);cx.clip();
-  cx.fillStyle="#2b2118";for(const dx of[-.75,-.3,.15,.6]){cx.beginPath();cx.roundRect(dx*r-5,-r*.75,9,r*1.5,4);cx.fill()}
-  cx.restore();
-  cx.fillStyle="#2b2118";cx.beginPath();cx.arc(r*.72,-r*.05,r*.4,0,7);cx.fill();cx.stroke();
-  cx.strokeStyle="#2b2118";cx.lineWidth=2.5;
-  cx.beginPath();cx.moveTo(r*.55,-r*.35);cx.quadraticCurveTo(r*.7,-r*.75,r*.95,-r*.72);cx.stroke();
-  cx.beginPath();cx.moveTo(r*.85,-r*.32);cx.quadraticCurveTo(r*1.05,-r*.68,r*1.28,-r*.6);cx.stroke();
-  cx.fillStyle="#1d3557";cx.beginPath();cx.ellipse(r*.82,-r*.1,r*.13,r*.17,.3,0,7);cx.fill();
-  cx.fillStyle="rgba(255,255,255,.6)";cx.beginPath();cx.arc(r*.78,-r*.16,r*.04,0,7);cx.fill();
-  cx.strokeStyle="rgba(0,0,0,0)";cx.lineWidth=4;
-  cx.fillStyle="#2b2118";cx.beginPath();cx.moveTo(-r*1.08,0);cx.lineTo(-r*1.3,-r*.06);cx.lineTo(-r*1.3,r*.06);cx.closePath();cx.fill();
- }
-};
-function rr(x,y,w,h,r){cx.beginPath();cx.roundRect(x,y,w,h,r);cx.fill();cx.stroke()}
 let last=performance.now(),acc=0;
 function loop(n){acc+=Math.min(100,n-last);last=n;while(acc>=16.67){step();acc-=16.67}draw();requestAnimationFrame(loop)}
+for(const w of[...W,...HARD])pic(w[0]);for(const k in FLY)img(FLY[k][0]);for(const n of['flappy-sky.webp','flappy-grass.webp','flappy-pipes.webp','cloud-1.webp','cloud-2.webp','cloud-3.webp','sky-sun.webp','sky-moon.webp'])img(n);
 requestAnimationFrame(loop);
 if(window.speechSynthesis)speechSynthesis.getVoices();
 </script>
