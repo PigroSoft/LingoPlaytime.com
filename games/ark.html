@@ -8,59 +8,59 @@
 <style>
 :root{color-scheme:dark;--display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif;--sky:#3aa0ff}
 html,body{height:100%;margin:0}
-body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+body{background:#8fc3dd;color:#4a3213;font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 .app{height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:max(10px,env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) 10px max(14px,env(safe-area-inset-left,0px));gap:8px}
 .top{position:relative;display:flex;align-items:center;justify-content:center;min-height:58px;padding:0 112px}
-#bubble{font-size:clamp(22px,4.2vw,40px);min-height:1.2em;transition:transform .15s}
+#bubble{font-size:clamp(22px,4.2vw,40px);min-height:1.2em;transition:transform .15s;color:#fff8ec;text-shadow:0 3px 0 #7a3d12,0 6px 12px #0005;background:none;box-shadow:none;border:0}
 #bubble.bump{transform:scale(1.08)}
 .tools{position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;gap:8px;z-index:5}
-.tool{width:52px;height:52px;border-radius:50%;border:2px solid #ffffff55;background:#1a144066;color:#fff;font-size:26px;display:grid;place-items:center;cursor:pointer;padding:0}
-.tool[aria-pressed="true"]{background:#ffd23f;border-color:#fff;box-shadow:0 0 24px #ffd23f99}
+.tool{width:52px;height:52px;border-radius:50%;border:2px dashed #b8401f88;background:#f6ead0;box-shadow:0 3px 0 #0003,0 6px 10px #0003;color:#4a3213;font-size:26px;display:grid;place-items:center;cursor:pointer;padding:0}
+.tool[aria-pressed="true"]{background:#ffd84a;border-color:#b8401f;box-shadow:0 0 22px #ffd84a99,0 3px 0 #0003}
 .tool:focus-visible{outline:4px solid var(--sky);outline-offset:3px}
 
 /* the ark and the sea */
-.sea{position:relative;flex:0 0 clamp(170px,38%,340px);border-radius:26px;overflow:hidden;background:linear-gradient(#5aa9ff,#a8dcff 62%,#3d8fd6 62%,#2573c2)}
-.sea .deck{position:absolute;left:8%;right:8%;top:3%;bottom:39%;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:2px clamp(4px,1.4vw,14px);align-items:end;z-index:2}
+.sea{position:relative;flex:0 0 clamp(170px,38%,340px);border-radius:26px;overflow:hidden;background:#9cc9e0 url(../felt/ark-bg.webp) center bottom/cover no-repeat;container-type:size;box-shadow:0 6px 0 #0003,0 12px 18px #0003}
+.sea .deck{position:absolute;left:8%;right:8%;top:4%;bottom:41%;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:2px clamp(4px,1.4vw,14px);align-items:end;z-index:2}
 .sea .deck::before{content:"";position:absolute;left:-3%;right:-3%;top:50%;height:5px;border-radius:3px;background:#b96a3c;box-shadow:0 2px 0 #8a4724;z-index:-1}
 @media (max-width:560px){.top{padding:0 100px}.tool{width:44px;height:44px;font-size:22px}#bubble{font-size:20px}}
 .slot{position:relative;display:flex;align-items:flex-end;justify-content:center;min-width:0;min-height:0;height:100%;overflow:visible}
 .slot .pair{display:flex;width:100%;height:100%;justify-content:center;align-items:flex-end;min-height:0}
-.slot svg{display:block;flex:0 1 56%;margin:0 -3%;min-width:0;height:100%;max-height:100%;opacity:.14;filter:grayscale(1) brightness(2);transform:scale(.8);transition:opacity .3s,transform .4s cubic-bezier(.3,1.7,.5,1),filter .3s}
-.slot.on svg{opacity:1;filter:none;transform:none}
-.slot.on svg+svg{transition-delay:.12s}
-.hull{position:absolute;left:3%;right:3%;bottom:6%;height:34%;z-index:3;filter:drop-shadow(0 6px 8px #0005)}
-.hull svg{width:100%;height:100%;display:block}
+.slot .pi{display:block;flex:0 1 56%;margin:0 -3%;min-width:0;height:100%;max-height:100%;object-fit:contain;object-position:50% 100%;opacity:.14;filter:grayscale(1) brightness(2);transform:scale(.8);transition:opacity .3s,transform .4s cubic-bezier(.3,1.7,.5,1),filter .3s}
+.slot.on .pi{opacity:1;filter:none;transform:none}
+.slot.on .pi+.pi{transition-delay:.12s}
+.hull{position:absolute;left:3%;right:3%;bottom:8cqh;height:38cqh;z-index:3;border:solid transparent;border-width:0 calc(38cqh*.401);border-image:url(../felt/ark-hull2.webp) 0 144 0 144 fill/0 calc(38cqh*.401)/0 round;filter:drop-shadow(0 6px 8px #0005)}
+.hull i{position:absolute;top:54%;width:calc(38cqh*.2);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 40% 35%,#f8e9c4,#e6cf9b);border:calc(38cqh*.035) solid #4a2c14;box-shadow:inset 0 2px 3px #0004}
+.deck::before{display:none}
 .sea.rock .hull,.sea.rock .deck{animation:rock 3s ease-in-out infinite}
 @keyframes rock{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg) translateY(-2px)}}
-.waves{position:absolute;left:0;right:0;bottom:0;height:22%;z-index:4;pointer-events:none}
+.waves{display:none}
 .waves svg{width:200%;height:100%;display:block;animation:drift 9s linear infinite}
 @keyframes drift{to{transform:translateX(-50%)}}
 .rainbow{position:absolute;inset:4% 4% 20% 4%;z-index:1;opacity:0;transition:opacity 1s;pointer-events:none}
-.rainbow svg{width:100%;height:100%}
+.rainbow img{width:100%;height:100%;object-fit:contain;object-position:50% 100%}
 .sea.done .rainbow{opacity:1}
 #rain{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none;display:none}
-.sea.wet{background:linear-gradient(#5b6f98,#8fa0c2 62%,#2e5f96 62%,#244f84)}
-.sun{position:absolute;right:7%;top:8%;width:clamp(36px,7vw,64px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff6c8,#ffd23f 55%,#ffd23f00 72%);z-index:0;transition:opacity .6s}
-.sea.wet .sun{opacity:0}
+.sea.wet::after{content:"";position:absolute;inset:0;background:#3a4f78;mix-blend-mode:multiply;opacity:.65;z-index:4;pointer-events:none}
+.sun{display:none}
 
 /* the animals to tap */
 .grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(2,1fr);gap:clamp(8px,1.8vw,18px);container-type:size}
 @media (max-aspect-ratio:1/1){.grid{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(5,1fr)}}
-.card{position:relative;display:grid;grid-template-rows:1fr auto;justify-items:center;align-items:center;min-height:0;border:2px solid #ffffff33;border-radius:22px;background:#ffffff14;padding:6px 4px 8px;cursor:pointer;color:#fff;font:inherit}
+.card{position:relative;display:grid;grid-template-rows:1fr auto;justify-items:center;align-items:center;min-height:0;border:2px dashed #b8401f88;border-radius:18px;background:#f6ead0;box-shadow:0 4px 0 #0003,0 8px 14px #0003;padding:6px 4px 8px;cursor:pointer;color:#4a3213;font:inherit}
 .card:focus-visible{outline:5px solid var(--sky);outline-offset:3px}
 .card .art{position:relative;width:100%;height:100%;min-height:0}
-.card .art svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.card.pop .art svg{animation:hop .6s cubic-bezier(.3,1.5,.5,1)}
+.card .art .pi{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 3px #0003)}
+.card.pop .art .pi{animation:hop .6s cubic-bezier(.3,1.5,.5,1)}
 @keyframes hop{0%{transform:scale(1)}25%{transform:translateY(-14%) scale(1.14) rotate(-5deg)}55%{transform:scale(.96)}100%{transform:scale(1)}}
 .card .nm{font-family:var(--display);font-weight:600;font-size:clamp(14px,2.4vw,24px);line-height:1.1;text-align:center;min-height:1.1em;padding-top:2px}
-.badge{position:absolute;top:-8px;right:-6px;min-width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#ffe27a,#ffa51f);color:#3a2a06;font:700 16px var(--display);display:grid;place-items:center;border:2px solid #fff;box-shadow:0 2px 8px #0006}
-.card.aboard{background:#58d26b26;border-color:#58d26b99}
-.card.aboard .badge{background:linear-gradient(135deg,#a8f0a0,#33a24f);color:#0d3a1a}
+.badge{position:absolute;top:-8px;right:-6px;min-width:34px;height:34px;border-radius:50%;background:#c8402f;color:#fff8ec;font:700 16px var(--display);display:grid;place-items:center;border:2px dashed #fff8ec;box-shadow:0 2px 0 #0004,0 4px 8px #0004}
+.card.aboard{background:#e0efc4;border-color:#5f8f3a}
+.card.aboard .badge{background:#5f8f3a;color:#fff}
 .flyer{position:fixed;left:0;top:0;z-index:20;pointer-events:none;filter:drop-shadow(0 6px 8px #0006)}
-.flyer svg{width:100%;height:100%;display:block}
+.flyer .pi{width:100%;height:100%;display:block;object-fit:contain}
 .k-eyes{animation:blink 5s infinite;transform-box:fill-box;transform-origin:center}
 @keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
-@media (prefers-reduced-motion:reduce){.sea.rock .hull,.sea.rock .deck,.waves svg,.card.pop .art svg,.k-eyes{animation:none}.slot svg{transition:none}}
+@media (prefers-reduced-motion:reduce){.sea.rock .hull,.sea.rock .deck,.card.pop .art .pi,.k-eyes{animation:none}.slot .pi{transition:none}}
 </style>
 </head>
 <body>
@@ -74,9 +74,9 @@ body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch
   </div>
   <div class="sea" id="sea">
     <div class="sun"></div>
-    <div class="rainbow" aria-hidden="true"><svg viewBox="0 0 200 100" preserveAspectRatio="xMidYMax meet"><g fill="none" stroke-width="7"><path d="M20 100a80 80 0 0 1 160 0" stroke="#ff4d5e"/><path d="M27 100a73 73 0 0 1 146 0" stroke="#ff8a3d"/><path d="M34 100a66 66 0 0 1 132 0" stroke="#ffd23f"/><path d="M41 100a59 59 0 0 1 118 0" stroke="#58d26b"/><path d="M48 100a52 52 0 0 1 104 0" stroke="#3aa0ff"/><path d="M55 100a45 45 0 0 1 90 0" stroke="#8b5cf6"/></g></svg></div>
+    <div class="rainbow" aria-hidden="true"><img src="../felt/ark-rainbow.webp" alt=""></div>
     <div class="deck" id="deck"></div>
-    <div class="hull" aria-hidden="true"><svg viewBox="0 0 400 80" preserveAspectRatio="none"><path d="M0 8h400l-34 60q-8 10-22 10H56q-14 0-22-10Z" fill="url(#k-brown)"/><path d="M0 8h400" stroke="#e3a274" stroke-width="8" stroke-linecap="round"/><g fill="#ffd23f"><circle cx="90" cy="38" r="7"/><circle cx="150" cy="38" r="7"/><circle cx="210" cy="38" r="7"/><circle cx="270" cy="38" r="7"/><circle cx="330" cy="38" r="7"/></g><path d="M40 56h320" stroke="#8a4724" stroke-width="3" opacity=".5"/></svg></div>
+    <div class="hull" aria-hidden="true"><i style="left:21%"></i><i style="left:35.5%"></i><i style="left:50%"></i><i style="left:64.5%"></i><i style="left:79%"></i></div>
     <div class="waves" aria-hidden="true"><svg viewBox="0 0 800 60" preserveAspectRatio="none"><path d="M0 22q50-22 100 0t100 0 100 0 100 0 100 0 100 0 100 0 100 0V60H0Z" fill="#3d8fd6" opacity=".9"/><path d="M0 34q50-16 100 0t100 0 100 0 100 0 100 0 100 0 100 0 100 0V60H0Z" fill="#2573c2"/></svg></div>
     <canvas id="rain"></canvas>
   </div>
@@ -106,6 +106,8 @@ const DATA={
   pt:{title:"A arca de Noé",one:"um",two:"dois",all:"Todos a bordo!",rain:"a chuva",rainbow:"o arco-íris"}
  }
 };
+const PICS={unicorn:"fw-unicorn",cat:"sky-cat",mouse:"peek-mouse",elephant:"sky-elephant",crocodile:"ark-croc",penguin:"fw-penguin",snake:"ark-snake",lion:"ark-lion",turtle:"sky-turtle",parrot:"ark-parrot"};
+const pic=a=>`<img class="pi" src="../felt/${PICS[a]}.webp" alt="" draggable="false">`;
 const W=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
 const $=id=>document.getElementById(id);
 const L=()=>LP.t(DATA.lines);
@@ -116,8 +118,8 @@ function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump"
 const aboard=new Set();let finishing=false,raining=false,musicOn=false;
 
 function build(){
- $("grid").innerHTML=DATA.words.map(w=>`<button type="button" class="card" data-id="${w.id}" data-tap aria-label="${word(w.id)}"><span class="badge">×2</span><span class="art">${LPLook.pic(w.art)}</span><span class="nm">${word(w.id)}</span></button>`).join("");
- $("deck").innerHTML=DATA.words.map(w=>`<div class="slot" data-slot="${w.id}"><div class="pair">${LPLook.pic(w.art)}${LPLook.pic(w.art)}</div></div>`).join("");
+ $("grid").innerHTML=DATA.words.map(w=>`<button type="button" class="card" data-id="${w.id}" data-tap aria-label="${word(w.id)}"><span class="badge">×2</span><span class="art">${pic(w.art)}</span><span class="nm">${word(w.id)}</span></button>`).join("");
+ $("deck").innerHTML=DATA.words.map(w=>`<div class="slot" data-slot="${w.id}"><div class="pair">${pic(w.art)}${pic(w.art)}</div></div>`).join("");
  aboard.forEach(id=>{document.querySelector(`[data-slot="${id}"]`).classList.add("on");document.querySelector(`[data-id="${id}"]`).classList.add("aboard")});
 }
 function relabel(){document.querySelectorAll(".card").forEach(c=>{const t=word(c.dataset.id);c.setAttribute("aria-label",t);c.querySelector(".nm").textContent=t})}
@@ -143,13 +145,13 @@ function animalSound(id){
 
 /* two of the animal hop from their card up to the deck */
 function fly(card,id){
- const slot=document.querySelector(`[data-slot="${id}"]`),svgs=[...slot.querySelectorAll("svg")];
- const from=card.querySelector(".art svg").getBoundingClientRect();
+ const slot=document.querySelector(`[data-slot="${id}"]`),svgs=[...slot.querySelectorAll(".pi")];
+ const from=card.querySelector(".art .pi").getBoundingClientRect();
  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
  let left=svgs.length;
  svgs.forEach((dst,i)=>{
   const to=dst.getBoundingClientRect(),size=Math.max(28,Math.min(to.width,to.height)*1.1),f=document.createElement("div");
-  f.className="flyer";f.style.width=f.style.height=size+"px";f.innerHTML=card.querySelector(".art svg").outerHTML;document.body.appendChild(f);
+  f.className="flyer";f.style.width=f.style.height=size+"px";f.innerHTML=card.querySelector(".art .pi").outerHTML;document.body.appendChild(f);
   const x0=from.left+from.width/2-size/2,y0=from.top+from.height/2-size/2,x1=to.left+to.width/2-size/2,y1=to.top+to.height/2-size/2;
   const dur=reduce?1:700+i*160,mid=Math.min(y0,y1)-60;
   const a=f.animate([{transform:`translate(${x0}px,${y0}px) scale(${from.height/size})`},{transform:`translate(${(x0+x1)/2}px,${mid}px) scale(1.1)`,offset:.5},{transform:`translate(${x1}px,${y1}px) scale(1)`}],{duration:dur,easing:"cubic-bezier(.4,0,.3,1)",fill:"forwards"});
@@ -220,7 +222,7 @@ LP.init({langs:ALLLANGS,
  onLang:()=>{document.title=L().title;relabel();bubble(L().title)},
  onAge:()=>{}});
 document.title=L().title;
-LPLook.sky($("app"),{mode:"day",hills:false});
+
 document.querySelector("body").insertAdjacentHTML("afterbegin",'<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs></defs></svg>');
 build();bubble(L().title);$("sea").classList.add("rock");
 LP.start(L().title,()=>{LP.say(L().title)});
