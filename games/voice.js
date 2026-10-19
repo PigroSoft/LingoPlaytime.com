@@ -72,7 +72,7 @@
 })();
 
 /* Loading screen, shared by every game (voice.js is the first script on each game page).
-   Three felt speech bubbles pop up in turn until the page, its pictures and its recorded word
+   Four felt speech bubbles pop up in turn until the page, its pictures and its recorded word
    audio have all arrived (the audio packs bridge.js adds hold back the window load event).
    It fades in only after a short pause, so a quick or cached load never flashes it, and it
    gives up after 12 seconds so a slow connection can't trap a child behind it. While it shows,
@@ -84,17 +84,12 @@
     "#lp-loading{position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;background:#fff4dc;" +
     "opacity:0;animation:lpl-in .3s ease .25s forwards;transition:opacity .35s ease}" +
     "#lp-loading.lpl-done{opacity:0!important;animation:none;pointer-events:none}" +
-    "#lp-loading .lpl-row{display:flex;gap:clamp(12px,3vw,22px);align-items:flex-end;height:110px}" +
-    "#lp-loading i{position:relative;display:block;width:clamp(48px,12vw,74px);height:clamp(36px,9vw,54px);border-radius:50%;" +
-    "box-shadow:inset 0 -5px 0 rgba(0,0,0,.12),0 6px 0 rgba(90,60,20,.12);animation:lpl-pop 1.2s ease-in-out infinite}" +
-    "#lp-loading i::after{content:'';position:absolute;left:22%;bottom:-9px;border:9px solid transparent;border-top-color:currentColor;border-bottom:0;border-left-width:4px}" +
-    "#lp-loading i::before{content:'';position:absolute;inset:5px;border-radius:50%;border:2px dashed rgba(255,255,255,.55)}" +
-    "#lp-loading i:nth-child(1){background:#d92b25;color:#d92b25}" +
-    "#lp-loading i:nth-child(2){background:#f8b81f;color:#f8b81f;animation-delay:.18s}" +
-    "#lp-loading i:nth-child(3){background:#137aa6;color:#137aa6;animation-delay:.36s}" +
+    "#lp-loading .lpl-row{display:flex;gap:clamp(4px,1.6vw,14px);align-items:flex-end;height:130px}" +
+    "#lp-loading img{display:block;width:clamp(58px,15vw,96px);height:auto;transform-origin:50% 100%;filter:drop-shadow(0 6px 4px rgba(90,60,20,.28));animation:lpl-pop 1.4s ease-in-out infinite}" +
+    "#lp-loading img:nth-child(2){animation-delay:.18s}#lp-loading img:nth-child(3){animation-delay:.36s}#lp-loading img:nth-child(4){animation-delay:.54s}" +
     "@keyframes lpl-in{to{opacity:1}}" +
-    "@keyframes lpl-pop{0%,60%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-26px) scale(1.08)}}" +
-    "@media (prefers-reduced-motion:reduce){#lp-loading i{animation:lpl-fade 1.4s ease-in-out infinite}" +
+    "@keyframes lpl-pop{0%,55%,100%{transform:translateY(0) scale(1,1) rotate(0)}12%{transform:translateY(0) scale(1.08,.88)}30%{transform:translateY(-30px) scale(.96,1.08) rotate(-4deg)}42%{transform:translateY(0) scale(1.06,.92)}}" +
+    "@media (prefers-reduced-motion:reduce){#lp-loading img{animation:lpl-fade 1.4s ease-in-out infinite}" +
     "@keyframes lpl-fade{0%,100%{opacity:.45}50%{opacity:1}}}";
   document.head.appendChild(css);
 
@@ -102,7 +97,7 @@
   el.id = "lp-loading";
   el.setAttribute("role", "status");
   el.setAttribute("aria-label", "Loading");
-  el.innerHTML = '<div class="lpl-row"><i></i><i></i><i></i></div>';
+  el.innerHTML = '<div class="lpl-row"><img src="/felt/loader-1.webp" alt=""><img src="/felt/loader-2.webp" alt=""><img src="/felt/loader-3.webp" alt=""><img src="/felt/loader-4.webp" alt=""></div>';
   document.body.appendChild(el);
 
   var loading = true;
