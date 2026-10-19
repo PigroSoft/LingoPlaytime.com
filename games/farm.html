@@ -449,6 +449,12 @@ h1{color:#fff8e6;text-shadow:0 3px 0 #b8401f,0 6px 14px #0004}
 .leaf.l{box-shadow:inset -14px 0 22px #0005}.leaf.r{box-shadow:inset 14px 0 22px #0005}
 .open-btn{position:absolute}
 main{place-items:end center;padding-bottom:clamp(14px,8vh,80px)}
+#dio-bg{background-image:url(../felt/farm-bg.webp);background-position:30% bottom;filter:none;transform:none}
+#dio-hills,.lp-clouds{display:none!important}
+#app.t-morning #dio-bg{filter:sepia(.2) saturate(1.15) hue-rotate(-10deg)}
+#app.t-evening #dio-bg{filter:sepia(.45) saturate(1.3) hue-rotate(-18deg) brightness(.92)}
+#app.t-night #dio-bg{filter:brightness(.4) saturate(.75) hue-rotate(8deg)}
+main{padding-bottom:clamp(60px,13vh,120px)}
 </style>
 
 <div id="app"><script>(function(){var h=new Date().getHours();document.currentScript.parentNode.className="t-"+(h>=6&&h<10?"morning":h>=10&&h<17?"day":h>=17&&h<20?"evening":"night")})()</script>
