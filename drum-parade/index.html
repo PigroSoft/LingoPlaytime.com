@@ -209,6 +209,9 @@ html.playing .lpbar .who{display:none}
 @media (max-width:640px){html.playing .lpbar .chip .own,html.playing .setbtn span{display:none}html.playing .lpbar .chip{padding:2px 3px 2px 3px}html.playing .setbtn{padding:2px 10px}html.playing .back span{display:none}html.playing .back{padding:2px 8px}html.playing .lpbar .note{display:none}html.playing footer{font-size:9.5px}}
 .fsbtn{flex:none;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;padding:0}
 .fsbtn:hover{border-color:var(--sky)}
+.shufbtn{width:auto;display:inline-flex;align-items:center;gap:6px;padding:0 14px 0 10px;font-weight:700;font-size:14px;white-space:nowrap}
+html:not(.playing) .shufbtn{display:none}
+@media (max-width:640px){.shufbtn span{display:none}.shufbtn{padding:0;width:34px;justify-content:center}}
 .fsbtn svg{width:16px;height:16px}
 
 /* settings sheet */
@@ -240,6 +243,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   <div class="lpbar" id="lpbar" hidden>
     <div class="who" id="barWho"><svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><b id="barName"></b><small id="barAge"></small></div>
     <div class="play" role="group" aria-labelledby="barPlayLbl"><span id="barPlayLbl"></span><span class="langs" id="barLangs"></span></div>
+    <button type="button" class="fsbtn shufbtn" id="shufBtn" aria-label="Surprise me" title="Surprise me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/></svg><span id="shufLbl">Surprise me</span></button>
     <button type="button" class="fsbtn sndbtn" id="sndBtn" aria-pressed="false" aria-label="Sound" title="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor"/><path class="on" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/><path class="off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
     <button type="button" class="fsbtn" id="fsBtn" aria-label="Fullscreen" title="Fullscreen" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
     <button type="button" class="setbtn" id="nav-settings"><i class="fill" id="setFill" aria-hidden="true"></i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span><span id="barSettings"></span><small id="barSettingsSub"></small></span></button>
@@ -691,6 +695,9 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   function fsEnter(){const e=document.documentElement;try{const r=(e.requestFullscreen||e.webkitRequestFullscreen).call(e,{navigationUI:"hide"});if(r&&r.catch)r.catch(()=>{})}catch(x){}}
   function fsExit(){try{const r=(document.exitFullscreen||document.webkitExitFullscreen).call(document);if(r&&r.catch)r.catch(()=>{})}catch(x){}}
   function fsPref(v){try{if(v===undefined)return localStorage.getItem(FSK)==="1";localStorage.setItem(FSK,v?"1":"0")}catch(e){return false}}
+  const SHL={en:"Surprise me",de:"Überrasch mich",es:"Sorpréndeme",fr:"Surprends-moi",it:"Sorprendimi",pt:"Surpreende-me"};
+  function shufLabel(){const l=SHL[profile&&profile.home]||SHL.en;$("shufLbl").textContent=l;$("shufBtn").title=l;$("shufBtn").setAttribute("aria-label",l)}
+  $("shufBtn").addEventListener("click",()=>{const ids=GAMES.map(g=>g.id).filter(i=>i!==current&&SLUG[i]);if(ids.length)openGame(ids[Math.floor(Math.random()*ids.length)])});
   function fsLabel(){const l=FSL[profile&&profile.home]||FSL.en;$("fsBtn").title=l;$("fsBtn").setAttribute("aria-label",l)}
   const SNL={en:["Sound on","Sound off"],de:["Ton an","Ton aus"],es:["Sonido activado","Sonido desactivado"],fr:["Son activé","Son coupé"],it:["Audio attivo","Audio disattivato"],pt:["Som ligado","Som desligado"]};
   const MKEY="lingoplaytime.muted";
@@ -714,7 +721,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     $("frame").title=gname(g);
     frameTo(`/games/${id}.html?${q}`);
     show("play");
-    fsLabel();sndPaint();
+    fsLabel();shufLabel();sndPaint();
     if(fsCan()&&fsPref()&&!fsEl())fsEnter();
     setTimeout(()=>{try{$("frame").focus()}catch(e){}},300);
   }

@@ -99,7 +99,10 @@ const ROOMS=[
   moon:{x:953,y:377,h:185,glow:[953,284,340]},stars:{x:400,y:320,h:140},lamp:{x:690,y:302,h:105,glow:[690,250,300]},
   teddy:{x:330,y:585,h:190},book:{x:1160,y:705,h:100},fish:{x:674,y:452,h:72},ball:{x:800,y:705,h:100},car:{x:1290,y:752,h:92}}}
 ];
-let room=ROOMS[Math.floor(Math.random()*ROOMS.length)];
+// a surprise every time: never the room seen last time, and never the same twice in a row
+function otherRoom(cur){const pool=ROOMS.filter(r=>r!==cur);return pool[Math.floor(Math.random()*pool.length)]}
+let last=null;try{last=ROOMS.find(r=>r.id===localStorage.getItem("lp-night-room"))||null}catch(e){}
+let room=last?otherRoom(last):ROOMS[Math.floor(Math.random()*ROOMS.length)];
 try{const q=new URLSearchParams(location.search).get("room");const f=ROOMS.find(r=>r.id===q);if(f)room=f}catch(e){}
 let SPOT=room.spots;
 const ORDER=["moon","stars","lamp","teddy","book","fish","ball","car"];
@@ -139,7 +142,7 @@ ROOMS.forEach(r=>{const b=document.createElement("button");b.type="button";b.dat
 $("app").appendChild(rp);
 setRoom(room);
 
-function setRoom(r){room=r;SPOT=r.spots;$("bg").src="../felt/"+r.img;layout();document.querySelectorAll("#rooms button").forEach(b=>b.classList.toggle("on",b.dataset.room===r.id))}
+function setRoom(r){room=r;try{localStorage.setItem("lp-night-room",r.id)}catch(e){}SPOT=r.spots;$("bg").src="../felt/"+r.img;layout();document.querySelectorAll("#rooms button").forEach(b=>b.classList.toggle("on",b.dataset.room===r.id))}
 function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
 function label(){ORDER.forEach(id=>els[id].setAttribute("aria-label",w(id).w));$("again").textContent=L().again}
 function zzz(e){
@@ -195,7 +198,7 @@ function lullaby(){
   t+=len;beat+=b;
  });
 }
-function reset(){lull.forEach(o=>{try{o&&o.stop()}catch(e){}});lull=[];setRoom(ROOMS[(ROOMS.indexOf(room)+1)%ROOMS.length]);asleep.clear();done=false;ORDER.forEach(id=>els[id].classList.remove("asleep"));Object.values(glows).forEach(g=>g.classList.remove("off"));$("dark").style.opacity="0";$("bubble").style.opacity="1";document.body.classList.remove("done");bubble(L().title);LP.say(L().title)}
+function reset(){lull.forEach(o=>{try{o&&o.stop()}catch(e){}});lull=[];setRoom(otherRoom(room));asleep.clear();done=false;ORDER.forEach(id=>els[id].classList.remove("asleep"));Object.values(glows).forEach(g=>g.classList.remove("off"));$("dark").style.opacity="0";$("bubble").style.opacity="1";document.body.classList.remove("done");bubble(L().title);LP.say(L().title)}
 
 LP.init({langs:ALLLANGS,onLang:()=>{label();document.title=L().title;if(!done)bubble(L().title)}});
 label();document.title=L().title;bubble(L().title);
