@@ -168,8 +168,26 @@
       var u = q.shift(), my = gen; cur = u;
       if (muted) { fire(u, "start"); setTimeout(function () { if (my !== gen) return; fire(u, "end"); advance(my); }, 450); return; }
       var clip = clipFor(u);
-      if (clip) { var lc = langOf(u).slice(0, 2).toLowerCase(); playClip(u, my, lc, window.LPVoice.key(u.text, S.name), clip); return; }
+      if (clip) {
+        var lc = langOf(u).slice(0, 2).toLowerCase(), k = window.LPVoice.key(u.text, S.name);
+        var go = function () { if (my === gen) playClip(u, my, lc, k, clip); };
+        // names are never recorded, so say the child's name with the browser voice, then play the clip
+        if (S.name && k !== window.LPVoice.key(u.text, "")) { sayName(u, my, go); return; }
+        go(); return;
+      }
       tts(u, my);
+    }
+    function sayName(u, my, done) {
+      var n = new SpeechSynthesisUtterance(S.name), fin = false;
+      var f = function () { if (fin) return; fin = true; done(); };
+      window.LPVoice.ready(function () {
+        if (my !== gen) return;
+        var code = langOf(u), v = code ? window.LPVoice.best(code, (S.voices || {})[code.slice(0, 2).toLowerCase()]) : null;
+        if (!v) { f(); return; }
+        n.voice = v; n.lang = v.lang; n.rate = 0.9; n.onend = f; n.onerror = f;
+        setTimeout(f, 2500);
+        origSpeak(n);
+      });
     }
     function tts(u, my) { window.LPVoice.ready(function () { if (my === gen) ttsGo(u, my); }); }
     function ttsGo(u, my) {
