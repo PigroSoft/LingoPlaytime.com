@@ -39,6 +39,9 @@ body.tall #shade{display:block}
 #again{position:absolute;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));z-index:900;font:inherit;font-size:14px;font-weight:700;color:#dfe6ff;background:#ffffff1f;border:0;border-radius:999px;padding:8px 14px;min-height:40px;cursor:pointer;opacity:0;transition:opacity 1s;pointer-events:none}
 body.done #again{opacity:.75;pointer-events:auto}
 @media (prefers-reduced-motion:reduce){.it .bob,.it.asleep .bob,.it.pop .bob,.tw,.zz{animation:none}#dark,.glow{transition:none}}
+#rooms{position:absolute;left:max(12px,env(safe-area-inset-left,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));z-index:900;display:flex;gap:8px}
+#rooms button{width:44px;height:44px;border-radius:50%;border:3px solid #fff8;padding:0;cursor:pointer;background-size:cover;background-position:center;box-shadow:0 2px 6px #0008;opacity:.75}
+#rooms button.on{border-color:#F6C033;opacity:1}
 </style>
 </head>
 <body>
@@ -78,17 +81,24 @@ const L=()=>LP.t(DATA.lines);
 const w=id=>W[id][LP.lang]||W[id].en;
 let asleep=new Set(),done=false,lastTap=0;
 
-/* Where each toy lives in the 1376x768 photo: centre x, bottom y, height. */
-const SPOT={
- moon:{x:700,y:335,h:210,glow:[700,230,360]},
- stars:{x:400,y:300,h:170},
- lamp:{x:1090,y:274,h:118,glow:[1090,215,330]},
- teddy:{x:560,y:535,h:215},
- book:{x:330,y:735,h:112},
- fish:{x:1095,y:428,h:118},
- ball:{x:830,y:722,h:112},
- car:{x:1010,y:742,h:98}
-};
+/* Four photographed rooms. Each lists where every toy sits in the 1376x768 photo: centre x, bottom y, height (glow = centre x, y, size). fx is the x the phone view centres on. */
+const ROOMS=[
+ {id:"night",img:"night-room.webp",fx:690,spots:{
+  moon:{x:700,y:335,h:210,glow:[700,230,360]},stars:{x:400,y:300,h:170},lamp:{x:1090,y:274,h:118,glow:[1090,215,330]},
+  teddy:{x:560,y:535,h:215},book:{x:330,y:735,h:112},fish:{x:1095,y:428,h:118},ball:{x:830,y:722,h:112},car:{x:1010,y:742,h:98}}},
+ {id:"pink",img:"night-room-pink.webp",fx:832,spots:{
+  moon:{x:832,y:386,h:200,glow:[832,286,360]},stars:{x:470,y:335,h:150},lamp:{x:1150,y:312,h:115,glow:[1150,255,320]},
+  teddy:{x:310,y:590,h:195},book:{x:560,y:748,h:100},fish:{x:700,y:498,h:90},ball:{x:800,y:752,h:100},car:{x:1180,y:752,h:92}}},
+ {id:"forest",img:"night-room-forest.webp",fx:699,spots:{
+  moon:{x:699,y:367,h:185,glow:[699,274,340]},stars:{x:400,y:330,h:150},lamp:{x:1010,y:312,h:100,glow:[1010,262,300]},
+  teddy:{x:470,y:565,h:190},book:{x:600,y:742,h:105},fish:{x:1021,y:457,h:90},ball:{x:905,y:692,h:100},car:{x:1240,y:748,h:95}}},
+ {id:"lilac",img:"night-room-lilac.webp",fx:953,spots:{
+  moon:{x:953,y:377,h:185,glow:[953,284,340]},stars:{x:400,y:320,h:140},lamp:{x:690,y:302,h:105,glow:[690,250,300]},
+  teddy:{x:330,y:585,h:190},book:{x:1160,y:705,h:100},fish:{x:674,y:452,h:72},ball:{x:800,y:705,h:100},car:{x:1290,y:752,h:92}}}
+];
+let room=ROOMS[Math.floor(Math.random()*ROOMS.length)];
+try{const q=new URLSearchParams(location.search).get("room");const f=ROOMS.find(r=>r.id===q);if(f)room=f}catch(e){}
+let SPOT=room.spots;
 const ORDER=["moon","stars","lamp","teddy","book","fish","ball","car"];
 const NOTE={moon:523,stars:659,lamp:587,teddy:392,book:698,fish:784,ball:440,car:494};
 const IW=1376,IH=768;
@@ -104,15 +114,15 @@ let geo={s:1,l:0,t:0,tall:false};
 function layout(){
  const Wd=innerWidth,Hd=innerHeight,tall=Wd/Hd<1.15;
  document.body.classList.toggle("tall",tall);
- const s=Math.max(Wd/IW,Hd/IH),bias=tall?.5:.55;
- const l=(Wd-IW*s)*bias,t=Hd-IH*s;geo={s,l,t,tall};
+ const s=Math.max(Wd/IW,Hd/IH);
+ const l=tall?Math.min(0,Math.max(Wd-IW*s,Wd/2-room.fx*s)):(Wd-IW*s)*.55,t=Hd-IH*s;geo={s,l,t,tall};
  const bg=$("bg");bg.style.width=IW*s+"px";bg.style.height=IH*s+"px";bg.style.left=l+"px";bg.style.top=t+"px";
  const grid=ORDER.filter(i=>tall?i!=="moon":false);
  ORDER.forEach(id=>{
   const sp=SPOT[id],e=els[id];let x,y,h;
   if(tall&&id!=="moon"){
    const k=grid.indexOf(id),row=k<3?0:1,n=row?4:3,col=row?k-3:k,cw=Wd/n;
-   x=cw*(col+.5);y=Hd*(row?.93:.76);const im=e.firstChild.firstChild,ar=(im.naturalWidth||1)/(im.naturalHeight||1);h=Math.min(cw*.85,Hd*.16,cw*.86/ar);
+   x=cw*(col+.5);y=Hd*(row?.89:.75);const im=e.firstChild.firstChild,ar=(im.naturalWidth||1)/(im.naturalHeight||1);h=Math.min(cw*.85,Hd*.16,cw*.86/ar);
   }else{x=sp.x*s+l;y=sp.y*s+t;h=sp.h*s}
   e.style.left=x+"px";e.style.top=y+"px";e.style.height=h+"px";e.style.width=(h*(e.firstChild.firstChild.naturalWidth||1)/(e.firstChild.firstChild.naturalHeight||1))+"px";
   e.style.zIndex=5+Math.round(y/10);
@@ -120,8 +130,13 @@ function layout(){
  });
 }
 ORDER.forEach(id=>{const im=els[id].querySelector("img.a");im.addEventListener("load",layout)});
-addEventListener("resize",layout);layout();
+addEventListener("resize",layout);
+const rp=document.createElement("div");rp.id="rooms";
+ROOMS.forEach(r=>{const b=document.createElement("button");b.type="button";b.dataset.room=r.id;b.setAttribute("aria-label","Room "+r.id);b.style.backgroundImage="url(../felt/"+r.img+")";b.addEventListener("click",()=>{if(r!==room)setRoom(r)});rp.appendChild(b)});
+$("app").appendChild(rp);
+setRoom(room);
 
+function setRoom(r){room=r;SPOT=r.spots;$("bg").src="../felt/"+r.img;layout();document.querySelectorAll("#rooms button").forEach(b=>b.classList.toggle("on",b.dataset.room===r.id))}
 function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
 function label(){ORDER.forEach(id=>els[id].setAttribute("aria-label",w(id).w));$("again").textContent=L().again}
 function zzz(e){
@@ -152,14 +167,14 @@ function finish(){
 }
 // a short original music-box tune
 function lullaby(){const n=[659,587,523,587,659,659,659,0,587,587,587,0,659,784,784,0,659,587,523,587,659,659,659,659,587,587,659,587,523];let t=.6;n.forEach(f=>{if(f)LP.tone(f,1.1,"sine",.06,t),LP.tone(f*2,.6,"sine",.015,t);t+=.42})}
-function reset(){asleep.clear();done=false;ORDER.forEach(id=>els[id].classList.remove("asleep"));Object.values(glows).forEach(g=>g.classList.remove("off"));$("dark").style.opacity="0";$("bubble").style.opacity="1";document.body.classList.remove("done");bubble(L().title);LP.say(L().title)}
+function reset(){setRoom(ROOMS[(ROOMS.indexOf(room)+1)%ROOMS.length]);asleep.clear();done=false;ORDER.forEach(id=>els[id].classList.remove("asleep"));Object.values(glows).forEach(g=>g.classList.remove("off"));$("dark").style.opacity="0";$("bubble").style.opacity="1";document.body.classList.remove("done");bubble(L().title);LP.say(L().title)}
 
 LP.init({langs:ALLLANGS,onLang:()=>{label();document.title=L().title;if(!done)bubble(L().title)}});
 label();document.title=L().title;bubble(L().title);
 LP.start(L().title,()=>LP.say(L().title));
 $("again").addEventListener("click",reset);
 LP.mash((e)=>{
- if(e.target.closest&&e.target.closest("#again"))return;
+ if(e.target.closest&&e.target.closest("#again,#rooms"))return;
  if(done){LP.sfx.twinkle();if(e.clientX!=null)twinkleAt(e.clientX,e.clientY);return} // after bedtime, taps only twinkle
  const g=e.target.closest&&e.target.closest("[data-item]");
  const id=g&&!asleep.has(g.dataset.item)?g.dataset.item:ORDER.find(i=>!asleep.has(i));
