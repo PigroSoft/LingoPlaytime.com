@@ -304,7 +304,8 @@
   var TITLES = { ark: "Noah's Ark", dress: "Get dressed", drum: "Drum Parade", face: "Where's your nose?", farm: "Old MacDonald's Farm",
     flappy: "Flappy Words", market: "At the market", munch: "Munch Munch", night: "Goodnight room", paint: "Paint the World",
     pairs: "Pairs", peek: "Peekaboo", sky: "Sky Words", soup: "Little Soup Pot", street: "Street sounds", train: "Word Train" };
-  var title = TITLES[G] || document.title;
+  if (!TITLES[G]) return; // only the game pages get the title tag
+  var title = TITLES[G];
   var PAPER = "background:#fffdf6!important;color:#1c3f4a!important;text-shadow:none!important;-webkit-text-stroke:0!important;border:0!important;border-radius:22px!important;" +
     "outline:2px dashed #b8401f99;outline-offset:-6px;box-shadow:0 4px 0 #d9c9a2,0 10px 18px #0004!important;backdrop-filter:none!important;" +
     "font-family:'Fredoka','Baloo 2',system-ui,sans-serif;font-weight:600;padding:8px 28px!important;";
