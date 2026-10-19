@@ -12,7 +12,7 @@ body{background:#e9a95a;color:var(--ink);font-family:"Atkinson Hyperlegible",sys
 .app{position:relative;height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
 .stage{flex:1;min-height:0;display:flex;align-items:flex-end;position:relative}
 svg#scene{position:relative;width:100%;height:100%;display:block}
-#bd{position:absolute;inset:0;width:100%;height:100%;display:block}
+#bd{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;object-position:50% 100%}
 .app::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 70% at 50% 45%,#0000 55%,#4a1e0640 85%,#3a160470 100%);z-index:3}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .card text{font-family:"Fredoka","Baloo 2",system-ui,sans-serif}
@@ -47,7 +47,7 @@ svg#scene{position:relative;width:100%;height:100%;display:block}
 <div class="app" id="app">
   <div class="sr" id="live" aria-live="polite"></div>
   <div class="stage">
-    <img id="bd" alt="" aria-hidden="true">
+    <img id="bd" alt="" aria-hidden="true" src="../felt/munch-bg.webp">
     <svg id="scene" viewBox="0 0 900 560" preserveAspectRatio="none" role="img" aria-label="A felt caterpillar eating fruit from a wooden shelf">
       <defs>
         <!-- Everything here is felt, cotton and cardboard made from SVG filters, no images.
@@ -124,6 +124,7 @@ svg#scene{position:relative;width:100%;height:100%;display:block}
         <pattern id="flute" width="220" height="16" patternUnits="userSpaceOnUse"><rect width="220" height="16" fill="#b8763f"/><path d="M0 6c50-2 110 3 220 0M0 11c70 2 140-2 220 1" stroke="#98592b" stroke-width="1.6" fill="none"/><path d="M0 1h220" stroke="#d29a5e" stroke-width="2"/></pattern>
       <filter id="dof" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.6"/></filter>
       </defs>
+      <g id="shelf"></g>
       <g id="plates"></g>
             <g id="cocoon" opacity="0"></g>
       <g id="foods"></g>
@@ -168,16 +169,8 @@ const NS="http://www.w3.org/2000/svg";
 const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const stitch=(c,o)=>`stroke="${c}" stroke-width="2.6" stroke-dasharray="6 5" stroke-linecap="round" fill="none"${o||""}`;
 
-const FOOD={
- leaf:`<path d="M12 80C8 40 40 10 88 14c4 44-18 76-62 72Z" fill="#7e9a34"/><path d="M14 84C34 58 56 36 80 20" stroke="#5a7224" stroke-width="5" fill="none" stroke-linecap="round"/>`,
- strawberry:`<path d="M50 90C22 72 14 48 22 34c10-10 46-10 56 0 8 14 0 38-28 56Z" fill="#d8433a"/><path d="M30 30l10-14 10 8 10-8 10 14Z" fill="#6f8f2f"/><g fill="#ffe58a"><circle cx="38" cy="46" r="3"/><circle cx="58" cy="44" r="3"/><circle cx="48" cy="58" r="3"/><circle cx="64" cy="58" r="3"/><circle cx="40" cy="70" r="3"/><circle cx="54" cy="76" r="3"/></g>`,
- grapes:`<g fill="#7a4f8e">${[[34,36],[54,36],[74,36],[44,54],[64,54],[54,72]].map(([x,y])=>`<circle cx="${x-4}" cy="${y}" r="12"/>`).join("")}</g><g fill="#ffffff55">${[[30,32],[50,32],[70,32],[40,50]].map(([x,y])=>`<circle cx="${x-4}" cy="${y}" r="3.5"/>`).join("")}</g><path d="M46 24c0-10 6-14 12-14" stroke="#6f8f2f" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M52 14c10-8 24-4 26 4-10 4-20 2-26-4Z" fill="#6f8f2f"/>`,
- carrot:`<path d="M34 28c-6 0 36 66 40 60 6-12-18-54-40-60Z" transform="rotate(-12 50 50) translate(-6 -2)" fill="#e07a2a"/><path d="M62 24l-6-16M70 28l12-12M52 20l-12-10" stroke="#6f8f2f" stroke-width="7" stroke-linecap="round"/><path d="M42 44l10 4M50 60l10 4" stroke="#b8541c" stroke-width="3" stroke-linecap="round"/>`,
- cherries:`<path d="M34 62c6-26 16-44 30-52M68 64c-2-26-6-40-4-54" stroke="#6f8f2f" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="32" cy="72" r="16" fill="#b0202a"/><circle cx="70" cy="74" r="16" fill="#c4302c"/><circle cx="27" cy="66" r="4" fill="#ffffff66"/><circle cx="65" cy="68" r="4" fill="#ffffff66"/><path d="M64 10c8-6 20-2 22 6-10 2-18 0-22-6Z" fill="#6f8f2f"/>`,
- watermelon:`<path d="M8 40a42 42 0 0 0 84 0Z" fill="#6f8f2f"/><path d="M14 40a36 36 0 0 0 72 0Z" fill="#e0564e"/><path d="M14 40h72" stroke="#fff" stroke-width="3"/><g fill="#2a2350"><ellipse cx="36" cy="54" rx="3" ry="5"/><ellipse cx="50" cy="62" rx="3" ry="5"/><ellipse cx="64" cy="54" rx="3" ry="5"/></g>`,
- tomato:`<circle cx="50" cy="56" r="34" fill="#d8432c"/><path d="M50 22l8 10 12-4-6 12 12 6-14 2-4 12-8-10-8 10-4-12-14-2 12-6-6-12 12 4Z" fill="#6f8f2f"/><circle cx="36" cy="48" r="5" fill="#ffffff66"/>`,
- blueberries:`<g fill="#46557e">${[[34,62],[62,64],[48,40],[72,40],[30,36]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="15"/>`).join("")}</g><g fill="#9aa6c4">${[[34,62],[62,64],[48,40],[72,40],[30,36]].map(([x,y])=>`<path d="M${x-4} ${y-4}l4 4 4-4-4-4Z"/>`).join("")}</g>`
-};
+const FOODIMG={leaf:"munch-leaf",strawberry:"food-strawberry",grapes:"food-grapes",carrot:"food-carrot",cherries:"food-cherries",watermelon:"food-watermelon",tomato:"food-tomato",blueberries:"munch-blueberries"};
+const fimg=(f,x,y,w,h)=>`<image href="../felt/${f}.webp" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid meet"/>`;
 
 const TARGET=7,S=1.3;
 /* Every felt piece is drawn once into its own small SVG image (still vectors, no image files), so the browser
@@ -224,7 +217,7 @@ function fit(){
  // show the whole 900 x 560 play area, and fill the rest of the screen with more sky or more field
  let v={x:0,y:0,w:900,h:560};if(r.height/r.width>560/900){v.w=Math.max(780,Math.min(900,560*r.width/r.height*1.6));v.x=450-v.w/2;v.h=v.w*r.height/r.width;v.y=560-v.h}else{v.w=560*r.width/r.height;v.x=450-v.w/2}
  VB=v;$("scene").setAttribute("viewBox",`${v.x} ${v.y} ${v.w} ${v.h}`);
- $("bd").src=uri(BACK(v),v.x,v.y,v.w,v.h);if(card.t)drawCard();
+ if(card.t)drawCard();
 }
 let fitT=0;addEventListener("resize",()=>{clearTimeout(fitT);fitT=setTimeout(fit,150)});
 let stage="play",relT=0,cardBot=90;
@@ -275,18 +268,15 @@ const headX=()=>base()+(eaten+1)*step();
 const catY=()=>530-12-rad();
 let catTok=0;
 function drawCat(popLast){
- let s="";const r=rad(),cy=catY();
+ let s="";const r=rad(),cy=catY(),bot=cy+r+12;
+ const IM=(f,x,w,ar)=>{const h=w*ar;return `<image href="../felt/${f}.webp" x="${x-w/2}" y="${bot-h}" width="${w}" height="${h}" preserveAspectRatio="none"/>`};
+ const SEG=["munch-seg-orange","munch-seg-green","munch-seg-red"];
  for(let i=0;i<=eaten;i++){
-  const x=base()+i*step(),col=["#d9822b","#7e8c3a","#b84a2a"][i%3],last=popLast&&i===eaten;
-  s+=`<g${last?' class="pop"':""}>`+pic(`<g filter="url(#puff)"><ellipse cx="${x-r*.38}" cy="${cy+r-1}" rx="8" ry="10" fill="#4a2e1e"/><ellipse cx="${x+r*.38}" cy="${cy+r-1}" rx="8" ry="10" fill="#4a2e1e"/><circle cx="${x}" cy="${cy}" r="${r}" fill="${col}"/></g><circle cx="${x}" cy="${cy}" r="${r-7}" ${stitch("#fbe6c4c0")}/>`,x-r-22,cy-r-22,2*r+50,2*r+56)+`</g>`;
+  const x=base()+i*step(),last=popLast&&i===eaten;
+  s+=`<g${last?' class="pop"':""}>`+IM(SEG[i%3],x,2*r*1.12,283/269)+`</g>`;
  }
- const hx=headX(),hr=r+9,hy=cy-6,ex=hr*.24,open=busy?hr*.26:hr*.17;
- s+=pic(`<path d="M${hx-hr*.3} ${hy-hr*.85}q-10-22-4-40M${hx+hr*.32} ${hy-hr*.85}q10-22 6-40" stroke="#4a2e1e" stroke-width="7" stroke-linecap="round" fill="none" filter="url(#puff)"/>
-  <g filter="url(#cotton)"><circle cx="${hx-hr*.3-4}" cy="${hy-hr*.85-40}" r="11" fill="#3f7f86"/><circle cx="${hx+hr*.32+6}" cy="${hy-hr*.85-40}" r="11" fill="#3f7f86"/></g>
-  <g filter="url(#puff)"><circle cx="${hx}" cy="${hy}" r="${hr}" fill="#e8b23a"/></g><circle cx="${hx}" cy="${hy}" r="${hr-7}" ${stitch("#fbe6b0")}/>
-  <g filter="url(#puff)"><ellipse cx="${hx-hr*.2}" cy="${hy-hr*.22}" rx="${ex}" ry="${ex*1.15}" fill="#fff"/><ellipse cx="${hx+hr*.36}" cy="${hy-hr*.22}" rx="${ex}" ry="${ex*1.15}" fill="#fff"/><circle cx="${hx-hr*.62}" cy="${hy+hr*.2}" r="${hr*.14}" fill="#e07a5a"/><circle cx="${hx+hr*.74}" cy="${hy+hr*.18}" r="${hr*.12}" fill="#e07a5a"/><ellipse cx="${hx+hr*.12}" cy="${hy+hr*.36}" rx="${hr*.3}" ry="${open}" fill="#6e1d14"/></g>
-  <circle cx="${hx-hr*.14}" cy="${hy-hr*.18}" r="${ex*.5}" fill="#141a30"/><circle cx="${hx+hr*.42}" cy="${hy-hr*.18}" r="${ex*.5}" fill="#141a30"/><circle cx="${hx-hr*.1}" cy="${hy-hr*.24}" r="${ex*.16}" fill="#fff"/><circle cx="${hx+hr*.46}" cy="${hy-hr*.24}" r="${ex*.16}" fill="#fff"/>
-  <ellipse cx="${hx+hr*.14}" cy="${hy+hr*.36+open*.45}" rx="${hr*.16}" ry="${open*.45}" fill="#d8644e"/>`,hx-hr-34,hy-hr-74,2*hr+76,2*hr+104);
+ const hx=headX(),hr=r+9;
+ s+=IM(busy?"munch-head-open":"munch-head",hx,2*hr*1.12,busy?365/290:328/256);
  const tok=++catTok;ready(s).then(()=>{if(tok===catTok){$("cat").innerHTML=s;$("cat").style.opacity=1}});
 }
 
@@ -313,7 +303,7 @@ function setFoods(){
 const RAYS=`<g class="rays" stroke="#ffe08a" stroke-width="8" stroke-linecap="round"><path d="M-8 10l-12-8M-10 52h-16M-6 90l-12 8M108 10l12-8M110 52h16M106 90l12 8M50-12v-14"/></g>`;
 function addFood(id,i,n){
  const g=document.createElementNS(NS,"g");g.setAttribute("class","food");g.dataset.food=id;g.setAttribute("role","button");g.setAttribute("tabindex","0");g.setAttribute("aria-label",w(id));
- g.innerHTML=`${RAYS}<g class="lift">${pic(`<g filter="url(#puff)">${FOOD[id]}</g>`,-25,-25,160,170)}</g><rect class="hit" x="-10" y="-10" width="120" height="120" rx="16"/>`;
+ g.innerHTML=`${RAYS}<g class="lift">${fimg(FOODIMG[id],-8,-8,116,116)}</g><rect class="hit" x="-10" y="-10" width="120" height="120" rx="16"/>`;
  const p=place(i,n);g.style.transform=`translate(${p.x+50*S*.7}px,${p.y+100*S*.7}px) scale(${S*.3})`;g.style.opacity=0;
  $("foods").appendChild(g);const o={id,el:g,i,p};slots.push(o);
  requestAnimationFrame(()=>requestAnimationFrame(()=>{g.style.transform=`translate(${p.x}px,${p.y}px) scale(${S})`;g.style.opacity=1}));
@@ -362,7 +352,7 @@ function metamorph(){
  busy=true;want=null;
  // the caterpillar hangs a felt cocoon under the shelf, rests, and a butterfly flies out
  $("cat").style.transition="opacity .6s";$("cat").style.opacity=0;
- const c=$("cocoon");c.innerHTML=`<g class="wobble">${pic(`<path d="M450 370v34" stroke="#f4e6c8" stroke-width="4"/><g filter="url(#puff)"><ellipse cx="450" cy="460" rx="42" ry="64" fill="#b98a55"/></g><path d="M416 438c22 12 46 12 68 0M412 466c24 13 52 13 76 0M418 494c20 10 44 10 64 0" ${stitch("#f1d6a8")}/>`,390,366,130,190)}</g>`;
+ const c=$("cocoon");c.innerHTML=`<g class="wobble"><image href="../felt/munch-cocoon.webp" x="${450-47}" y="366" width="94" height="182" preserveAspectRatio="none"/></g>`;
  c.style.transition="opacity .6s";c.style.opacity=1;LP.sfx.twinkle();
  setTimeout(()=>{ // the cocoon is ready: tap it (or press any key) to help the butterfly out
   say(L().help,HL().help);stage="cocoon";
@@ -376,11 +366,7 @@ function release(){
  setTimeout(()=>{c.classList.remove("shake");
   c.style.opacity=0;
   const f=$("fly");
-  // both wings sit inside one felt filter, so the mirrored wing is shaded the same way as the other
-  const wingShape=sx=>`<g transform="scale(${sx} 1)"><path d="M0 0C30-70 110-80 128-34 132 0 76 12 0 0Z" fill="#c4562a"/><path d="M0 0C42 12 96 32 84 76 62 96 18 52 0 0Z" fill="#d9952b"/><circle cx="84" cy="-30" r="15" fill="#f6ead2"/><circle cx="48" cy="-40" r="9" fill="#2f5d6e"/><circle cx="56" cy="44" r="10" fill="#7e8c3a"/></g>`;
-  const wingStitch=sx=>`<path transform="scale(${sx} 1)" d="M8-6C34-56 100-66 116-34 118-8 70 2 8-6Z" ${stitch("#ffffffa0")}/>`;
-  const wing=()=>pic(`<g filter="url(#puff)">${wingShape(1)}${wingShape(-1)}</g>${wingStitch(1)}${wingStitch(-1)}`,-160,-110,320,220);
-  f.innerHTML=`<g id="bf" style="transition:transform 3.2s ease-in,opacity .4s;transform:translate(450px,420px)"><g class="flap">${wing()}</g>${pic(`<g filter="url(#puff)"><ellipse rx="11" ry="38" cy="14" fill="#3a2414"/></g><path d="M-4-20q-8-18-16-24M4-20q8-18 16-24" stroke="#3a2414" stroke-width="4" fill="none" stroke-linecap="round"/><g filter="url(#cotton)"><circle cx="-20" cy="-46" r="7" fill="#3f7f86"/><circle cx="20" cy="-46" r="7" fill="#3f7f86"/></g>`,-40,-70,80,140)}</g>`;
+  f.innerHTML=`<g id="bf" style="transition:transform 3.2s ease-in,opacity .4s;transform:translate(450px,420px)"><g class="flap"><image href="../felt/munch-butterfly.webp" x="-160" y="-128" width="320" height="255" preserveAspectRatio="none"/></g></g>`;
   f.style.opacity=1;LP.sfx.chime();say(L().butterfly,HL().butterfly);
   for(let i=0;i<10;i++)setTimeout(()=>LP.burst(innerWidth*(.25+Math.random()*.5),innerHeight*(.25+Math.random()*.4),8),i*160);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{$("bf").style.transform="translate(760px,-60px)"}));
@@ -398,6 +384,8 @@ function newRound(){
 LP.init({langs:ALLLANGS,onLang:()=>{document.title=L().title;slots.forEach(s=>s.el.setAttribute("aria-label",w(s.id)));if(want)sayWhere(false);else if(stage==="cocoon")say(L().help,HL().help,false);else say(L().title,HL().title,false)},
  onAge:()=>{if(!busy&&eaten===0){goal=[3,4,5][Math.min(2,LP.age)];setFoods();want=null;ask()}}});
 document.title=L().title;
+const SHELF=`<rect x="40" y="318" width="820" height="16" rx="3" fill="url(#flute)" filter="url(#board)"/><rect x="40" y="332" width="820" height="38" rx="2" fill="url(#corr)" filter="url(#board)"/><rect x="52" y="370" width="16" height="60" fill="#7d4421" filter="url(#board)"/><rect x="832" y="370" width="16" height="60" fill="#7d4421" filter="url(#board)"/><rect x="40" y="368" width="820" height="10" rx="3" fill="#000" opacity=".12"/><path d="M40 333h820" stroke="#8d5a2b" stroke-width="2" opacity=".5"/>`;
+$("shelf").innerHTML=pic(SHELF,20,300,860,150);
 goal=[3,4,5][Math.min(2,LP.age)];fit();drawCat(false);setFoods();
 document.fonts&&document.fonts.ready.then(()=>{fit();drawCard()});
 say(L().title,HL().title,false);
