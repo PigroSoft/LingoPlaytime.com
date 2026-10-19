@@ -650,7 +650,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   let racG=null,racS=null,racGAge=-1,racSAge=-1;
   function mascotGames(age){
     const card=$("mascotG").parentNode;if(!card.dataset.room){const R=["night-room","night-room-pink","night-room-forest","night-room-lilac"];card.dataset.room=R[Math.floor(Math.random()*R.length)];card.style.setProperty("--hero",`url(/felt/${card.dataset.room}.webp)`)}
-    if(!racG){racG=LPRaccoon.create($("mascotGi"),{age});racGAge=age;$("mascotG").addEventListener("pointerdown",()=>racG.wave());setTimeout(()=>racG.wave(),500)}
+    if(!racG){racG=LPRaccoon.create($("mascotGi"),{age});racGAge=age;$("mascotG").addEventListener("pointerdown",()=>racG.trick());setTimeout(()=>racG.wave(),500)}
     else if(racGAge!==age){racG.setAge(age);racGAge=age;racG.delight()}
   }
   function mascotSetup(age,cheer){

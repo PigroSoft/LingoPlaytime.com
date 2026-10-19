@@ -325,7 +325,7 @@ function serve(){if(R.phase!=="serve")return;R.phase="done";$("bowl").hidden=tru
   const fl=document.createElement("div");fl.className="fly";fl.innerHTML=$("bowl").innerHTML;fl.classList.add("bowlfly");fl.style.setProperty("--sb",$("bowl").style.getPropertyValue("--sb"));fl.style.left=b.left+"px";fl.style.top=b.top+"px";document.body.appendChild(fl);
   requestAnimationFrame(()=>{fl.style.transform=`translate(${g.left-b.left}px,${g.top-b.top+20}px) scale(.7)`;fl.style.opacity=0});
   setTimeout(()=>{fl.remove();$("guest").classList.add("eat");animalSound(R.guest.e);setTimeout(nom,180);
-    const l=lang(),t=P[l].yum(cook());showWord(t);say(P[l].yumSay(cook()),l);rac.delight();
+    const l=lang(),t=P[l].yum(cook());showWord(t);say(P[l].yumSay(cook()),l);rac.clap();
     st.stickers.push(R.guest.e);save();const s=document.createElement("span");s.innerHTML=aimg(R.guest.e);$("stickers").appendChild(s);},560);
   setTimeout(()=>{$("guest").className="guest away";},3800);
   setTimeout(()=>{st.li++;newRound()},4600);}
