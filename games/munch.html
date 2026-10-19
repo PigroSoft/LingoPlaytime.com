@@ -240,7 +240,7 @@ function drawCard(){
  const ct=$("ct");let fs=56;ct.setAttribute("font-size",fs);
  let tw=ct.getComputedTextLength();if(tw>560){fs=Math.floor(fs*560/tw);ct.setAttribute("font-size",fs);tw=ct.getComputedTextLength()}
  let pw=0;if(sub){pw=$("pt").getComputedTextLength()+44}
- const W=Math.max(tw+90,pw+70,260),H=sub?136:96,x0=450-W/2,y0=Math.max(VB.y+10,VB.y+(VB.h-560)*.12+8)+76*VB.h/Math.max(300,innerHeight);
+ const W=Math.max(tw+90,pw+70,260),H=sub?136:96,x0=450-W/2,y0=Math.max(VB.y+10,VB.y+(VB.h-560)*.12+8);
  const set=(id,o)=>{const e=$(id);for(const k in o)e.setAttribute(k,o[k])};
  set("cbg",{x:x0,y:y0,width:W,height:H});set("cst",{x:x0+8,y:y0+8,width:W-16,height:H-16});
  set("ct",{x:450,y:y0+18+fs*.82});
