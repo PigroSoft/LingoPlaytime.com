@@ -6,86 +6,54 @@
 <title>Where's your nose?</title>
 <link rel="stylesheet" href="/assets/fonts.css">
 <style>
-:root{color-scheme:dark;--bg:#D5F0EC;--bg2:#BDE6DF;--ink:#18264A;--paper:#FFFDF8;--sun:#F6C033;--tomato:#E5553B;--teal:#1E9A8F;--lilac:#7A68D9;--sky:#3B8BD4;
-  --display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif}
+:root{color-scheme:dark;--display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif;--sl:44px}
 html,body{height:100%;margin:0}
-body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-.app{height:100%;position:relative;display:flex;flex-direction:column;align-items:center;box-sizing:border-box;padding:max(12px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
-#bubble{font-size:clamp(24px,4.6vw,44px);min-height:1.2em;transition:transform .15s;max-width:100%;box-sizing:border-box}
+body{background:#2a2010;color:#fff;font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.app{position:fixed;inset:0;overflow:hidden}
+/* a felt and cardboard nursery, photographed as one set */
+#plate{position:absolute;inset:0;background:url(../felt/nose-room.webp) 50% 100%/cover no-repeat}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,#0000 58%,#2a15088c 100%)}
+.top{position:absolute;left:0;right:0;top:max(10px,env(safe-area-inset-top,0px));display:flex;justify-content:center;z-index:800;pointer-events:none;padding:0 12px}
+#bubble{font-size:clamp(22px,4.2vw,40px);min-height:1.2em;transition:transform .15s;text-align:center;max-width:94vw;text-shadow:0 2px 0 #0008,0 0 10px #000a}
 #bubble.bump{transform:scale(1.08)}
-.stage{flex:1;min-height:0;width:100%;position:relative;margin-top:8px}
-svg#kid{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.part{cursor:pointer;transform-box:fill-box;transform-origin:center}
-.part .hit{fill:#0000;stroke:none}
-.part:focus{outline:none}
-.part:focus-visible .hit{fill:#3B8BD422;stroke:#3B8BD4;stroke-width:3}
-.part.go{animation:boing .5s cubic-bezier(.3,1.6,.5,1)}
-.part.glow .hit{fill:#ffd23f44;stroke:#ffd23f;stroke-width:4;animation:pulse 1s ease-in-out infinite;filter:drop-shadow(0 0 10px #ffd23f)}
-@keyframes boing{30%{transform:scale(1.18)}60%{transform:scale(.94)}}
-@keyframes pulse{50%{fill:#F6C03388}}
-.blink{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
-@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
-@media (prefers-reduced-motion:reduce){.part.go,.blink,.part.glow .hit{animation:none}}
+#stage{position:absolute;inset:0}
+#kid{position:absolute;z-index:10}
+#kid.out{transform:translateX(120vw);transition:transform .7s steps(7)}
+#kid.in{transform:translateX(-120vw)}
+#kid.in.go{transform:none;transition:transform .7s steps(7)}
+#rock,#idle{position:absolute;inset:0}
+#rock{transform-origin:50% 100%}
+#rock.sway{animation:sway 6s steps(30) infinite}
+@keyframes sway{0%,100%{transform:translateX(-6vw)}50%{transform:translateX(6vw)}}
+#rock.dance{animation:dance .5s steps(1) infinite}
+@keyframes dance{0%{transform:rotate(-4deg) translateY(0)}25%{transform:rotate(0) translateY(-5%)}50%{transform:rotate(4deg) translateY(0)}75%{transform:rotate(0) translateY(-5%)}}
+#idle{transform-origin:50% 100%;animation:idle 1.8s steps(1) infinite}
+@keyframes idle{0%{transform:rotate(-.7deg)}50%{transform:rotate(.7deg)}}
+#shadow{position:absolute;left:8%;right:8%;bottom:-3%;height:7%;background:radial-gradient(ellipse at center,#0009 0,#0000 70%);pointer-events:none}
+#kidimg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;filter:drop-shadow(0 6px 8px #0006)}
+.spot{position:absolute;border:0;padding:0;margin:0;border-radius:50%;background:none;cursor:pointer;font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
+.spot:focus-visible{outline:5px solid #ffd23f;outline-offset:3px}
+.spot.glow{background:#ffd23f33;box-shadow:0 0 0 4px #ffd23f,0 0 22px #ffd23f;animation:glow .8s steps(2) infinite}
+@keyframes glow{50%{background:#ffd23f77}}
+.patch{position:absolute;left:0;top:0;border:4px dashed #E5553B;border-radius:50%;box-sizing:border-box;background-repeat:no-repeat;box-shadow:0 0 0 4px #FFF4DA,0 6px 10px #0007;background-clip:padding-box;pointer-events:none;z-index:900;will-change:transform}
+.patch.mini{border-width:2px;box-shadow:0 0 0 2px #FFF4DA,0 2px 3px #0006;position:absolute}
+#tray{position:absolute;left:50%;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:800;display:flex;gap:calc(var(--sl)*.16);padding:calc(var(--sl)*.16) calc(var(--sl)*.28);background:#f6ead0;border:2px dashed #b8401f88;border-radius:calc(var(--sl)*.7);box-shadow:0 3px 0 #c9b583,0 6px 12px #0005}
+.slot{position:relative;width:var(--sl);height:var(--sl);border:0;padding:0;margin:0;background:none;border-radius:50%;cursor:pointer;-webkit-appearance:none;appearance:none}
+.slot::before{content:"";position:absolute;inset:3px;border-radius:50%;border:3px dashed #b8401f55;box-sizing:border-box}
+.slot.on::before{display:none}
+.slot.on{animation:slotpop .5s steps(4)}
+@keyframes slotpop{0%{transform:scale(.4)}45%{transform:scale(1.35) rotate(8deg)}75%{transform:scale(.92)}}
+.slot:focus-visible{outline:4px solid #3B8BD4;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#idle,#rock.sway,#rock.dance,.slot.on,.spot.glow{animation:none}#kid.out,#kid.in.go{transition:none}}
 </style>
 </head>
 <body>
 <script>window.LP_GAME="face"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
 <div class="app" id="app">
-  <div id="bubble" class="k-bubble" aria-live="polite"></div>
-  <div class="stage">
-    <svg id="kid" viewBox="0 0 240 360" role="img" aria-label="A child to tap">
-      <ellipse cx="120" cy="352" rx="80" ry="9" fill="#000" opacity=".28"/>
-      <!-- legs and feet -->
-      <g class="part" data-part="feet" tabindex="0" role="button">
-        <ellipse cx="96" cy="342" rx="22" ry="11" fill="url(#k-red)"/><ellipse cx="144" cy="342" rx="22" ry="11" fill="url(#k-red)"/>
-        <rect class="hit" x="62" y="322" width="116" height="36" rx="12"/>
-      </g>
-      <rect x="86" y="246" width="22" height="96" rx="10" fill="url(#k-blue)"/><rect x="132" y="246" width="22" height="96" rx="10" fill="url(#k-blue)"/>
-      <g class="part" data-part="knees" tabindex="0" role="button">
-        <circle cx="97" cy="294" r="12" class="skin"/><circle cx="143" cy="294" r="12" class="skin"/>
-        <rect class="hit" x="74" y="274" width="92" height="40" rx="12"/>
-      </g>
-      <!-- body -->
-      <path d="M70 172c0-18 18-28 50-28s50 10 50 28v80H70Z" fill="url(#k-teal)"/>
-      <path d="M70 196h100M70 220h100" stroke="#119a8a" stroke-width="6" opacity=".6"/>
-      <g class="part" data-part="tummy" tabindex="0" role="button">
-        <circle cx="120" cy="216" r="16" fill="#fff3" />
-        <circle cx="120" cy="218" r="3" fill="#18264A55"/>
-        <rect class="hit" x="86" y="186" width="68" height="62" rx="16"/>
-      </g>
-      <!-- arms and hands -->
-      <path d="M72 168c-22 10-32 30-36 52" stroke="#20c9b0" stroke-width="18" stroke-linecap="round" fill="none"/>
-      <path d="M168 168c22 10 32 30 36 52" stroke="#20c9b0" stroke-width="18" stroke-linecap="round" fill="none"/>
-      <g class="part" data-part="hands" tabindex="0" role="button">
-        <circle cx="34" cy="230" r="14" class="skin"/><circle cx="206" cy="230" r="14" class="skin"/>
-        <rect class="hit" x="8" y="204" width="52" height="54" rx="16"/><rect class="hit" x="180" y="204" width="52" height="54" rx="16"/>
-      </g>
-      <!-- head -->
-      <rect x="108" y="128" width="24" height="22" class="skin"/>
-      <g class="part" data-part="ears" tabindex="0" role="button">
-        <circle cx="66" cy="86" r="14" class="skin"/><circle cx="174" cy="86" r="14" class="skin"/>
-        <rect class="hit" x="42" y="64" width="34" height="46" rx="12"/><rect class="hit" x="164" y="64" width="34" height="46" rx="12"/>
-      </g>
-      <circle cx="120" cy="84" r="54" class="skin"/><ellipse cx="96" cy="58" rx="16" ry="9" fill="#fff" opacity=".22" transform="rotate(-28 96 58)"/>
-      <g class="part" data-part="hair" tabindex="0" role="button">
-        <path class="hairc" d="M64 78c-4-40 30-60 60-58 36 2 60 26 54 60-12-14-26-22-40-22-6 10-22 16-34 14 4-6 4-10 2-14-16 4-28 10-42 20Z"/>
-        <rect class="hit" x="60" y="18" width="120" height="44" rx="16"/>
-      </g>
-      <g class="part" data-part="eyes" tabindex="0" role="button">
-        <g class="blink"><ellipse cx="100" cy="82" rx="7" ry="9" fill="#1a1440"/><ellipse cx="140" cy="82" rx="7" ry="9" fill="#1a1440"/><circle cx="102" cy="78" r="2.8" fill="#fff"/><circle cx="142" cy="78" r="2.8" fill="#fff"/></g>
-        <rect class="hit" x="84" y="66" width="72" height="30" rx="12"/>
-      </g>
-      <circle cx="88" cy="104" r="8" fill="#ff4f8b55"/><circle cx="152" cy="104" r="8" fill="#ff4f8b55"/>
-      <g class="part" data-part="nose" tabindex="0" role="button">
-        <ellipse cx="120" cy="100" rx="7" ry="6" class="skin2"/>
-        <rect class="hit" x="104" y="92" width="32" height="18" rx="8"/>
-      </g>
-      <g class="part" data-part="mouth" tabindex="0" role="button">
-        <path d="M104 116c8 12 24 12 32 0" stroke="#1a1440" stroke-width="4" fill="#ff4d5e" stroke-linecap="round"/>
-        <rect class="hit" x="98" y="110" width="44" height="22" rx="10"/>
-      </g>
-    </svg>
-  </div>
+  <div id="plate"></div><div id="vig"></div>
+  <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
+  <div id="stage"><div id="kid"><div id="rock"><div id="shadow"></div><div id="idle"><img id="kidimg" alt="" draggable="false"></div></div></div></div>
+  <div id="tray"></div>
 </div>
 <script>
 /* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
@@ -110,59 +78,186 @@ const DATA={
   pt:{title:"Onde está o teu nariz?",yes:"Sim, isso mesmo!",show:"Mostra-me!"}
  }
 };
+
+const KIDS=[{"img":"peach","w":318,"h":547,"parts":{"hair":[[150,58,52]],"eyes":[[113,127,20],[200,127,20]],"ears":[[38,142,24],[275,138,24]],"nose":[[157,148,17]],"mouth":[[158,180,22]],"tummy":[[160,305,42]],"hands":[[18,385,28],[300,385,28]],"knees":[[108,455,28],[205,455,28]],"feet":[[100,525,30],[200,525,30]]}},{"img":"deep","w":328,"h":555,"parts":{"hair":[[152,55,55]],"eyes":[[112,135,20],[205,135,20]],"ears":[[54,160,24],[262,160,24]],"nose":[[162,160,17]],"mouth":[[160,190,22]],"tummy":[[160,320,42]],"hands":[[22,400,28],[312,400,28]],"knees":[[112,465,28],[202,465,28]],"feet":[[117,532,30],[212,532,30]]}},{"img":"tan","w":324,"h":546,"parts":{"hair":[[160,50,55]],"eyes":[[114,125,20],[194,127,20]],"ears":[[44,150,24],[274,150,24]],"nose":[[159,148,17]],"mouth":[[160,180,22]],"tummy":[[154,300,42]],"hands":[[17,395,28],[309,395,28]],"knees":[[109,445,26],[199,445,26]],"feet":[[129,520,28],[214,520,28]]}},{"img":"pale","w":319,"h":567,"parts":{"hair":[[150,70,52]],"eyes":[[110,138,20],[197,138,20]],"ears":[[38,185,24],[268,185,24]],"nose":[[153,168,17]],"mouth":[[158,192,22]],"tummy":[[155,335,42]],"hands":[[20,400,28],[298,400,28]],"knees":[[112,460,28],[205,460,28]],"feet":[[115,548,28],[210,548,28]]}}];
 const P=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
+const IDS=["hair","eyes","ears","nose","mouth","hands","tummy","knees","feet"];
 const $=id=>document.getElementById(id);
 const L=()=>LP.t(DATA.lines);
 const w=id=>(P[id][LP.lang]||P[id].en);
-let want=null,misses=0,lastPart=null;
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let kid=null,kidN=-1,have=new Set(),want=null,misses=0,lastPart=null,streak=0,busy=false,S=1,timers=[];
+const later=(f,ms)=>{const t=setTimeout(f,ms);timers.push(t);return t};
 
-// a different child each visit: skin and hair from a range of real tones
-const SKIN=[["#F5D0B0","#E8B48E"],["#E2AE84","#CC915F"],["#C68A5E","#A86D44"],["#8D5A3B","#734528"],["#5E3A26","#4A2A19"]];
-const HAIR=["#2B1D14","#5A3A22","#B5651D","#E8C15A","#1A1A1A"];
-(function dress(){const s=SKIN[Math.floor(Math.random()*SKIN.length)];document.querySelectorAll(".skin").forEach(e=>e.setAttribute("fill",s[0]));document.querySelectorAll(".skin2").forEach(e=>e.setAttribute("fill",s[1]));document.querySelector(".hairc").setAttribute("fill",HAIR[Math.floor(Math.random()*HAIR.length)])})();
+// a small noise for every part: free to play, no files needed
+const FX={
+ hair:()=>{LP.noise(.45,.16,"bandpass",900,1.5,0,3200);LP.tone(700,.25,"triangle",.07,.05,1100)},
+ eyes:()=>{LP.tone(1400,.07,"sine",.18);LP.tone(1750,.07,"sine",.18,.11)},
+ ears:()=>{LP.tone(300,.4,"triangle",.2,0,620);LP.tone(300,.4,"triangle",.14,.2,640)},
+ nose:()=>{LP.tone(392,.16,"square",.1,0,330);LP.tone(262,.28,"square",.1,.14)},
+ mouth:()=>{[0,.15,.3].forEach(t=>LP.noise(.1,.22,"lowpass",700,2,t,300))},
+ tummy:()=>{LP.tone(110,.5,"sawtooth",.09,0,70);LP.noise(.5,.14,"lowpass",300,1,0,120)},
+ hands:()=>{LP.noise(.07,.3,"bandpass",1800,.8,0);LP.noise(.07,.3,"bandpass",1800,.8,.17)},
+ knees:()=>{LP.tone(340,.09,"triangle",.3,0,200);LP.tone(300,.09,"triangle",.3,.14,180)},
+ feet:()=>{LP.tone(120,.2,"sine",.35,0,60);LP.noise(.1,.18,"lowpass",400,1,0);LP.tone(110,.2,"sine",.35,.28,55)}
+};
 
 function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
 function label(){document.querySelectorAll("[data-part]").forEach(g=>g.setAttribute("aria-label",w(g.dataset.part).w))}
-function bounce(id){const g=document.querySelector(`[data-part="${id}"]`);g.classList.remove("go");void g.getBBox();g.classList.add("go");return g}
-function centre(g){const r=g.getBoundingClientRect();return [r.left+r.width/2,r.top+r.height/2]}
+
+/* ---------- layout: the kid is placed by image size, the tray along the floor ---------- */
+function layout(){
+ const W=innerWidth,H=innerHeight;
+ const sl=Math.max(32,Math.min(60,Math.floor(Math.min((W-24)/10.2,H/11))));
+ document.documentElement.style.setProperty("--sl",sl+"px");
+ const topH=Math.max(10,0)+clampN(W*.042,22,40)*1.5+14,trayH=sl*1.32+22;
+ const availH=Math.max(160,H-topH-trayH-8);
+ S=Math.min(availH/kid.h,(W*.9)/kid.w);
+ const kw=kid.w*S,kh=kid.h*S,el=$("kid");
+ el.style.cssText+=`;left:${(W-kw)/2}px;top:${topH+(availH-kh)/2+4}px;width:${kw}px;height:${kh}px`;
+ placeSpots();
+}
+const clampN=(v,a,b)=>Math.max(a,Math.min(b,v));
+function placeSpots(){
+ document.querySelectorAll(".spot").forEach(b=>{
+  const [cx,cy,r]=b.dataset.reg.split(",").map(Number),k=1.3;
+  b.style.left=(cx-r*k)*S+"px";b.style.top=(cy-r*k)*S+"px";b.style.width=b.style.height=(r*k*2*S)+"px";
+ });
+}
+
+/* ---------- the felt kid ---------- */
+function setKid(first){
+ let n;do{n=Math.floor(Math.random()*KIDS.length)}while(n===kidN&&KIDS.length>1);kidN=n;kid=KIDS[n];
+ $("kidimg").src="../felt/nose-kid-"+kid.img+".webp";
+ document.querySelectorAll(".spot").forEach(b=>b.remove());
+ const idle=$("idle");
+ IDS.forEach(id=>kid.parts[id].forEach(reg=>{
+  const b=document.createElement("button");b.type="button";b.className="spot";b.dataset.part=id;b.dataset.reg=reg.join(",");
+  b.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.stopPropagation();e.preventDefault();tapPart(id)}});
+  idle.appendChild(b);
+ }));
+ have=new Set();want=null;misses=0;streak=0;busy=false;
+ $("rock").classList.remove("sway","dance");
+ buildTray();layout();label();
+}
+function buildTray(){
+ const t=$("tray");t.innerHTML="";
+ IDS.forEach(id=>{const s=document.createElement("button");s.type="button";s.className="slot";s.dataset.slot=id;
+  s.addEventListener("keydown",e=>{e.stopPropagation()});
+  s.addEventListener("click",()=>{if(have.has(id)&&!busy){say(id)}});t.appendChild(s)});
+}
+function say(id,noBubble){if(!noBubble)bubble(w(id).w);LP.say(w(id).w);LPLearn.heard(id,LP.lang);later(FX[id],220)}
+
+/* a round felt badge showing a zoomed bit of the real kid */
+function patch(reg,D,cls){
+ const [cx,cy,r]=reg,inner=D-(cls==="mini"?4:8),k=inner/(r*2*1.35);
+ const p=document.createElement("div");p.className="patch"+(cls?" "+cls:"");
+ p.style.width=p.style.height=D+"px";
+ p.style.backgroundImage=`url(../felt/nose-kid-${kid.img}.webp)`;
+ p.style.backgroundSize=`${kid.w*k}px ${kid.h*k}px`;
+ p.style.backgroundPosition=`${inner/2-cx*k}px ${inner/2-cy*k}px`;
+ return p;
+}
+function stageXY(reg){ // centre of a region in page pixels
+ const r=$("kid").getBoundingClientRect();return [r.left+reg[0]*S,r.top+reg[1]*S];
+}
+const A=(el,kf,o)=>reduce?{finished:Promise.resolve()}:el.animate(kf,Object.assign({fill:"forwards"},o));
+
+/* the part pops out as a felt badge; the first time it is found it flies to its tray slot */
+function pop(id,collect){
+ const regs=kid.parts[id],D=clampN(regs[0][2]*2*S*2.3,76,150),flights=[];
+ const slot=document.querySelector(`.slot[data-slot="${id}"]`),sr=slot.getBoundingClientRect(),sc=[sr.left+sr.width/2,sr.top+sr.height/2];
+ regs.forEach((reg,i)=>{
+  const [x,y]=stageXY(reg),p=patch(reg,D);document.body.appendChild(p);
+  const mini=regs.length>1?sr.width*.6:sr.width*.84,dx=regs.length>1?(i?1:-1)*sr.width*.2:0;
+  const base=`translate(${x-D/2}px,${y-D/2}px)`;
+  p.style.transform=base+" scale(.2)";
+  const a=A(p,[{transform:base+" scale(.2)"},{transform:base+" scale(1.25) rotate(-6deg)"},{transform:base+" scale(1) rotate(3deg)"},{transform:base+" scale(1.08) rotate(-2deg)"},{transform:base+" scale(1)"}],{duration:520,easing:"steps(5)"});
+  const done=a.finished.then(()=>new Promise(r=>setTimeout(r,collect?260:120))).then(()=>{
+   if(collect){
+    const to=`translate(${sc[0]+dx-D/2}px,${sc[1]-D/2}px) scale(${mini/D})`;
+    return A(p,[{transform:base+" scale(1)"},{transform:to}],{duration:540,easing:"steps(7)"}).finished;
+   }
+   return A(p,[{transform:base+" scale(1)",opacity:1},{transform:base+" scale(.2)",opacity:0}],{duration:300,easing:"steps(3)"}).finished;
+  }).then(()=>p.remove());
+  flights.push(done);
+ });
+ if(collect)Promise.all(flights).then(()=>{
+  slot.innerHTML="";slot.classList.add("on");
+  const D2=sr.width,m=regs.length>1?D2*.6:D2*.84;
+  regs.forEach((reg,i)=>{const p=patch(reg,m,"mini");p.style.left=(regs.length>1?(i?D2*.4:0):D2*.08)+"px";p.style.top=(regs.length>1?(i?D2*.4:0):D2*.08)+"px";p.style.transform="none";p.style.zIndex=1;p.style.pointerEvents="none";slot.appendChild(p)});
+  LP.sfx.twinkle();
+ });
+}
+
+function glowPart(id,on){document.querySelectorAll(`[data-part="${id}"]`).forEach(b=>b.classList.toggle("glow",on))}
+function boing(){const r=$("idle");r.style.transition="transform .12s";r.style.transform="scale(1.03)";setTimeout(()=>{r.style.transform="";setTimeout(()=>r.style.transition="",150)},130)}
 
 function tapPart(id){
- const g=bounce(id);
+ if(busy){LP.sfx.pop();return}
  document.querySelectorAll(".glow").forEach(x=>x.classList.remove("glow"));
+ boing();
  if(want){
   if(id===want){
-   LPLearn.asked(id,LP.lang,true);want=null;misses=0;LP.sfx.chime();const [x,y]=centre(g);LP.burst(x,y,20);
-   bubble(L().yes+" "+L().show);LP.say(L().yes);LP.say(L().show,true);
-   setTimeout(ask,4200);return;
+   if(misses===0)LPLearn.asked(id,LP.lang,true);streak++;want=null;misses=0;
+   LP.sfx.chime();pop(id,!have.has(id));have.add(id);
+   const r=stageXY(kid.parts[id][0]);LP.burst(r[0],r[1],18);
+   bubble(L().yes+" "+L().show);LP.say(L().yes);LP.say(L().show,true);later(()=>FX[id](),300);
+   if(LP.age>=2&&streak>=3)$("rock").classList.add("sway");
+   if(have.size>=IDS.length){later(finale,2600);return}
+   later(ask,4000);return;
   }
-  LPLearn.asked(want,LP.lang,false);misses++;LP.sfx.pop();bubble(w(id).w);LP.say(w(id).w);
-  if(misses>=2)setTimeout(()=>document.querySelector(`[data-part="${want}"]`).classList.add("glow"),900);
-  setTimeout(()=>{if(want){bubble(w(want).q);LP.say(w(want).q)}},1600);
+  LPLearn.asked(want,LP.lang,false);misses++;streak=Math.max(0,streak-1);if(streak<3)$("rock").classList.remove("sway");
+  LP.sfx.pop();pop(id,false);bubble(w(id).w);LP.say(w(id).w);later(FX[id],200);
+  if(misses>=2)later(()=>glowPart(want,true),900);
+  later(()=>{if(want){bubble(w(want).q);LP.say(w(want).q)}},1700);
   return;
  }
- LP.sfx.pop();const [x,y]=centre(g);LP.burst(x,y,8);bubble(w(id).w);LP.say(w(id).w);LPLearn.heard(id,LP.lang);
+ const first=!have.has(id);
+ pop(id,first);have.add(id);say(id);
+ if(have.size>=IDS.length&&first)later(finale,2600);
 }
 function ask(){
+ if(busy)return;
  if(LP.age<1&&LPLearn.summary(LP.lang).met<8){want=null;bubble(L().title);return}
- const ids=DATA.words.map(x=>x.id).filter(i=>i!==lastPart);want=LPLearn.pick(ids,x=>x,1,LP.lang)[0];lastPart=want;misses=0;
+ const left=IDS.filter(i=>!have.has(i)),pool=(left.length?left:IDS).filter(i=>i!==lastPart);
+ want=LPLearn.pick(pool.length?pool:IDS,x=>x,1,LP.lang)[0];lastPart=want;misses=0;
  bubble(w(want).q);LP.say(w(want).q);
+}
+
+/* all nine in the tray: the kid dances, every part says its word, then a new kid walks on */
+function finale(){
+ busy=true;want=null;timers.forEach(clearTimeout);timers=[];
+ const rock=$("rock");rock.classList.remove("sway");rock.classList.add("dance");
+ LP.sfx.chime();bubble(L().title);
+ const order=["hair","eyes","ears","nose","mouth","hands","tummy","knees","feet"];
+ order.forEach((id,i)=>later(()=>{
+  const r=stageXY(kid.parts[id][0]);LP.burst(r[0],r[1],10);bubble(w(id).w);LP.say(w(id).w,i>0);later(FX[id],200);pop(id,false);
+ },900+i*1250));
+ later(()=>{rock.classList.remove("dance");LP.sfx.chime()},900+order.length*1250);
+ later(()=>{const k=$("kid");k.classList.add("out")},900+order.length*1250+700);
+ later(()=>{
+  const k=$("kid");k.classList.remove("out");k.classList.add("in");setKid();void k.offsetWidth;k.classList.add("go");
+  later(()=>{k.classList.remove("in","go");bubble(L().title);later(ask,500)},800);
+ },900+order.length*1250+1500);
 }
 
 LP.init({langs:ALLLANGS,
  onLang:()=>{label();document.title=L().title;bubble(want?w(want).q:L().title)},
- onAge:()=>{want=null;bubble(L().title)}});
-LPLook.sky(document.getElementById("app"),{moon:false});
-label();document.title=L().title;bubble(L().title);
-LP.start(L().title,()=>setTimeout(ask,400));
+ onAge:()=>{want=null;$("rock").classList.remove("sway");bubble(L().title)}});
+setKid();document.title=L().title;bubble(L().title);
+addEventListener("resize",()=>{layout()});
+LP.start(L().title,()=>later(ask,400));
 LP.mash((e)=>{
+ if(busy)return;
  const g=e.target.closest&&e.target.closest("[data-part]");
  if(g){tapPart(g.dataset.part);return}
- // a tap off the child: little ones get a random part named; when asked, it points them to the answer
+ // a tap off the hotspots: little ones get a part shown, older ones are pointed to the answer
  if(want&&LP.age<2){tapPart(want);return}
- if(want){document.querySelector(`[data-part="${want}"]`).classList.add("glow");return}
- tapPart(LP.next("face",DATA.words.map(x=>x.id)));
+ if(want){glowPart(want,true);return}
+ const left=IDS.filter(i=>!have.has(i));
+ tapPart(LP.next("face",left.length?left:IDS));
 });
-document.querySelectorAll("[data-part]").forEach(g=>g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.stopPropagation();e.preventDefault();tapPart(g.dataset.part)}}));
 </script>
 </body>
 </html>
