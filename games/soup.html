@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<script>window.LP_GAME="soup"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="look.js"></script><script src="audio/sfx.soup.js"></script><script src="sfx.js"></script>
+<script>window.LP_GAME="soup"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="look.js"></script><script src="../assets/raccoon.js"></script><script src="audio/sfx.soup.js"></script><script src="sfx.js"></script>
 <title>Little Soup Pot</title>
 <link rel="stylesheet" href="/assets/fonts.css">
 <style>
@@ -29,7 +29,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding-blo
 .word.bump{animation:bump .4s}
 .word .ear{font-size:.5em;vertical-align:middle;opacity:.7}
 @keyframes bump{40%{transform:scale(1.12)}}
-.chef{display:block;height:clamp(150px,38vh,300px);width:auto;margin-right:-4%;flex:none;filter:drop-shadow(0 6px 8px #0005);transform-origin:50% 100%}
+.chef{display:block;width:clamp(190px,46vh,340px);margin-right:-7%;margin-left:-3%;flex:none;transform-origin:50% 100%}
 .chef.stir{animation:chefbob .5s steps(2) infinite}
 @keyframes chefbob{50%{transform:rotate(-3deg) translateY(-3px)}}
 .guest{position:relative;display:grid;justify-items:center;flex:none}
@@ -103,7 +103,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding-blo
   </header>
   <div class="stage">
     <button class="word" id="word" aria-label="Hear it again"></button>
-    <img class="chef" id="chef" src="../felt/soup-chef.webp" alt="">
+    <div class="chef" id="chef"><div id="rac"></div></div>
     <div class="potwrap">
       <button class="pot" id="pot" aria-label="Soup pot">
         <img class="pimg" src="../felt/soup-pot.webp" alt="">
@@ -200,6 +200,8 @@ try{Object.assign(st,JSON.parse(localStorage.getItem("soupPot")||"{}"),{li:0})}c
 let R={}; // round state
 
 const $=id=>document.getElementById(id);
+const ageNow=()=>((window.LP_SETTINGS||{}).age)||0;
+const rac=LPRaccoon.create($("rac"),{age:ageNow()});
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const lang=()=>st.langs[st.li%st.langs.length];
 const cook=()=>st.name||P[lang()].chef;
@@ -223,7 +225,7 @@ function loadV(){voices=speechSynthesis?.getVoices()||[];
   const miss=Object.values(LANGS).filter(l=>voices.length&&!voices.some(v=>v.lang.replace("_","-").startsWith(l.code.slice(0,2)))).map(l=>l.name);
   $("voiceNote").textContent=miss.length?`No voice on this device for: ${miss.join(", ")}. Words will still show.`:"";}
 if("speechSynthesis"in window){loadV();speechSynthesis.onvoiceschanged=loadV}
-function say(text,l,queue){if(!("speechSynthesis"in window))return;if(!$("setup").hidden)return;if(!queue)speechSynthesis.cancel();
+function say(text,l,queue){if(!$("setup").hidden)return;rac.speak(Math.min(3600,600+text.length*70));if(!("speechSynthesis"in window))return;if(!queue)speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text),code=LANGS[l].code;u.lang=code;u.rate=.85;u.pitch=1.15;
   const v=voices.find(v=>v.lang.replace("_","-")===code)||voices.find(v=>v.lang.startsWith(code.slice(0,2)));if(v)u.voice=v;
   speechSynthesis.speak(u);}
@@ -270,7 +272,7 @@ $("word").addEventListener("pointerdown",()=>{if(!lastFood)return;
 $("want").addEventListener("pointerdown",()=>{if(R.target)say(P[lang()].want(R.target.w[lang()]),lang())});
 
 // round
-function newRound(){const l=lang();
+function newRound(){const l=lang();rac.setAge(ageNow());
   R={phase:"fill",count:0,stirs:0,colors:[],misses:0,target:null,guest:GUESTS[Math.floor(Math.random()*GUESTS.length)]};
   lastFood=null;$("soup").style.background="var(--soup)";$("soup").style.transform="";$("bowl").hidden=true;($("pot").classList.remove("stirring"),$("chef").classList.remove("stir"));
   R.foods=[...FOODS].sort(()=>Math.random()-.5).slice(0,st.mode==="order"?5:6);
@@ -323,7 +325,7 @@ function serve(){if(R.phase!=="serve")return;R.phase="done";$("bowl").hidden=tru
   const fl=document.createElement("div");fl.className="fly";fl.innerHTML=$("bowl").innerHTML;fl.classList.add("bowlfly");fl.style.setProperty("--sb",$("bowl").style.getPropertyValue("--sb"));fl.style.left=b.left+"px";fl.style.top=b.top+"px";document.body.appendChild(fl);
   requestAnimationFrame(()=>{fl.style.transform=`translate(${g.left-b.left}px,${g.top-b.top+20}px) scale(.7)`;fl.style.opacity=0});
   setTimeout(()=>{fl.remove();$("guest").classList.add("eat");animalSound(R.guest.e);setTimeout(nom,180);
-    const l=lang(),t=P[l].yum(cook());showWord(t);say(P[l].yumSay(cook()),l);
+    const l=lang(),t=P[l].yum(cook());showWord(t);say(P[l].yumSay(cook()),l);rac.delight();
     st.stickers.push(R.guest.e);save();const s=document.createElement("span");s.innerHTML=aimg(R.guest.e);$("stickers").appendChild(s);},560);
   setTimeout(()=>{$("guest").className="guest away";},3800);
   setTimeout(()=>{st.li++;newRound()},4600);}
