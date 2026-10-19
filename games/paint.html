@@ -8,25 +8,37 @@
 <style>
 :root{color-scheme:dark;--display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif}
 html,body{height:100%;margin:0}
-body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+body{background:#d9b886 url(../felt/paint-desk.webp) center/cover no-repeat;color:#fff;font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 .app{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;box-sizing:border-box;padding:max(10px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));gap:10px}
 .top{display:flex;align-items:center;justify-content:center;min-height:60px;width:100%}
 #bubble{display:flex;align-items:baseline;gap:14px;font-size:clamp(26px,5vw,48px);min-height:1.2em;transition:transform .15s}
 #bubble.bump{transform:scale(1.08)}
 #bubble .also{font-size:.45em;font-weight:500;opacity:.8}
-.frame{flex:1;min-height:0;width:100%;display:grid;place-items:center;container-type:size}
-#world{width:min(100cqw,100cqh*1.333);aspect-ratio:4/3;max-width:100%;border-radius:28px;overflow:hidden;box-shadow:0 0 0 6px #ffffff1f,0 30px 60px #0008;background:#c9c6d8}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,#0000 55%,#3a1e0a55 100%)}
+.frame{flex:1;min-height:0;width:100%;display:grid;place-items:center;container-type:size;position:relative;z-index:1}
+#board{position:relative;width:min(100cqw,100cqh*1.333);aspect-ratio:4/3;max-width:100%;container-type:inline-size;transform:rotate(-.4deg);
+ background:#b58a58 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .2 0 0 0 0 .1 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+ box-shadow:0 2px 0 #fff3,0 18px 34px #2a14088c,0 4px 8px #2a140866;border-radius:3px}
+#world{position:absolute;inset:0;overflow:hidden;border-radius:3px}
 #world svg{width:100%;height:100%;display:block}
-.obj{cursor:pointer;transition:fill .6s ease,color .6s ease}
-.obj *{transition:fill .6s ease}
+#sticks,#sticks img{pointer-events:none}
+#sticks{position:absolute;inset:0}
+#sticks img{position:absolute;filter:drop-shadow(0 .5cqw .6cqw #2a140888);transform-origin:center}
+#sticks img.tape{filter:drop-shadow(0 .2cqw .3cqw #2a140866);opacity:.94}
+#bubble.k-bubble{border-radius:6px 16px 8px 14px;border:0;background:#fbf6ea;color:#2d2255;transform:rotate(-.8deg);box-shadow:0 2px 0 #fff8 inset,0 6px 14px #2a140877;position:relative}
+#bubble.k-bubble.bump{transform:rotate(-.8deg) scale(1.08)}
+.obj{cursor:pointer;transition:fill .45s ease,color .45s ease;filter:url(#paperA)}
+.obj.p2{filter:url(#paperB)}
+.obj *{transition:fill .45s ease}
 .obj.wig{animation:wig .5s;transform-box:fill-box;transform-origin:center}
 @keyframes wig{25%{transform:rotate(-3deg) scale(1.04)}75%{transform:rotate(3deg) scale(1.04)}}
-.hl{fill:#fff;opacity:.28;pointer-events:none}
+.hl{fill:#fff;opacity:.22;pointer-events:none}
 .sd{fill:#1a1440;opacity:.16;pointer-events:none}
 .ink{fill:#1a1440}
 .pots{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:26px}
-.pot{width:24px;height:24px;border-radius:50%;background:#ffffff22;box-shadow:inset 0 0 0 2px #ffffff33;transition:background .4s,transform .3s}
-.pot.done{transform:scale(1.15);box-shadow:0 0 12px currentColor}
+.pots{position:relative;z-index:1}
+.pot{width:26px;height:24px;border-radius:52% 48% 55% 45%/50% 56% 44% 50%;background:#d9bf94;box-shadow:inset 0 0 0 2px #fff6,0 3px 5px #2a140877;transition:background .4s,transform .3s}
+.pot.done{transform:scale(1.15) rotate(-6deg);box-shadow:inset 0 -3px 0 #0002,0 3px 6px #2a140899}
 .splat{position:fixed;pointer-events:none;z-index:20;width:190px;height:190px;margin:-95px 0 0 -95px;animation:splat .9s ease-out forwards}
 @keyframes splat{0%{transform:scale(.1) rotate(0)}30%{transform:scale(1.1) rotate(20deg);opacity:1}100%{transform:scale(1.3) rotate(30deg);opacity:0}}
 .drop{position:fixed;pointer-events:none;z-index:21;border-radius:50%;animation:drop .8s ease-out forwards}
@@ -35,10 +47,36 @@ body{background:#140f3a;color:#fff;font-family:var(--body);overflow:hidden;touch
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+ <filter id="paperA" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+  <feTurbulence type="fractalNoise" baseFrequency=".016" numOctaves="2" seed="3" result="w"/>
+  <feDisplacementMap in="SourceGraphic" in2="w" scale="8" xChannelSelector="R" yChannelSelector="G" result="cut"/>
+  <feMorphology in="cut" operator="dilate" radius="2.2" result="fat"/>
+  <feFlood flood-color="#fffaf0"/><feComposite in2="fat" operator="in" result="rim"/>
+  <feGaussianBlur in="fat" stdDeviation="3"/><feOffset dx="2" dy="5" result="off"/>
+  <feFlood flood-color="#3a2410" flood-opacity=".4"/><feComposite in2="off" operator="in" result="shadow"/>
+  <feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" seed="8" result="g"/>
+  <feColorMatrix in="g" type="matrix" values="0 0 0 0 .3  0 0 0 0 .2  0 0 0 0 .1  .7 0 0 0 -.27" result="grain"/>
+  <feComposite in="grain" in2="cut" operator="in" result="gr"/>
+  <feMerge><feMergeNode in="shadow"/><feMergeNode in="rim"/><feMergeNode in="cut"/><feMergeNode in="gr"/></feMerge>
+ </filter>
+ <filter id="paperB" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+  <feTurbulence type="fractalNoise" baseFrequency=".022" numOctaves="2" seed="11" result="w"/>
+  <feDisplacementMap in="SourceGraphic" in2="w" scale="9" xChannelSelector="G" yChannelSelector="R" result="cut"/>
+  <feMorphology in="cut" operator="dilate" radius="2.6" result="fat"/>
+  <feFlood flood-color="#f6ead2"/><feComposite in2="fat" operator="in" result="rim"/>
+  <feGaussianBlur in="fat" stdDeviation="3.4"/><feOffset dx="3" dy="6" result="off"/>
+  <feFlood flood-color="#3a2410" flood-opacity=".42"/><feComposite in2="off" operator="in" result="shadow"/>
+  <feTurbulence type="fractalNoise" baseFrequency=".6" numOctaves="3" seed="2" result="g"/>
+  <feColorMatrix in="g" type="matrix" values="0 0 0 0 .3  0 0 0 0 .2  0 0 0 0 .1  .7 0 0 0 -.27" result="grain"/>
+  <feComposite in="grain" in2="cut" operator="in" result="gr"/>
+  <feMerge><feMergeNode in="shadow"/><feMergeNode in="rim"/><feMergeNode in="cut"/><feMergeNode in="gr"/></feMerge>
+ </filter>
+</defs></svg>
 <script>window.LP_GAME="paint"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
 <div class="app" id="app">
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
-  <div class="frame"><div id="world"></div></div>
+  <div class="frame"><div id="board"><div id="world"></div><div id="sticks"></div></div></div>
   <div class="pots" id="pots" aria-hidden="true"></div>
 </div>
 <script>
@@ -65,8 +103,9 @@ const DATA={
   pt:{title:"Pinta o mundo",tap:"Toca para pintar!",bravo:"Muito bem!",again:"Um desenho novo!"}
  }
 };
-const HEX={red:"#ff4d5e",orange:"#ff8a3d",yellow:"#ffd23f",green:"#58d26b",blue:"#3aa0ff",purple:"#8b5cf6",pink:"#ff6fa6",brown:"#b96a3c",white:"#f7f4ff",black:"#2a2350"};
+const HEX={red:"#f0384c",orange:"#ff8a3d",yellow:"#ffd23f",green:"#58d26b",blue:"#3aa0ff",purple:"#8b5cf6",pink:"#ff6fa6",brown:"#b96a3c",white:"#fdfcf8",black:"#2a2350"};
 const GREY={red:"#a7a3b4",orange:"#b6b2c2",yellow:"#d3d0dc",green:"#b0acbd",blue:"#9a96aa",purple:"#8d899e",pink:"#bdb9c8",brown:"#8a8698",white:"#e6e4ec",black:"#6d6980"};
+const PAPER=["#e8dcbc","#decba2","#ebe2cc","#d9c59c","#e3d8c2"]; // raw kraft, cardboard and newsprint, waiting for paint
 const NOTE={red:330,orange:370,yellow:440,green:349,blue:392,purple:262,pink:587,brown:294,white:523,black:220};
 
 /* ---- drawing helpers: every paintable thing is O(color, shapes). Shapes without a fill take the paint. ---- */
@@ -181,9 +220,9 @@ let scene=Math.floor(Math.random()*SCENES.length),objs=[],busy=false,last=0;
 
 function bubble(main,also){const b=$("bubble");b.innerHTML=`<span></span>${also?`<span class="also"></span>`:""}`;b.firstChild.textContent=main;if(also)b.lastChild.textContent=also;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
 function drawScene(){
- $("world").innerHTML=`<svg viewBox="0 0 800 600" role="img" aria-label="${L().title}">${SCENES[scene]()}</svg>`;
+ $("world").innerHTML=`<svg viewBox="0 0 800 600" role="img" aria-label="${L().title}"><g transform="translate(26 20) scale(.935)">${SCENES[scene]()}</g></svg>`;
  objs=[...$("world").querySelectorAll(".obj")];
- objs.forEach(g=>{g.setAttribute("fill",GREY[g.dataset.c]);g.dataset.done="";g.querySelectorAll(".tent").forEach(t=>t.setAttribute("stroke",GREY[g.dataset.c]))});
+ objs.forEach((g,i)=>{const p=PAPER[(i*3+scene)%PAPER.length];g.setAttribute("fill",p);g.classList.toggle("p2",i%2===1);g.dataset.done="";g.querySelectorAll(".tent").forEach(t=>t.setAttribute("stroke",p))});
  const cols=[...new Set(objs.map(g=>g.dataset.c))];
  $("pots").innerHTML=cols.map(c=>`<span class="pot" data-pot="${c}"></span>`).join("");
 }
@@ -215,7 +254,18 @@ function next(){const left=objs.filter(g=>!g.dataset.done);return left.length?le
 
 LP.init({langs:ALLLANGS,onLang:()=>{document.title=L().title;bubble(L().tap)}});
 document.title=L().title;
-LPLook.sky($("app"),{moon:false,hills:false});
+/* a frame of glued popsicle sticks with a few bits of washi tape, laid out in cqw so it scales with the board */
+function frame(){
+ const R=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.length)];
+ const SK=["natural","natural","yellow","teal","red"],TP=["pink","mint","mustard","blue"];
+ let h="";const stick=(cx,cy,rot)=>{const c=pick(SK),w=R(25.5,28);h+=`<img src="../felt/paint-stick-${c}.webp" alt="" style="left:${(cx-w/2).toFixed(2)}cqw;top:${(cy-1.6).toFixed(2)}cqw;width:${w.toFixed(2)}cqw;transform:rotate(${rot.toFixed(2)}deg)">`};
+ for(let i=0;i<3;i++){stick(1.7+R(-.3,.3),12.5+i*25+R(-1,1),90+R(-.7,.7));stick(98.3+R(-.3,.3),12.5+i*25+R(-1,1),90+R(-.7,.7))}
+ for(let i=0;i<4;i++){stick(12.5+i*25+R(-1,1),1.7+R(-.3,.3),R(-.8,.8));stick(12.5+i*25+R(-1,1),73.3+R(-.3,.3),R(-.8,.8))}
+ const tp=[...TP].sort(()=>Math.random()-.5);
+ [[3,3,-38],[97,3,36],[3,72,34],[97,72,-36]].forEach(([x,y,r],i)=>{if(i>1&&Math.random()<.4)return;h+=`<img class="tape" src="../felt/paint-tape-${tp[i]}.webp" alt="" style="left:${(x-6.5+R(-.8,.8)).toFixed(2)}cqw;top:${(y-1.6+R(-.5,.5)).toFixed(2)}cqw;width:13cqw;transform:rotate(${r+R(-5,5)}deg)">`});
+ $("sticks").innerHTML=h;
+}
+frame();
 drawScene();bubble(L().tap);
 LP.start(L().title,()=>{bubble(L().tap);LP.say(L().tap)});
 LP.mash((e,x,y)=>{
