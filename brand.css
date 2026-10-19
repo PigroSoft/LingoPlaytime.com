@@ -127,3 +127,13 @@ nav a[aria-current="page"],nav button[aria-current="page"],.setbtn,.sndbtn:not(.
 .langs a:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 .langs b{color:#fff;background:var(--blue)}
 .langs svg{flex:none;width:22px;height:15px;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+
+
+/* hand-stitched buttons in the game bar: cream felt with a stitched edge, yellow for "New game", blue when chosen */
+.back,.fsbtn:not(.sndbtn),.lpbar .chip:not(.on){border:2px dashed #b98a52;outline:3px solid #fffaf0;outline-offset:-1px;background-color:#fffaf0;background-image:var(--fuzz),radial-gradient(120% 90% at 50% 0%,#ffffff80,transparent 60%);background-blend-mode:multiply,normal;box-shadow:inset 0 3px 2px #ffffffaa,inset 0 -3px 3px #00000014,0 3px 0 #d9c3a0}
+.back:hover,.fsbtn:not(.sndbtn):hover,.lpbar .chip:not(.on):hover{border-color:var(--blue)}
+.fsbtn.shufbtn{border:2px dashed #fff;outline:3px solid var(--yellow);outline-offset:-1px;background-color:var(--yellow);background-image:var(--fuzz),radial-gradient(120% 90% at 50% 0%,#ffffff70,transparent 60%);background-blend-mode:multiply,normal;color:#3a2606;text-shadow:0 1px 0 #ffe9a8;box-shadow:inset 0 3px 2px #ffffff88,inset 0 -3px 3px #00000022,0 3px 0 #b8800d}
+.fsbtn.shufbtn:hover{border-color:#fff}
+.lpbar .chip.on{border:2px dashed #ffffffb0;outline:3px solid var(--blue);outline-offset:-1px;background-color:var(--blue);background-image:var(--fuzz),radial-gradient(120% 90% at 50% 0%,#ffffff40,transparent 60%);background-blend-mode:multiply,normal;color:#fff;text-shadow:0 1px 0 #0a4766;box-shadow:inset 0 3px 2px #ffffff66,inset 0 -3px 3px #00000033,0 3px 0 #0b5a7d}
+.lpbar .chip.on .code{background:var(--yellow);color:#18264A}
+html.playing .lpbar{padding-bottom:6px}
