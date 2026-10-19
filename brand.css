@@ -129,11 +129,48 @@ nav a[aria-current="page"],nav button[aria-current="page"],.setbtn,.sndbtn:not(.
 .langs svg{flex:none;width:22px;height:15px;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
 
 
-/* hand-stitched buttons in the game bar: cream felt with a stitched edge, yellow for "New game", blue when chosen */
-.back,.fsbtn:not(.sndbtn),.lpbar .chip:not(.on){border:2px dashed #b98a52;outline:3px solid #fffaf0;outline-offset:-1px;background-color:#fffaf0;background-image:var(--fuzz),radial-gradient(120% 90% at 50% 0%,#ffffff80,transparent 60%);background-blend-mode:multiply,normal;box-shadow:inset 0 3px 2px #ffffffaa,inset 0 -3px 3px #00000014,0 3px 0 #d9c3a0}
-.back:hover,.fsbtn:not(.sndbtn):hover,.lpbar .chip:not(.on):hover{border-color:var(--blue)}
-.fsbtn.shufbtn{border:2px dashed #fff;outline:3px solid var(--yellow);outline-offset:-1px;background-color:var(--yellow);background-image:var(--fuzz),radial-gradient(120% 90% at 50% 0%,#ffffff70,transparent 60%);background-blend-mode:multiply,normal;color:#3a2606;text-shadow:0 1px 0 #ffe9a8;box-shadow:inset 0 3px 2px #ffffff88,inset 0 -3px 3px #00000022,0 3px 0 #b8800d}
-.fsbtn.shufbtn:hover{border-color:#fff}
-.lpbar .chip.on{border:2px dashed #ffffffb0;outline:3px solid var(--blue);outline-offset:-1px;background-color:var(--blue);background-image:var(--fuzz),radial-gradient(120% 90% at 50% 0%,#ffffff40,transparent 60%);background-blend-mode:multiply,normal;color:#fff;text-shadow:0 1px 0 #0a4766;box-shadow:inset 0 3px 2px #ffffff66,inset 0 -3px 3px #00000033,0 3px 0 #0b5a7d}
-.lpbar .chip.on .code{background:var(--yellow);color:#18264A}
-html.playing .lpbar{padding-bottom:6px}
+/* ===== Felt button system =====
+   One pill, three colours, all cut from the same photographed piece of wool felt
+   (felt/btn-*.webp: real fibres, a hand-sewn running stitch, a fuzzy edge).
+   RED   = the one big call to action on a screen (Play, Start, Save).
+   BLUE  = the standard button, and also "chosen" (Settings, New game, sound, the selected language).
+   BEIGE = quiet or not chosen (All games, other languages, fullscreen, muted sound).
+   The felt is a 9-slice border-image on ::before, so the caps stay round at any size.
+   Set --fh (the pill height) per button; the felt grows outwards by its own fuzz. */
+:root{--felt-red:url(felt/btn-red.webp);--felt-blue:url(felt/btn-blue.webp);--felt-beige:url(felt/btn-beige.webp);--ink-felt:#4a3213}
+:is(.go,.cta,.setbtn,.sndbtn,.shufbtn,.pill,.lpbar .chip,.back,.fsbtn,nav a[aria-current="page"],nav button[aria-current="page"]){
+  --felt:var(--felt-beige);--fh:44px;position:relative;isolation:isolate;box-sizing:border-box;height:var(--fh);min-height:0;
+  border:0!important;outline:0;background:none!important;box-shadow:none!important;color:var(--ink-felt);text-shadow:0 1px 0 #fff8;
+  transition:transform .12s,filter .12s}
+:is(.go,.cta,.setbtn,.sndbtn,.shufbtn,.pill,.lpbar .chip,.back,.fsbtn,nav a[aria-current="page"],nav button[aria-current="page"])::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border:solid transparent;border-width:calc(var(--fh)*.5);
+  border-image-source:var(--felt);border-image-slice:158;border-image-width:calc(var(--fh)*.5926);border-image-outset:calc(var(--fh)*.0926);border-image-repeat:round;
+  filter:drop-shadow(0 3px 2px #3a1d0a55)}
+/* red: the big one */
+:root :is(.go,.cta){--felt:var(--felt-red);--fh:60px;color:#fff;text-shadow:0 1px 0 #6a120f;padding-inline:34px}
+:root .cta{--fh:64px;padding-inline:38px;font-size:20px}
+/* blue: standard and chosen */
+:root :is(.setbtn,.sndbtn:not(.muted),.shufbtn,.pill[aria-pressed="true"],.lpbar .chip.on,nav a[aria-current="page"],nav button[aria-current="page"]){--felt:var(--felt-blue);color:#fff;text-shadow:0 1px 0 #06415e}
+:root .pill{--fh:46px}
+:root .lpbar .chip{--fh:46px}
+:root .sndbtn,:root .fsbtn{width:var(--fh);padding:0}
+:root .fsbtn.shufbtn{width:auto;padding:0 18px 0 12px}@media (max-width:640px){:root .fsbtn.shufbtn{width:var(--fh);padding:0}}
+:root .setbtn{--fh:48px}
+/* pressed, hover, disabled */
+:root :is(.go,.cta,.setbtn,.sndbtn,.shufbtn,.pill,.lpbar .chip,.back,.fsbtn):hover{filter:brightness(1.05);transform:translateY(-1px)}
+:root :is(.go,.cta,.setbtn,.sndbtn,.shufbtn,.pill,.lpbar .chip,.back,.fsbtn):active{transform:translateY(2px) scale(.985);filter:brightness(.93)}
+:root :is(.go,.cta,.pill):disabled{opacity:.5;filter:grayscale(.6);transform:none}
+:root :is(.go,.cta,.setbtn,.sndbtn,.shufbtn,.pill,.lpbar .chip,.back,.fsbtn):focus-visible{outline:3px solid var(--yellow);outline-offset:6px}
+/* chips and pills keep their little code badge as a round felt-coloured disc */
+:root .pill .code,:root .lpbar .chip .code{background:#fff8;color:var(--ink-felt)}
+:root .pill[aria-pressed="true"] .code,:root .lpbar .chip.on .code{background:var(--yellow);color:#18264A}
+:root .setbtn .fill{border-radius:999px;opacity:.55;mix-blend-mode:multiply}
+:root .setbtn{overflow:visible}
+/* in the game bar everything is a slim 36px pill */
+:root.playing :is(.setbtn,.sndbtn,.shufbtn,.lpbar .chip,.back,.fsbtn){--fh:36px;min-height:0}
+html.playing .lpbar{padding-block:8px}
+:root.playing .fsbtn.shufbtn{width:auto}
+@media (max-width:640px){:root.playing .fsbtn.shufbtn{width:var(--fh)}}
+html.playing .lpbar .chip .code{width:26px;height:26px}
+html.playing .lpbar .play{padding:8px 6px;margin:-8px -6px}
