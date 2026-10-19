@@ -100,8 +100,8 @@ html.playing .lpbar{box-shadow:0 2px 0 #e6cfa4}
 .soon span{background:var(--yellow);color:var(--ink)}
 
 /* cardboard footer: a generated sheet of torn corrugated board, its top edge is a 9-slice so it stretches to any width */
-footer{position:relative;margin-top:clamp(90px,12vw,150px);padding:0 20px 40px;text-align:center;color:#fff1d6;line-height:1.45;font-size:15px;font-weight:600;
-  border:solid transparent;border-width:clamp(120px,16vw,215px) 0 0;border-image:url(felt/footer-diorama.webp) 300 0 0 fill/clamp(120px,16vw,215px) 0 0/0 stretch;text-shadow:0 1px 0 #2a150a99;background:none;box-shadow:none;border-radius:0}
+footer{position:relative;width:100vw;margin-left:calc(50% - 50vw);margin-top:clamp(90px,12vw,150px);padding:0 20px 40px;text-align:center;color:#fff1d6;line-height:1.45;font-size:15px;font-weight:600;
+  border:solid transparent;border-width:clamp(120px,21.8vw,340px) 0 0;border-image:url(felt/footer-diorama.webp) 300 0 0 fill/clamp(120px,21.8vw,340px) 0 0/0 stretch;text-shadow:0 1px 0 #2a150a99;background:none;box-shadow:none;border-radius:0}
 footer .bf{max-width:760px;margin:22px auto 0;display:flex;flex-direction:column;align-items:center;gap:10px}
 footer p{margin:0}
 footer .bf-logo{height:46px;width:auto;display:block;filter:drop-shadow(0 2px 2px #0006)}
@@ -114,6 +114,7 @@ footer .bf-legal{font-size:14px;margin-top:2px}
 footer .bf-legal :is(a,button){font-weight:600;padding:4px 8px}
 footer .sep{opacity:.6}
 html.playing footer{display:none}
+html{overflow-x:clip}
 :root{--fuzz:url(felt/paper.webp);--card-board:url(felt/cardboard-strip.webp)}
 /* felt buttons keep their wool grain */
 .go,.setbtn,.pill[aria-pressed="true"],.lpbar .chip.on,nav a[aria-current="page"],nav button[aria-current="page"]{background-image:var(--fuzz),radial-gradient(120% 90% at 50% 0%,#ffffff40,transparent 60%);background-blend-mode:multiply,normal;box-shadow:inset 0 3px 2px #ffffff55,inset 0 -4px 3px #00000030,0 4px 0 #00000040}
