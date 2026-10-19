@@ -306,7 +306,7 @@ document.getElementById("again").onclick=()=>target&&say(sentence());
 const birdEl=document.getElementById("bird"),birdSvg=birdEl.querySelector(".birdsprite");let birdDraw=0;
 const bird={x:innerWidth*.3,y:innerHeight*.55,vx:1.2,vy:0,face:1};
 function chirp(){if(!ac)return;const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();const b=1800+Math.random()*900;o.type="sine";o.frequency.setValueAtTime(b,t);o.frequency.exponentialRampToValueAtTime(b*1.6,t+.06);o.frequency.exponentialRampToValueAtTime(b*.9,t+.12);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.18,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+.15);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+.16)}
-const NOTES=["sky-star","sky-star","sky-sun"];
+const NOTES=["sky-star"];
 function sparkle(){const n=document.createElement("div");n.className="note";n.innerHTML=`<img src="../felt/${NOTES[Math.floor(Math.random()*NOTES.length)]}.webp" alt="">`;n.style.left=(bird.x+20)+"px";n.style.top=(bird.y-10)+"px";document.body.appendChild(n);setTimeout(()=>n.remove(),1100)}
 function flap(){birdEl.classList.remove("flap");void birdEl.offsetWidth;birdEl.classList.add("flap");chirp();sparkle()}
 let hintGone=false;
@@ -337,7 +337,7 @@ function moveBird(ts){
  if(bird.y>bottom){bird.y=bottom;bird.vy=0}
  if(!ts||ts-birdDraw>=STEP){birdDraw=ts||0;
  birdEl.style.transform=`translate(${Math.round(bird.x)}px,${Math.round(bird.y)}px)`;
- birdSvg.style.scale=bird.face<0?"-1 1":"1 1";
+ birdSvg.style.scale=bird.face>0?"-1 1":"1 1"; /* the felt bird art faces left, so flip it when flying right */
  birdSvg.style.rotate=`${Math.round(Math.max(-20,Math.min(20,bird.vy*4))*bird.face)}deg`;}
  requestAnimationFrame(moveBird);
 }
