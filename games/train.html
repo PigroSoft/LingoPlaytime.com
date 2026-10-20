@@ -29,7 +29,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 .scene{position:relative;flex:1;overflow:hidden}
 .dio{position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;background-size:cover;background-position:center bottom}
 #dio-bg{background-image:url(../felt/sky-plate.webp);filter:blur(2px) saturate(1.05);transform:scale(1.03)}
-#dio-hills{background-image:url(../felt/sky-hills.webp);inset:0 0 calc(var(--gh)*.94 - var(--crop,13vh)) 0;background-position:center 70%}
+#dio-hills{background-image:url(../felt/train-green-hills.webp);inset:0 0 calc(var(--gh)*.94 - var(--crop,6vh)) 0;background-position:center 70%}
 .lp-clouds{position:absolute!important;z-index:1!important}
 .layer{position:absolute;left:0;right:0;background-repeat:repeat-x}
 .clouds,.hills{display:none}
@@ -42,8 +42,8 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 .scene[data-sc=sea] #dio-hills{background-image:url(../felt/train-sea-hills.webp)}
 .scene[data-sc=sea] .trees{background-image:url(../felt/train-sea-trees.webp)}
 .scene[data-sc=sea] .ground{background-image:url(../felt/train-sea-ground.webp)}
-.scene[data-sc=snow]{--crop:25vh}
-.scene[data-sc=desert]{--crop:25vh}
+.scene[data-sc=snow]{--crop:6vh}
+.scene[data-sc=desert]{--crop:6vh}
 .scene[data-sc=snow] #dio-bg{background-image:url(../felt/train-snow-sky.webp)}
 .scene[data-sc=snow] #dio-hills{background-image:url(../felt/train-snow-hills.webp)}
 .scene[data-sc=snow] .trees{background-image:url(../felt/train-snow-trees.webp)}
