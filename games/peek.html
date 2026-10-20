@@ -200,7 +200,7 @@ function reveal(spot){
  if(!busy&&!want&&SPOTS.every(s=>open[s]))everybodyOut();
 }
 function everybodyOut(){
- LP.sfx.chime();LP.burst(innerWidth/2,innerHeight*.4,30);
+ LP.celebrate();
  SPOTS.forEach(s=>spotEl[s].classList.add("bow"));
  setTimeout(()=>SPOTS.forEach(s=>spotEl[s].classList.remove("bow")),2200);
 }

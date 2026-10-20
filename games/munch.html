@@ -367,7 +367,7 @@ function release(){
   c.style.opacity=0;
   const f=$("fly");
   f.innerHTML=`<g id="bf" style="transition:transform 3.2s ease-in,opacity .4s;transform:translate(450px,420px)"><g class="flap"><image href="../felt/munch-butterfly.webp" x="-160" y="-128" width="320" height="255" preserveAspectRatio="none"/></g></g>`;
-  f.style.opacity=1;LP.sfx.chime();say(L().butterfly,HL().butterfly);
+  f.style.opacity=1;LP.celebrate();say(L().butterfly,HL().butterfly);
   for(let i=0;i<10;i++)setTimeout(()=>LP.burst(innerWidth*(.25+Math.random()*.5),innerHeight*(.25+Math.random()*.4),8),i*160);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{$("bf").style.transform="translate(760px,-60px)"}));
   setTimeout(()=>LP.say(L().bye,true),1800);

@@ -111,7 +111,7 @@ function flip(i){
   setTimeout(()=>{[a,b].forEach(j=>document.querySelector(`[data-i="${j}"]`).classList.add("done"));LP.sfx.chime();
    const r=el.getBoundingClientRect();LP.burst(r.left+r.width/2,r.top+r.height/2,16);
    bubble(L().match);LP.say(L().match);LP.say(W[cards[a].id][LP.lang],true);
-   if(found===pairs)setTimeout(()=>{bubble(L().win);LP.say(L().win);LP.burst(innerWidth/2,innerHeight/2,40);setTimeout(deal,4500)},1800)},700);
+   if(found===pairs)setTimeout(()=>{LP.celebrate();bubble(L().win);LP.say(L().win);setTimeout(deal,4500)},1800)},700);
  }else{
   LPLearn.asked(cards[a].id,LP.lang,false);LPLearn.asked(cards[b].id,LP.lang,false);
   lock=true;setTimeout(()=>{[a,b].forEach(j=>{const e=document.querySelector(`[data-i="${j}"]`);e.classList.remove("up");e.setAttribute("aria-label","?")});lock=false},1700);

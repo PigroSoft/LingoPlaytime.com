@@ -167,7 +167,7 @@ function sleep(id){
  if(asleep.size===DATA.words.length)setTimeout(finish,2200);
 }
 function finish(){
- done=true;$("dark").style.opacity=".55";
+ done=true;LP.sfx.win();$("dark").style.opacity=".55";
  lullaby();bubble(L().end);setTimeout(()=>LP.say(L().end),400);
  setTimeout(()=>{$("bubble").style.opacity=".35";document.body.classList.add("done")},5000);
 }

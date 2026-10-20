@@ -247,7 +247,7 @@ function goOut(){
  out=true;busy=false;
  weatherFx($("fx"),weather,weather==="rain"?70:50);if(weather==="sun")$("fx").innerHTML="";
  $("o-"+weather).classList.add("on");document.body.classList.add("out");
- LP.sfx.chime();bubble(L().done);LP.say(L().done);
+ LP.celebrate();bubble(L().done);LP.say(L().done);
  const kr=$("kid").getBoundingClientRect();setTimeout(()=>LP.burst(kr.left+kr.width/2,kr.top+kr.height/3,24),500);
  $("rock").classList.add("walk");
  if(LP.sample(weather==="rain"?"rain":weather==="sun"?"birds":"wind",4.5)){}

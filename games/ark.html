@@ -177,7 +177,7 @@ function tap(id,card){
 function allAboard(){
  finishing=true;stopRain();
  const sea=$("sea");sea.classList.add("done","rock");
- LP.sfx.chime();bubble(L().all);LP.say(L().all);LP.say(L().rainbow,true);
+ LP.celebrate();bubble(L().all);LP.say(L().all);LP.say(L().rainbow,true);
  const r=sea.getBoundingClientRect();[.25,.5,.75].forEach((p,i)=>setTimeout(()=>LP.burst(r.left+r.width*p,r.top+r.height*.4,22),i*400));
  setTimeout(()=>{aboard.clear();finishing=false;sea.classList.remove("done");document.querySelectorAll(".slot.on").forEach(s=>s.classList.remove("on"));document.querySelectorAll(".card.aboard").forEach(c=>c.classList.remove("aboard"));bubble(L().title)},7500);
 }

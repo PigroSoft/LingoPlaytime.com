@@ -229,7 +229,7 @@ function ask(){
 function finale(){
  busy=true;want=null;timers.forEach(clearTimeout);timers=[];
  const rock=$("rock");rock.classList.remove("sway");rock.classList.add("dance");
- LP.sfx.chime();bubble(L().title);
+ LP.celebrate();bubble(L().title);
  const order=["hair","eyes","ears","nose","mouth","hands","tummy","knees","feet"];
  order.forEach((id,i)=>later(()=>{
   const r=stageXY(kid.parts[id][0]);LP.burst(r[0],r[1],10);bubble(w(id).w);LP.say(w(id).w,i>0);later(FX[id],200);pop(id,false);

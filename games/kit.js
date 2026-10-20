@@ -99,7 +99,30 @@
     whoosh: function () { LP.noise(0.35, 0.12, "bandpass", 600, 1.2, 0, 2400); },
     chime: function () { [523, 659, 784, 1047].forEach(function (f, i) { LP.tone(f, 0.5, "triangle", 0.16, i * 0.09); }); },
     twinkle: function () { [1319, 1568, 1760].forEach(function (f, i) { LP.tone(f, 0.35, "sine", 0.07, i * 0.07); }); },
+    /* real reward sounds: win = a short happy "ta-da", fanfare = the big one (brass-style run, chord, glitter, clapping) */
+    win: function () {
+      [[659, 0], [784, 0.11], [1047, 0.22]].forEach(function (p, i) { var d = i === 2 ? 0.7 : 0.18; LP.tone(p[0], d, "sawtooth", 0.05, p[1]); LP.tone(p[0], d, "triangle", 0.1, p[1]); });
+      for (var i = 0; i < 6; i++) LP.tone(1760 + Math.random() * 1600, 0.22, "sine", 0.05, 0.25 + i * 0.07);
+      for (var k = 0; k < 7; k++) LP.noise(0.06, 0.1, "bandpass", 1800 + Math.random() * 1800, 1.2, 0.3 + k * 0.07 + Math.random() * 0.03);
+    },
+    fanfare: function () {
+      var n = [[523, 0], [523, 0.14], [523, 0.28], [659, 0.42], [784, 0.62], [659, 0.84], [784, 0.98], [1047, 1.2]];
+      for (var j = 0; j < 8; j++) LP.noise(0.05, 0.08, "highpass", 3500, 1, j * 0.035);
+      n.forEach(function (p, i) { var last = i === n.length - 1, d = last ? 1.4 : 0.22; LP.tone(p[0], d, "sawtooth", 0.06, p[1]); LP.tone(p[0], d, "square", 0.03, p[1]); LP.tone(p[0] * 2, d, "triangle", 0.05, p[1]); });
+      [523, 659, 784, 1047, 1319].forEach(function (f) { LP.tone(f, 1.6, "triangle", 0.07, 1.2); LP.tone(f / 2, 1.6, "sawtooth", 0.025, 1.2); });
+      LP.noise(1.4, 0.12, "highpass", 6000, 0.7, 1.2, 3000);
+      for (var i = 0; i < 12; i++) LP.tone(1568 + Math.random() * 2000, 0.3, "sine", 0.05, 1.2 + i * 0.09);
+      for (var k = 0; k < 30; k++) LP.noise(0.06 + Math.random() * 0.03, 0.11, "bandpass", 1600 + Math.random() * 2200, 1.2, 1.35 + k * 0.055 + Math.random() * 0.04);
+    },
     soft: function () { LP.tone(392, 0.6, "sine", 0.12); LP.tone(587, 0.6, "sine", 0.06, 0.05); }
+  };
+
+  /* the big reward: fanfare plus a few waves of confetti stars */
+  LP.celebrate = function () {
+    LP.sfx.fanfare();
+    [0, 0.25, 0.5, 1.2, 1.5, 1.8, 2.2].forEach(function (t, i) {
+      setTimeout(function () { LP.burst(innerWidth * (0.15 + Math.random() * 0.7), innerHeight * (0.2 + Math.random() * 0.35), i > 2 ? 26 : 18); }, t * 1000);
+    });
   };
 
   /* start: games begin at once. The first touch or key unlocks sound (see bridge.js),

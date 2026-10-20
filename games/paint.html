@@ -176,7 +176,7 @@ function paint(g,x,y){
  if(objs.every(o=>o.dataset.done))finish();
 }
 function finish(){
- busy=true;setTimeout(()=>{LP.sfx.chime();const t=L().bravo;bubble(t);LP.say(t);
+ busy=true;setTimeout(()=>{LP.celebrate();const t=L().bravo;bubble(t);LP.say(t);
   for(let i=0;i<14;i++)setTimeout(()=>LP.burst(Math.random()*innerWidth,Math.random()*innerHeight*.7,10),i*140)},1800);
  setTimeout(()=>{scene=(scene+1)%SCENES.length;drawScene();busy=false;bubble(L().again);LP.say(L().again)},6200);
 }

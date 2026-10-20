@@ -192,7 +192,7 @@ function take(id){
 function finish(){
  busy=true;
  setTimeout(()=>{
-  const t=cap(L().thanks);bubble(t);LP.say(L().thanks);LP.sfx.chime();
+  const t=cap(L().thanks);bubble(t);LP.say(L().thanks);LP.celebrate();
   const e=$("cust");e.classList.remove("jig");void e.getBoundingClientRect();e.classList.add("jig");
   const r=e.getBoundingClientRect();LP.burst(r.left+r.width/2,r.top+30,16);
  },400);

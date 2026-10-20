@@ -160,7 +160,7 @@ function play(id,el){
  SND[id]();
  const r=g.getBoundingClientRect();
  if(want){
-  if(id===want){LPLearn.asked(id,LP.lang,true);want=null;misses=0;LP.sfx.chime();LP.burst(r.left+r.width/2,r.top,20);const t=fill(L().found,id);bubble(t);setTimeout(()=>LP.say(t),900);setTimeout(ask,4000);return}
+  if(id===want){LPLearn.asked(id,LP.lang,true);want=null;misses=0;LP.sfx.win();LP.burst(r.left+r.width/2,r.top,20);const t=fill(L().found,id);bubble(t);setTimeout(()=>LP.say(t),900);setTimeout(ask,4000);return}
   LPLearn.asked(want,LP.lang,false);misses++;
  }
  bubble(w(id).w+"  "+w(id).s);LPLearn.heard(id,LP.lang);
