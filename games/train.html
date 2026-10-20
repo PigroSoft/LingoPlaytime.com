@@ -35,11 +35,32 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 .clouds,.hills{display:none}
 .trees{bottom:calc(var(--gh)*.5);height:clamp(90px,24vh,190px);background-image:url(../felt/train-trees.webp);background-size:auto 100%;background-position:0 100%;z-index:1;filter:drop-shadow(0 3px 3px #0003)}
 .ground{position:absolute;left:0;right:0;bottom:0;height:var(--gh);background:url(../felt/train-ground.webp) repeat-x 0 100%/auto 100%;z-index:2;filter:drop-shadow(0 -2px 4px #0003)}
+/* scenes: each trip (and each tunnel) swaps the whole felt backdrop */
+#dio-bg,#dio-hills,.trees,.ground{transition:opacity .28s}
+.scene.swap #dio-bg,.scene.swap #dio-hills,.scene.swap .trees,.scene.swap .ground{opacity:0}
+.scene[data-sc=sea] #dio-bg{background-image:url(../felt/train-sea-sky.webp)}
+.scene[data-sc=sea] #dio-hills{background-image:url(../felt/train-sea-hills.webp)}
+.scene[data-sc=sea] .trees{background-image:url(../felt/train-sea-trees.webp)}
+.scene[data-sc=sea] .ground{background-image:url(../felt/train-sea-ground.webp)}
+.scene[data-sc=snow] #dio-bg{background-image:url(../felt/train-snow-sky.webp)}
+.scene[data-sc=snow] #dio-hills{background-image:url(../felt/train-snow-hills.webp)}
+.scene[data-sc=snow] .trees{background-image:url(../felt/train-snow-trees.webp)}
+.scene[data-sc=snow] .ground{background-image:url(../felt/train-snow-ground.webp)}
+.scene[data-sc=desert] #dio-bg{background-image:url(../felt/train-desert-sky.webp)}
+.scene[data-sc=desert] #dio-hills{background-image:url(../felt/train-desert-hills.webp)}
+.scene[data-sc=desert] .trees{background-image:url(../felt/train-desert-trees.webp)}
+.scene[data-sc=desert] .ground{background-image:url(../felt/train-desert-ground.webp)}
+/* tunnel: a felt mountain stands in front of the train, which shows through the stone window over a dark inside */
+.tunback{position:absolute;z-index:2;display:none;pointer-events:none;background:radial-gradient(ellipse at 50% 130%,#6b4a1c 0,#1d1209 55%,#0a0604 100%);box-shadow:inset 0 0 24px #000}
+.tunfront{position:absolute;z-index:4;display:none;max-width:none;height:auto;pointer-events:none;filter:drop-shadow(0 6px 8px #0006)}
+.choices.dark button:not(.yes){color:transparent;text-shadow:0 0 0 #2a1a0a}
+.choices.dark button:not(.yes) img{filter:brightness(0) drop-shadow(0 0 7px #ffd86a)}
 .track{display:none}
 .station{position:absolute;bottom:calc(var(--gh)*.40);width:clamp(240px,34vw,420px);z-index:2;display:none}
 .station>img{display:block;width:100%;height:auto;filter:drop-shadow(0 6px 8px #0005)}
 /* the word hangs from the station roof on two strings, on a stitched felt sign */
-.station .sign{position:absolute;left:50%;bottom:calc(100% - 14px);transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:6px 16px 6px 22px;white-space:nowrap;font-size:clamp(24px,4.4vw,40px);font-weight:700;color:#4a3213;background:#fff3d6 url(../felt/paper.webp);background-blend-mode:multiply;border:3px dashed #b8401f99;outline:5px solid #fff3d6;outline-offset:-2px;border-radius:26px;box-shadow:0 6px 0 #c9b583,0 12px 18px #0006;text-shadow:0 1px 0 #fff9}
+.station .sign,.tsign{position:absolute;left:50%;bottom:calc(100% - 14px);transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:6px 16px 6px 22px;white-space:nowrap;font-size:clamp(24px,4.4vw,40px);font-weight:700;color:#4a3213;background:#fff3d6 url(../felt/paper.webp);background-blend-mode:multiply;border:3px dashed #b8401f99;outline:5px solid #fff3d6;outline-offset:-2px;border-radius:26px;box-shadow:0 6px 0 #c9b583,0 12px 18px #0006;text-shadow:0 1px 0 #fff9}
+.tsign{bottom:auto;top:8px;z-index:5;display:none}
 .station .sign::before,.station .sign::after{content:"";position:absolute;bottom:-18px;width:3px;height:22px;background:#c9a064}
 .station .sign::before{left:24%}.station .sign::after{right:24%}
 .say{border:none;background:none;font-size:.8em;padding:0 2px}
@@ -90,6 +111,8 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
     <div class="ground" id="l3"></div>
     <div class="station" id="station"><img src="../felt/train-station.webp" alt="" draggable="false">
       <div class="sign"><span id="signtxt">?</span><button class="say" id="again" aria-label="hear again">🔊</button></div></div>
+    <div class="tunback" id="tunback"></div><img class="tunfront" id="tunfront" src="../felt/train-tunnel.webp" alt="" draggable="false">
+    <div class="tsign" id="tsign"><span id="signtxt2">?</span><button class="say" id="again2" aria-label="hear again">🔊</button></div>
     <div class="train" id="train"></div>
     <div class="choices" id="choices"></div>
     <div class="dots" id="dots"></div>
@@ -187,21 +210,40 @@ function stepClouds(dt){clouds.forEach(el=>{let x=parseFloat(el.style.left)-el.d
 /* ---------- motion ---------- */
 const MAX=240;let v=0,mode="idle",driveT=0,sx=null,off=[0,0,0,0],chugAcc=0,smokeAcc=0,rot=0,last=0;
 const st=$("station"),scene=$("scene");
+/* scenes + tunnel */
+const SCN=["hills","sea","snow","desert"];let scn=0,tn=false,tunSwap=true,nextSc=0,tunnelAt=1;
+const T={w:1100,h:522,hx:291.35,hy:340.62,hw:523.24,hh:132.51},tf=$("tunfront"),tb=$("tunback");let tunS=1,tunW=0;
+function setScene(k,fade){const go=()=>{scn=k;if(k)scene.dataset.sc=SCN[k];else delete scene.dataset.sc};
+ if(!fade){go();return}
+ scene.classList.add("swap");setTimeout(()=>{go();setTimeout(()=>scene.classList.remove("swap"),60)},290)}
+function otherScene(){const o=SCN.map((_,i)=>i).filter(i=>i!=scn);return o[Math.floor(Math.random()*o.length)]}
+function tunnelFit(){const tr=$("train").getBoundingClientRect(),sc=scene.getBoundingClientRect();
+ let s=1.32*tr.height/T.hh;s=Math.min(s,(sc.height-16)/T.h);tunS=s;tunW=T.w*s;
+ const lip=T.h-(T.hy+T.hh),bot=sc.bottom-tr.bottom-lip*s+4;
+ tf.style.width=tunW+"px";tf.style.bottom=bot+"px";
+ tb.style.width=(T.hw*s+8)+"px";tb.style.height=(T.hh*s+8)+"px";tb.style.bottom=(bot+lip*s-4)+"px"}
+function tunStopX(){const w=$("train").children[Math.min(stop,3)].getBoundingClientRect(),sc=scene.getBoundingClientRect();
+ return (w.left+w.right)/2-sc.left-(T.hx+T.hw/2)*tunS}
+function hideStops(){st.style.display="none";tf.style.display=tb.style.display="none";$("tsign").style.display="none";tn=false}
+function setSign(t){$("signtxt").textContent=t;$("signtxt2").textContent=t}
+setTimeout(()=>{SCN.slice(1).forEach(k=>["hills","trees","ground","sky"].forEach(p=>{new Image().src="../felt/train-"+k+"-"+p+".webp"}));new Image().src="../felt/train-tunnel.webp"},2500);
 initClouds();
 function stopX(){const tr=$("train").getBoundingClientRect(),sc=scene.getBoundingClientRect(),sw=Math.max(240,Math.min(420,innerWidth*.34));return Math.max(tr.left-sc.left+tr.width/2-sw/2,20)}
 function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);last=t;
  if(mode=="drive"){v=Math.min(MAX,v+160*dt);driveT+=dt;
-  if(sx===null&&driveT>2.5){sx=scene.clientWidth+40;st.style.display="block";$("signtxt").textContent="?"}
-  if(sx!==null){const target=stopX(),dist=sx-target;if(dist<420)v=Math.max(22,MAX*dist/420);if(dist<170&&!st.braked){st.braked=1;brakes()}
+  if(sx===null&&driveT>2.5){sx=scene.clientWidth+40;tn=(stop===tunnelAt);if(tn){tunnelFit();tf.style.display=tb.style.display="block";tunSwap=false;nextSc=otherScene()}else{st.style.display="block";setSign("?")}}
+  if(sx!==null){const target=tn?tunStopX():stopX(),dist=sx-target;if(dist<420)v=Math.max(22,MAX*dist/420);if(dist<170&&!st.braked){st.braked=1;brakes()}
    sx-=v*dt;if(sx<=target){sx=target;v=0;mode="stopped";arrive()}}}
- else if(mode=="leave"){v=Math.min(MAX,v+120*dt);sx-=v*dt;if(sx<-260){sx=null;st.style.display="none";mode="drive";driveT=0;st.braked=0}}
+ else if(mode=="leave"){v=Math.min(MAX,v+120*dt);sx-=v*dt;
+  if(tn&&!tunSwap&&sx+tunW*.5<scene.clientWidth*.5){tunSwap=true;setScene(nextSc,true)}
+  if(sx<-(tn?tunW:0)-260){sx=null;hideStops();mode="drive";driveT=0;st.braked=0}}
  else if(mode=="end"){v=Math.max(0,v-200*dt)}
  stepClouds(dt);
  off.b-=v*dt*.16;off.f-=v*dt*.32;off[2]-=v*dt*.6;off[3]-=v*dt;
  $("l1b").style.backgroundPositionX=off.b+"px";$("l1f").style.backgroundPositionX=off.f+"px";
  $("l2").style.backgroundPositionX=off[2]+"px, "+(off[2]+37)+"px";
  $("l3").style.backgroundPositionX=off[3]+"px, "+off[3]+"px";
- if(sx!==null)st.style.left=sx+"px";
+ if(sx!==null){if(tn){tf.style.left=sx+"px";tb.style.left=(sx+T.hx*tunS-4)+"px"}else st.style.left=sx+"px"}
  rot+=v*dt*4;
  $("train").style.transform=v>5?"translateY("+(Math.round(Math.sin(t/90))*1.5)+"px)":"none";
  chugAcc+=v*dt;if(chugAcc>55){chugAcc=0;chug()}
@@ -210,26 +252,26 @@ function frame(t){const dt=Math.min(.05,(t-(last||t))/1000);last=t;
 function puff(){const e=$("train").lastChild.getBoundingClientRect(),sc=scene.getBoundingClientRect(),p=document.createElement("div");p.className="puff";p.style.left=(e.left-sc.left+e.width*.17)+"px";p.style.top=(e.top-sc.top+e.height*.02)+"px";scene.appendChild(p);setTimeout(()=>p.remove(),1700)}
 
 /* ---------- game ---------- */
-function newTrip(){trip=[...W].sort(()=>Math.random()-.5).slice(0,4);stop=0;target=null;drawTrain();$("train").querySelectorAll(".win").forEach(w=>w.textContent="");drawDots();
+function newTrip(){hideStops();setScene(otherScene(),false);tunnelAt=1+Math.floor(Math.random()*3);trip=[...W].sort(()=>Math.random()-.5).slice(0,4);stop=0;target=null;drawTrain();$("train").querySelectorAll(".win").forEach(w=>w.textContent="");drawDots();
  $("overlay").hidden=true;A();whistle();say(L[lang].go,1200);mode="drive";driveT=0;v=0}
-function arrive(){target=trip[stop];dingdong();setTimeout(doors,900);
- setTimeout(()=>{$("signtxt").textContent=word(target);const opts=[target,...W.filter(w=>w!=target).sort(()=>Math.random()-.5).slice(0,((window.LP_SETTINGS||{}).age||0)<1?1:((window.LP_SETTINGS||{}).age||0)>=2?3:2)].sort(()=>Math.random()-.5);
-  const ch=$("choices");ch.innerHTML="";opts.forEach(o=>{const b=document.createElement("button");b.innerHTML=PIC(o.e);b.setAttribute("aria-label",word(o));b.onclick=()=>guess(o,b);ch.appendChild(b)});ask()},1500)}
-function ask(){$("signtxt").textContent=word(target);say(L[lang].find(word(target)))}
+function arrive(){target=trip[stop];if(tn)whistle();else dingdong();setTimeout(doors,900);
+ setTimeout(()=>{setSign(word(target));if(tn)$("tsign").style.display="flex";const opts=[target,...W.filter(w=>w!=target).sort(()=>Math.random()-.5).slice(0,((window.LP_SETTINGS||{}).age||0)<1?1:((window.LP_SETTINGS||{}).age||0)>=2?3:2)].sort(()=>Math.random()-.5);
+  const ch=$("choices");ch.innerHTML="";ch.classList.toggle("dark",tn);opts.forEach(o=>{const b=document.createElement("button");b.innerHTML=PIC(o.e);b.setAttribute("aria-label",word(o));b.onclick=()=>guess(o,b);ch.appendChild(b)});ask()},1500)}
+function ask(){setSign(word(target));say(L[lang].find(word(target)))}
 let busy=false,lastWrong=0;
 function guess(o,b){if(busy||!target)return;
  if(o!==target){const now=performance.now();if(now-lastWrong<120)return;lastWrong=now;
   boing();b.classList.remove("no");void b.offsetWidth;b.classList.add("no");say(word(target),300);return}
  busy=true;b.classList.add("yes");yay();say(L[lang].yes+" "+word(target),200);
  const win=$("train").querySelectorAll(".win")[stop];win.innerHTML="<span>"+PIC(target.e)+"</span>";stop++;drawDots();
- setTimeout(()=>{$("choices").innerHTML="";target=null;busy=false;
+ setTimeout(()=>{$("choices").innerHTML="";$("tsign").style.display="none";target=null;busy=false;
   if(stop>=trip.length){finish();return}
   doors();setTimeout(()=>{whistle();mode="leave"},900)},1800)}
 function finish(){fanfare();say(L[lang].end,300);mode="end";
  for(let i=0;i<40;i++){const c=document.createElement("div");c.className="conf";c.textContent=["🎉","⭐","🎈","✨"][i%4];c.style.left=Math.random()*100+"%";c.style.animationDelay=Math.random()*1.5+"s";scene.appendChild(c);setTimeout(()=>c.remove(),4200)}
  setTimeout(()=>{const o=$("overlay");o.innerHTML='<div class="cheer">'+L[lang].end+'<button class="big" id="start">▶ '+L[lang].again+'</button></div>';o.hidden=false;
-  $("start").onclick=()=>{st.style.display="none";sx=null;st.braked=0;newTrip()}},2200)}
-$("again").onclick=()=>{if(target)ask()};
+  $("start").onclick=()=>{hideStops();sx=null;st.braked=0;newTrip()}},2200)}
+$("again").onclick=$("again2").onclick=()=>{if(target)ask()};
 $("start").onclick=newTrip;
 
 /* ---------- smash-friendly input ----------
