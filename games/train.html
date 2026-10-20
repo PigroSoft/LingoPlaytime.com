@@ -8,9 +8,9 @@ html,body{height:100%}
 [hidden]{display:none!important}
 body{margin:0;background:#7fb3dc;color:var(--ink);font-family:"Fredoka","Baloo 2",system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;cursor:none}
 button{font:inherit;color:var(--ink);cursor:none}
-.bigcursor{position:fixed;top:0;left:0;font-size:46px;line-height:1;z-index:99;pointer-events:none;transform:translate(-6px,-4px) rotate(0deg) scale(1);filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 10px #fff);transition:transform .12s cubic-bezier(.34,1.6,.64,1);will-change:transform}
-.bigcursor.hover{transform:translate(-6px,-4px) rotate(-14deg) scale(1.28)}
-.bigcursor.down{transform:translate(-6px,-4px) rotate(-14deg) scale(.85)}
+.bigcursor{position:fixed;top:0;left:0;width:52px;height:65px;font-size:0;background:url(../felt/cursor-hand.svg) center/contain no-repeat;line-height:1;z-index:99;pointer-events:none;transform:translate(-23px,-2px) rotate(0deg) scale(1);filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 10px #fff);transition:transform .12s cubic-bezier(.34,1.6,.64,1);will-change:transform}
+.bigcursor.hover{transform:translate(-23px,-2px) rotate(-14deg) scale(1.28)}
+.bigcursor.down{transform:translate(-23px,-2px) rotate(-14deg) scale(.85)}
 @media (hover:none){.bigcursor{display:none}body,button{cursor:auto}}
 button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 .app{height:100%;display:flex;flex-direction:column}
@@ -119,7 +119,7 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
     <div class="overlay" id="overlay"><button class="big" id="start">▶ All aboard!</button></div>
   </div>
 </div>
-<div class="bigcursor" id="cursor">👆</div>
+<div class="bigcursor" id="cursor"></div>
 <script>
 addEventListener("DOMContentLoaded",()=>{if(window.LPClouds)LPClouds.add(document.getElementById("scene"),{count:4,top:"0",height:"38%"})});
 const EM="🐶 🐱 🍎 🚗 ⚽ 🐟 🌞 🌙 🍌 🐮 🦆 🌳 🏠 🐻 🍪 🌸 🐘 🥛 🚌 ⭐ 👟 🐑 🎈 🐸".split(" ");

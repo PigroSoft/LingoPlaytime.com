@@ -156,7 +156,7 @@
   /* big pointing-finger cursor (project convention), mouse only */
   function cursor() {
     if (!matchMedia("(pointer:fine)").matches) return;
-    var c = document.createElement("div"); c.className = "lp-cursor"; c.textContent = "👆"; c.hidden = true; c.setAttribute("aria-hidden", "true");
+    var c = document.createElement("div"); c.className = "lp-cursor"; c.hidden = true; c.setAttribute("aria-hidden", "true");
     document.body.appendChild(c); document.documentElement.classList.add("lp-nocursor");
     addEventListener("pointermove", function (e) { if (e.pointerType !== "mouse") return; c.hidden = false; c.style.left = e.clientX + "px"; c.style.top = e.clientY + "px"; c.classList.toggle("over", !!(e.target.closest && e.target.closest("button,[data-tap]"))); });
     addEventListener("pointerdown", function () { c.classList.add("tap"); setTimeout(function () { c.classList.remove("tap"); }, 150); });
@@ -172,7 +172,7 @@
     "@keyframes lp-nudge{50%{transform:scale(1.05)}}" +
     ".lp-fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:30}" +
     ".lp-nocursor,.lp-nocursor *{cursor:none!important}" +
-    ".lp-cursor{position:fixed;left:0;top:0;z-index:50;font-size:68px;line-height:1;margin:-6px 0 0 -28px;pointer-events:none;filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 3px #fff) drop-shadow(0 4px 6px #12345a66);transition:transform .15s;transform-origin:28px 6px}" +
+    ".lp-cursor{position:fixed;left:0;top:0;z-index:50;width:52px;height:65px;background:url(../felt/cursor-hand.svg) center/contain no-repeat;margin:-2px 0 0 -23px;pointer-events:none;filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 3px #fff) drop-shadow(0 4px 6px #12345a66);transition:transform .15s;transform-origin:28px 6px}" +
     ".lp-cursor.over{transform:scale(1.25) rotate(-8deg)}.lp-cursor.tap{transform:scale(.85)}" +
     "@media (prefers-reduced-motion:reduce){.lp-go{animation:none}}";
   (document.head || document.documentElement).appendChild(css);
