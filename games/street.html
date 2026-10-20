@@ -16,7 +16,13 @@ body{background:#2f6fe8;color:#fff;font-family:var(--body);overflow:hidden;touch
 .stage{flex:1;min-height:0;display:flex;align-items:flex-end}
 svg#street{width:100%;height:100%;overflow:visible}
 /* layer 1: the miniature town fills the screen, softly out of focus */
-.app{background:#4f9be6 url(../felt/street-bg.webp) no-repeat}
+.app{background:#4f9be6 no-repeat}
+svg#street.swap{animation:swap .6s steps(3,jump-none)}@keyframes swap{from{opacity:0;transform:translateY(24px)}}
+.pick{position:absolute;right:max(12px,env(safe-area-inset-right,0px));top:max(12px,env(safe-area-inset-top,0px));z-index:3;display:flex;gap:10px}
+.pick button{width:54px;height:54px;padding:7px;border:0;border-radius:50%;background:#fffdf6;box-shadow:0 3px 8px #0006;outline:2px dashed #b8401f99;outline-offset:-5px;cursor:pointer;display:grid;place-items:center}
+.pick button img{width:100%;height:100%;object-fit:contain;pointer-events:none}
+@media (max-width:700px){.pick{top:max(72px,calc(env(safe-area-inset-top,0px) + 64px))}}
+.pick button.on{box-shadow:0 0 0 4px #F6C033,0 3px 8px #0006}
 .top,.stage{position:relative;z-index:1}
 .thing{cursor:pointer}
 .thing .hit{fill:#0000}
@@ -37,21 +43,9 @@ svg#street{width:100%;height:100%;overflow:visible}
 <script>window.LP_GAME="street"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="clouds.js"></script><script src="sounds.js"></script>
 <div class="app" id="app">
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
+  <div class="pick" id="pick"></div>
   <div class="stage">
     <svg id="street" viewBox="0 0 900 560" preserveAspectRatio="xMidYMax meet" role="img" aria-label="A busy street">
-      <!-- layer 2: the felt and cardboard street, cut out so the town shows above it -->
-      <image href="../felt/street-road.webp" x="-900" y="330" width="2700" height="300" preserveAspectRatio="none"/>
-      <image href="../felt/street-tree.webp" x="462" y="144" width="151" height="250"/>
-      <g class="thing" data-thing="dog" tabindex="0" role="button"><g class="art"><image href="../felt/street-dog.webp" x="372" y="318" width="87" height="82"/><rect class="hit" x="366" y="312" width="99" height="94" rx="14"/></g></g>
-      <g class="thing" data-thing="bike" tabindex="0" role="button"><g class="art"><image href="../felt/street-bike.webp" x="600" y="312" width="134" height="90"/><rect class="hit" x="594" y="306" width="146" height="102" rx="14"/></g></g>
-      <g class="thing" data-thing="bird" tabindex="0" role="button"><g class="art"><image href="../felt/street-bird.webp" x="516" y="98" width="56" height="58"/><rect class="hit" x="510" y="92" width="68" height="70" rx="14"/></g></g>
-      <g class="thing" data-thing="tram" tabindex="0" role="button"><g class="art"><image href="../felt/street-tram.webp" x="28" y="326" width="249" height="118"/><rect class="hit" x="22" y="320" width="261" height="130" rx="14"/></g></g>
-      <g class="thing" data-thing="police" tabindex="0" role="button"><g class="art"><image href="../felt/street-police.webp" x="40" y="474" width="147" height="82"/><rect class="hit" x="34" y="468" width="159" height="94" rx="14"/></g></g>
-      <g class="thing" data-thing="car" tabindex="0" role="button"><g class="art"><image href="../felt/street-car.webp" x="200" y="470" width="138" height="86"/><rect class="hit" x="194" y="464" width="150" height="98" rx="14"/></g></g>
-      <g class="thing" data-thing="bus" tabindex="0" role="button"><g class="art"><image href="../felt/street-bus.webp" x="352" y="427" width="235" height="125"/><rect class="hit" x="346" y="421" width="247" height="137" rx="14"/></g></g>
-      <g class="thing" data-thing="fire" tabindex="0" role="button"><g class="art"><image href="../felt/street-fire.webp" x="615" y="424" width="193" height="128"/><rect class="hit" x="609" y="418" width="205" height="140" rx="14"/></g></g>
-      <g class="thing" data-thing="plane" tabindex="0" role="button"><g class="art"><image href="../felt/street-plane.webp" x="70" y="-14" width="146" height="62"/><rect class="hit" x="64" y="-20" width="158" height="74" rx="14"/></g></g>
-      <g class="thing" data-thing="heli" tabindex="0" role="button"><g class="art"><image href="../felt/street-heli.webp" x="600" y="-2" width="163" height="88"/><rect class="hit" x="594" y="-8" width="175" height="100" rx="14"/></g></g>
     </svg>
   </div>
 </div>
@@ -68,7 +62,16 @@ const DATA={
   {id:"dog",en:{w:"the dog",s:"Woof woof!"},nl:{w:"de hond",s:"Woef woef!"},pl:{w:"pies",s:"Hau hau!"},sv:{w:"hunden",s:"Voff voff!"},el:{w:"ο σκύλος",s:"Γάβ γάβ!"},zh:{w:"狗",s:"汪汪！"},ar:{w:"الكلب",s:"هاو هاو!"},ja:{w:"いぬ",s:"ワンワン！"},ko:{w:"강아지",s:"멍멍!"},ru:{w:"собака",s:"Гав-гав!"},tr:{w:"köpek",s:"Hav hav!"},hi:{w:"कुत्ता",s:"भौं भौं!"},de:{w:"der Hund",s:"Wau wau!"},es:{w:"el perro",s:"¡Guau guau!"},fr:{w:"le chien",s:"Ouaf ouaf !"},it:{w:"il cane",s:"Bau bau!"},pt:{w:"o cão",s:"Ão ão!"}},
   {id:"plane",en:{w:"the plane",s:"Whoosh!"},nl:{w:"het vliegtuig",s:"Zoef!"},pl:{w:"samolot",s:"Wrrr!"},sv:{w:"flygplanet",s:"Svisch!"},el:{w:"το αεροπλάνο",s:"Βούουουμ!"},zh:{w:"飞机",s:"嗖！"},ar:{w:"الطائرة",s:"شششش!"},ja:{w:"ひこうき",s:"ヒューン！"},ko:{w:"비행기",s:"쌩!"},ru:{w:"самолёт",s:"Ж-ж-ж!"},tr:{w:"uçak",s:"Vızzz!"},hi:{w:"हवाई जहाज़",s:"सूं!"},de:{w:"das Flugzeug",s:"Wuusch!"},es:{w:"el avión",s:"¡Fiuuu!"},fr:{w:"l'avion",s:"Vroum !"},it:{w:"l'aereo",s:"Fiuuu!"},pt:{w:"o avião",s:"Vuuum!"}},
   {id:"heli",en:{w:"the helicopter",s:"Whop whop!"},nl:{w:"de helikopter",s:"Wap wap!"},pl:{w:"helikopter",s:"Łup łup!"},sv:{w:"helikoptern",s:"Vopp vopp!"},el:{w:"το ελικόπτερο",s:"Ουπ ουπ!"},zh:{w:"直升机",s:"突突！"},ar:{w:"الهليكوبتر",s:"ثب ثب!"},ja:{w:"ヘリコプター",s:"バラバラ！"},ko:{w:"헬리콥터",s:"두두두!"},ru:{w:"вертолёт",s:"Тр-р-р!"},tr:{w:"helikopter",s:"Pat pat!"},hi:{w:"हेलीकॉप्टर",s:"धप धप!"},de:{w:"der Hubschrauber",s:"Wumm wumm!"},es:{w:"el helicóptero",s:"¡Chop chop!"},fr:{w:"l'hélicoptère",s:"Flap flap !"},it:{w:"l'elicottero",s:"Whop whop!"},pt:{w:"o helicóptero",s:"Pá pá pá!"}},
-  {id:"bird",en:{w:"the bird",s:"Tweet tweet!"},nl:{w:"de vogel",s:"Tjilp tjilp!"},pl:{w:"ptak",s:"Ćwir ćwir!"},sv:{w:"fågeln",s:"Pip pip!"},el:{w:"το πουλί",s:"Τσίου τσίου!"},zh:{w:"小鸟",s:"叽叽！"},ar:{w:"الطائر",s:"زقزق!"},ja:{w:"とり",s:"チュンチュン！"},ko:{w:"새",s:"짹짹!"},ru:{w:"птица",s:"Чик-чирик!"},tr:{w:"kuş",s:"Cik cik!"},hi:{w:"चिड़िया",s:"चीं चीं!"},de:{w:"der Vogel",s:"Piep piep!"},es:{w:"el pájaro",s:"¡Pío pío!"},fr:{w:"l'oiseau",s:"Cui cui !"},it:{w:"l'uccellino",s:"Cip cip!"},pt:{w:"o pássaro",s:"Piu piu!"}}
+  {id:"bird",en:{w:"the bird",s:"Tweet tweet!"},nl:{w:"de vogel",s:"Tjilp tjilp!"},pl:{w:"ptak",s:"Ćwir ćwir!"},sv:{w:"fågeln",s:"Pip pip!"},el:{w:"το πουλί",s:"Τσίου τσίου!"},zh:{w:"小鸟",s:"叽叽！"},ar:{w:"الطائر",s:"زقزق!"},ja:{w:"とり",s:"チュンチュン！"},ko:{w:"새",s:"짹짹!"},ru:{w:"птица",s:"Чик-чирик!"},tr:{w:"kuş",s:"Cik cik!"},hi:{w:"चिड़िया",s:"चीं चीं!"},de:{w:"der Vogel",s:"Piep piep!"},es:{w:"el pájaro",s:"¡Pío pío!"},fr:{w:"l'oiseau",s:"Cui cui !"},it:{w:"l'uccellino",s:"Cip cip!"},pt:{w:"o pássaro",s:"Piu piu!"}},
+  {id:"truck",en:{w:"the truck",s:"Brum brum!"},nl:{w:"de vrachtwagen",s:"Broem broem!"},pl:{w:"ciężarówka",s:"Brum brum!"},sv:{w:"lastbilen",s:"Brum brum!"},el:{w:"το φορτηγό",s:"Βρουμ βρουμ!"},zh:{w:"卡车",s:"嘟嘟！"},ar:{w:"الشاحنة",s:"بروم بروم!"},ja:{w:"トラック",s:"ブーブー！"},ko:{w:"트럭",s:"부릉부릉!"},ru:{w:"грузовик",s:"Бр-р-р!"},tr:{w:"kamyon",s:"Brum brum!"},hi:{w:"ट्रक",s:"भों भों!"},de:{w:"der Lastwagen",s:"Brumm brumm!"},es:{w:"el camión",s:"¡Brum brum!"},fr:{w:"le camion",s:"Vroum vroum !"},it:{w:"il camion",s:"Brum brum!"},pt:{w:"o camião",s:"Brum brum!"}},
+  {id:"tractor",en:{w:"the tractor",s:"Chug chug!"},nl:{w:"de tractor",s:"Toef toef!"},pl:{w:"traktor",s:"Bum bum!"},sv:{w:"traktorn",s:"Tuff tuff!"},el:{w:"το τρακτέρ",s:"Ντου ντου!"},zh:{w:"拖拉机",s:"突突！"},ar:{w:"الجرار",s:"تك تك!"},ja:{w:"トラクター",s:"ブルルン！"},ko:{w:"트랙터",s:"통통!"},ru:{w:"трактор",s:"Тр-р-р!"},tr:{w:"traktör",s:"Tak tak!"},hi:{w:"ट्रैक्टर",s:"धक धक!"},de:{w:"der Traktor",s:"Tuck tuck!"},es:{w:"el tractor",s:"¡Pum pum!"},fr:{w:"le tracteur",s:"Teuf teuf !"},it:{w:"il trattore",s:"Tum tum!"},pt:{w:"o trator",s:"Pum pum!"}},
+  {id:"cow",en:{w:"the cow",s:"Moo!"},nl:{w:"de koe",s:"Boe!"},pl:{w:"krowa",s:"Muu!"},sv:{w:"kon",s:"Mu!"},el:{w:"η αγελάδα",s:"Μουου!"},zh:{w:"奶牛",s:"哞！"},ar:{w:"البقرة",s:"موو!"},ja:{w:"うし",s:"モー！"},ko:{w:"소",s:"음메!"},ru:{w:"корова",s:"Му-у!"},tr:{w:"inek",s:"Mö!"},hi:{w:"गाय",s:"बूं!"},de:{w:"die Kuh",s:"Muh!"},es:{w:"la vaca",s:"¡Muu!"},fr:{w:"la vache",s:"Meuh !"},it:{w:"la mucca",s:"Muu!"},pt:{w:"a vaca",s:"Muuu!"}},
+  {id:"sheep",en:{w:"the sheep",s:"Baa!"},nl:{w:"het schaap",s:"Mè!"},pl:{w:"owca",s:"Be be!"},sv:{w:"fåret",s:"Bää!"},el:{w:"το πρόβατο",s:"Μπεεε!"},zh:{w:"绵羊",s:"咩！"},ar:{w:"الخروف",s:"ماع!"},ja:{w:"ひつじ",s:"メー！"},ko:{w:"양",s:"매애!"},ru:{w:"овца",s:"Бе-е!"},tr:{w:"koyun",s:"Mee!"},hi:{w:"भेड़",s:"में!"},de:{w:"das Schaf",s:"Mäh!"},es:{w:"la oveja",s:"¡Bee!"},fr:{w:"le mouton",s:"Bêêê !"},it:{w:"la pecora",s:"Bee!"},pt:{w:"a ovelha",s:"Béé!"}},
+  {id:"digger",en:{w:"the digger",s:"Dig dig!"},nl:{w:"de graafmachine",s:"Graaf graaf!"},pl:{w:"koparka",s:"Kop kop!"},sv:{w:"grävmaskinen",s:"Gräv gräv!"},el:{w:"ο εκσκαφέας",s:"Σκάψε σκάψε!"},zh:{w:"挖掘机",s:"挖挖！"},ar:{w:"الحفارة",s:"احفر احفر!"},ja:{w:"ショベルカー",s:"ガリガリ！"},ko:{w:"굴착기",s:"푹푹!"},ru:{w:"экскаватор",s:"Копай-копай!"},tr:{w:"ekskavatör",s:"Kaz kaz!"},hi:{w:"खुदाई मशीन",s:"खुद खुद!"},de:{w:"der Bagger",s:"Grab grab!"},es:{w:"la excavadora",s:"¡Cava cava!"},fr:{w:"la pelleteuse",s:"Creuse creuse !"},it:{w:"l'escavatore",s:"Scava scava!"},pt:{w:"a escavadora",s:"Escava, escava!"}},
+  {id:"dumptruck",en:{w:"the dump truck",s:"Rumble!"},nl:{w:"de kiepwagen",s:"Boem!"},pl:{w:"wywrotka",s:"Bum!"},sv:{w:"dumpern",s:"Dunk!"},el:{w:"το ανατρεπόμενο φορτηγό",s:"Μπαμ!"},zh:{w:"自卸车",s:"轰隆！"},ar:{w:"الشاحنة القلابة",s:"دوي!"},ja:{w:"ダンプカー",s:"ゴロゴロ！"},ko:{w:"덤프트럭",s:"우르르!"},ru:{w:"самосвал",s:"Бум!"},tr:{w:"damperli kamyon",s:"Güm!"},hi:{w:"डंप ट्रक",s:"धड़ाम!"},de:{w:"der Kipplader",s:"Rums!"},es:{w:"el camión volquete",s:"¡Rum rum!"},fr:{w:"la benne",s:"Boum !"},it:{w:"il camion ribaltabile",s:"Bum!"},pt:{w:"o camião basculante",s:"Bum!"}},
+  {id:"mixer",en:{w:"the cement mixer",s:"Round and round!"},nl:{w:"de betonmixer",s:"Rond en rond!"},pl:{w:"betoniarka",s:"Kręci się!"},sv:{w:"betongbilen",s:"Runt och runt!"},el:{w:"η μπετονιέρα",s:"Γύρω γύρω!"},zh:{w:"搅拌车",s:"转转！"},ar:{w:"خلاطة الإسمنت",s:"دور دور!"},ja:{w:"ミキサー車",s:"グルグル！"},ko:{w:"믹서트럭",s:"빙글빙글!"},ru:{w:"бетономешалка",s:"Кругом!"},tr:{w:"beton mikseri",s:"Dön dön!"},hi:{w:"सीमेंट मिक्सर",s:"गोल गोल!"},de:{w:"der Betonmischer",s:"Rundherum!"},es:{w:"la hormigonera",s:"¡Vuelta y vuelta!"},fr:{w:"la bétonnière",s:"Tourne tourne !"},it:{w:"la betoniera",s:"Gira gira!"},pt:{w:"a betoneira",s:"Roda, roda!"}},
+  {id:"crane",en:{w:"the crane",s:"Beep beep!"},nl:{w:"de kraan",s:"Piep piep!"},pl:{w:"dźwig",s:"Pip pip!"},sv:{w:"kranen",s:"Pip pip!"},el:{w:"ο γερανός",s:"Μπιπ μπιπ!"},zh:{w:"起重机",s:"嘀嘀！"},ar:{w:"الرافعة",s:"بيب بيب!"},ja:{w:"クレーン車",s:"ピーピー！"},ko:{w:"크레인",s:"삐삐!"},ru:{w:"кран",s:"Пи-пи!"},tr:{w:"vinç",s:"Bip bip!"},hi:{w:"क्रेन",s:"पीं पीं!"},de:{w:"der Kran",s:"Piep piep!"},es:{w:"la grúa",s:"¡Pip pip!"},fr:{w:"la grue",s:"Bip bip !"},it:{w:"la gru",s:"Bip bip!"},pt:{w:"o guindaste",s:"Bip bip!"}},
+  {id:"roller",en:{w:"the road roller",s:"Rumble rumble!"},nl:{w:"de wals",s:"Brom brom!"},pl:{w:"walec drogowy",s:"Brum brum!"},sv:{w:"vägvälten",s:"Brum brum!"},el:{w:"ο οδοστρωτήρας",s:"Μπρουμ μπρουμ!"},zh:{w:"压路机",s:"轰轰！"},ar:{w:"الحدلة",s:"غررر!"},ja:{w:"ローラー車",s:"ゴゴゴ！"},ko:{w:"로드롤러",s:"부르릉!"},ru:{w:"каток",s:"Др-р-р!"},tr:{w:"yol silindiri",s:"Gürr gürr!"},hi:{w:"रोड रोलर",s:"घर्र घर्र!"},de:{w:"die Straßenwalze",s:"Brumm brumm!"},es:{w:"el rodillo",s:"¡Run run!"},fr:{w:"le rouleau compresseur",s:"Vroum vroum !"},it:{w:"il rullo compressore",s:"Rrr rrr!"},pt:{w:"o rolo compressor",s:"Rum rum!"}},
  ],
  lines:{
   en:{title:"Street sounds",where:"Where is {w}?",found:"There's {w}!"},nl:{title:"Straatgeluiden",where:"Waar is {w}?",found:"Daar is {w}!"},pl:{title:"Odgłosy ulicy",where:"Gdzie jest {w}?",found:"Oto {w}!"},sv:{title:"Gatuljud",where:"Var är {w}?",found:"Där är {w}!"},el:{title:"Ήχοι του δρόμου",where:"Πού είναι {w};",found:"Να {w}!"},zh:{title:"街道的声音",where:"{w}在哪里？",found:"{w}在这里！"},ar:{title:"أصوات الشارع",where:"أين {w}؟",found:"هذا {w}!"},ja:{title:"まちの おと",where:"{w}はどこ？",found:"{w}だ！"},ko:{title:"거리의 소리",where:"{w} 어디 있어?",found:"{w} 여기 있다!"},ru:{title:"Звуки улицы",where:"Где {w}?",found:"Вот {w}!"},tr:{title:"Sokak sesleri",where:"{w} nerede?",found:"İşte {w}!"},hi:{title:"सड़क की आवाज़ें",where:"{w} कहाँ है?",found:"यह रहा {w}!"},
@@ -79,11 +82,44 @@ const DATA={
   pt:{title:"Na rua",where:"Onde está {w}?",found:"Aqui está {w}!"}
  }
 };
+
+/* ---- scenes: a felt town plate behind a felt road strip, with things standing on it ---- */
+const TH=(id,f,x,y,w,h)=>`<g class="thing" data-thing="${id}" tabindex="0" role="button"><g class="art"><image href="../felt/street-${f}.webp" x="${x}" y="${y}" width="${w}" height="${h}"/><rect class="hit" x="${x-6}" y="${y-6}" width="${w+12}" height="${h+12}" rx="14"/></g></g>`;
+const ROAD=f=>`<image href="../felt/${f}" x="-900" y="330" width="2700" height="300" preserveAspectRatio="none"/>`;
+const SCENES={
+ town:{bg:"street-bg.webp",sky:"#4f9be6",label:"A busy street",icon:"bus",ids:["bus","fire","police","tram","bike","car","dog","plane","heli","bird"],
+  svg:`<!-- layer 2: the felt and cardboard street, cut out so the town shows above it -->
+      <image href="../felt/street-road.webp" x="-900" y="330" width="2700" height="300" preserveAspectRatio="none"/>
+      <image href="../felt/street-tree.webp" x="462" y="144" width="151" height="250"/>
+      <g class="thing" data-thing="dog" tabindex="0" role="button"><g class="art"><image href="../felt/street-dog.webp" x="372" y="318" width="87" height="82"/><rect class="hit" x="366" y="312" width="99" height="94" rx="14"/></g></g>
+      <g class="thing" data-thing="bike" tabindex="0" role="button"><g class="art"><image href="../felt/street-bike.webp" x="600" y="312" width="134" height="90"/><rect class="hit" x="594" y="306" width="146" height="102" rx="14"/></g></g>
+      <g class="thing" data-thing="bird" tabindex="0" role="button"><g class="art"><image href="../felt/street-bird.webp" x="516" y="98" width="56" height="58"/><rect class="hit" x="510" y="92" width="68" height="70" rx="14"/></g></g>
+      <g class="thing" data-thing="tram" tabindex="0" role="button"><g class="art"><image href="../felt/street-tram.webp" x="28" y="326" width="249" height="118"/><rect class="hit" x="22" y="320" width="261" height="130" rx="14"/></g></g>
+      <g class="thing" data-thing="police" tabindex="0" role="button"><g class="art"><image href="../felt/street-police.webp" x="40" y="474" width="147" height="82"/><rect class="hit" x="34" y="468" width="159" height="94" rx="14"/></g></g>
+      <g class="thing" data-thing="car" tabindex="0" role="button"><g class="art"><image href="../felt/street-car.webp" x="200" y="470" width="138" height="86"/><rect class="hit" x="194" y="464" width="150" height="98" rx="14"/></g></g>
+      <g class="thing" data-thing="bus" tabindex="0" role="button"><g class="art"><image href="../felt/street-bus.webp" x="352" y="427" width="235" height="125"/><rect class="hit" x="346" y="421" width="247" height="137" rx="14"/></g></g>
+      <g class="thing" data-thing="fire" tabindex="0" role="button"><g class="art"><image href="../felt/street-fire.webp" x="615" y="424" width="193" height="128"/><rect class="hit" x="609" y="418" width="205" height="140" rx="14"/></g></g>
+      <g class="thing" data-thing="plane" tabindex="0" role="button"><g class="art"><image href="../felt/street-plane.webp" x="70" y="-14" width="146" height="62"/><rect class="hit" x="64" y="-20" width="158" height="74" rx="14"/></g></g>
+      <g class="thing" data-thing="heli" tabindex="0" role="button"><g class="art"><image href="../felt/street-heli.webp" x="600" y="-2" width="163" height="88"/><rect class="hit" x="594" y="-8" width="175" height="100" rx="14"/></g></g>`},
+ country:{bg:"street-bg-country.webp",sky:"#4a86b0",label:"The countryside",icon:"tractor",ids:["truck","tractor","cow","sheep","bird","plane"],
+  svg:ROAD("street-road-country.webp")+
+   TH("cow","cow",40,318,128,92)+TH("sheep","sheep",246,336,104,72)+
+   TH("bird","bird",560,100,56,58)+TH("plane","plane",70,-14,146,62)+
+   TH("tractor","tractor",36,426,150,121)+TH("truck","farmtruck",300,408,220,143)+TH("tractor","tractor2",580,418,170,134)},
+ site:{bg:"street-bg-site.webp",sky:"#3e88c0",label:"A building site",icon:"digger",ids:["crane","digger","dumptruck","mixer","roller","heli"],
+  svg:ROAD("street-road-site.webp")+
+   TH("heli","heli",600,-2,163,88)+
+   TH("roller","roller",262,330,132,83)+
+   TH("crane","crane",16,392,172,155)+TH("digger","digger",196,395,166,152)+TH("dumptruck","dump",376,404,190,143)+TH("mixer","mixer",584,406,206,140)}
+};
+const ORDER=["town","country","site"];
+let sceneId="town";
+const ids=()=>SCENES[sceneId].ids;
 const T=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
 const $=id=>document.getElementById(id);
 const L=()=>LP.t(DATA.lines);
 const w=id=>T[id][LP.lang]||T[id].en;
-let want=null,misses=0,lastTap=0,last=null,lastId=null,lastPoint=null,playedAt=0;
+let plays=0,swapping=0,want=null,misses=0,lastTap=0,last=null,lastId=null,lastPoint=null,playedAt=0;
 
 
 /* real CC0 recordings (sounds.js); the synthesized versions below are a fallback */
@@ -97,7 +133,16 @@ const SYN={
  dog(){[0,.3].forEach(t=>{LP.noise(.12,.25,"bandpass",900,2,t);LP.tone(420,.14,"square",.12,t,200)})},
  plane(){LP.noise(1.8,.22,"bandpass",300,1.2,0,1800);LP.tone(110,1.6,"sawtooth",.05,0,260)},
  heli(){for(let i=0;i<12;i++)LP.noise(.08,.28,"lowpass",260,1,i*.1);LP.tone(75,1.3,"sawtooth",.05)},
- bird(){[0,.18,.36].forEach(t=>LP.tone(3000,.12,"sine",.08,t,4600))}
+ bird(){[0,.18,.36].forEach(t=>LP.tone(3000,.12,"sine",.08,t,4600))},
+ truck(){LP.tone(70,1.2,"sawtooth",.11,0,58);LP.tone(105,1.1,"sawtooth",.05);[.7,1].forEach(t=>{LP.tone(311,.22,"square",.07,t);LP.tone(392,.22,"square",.05,t)})},
+ tractor(){for(let i=0;i<9;i++){LP.tone(62+(i%2)*9,.11,"square",.12,i*.15,50);LP.noise(.08,.12,"lowpass",500,1,i*.15)}},
+ cow(){LP.tone(150,1.2,"sawtooth",.12,0,98);LP.tone(300,1.1,"triangle",.04,0,196);LP.tone(75,1.2,"sine",.08,0,49)},
+ sheep(){[0,.14,.28,.42,.56].forEach(t=>LP.tone(430-t*90,.13,"sawtooth",.09,t));LP.tone(860,.7,"triangle",.025,0,560)},
+ digger(){LP.tone(58,1.5,"sawtooth",.1,0,50);LP.tone(260,.9,"sine",.05,.2,640);[.9,1.25].forEach(t=>LP.noise(.14,.3,"bandpass",900,2,t))},
+ dumptruck(){LP.tone(55,.9,"sawtooth",.1,0,48);LP.noise(.8,.4,"lowpass",900,1,.9,300);LP.tone(90,.6,"square",.1,.9,40)},
+ mixer(){LP.tone(52,1.8,"sawtooth",.08,0,70);for(let i=0;i<7;i++)LP.noise(.22,.16,"bandpass",420,1.5,i*.26)},
+ crane(){[0,.4,.8,1.2].forEach(t=>LP.tone(1000,.2,"square",.07,t))},
+ roller(){LP.tone(44,1.8,"sawtooth",.13,0,38);LP.noise(1.8,.15,"lowpass",220,1,0);for(let i=0;i<5;i++)LP.tone(70,.12,"square",.06,i*.35)}
 };
 
 function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
@@ -105,10 +150,10 @@ function label(){document.querySelectorAll("[data-thing]").forEach(g=>g.setAttri
 const fill=(tpl,id)=>tpl.replace("{w}",w(id).w);
 
 const SND=new Proxy({},{get:(_,id)=>()=>{if(!LP.sample(id,2.4))SYN[id]()}});
-function play(id){
+function play(id,el){
  const now=Date.now();if(now-lastTap<150)return;lastTap=now;playedAt=now;lastId=id;
- const g=document.querySelector(`[data-thing="${id}"]`);
- const anim=["dog","bird","bike","heli"].includes(id)?"hop":"go";
+ const g=el||document.querySelector(`[data-thing="${id}"]`);plays++;
+ const anim=["dog","bird","bike","heli","cow","sheep"].includes(id)?"hop":"go";
  g.classList.remove("go","hop");void g.getBBox();g.classList.add(anim);
  g.querySelectorAll(".blue").forEach(b=>{b.classList.remove("blue");void b.getBBox();b.classList.add("blue")});
  document.querySelectorAll(".glow").forEach(x=>x.classList.remove("glow"));
@@ -119,12 +164,14 @@ function play(id){
   LPLearn.asked(want,LP.lang,false);misses++;
  }
  bubble(w(id).w+"  "+w(id).s);LPLearn.heard(id,LP.lang);
- setTimeout(()=>{LP.say(w(id).w);LP.say(w(id).s,true)},({fire:2300,police:2300,bus:2000,plane:1900,heli:1900,bird:1900,dog:1800,tram:1500,bike:1200,car:1000})[id]||1000);
+ setTimeout(()=>{LP.say(w(id).w);LP.say(w(id).s,true)},({fire:2300,police:2300,bus:2000,plane:1900,heli:1900,bird:1900,dog:1800,tram:1500,bike:1200,car:1000,truck:1800,tractor:1900,cow:1600,sheep:1400,digger:2000,dumptruck:1900,mixer:2000,crane:1700,roller:2000})[id]||1000);
  if(want)setTimeout(()=>{if(want){bubble(fill(L().where,want));LP.say(fill(L().where,want))}},3600);
+ else if(plays>=8&&!swapping){swapping=1;setTimeout(()=>{nextScene();swapping=0},4600)}
 }
 function ask(){
+ if(plays>=8){nextScene();return}
  if(LP.age<1&&LPLearn.summary(LP.lang).met<8){want=null;bubble(L().title);return}
- const ids=DATA.words.map(x=>x.id).filter(i=>i!==last);want=LPLearn.pick(ids,x=>x,1,LP.lang)[0];last=want;misses=0;
+ const pool=ids().filter(i=>i!==last);want=LPLearn.pick(pool,x=>x,1,LP.lang)[0];last=want;misses=0;
  const t=fill(L().where,want);bubble(t);LP.say(t);
 }
 
@@ -141,13 +188,25 @@ function placeTown(){
  sky.style.height=Math.max(60,y-864*.86*s+864*.33*s)+"px"; // the open sky above the chimneys
 }
 addEventListener("resize",placeTown);requestAnimationFrame(placeTown);setTimeout(placeTown,300);
-label();document.title=L().title;bubble(L().title);
+function setScene(n){
+ sceneId=n;const S=SCENES[n];plays=0;want=null;misses=0;last=null;lastId=null;lastPoint=null;
+ const app=$("app");app.style.backgroundImage=`url(../felt/${S.bg})`;app.style.backgroundColor=S.sky;
+ const sv=$("street");sv.innerHTML=S.svg;sv.setAttribute("aria-label",S.label);sv.classList.remove("swap");void sv.getBBox();sv.classList.add("swap");
+ document.querySelectorAll(".pick button").forEach(b=>b.classList.toggle("on",b.dataset.s===n));
+ label();bubble(L().title);placeTown();
+ const nx=SCENES[ORDER[(ORDER.indexOf(n)+1)%ORDER.length]];(new Image).src="../felt/"+nx.bg;
+}
+function nextScene(){setScene(ORDER[(ORDER.indexOf(sceneId)+1)%ORDER.length]);if(LP.age>=1&&LPLearn.summary(LP.lang).met>=8)setTimeout(ask,900)}
+$("pick").innerHTML=ORDER.map(n=>`<button type="button" data-s="${n}" aria-label="${SCENES[n].label}"><img src="../felt/street-${SCENES[n].icon}.webp" alt=""></button>`).join("");
+$("pick").addEventListener("click",e=>{const b=e.target.closest("button");if(b&&b.dataset.s!==sceneId){swapping=0;setScene(b.dataset.s)}});
+setScene("town");document.title=L().title;
 LP.start(L().title,()=>setTimeout(ask,500));
 LP.mash((e)=>{
+ if(e.target.closest&&e.target.closest(".pick"))return;
  const g=e.target.closest&&e.target.closest("[data-thing]");
- const all=DATA.words.map(x=>x.id);
+ const all=ids();
  const pointed=g?g.dataset.thing:null,again=pointed&&pointed===lastPoint&&Date.now()-playedAt<8000;lastPoint=pointed;
- if(g&&(want||!again)){play(g.dataset.thing);return} // pointing at a thing plays that thing
+ if(g&&(want||!again)){play(g.dataset.thing,g);return} // pointing at a thing plays that thing
  if(want&&LP.age<2){play(want);return} // little ones: a stray tap finds the answer
  play(LP.next("street",all.filter(i=>i!==lastId))); // empty space, or the same thing again: on to the next sound
 });
