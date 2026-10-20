@@ -8,9 +8,9 @@ html,body{height:100%}
 [hidden]{display:none!important}
 body{margin:0;background:#7fb3dc;color:var(--ink);font-family:"Fredoka","Baloo 2",system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;cursor:none}
 button{font:inherit;color:var(--ink);cursor:none}
-.bigcursor{position:fixed;top:0;left:0;width:52px;height:65px;font-size:0;background:url(../felt/cursor-hand.svg) center/contain no-repeat;line-height:1;z-index:99;pointer-events:none;transform:translate(-23px,-2px) rotate(0deg) scale(1);filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 10px #fff);transition:transform .12s cubic-bezier(.34,1.6,.64,1);will-change:transform}
-.bigcursor.hover{transform:translate(-23px,-2px) rotate(-14deg) scale(1.28)}
-.bigcursor.down{transform:translate(-23px,-2px) rotate(-14deg) scale(.85)}
+.bigcursor{position:fixed;top:0;left:0;width:40px;height:51px;font-size:0;background:url(../felt/cursor-felt.svg) center/contain no-repeat;line-height:1;z-index:99;pointer-events:none;transform:translate(-4px,-3px) rotate(0deg) scale(1);filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 10px #fff);transition:transform .12s cubic-bezier(.34,1.6,.64,1);will-change:transform}
+.bigcursor.hover{transform:translate(-4px,-3px) rotate(-14deg) scale(1.28)}
+.bigcursor.down{transform:translate(-4px,-3px) rotate(-14deg) scale(.85)}
 @media (hover:none){.bigcursor{display:none}body,button{cursor:auto}}
 button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 .app{height:100%;display:flex;flex-direction:column}
@@ -29,11 +29,11 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 .scene{position:relative;flex:1;overflow:hidden}
 .dio{position:absolute;inset:0;pointer-events:none;background-repeat:no-repeat;background-size:cover;background-position:center bottom}
 #dio-bg{background-image:url(../felt/sky-plate.webp);filter:blur(2px) saturate(1.05);transform:scale(1.03)}
-#dio-hills{background-image:url(../felt/sky-hills.webp);inset:0 0 calc(var(--gh)*.42) 0;background-position:center bottom}
+#dio-hills{background-image:url(../felt/sky-hills.webp);inset:0 0 calc(var(--gh)*.94) 0;background-position:center 66%}
 .lp-clouds{position:absolute!important;z-index:1!important}
 .layer{position:absolute;left:0;right:0;background-repeat:repeat-x}
 .clouds,.hills{display:none}
-.trees{bottom:calc(var(--gh)*.5);height:clamp(90px,24vh,190px);background-image:url(../felt/train-trees.webp);background-size:auto 100%;background-position:0 100%;z-index:1;filter:drop-shadow(0 3px 3px #0003)}
+.trees{bottom:calc(var(--gh)*.9);height:clamp(90px,24vh,190px);background-image:url(../felt/train-trees.webp);background-size:auto 100%;background-position:0 100%;z-index:1;filter:drop-shadow(0 3px 3px #0003)}
 .ground{position:absolute;left:0;right:0;bottom:0;height:var(--gh);background:url(../felt/train-ground.webp) repeat-x 0 100%/auto 100%;z-index:2;filter:drop-shadow(0 -2px 4px #0003)}
 /* scenes: each trip (and each tunnel) swaps the whole felt backdrop */
 #dio-bg,#dio-hills,.trees,.ground{transition:opacity .28s}
