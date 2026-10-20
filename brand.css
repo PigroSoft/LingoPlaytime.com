@@ -110,7 +110,8 @@ footer a,footer button.lnk{color:#fff1d6;font:inherit;font-weight:700;background
 footer a:hover,footer button.lnk:hover{text-decoration-color:currentColor;background:#ffffff22}
 footer .bf-nav :is(a,button){text-decoration:none}
 footer .bf-tag{font-family:var(--display);font-size:19px;font-weight:600}
-footer .bf-eu{display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:18px;font-weight:600}footer .bf-eu img{width:76px;height:76px;filter:drop-shadow(0 2px 2px #0007)}
+footer .bf-eu{display:flex;align-items:center;gap:12px;font-family:var(--display);font-size:18px;font-weight:600}footer .bf-eu .eub{display:block;width:76px;height:76px;flex:none;border-radius:50%;filter:drop-shadow(0 2px 2px #0007)}
+footer .bf-eu img{display:block;width:100%;height:100%}
 footer .bf-eu:hover img,footer .bf-eu img:active{animation:eu-spin .8s steps(8) infinite}
 @keyframes eu-spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){footer .bf-eu:hover img,footer .bf-eu img:active{animation:none}}
