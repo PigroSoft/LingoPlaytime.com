@@ -45,8 +45,10 @@ button:focus-visible{outline:4px solid #fff;outline-offset:3px}
 .say{border:none;background:none;font-size:.8em;padding:0 2px}
 .train{position:absolute;bottom:calc(var(--gh)*.27);left:16px;display:flex;align-items:flex-end;z-index:3}
 .car{position:relative;width:var(--u);margin-left:calc(var(--u)*-.03)}
-.car>img.body{display:block;width:100%;height:auto;position:relative;z-index:2;filter:drop-shadow(0 5px 4px #0005)}
-.car .win{position:absolute;left:10%;right:10%;bottom:50%;height:120%;z-index:1;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
+.car>img.body{display:block;width:100%;height:auto;position:relative;z-index:0;filter:drop-shadow(0 5px 4px #0005)}
+/* the wagon is an open box: the front wall is drawn again over the cargo, from the rim down, so things drop inside */
+.car>img.front{position:absolute;left:0;top:0;width:100%;height:auto;z-index:3;clip-path:inset(22.5% 0 0 0);filter:none;pointer-events:none}
+.car .win{position:absolute;left:12%;right:12%;bottom:42%;height:100%;z-index:1;display:flex;align-items:flex-end;justify-content:center;pointer-events:none}
 .car .win span{display:block;height:100%;width:100%;animation:board .6s steps(6)}
 .car .win img{display:block;height:100%;width:100%;object-fit:contain;object-position:50% 100%}
 @keyframes board{0%{transform:translateY(-120px) scale(1.8)}70%{transform:translateY(4px)}100%{transform:none}}
@@ -160,7 +162,7 @@ function drawCtl(){const sel=$("langsel");if(!sel.options.length){RAW.forEach(r=
  $("pick").innerHTML="";TR.forEach((t,i)=>{const b=document.createElement("button");b.className="t fpill";b.innerHTML='<img src="../felt/'+t.img+'.webp" alt="">';b.setAttribute("aria-pressed",i==cur);b.setAttribute("aria-label","train "+(i+1));b.onclick=()=>{cur=i;drawCtl();drawTrain();A();whistle()};$("pick").appendChild(b)});
  $("start").textContent="▶ "+L[lang].go}
 function drawTrain(){const tr=$("train");const kept=[...tr.querySelectorAll(".win")].map(w=>w.querySelector("span")?w.querySelector("span").innerHTML:"");tr.innerHTML="";
- for(let i=0;i<4;i++){const c=document.createElement("div");c.className="car";c.innerHTML='<div class="win"><span>'+(kept[i]||"")+'</span></div><img class="body" src="../felt/train-wagon-'+C[i]+'.webp" alt="" draggable="false">';tr.appendChild(c)}
+ for(let i=0;i<4;i++){const c=document.createElement("div");c.className="car";c.innerHTML='<div class="win"><span>'+(kept[i]||"")+'</span></div><img class="body" src="../felt/train-wagon-'+C[i]+'.webp" alt="" draggable="false"><img class="front" src="../felt/train-wagon-'+C[i]+'.webp" alt="" draggable="false">';tr.appendChild(c)}
  const e=document.createElement("div");e.className="car engine";e.style.setProperty("--ew",TR[cur].ew);e.innerHTML='<img class="body" src="../felt/'+TR[cur].img+'.webp" alt="" draggable="false">';tr.appendChild(e)}
 function drawDots(){$("dots").innerHTML=trip.map((_,i)=>'<i class="'+(i<stop?"on":"")+'"></i>').join("")}
 
