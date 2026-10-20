@@ -344,7 +344,7 @@
     function upd() {
       var n = ((window.LP && window.LP.name) || (window.LP_SETTINGS && window.LP_SETTINGS.name) || "").trim();
       var home = (window.LP && window.LP.home) || (window.LP_SETTINGS && window.LP_SETTINGS.home) || "en";
-      var big = n ? (home === "en" ? poss(n) : n) : title, small = n ? title : "";
+      var big = n ? (home === "en" ? poss(n) : n) : title, small = n ? title + " game" : "";
       var k = big + "|" + small; if (k === last) return; last = k;
       el.firstChild.textContent = big; el.lastChild.textContent = small; el.lastChild.style.display = small ? "" : "none";
     }
