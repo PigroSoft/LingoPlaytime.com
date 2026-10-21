@@ -28,8 +28,8 @@ body{background:#241812;color:#fff;font-family:var(--body);overflow:hidden;touch
 .spot.open .fr{transform:translate(-50%,calc(var(--h)*-.5))}
 .spot.open .fr img{animation:bob .72s steps(1) infinite}
 @keyframes bob{0%{transform:rotate(-2deg)}50%{transform:rotate(2deg) translateY(-2%)}}
-.spot.box.open .piece{transform:rotate(-5deg) translate(-4%,2%)}
-.spot.basket.open .piece{transform:rotate(4deg) translateY(2%)}
+.spot.box.open .piece{transform:rotate(-4deg) translate(-6%,1%)}
+.spot.basket.open .piece{transform:rotate(3deg) translate(6%,1%)}
 .spot.bush.open .piece{transform:scale(1.07,.93)}
 .spot.blanket.open .piece{transform:translateY(15%) rotate(6deg) scaleY(.9)}
 .spot.mushroom.open .piece{transform:scale(.94,1.06) rotate(-3deg)}
@@ -91,7 +91,7 @@ const DATA={
 const ANIMALS=DATA.words.map(w=>w.id);
 const SPOTS=["box","basket","bush","blanket","mushroom","hay"];
 /* a=width/height of the felt piece, k=how tall it stands next to the others */
-const PIECE={box:{a:465/337,k:.95},basket:{a:357/340,k:1},bush:{a:409/339,k:.92},blanket:{a:324/340,k:1.04},mushroom:{a:317/340,k:1},hay:{a:333/277,k:.82}};
+const PIECE={box:{a:420/364,k:.9},basket:{a:420/353,k:.85},bush:{a:409/339,k:.92},blanket:{a:324/340,k:1.04},mushroom:{a:317/340,k:1},hay:{a:333/277,k:.82}};
 const W=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
 const $=id=>document.getElementById(id);
 const STEP=1000/12; // stop motion: puppets are moved about 12 times a second
@@ -114,7 +114,7 @@ function geometry(){
  }
  const s=Math.min(Wd/1100,Ht/630),ox=(Wd-1376*s)/2,oy=Ht/2-427*s;
  const P=(x,y,u)=>({x:ox+x*s,y:oy+y*s,u:u*s});
- return {tall:false,s,ox,oy,slots:[P(452,598,165),P(688,598,165),P(924,598,165),P(318,692,205),P(688,692,205),P(1058,692,205)]};
+ return {tall:false,s,ox,oy,slots:[P(320,598,165),P(668,598,165),P(1016,598,165),P(494,692,205),P(842,692,205),P(1140,692,205)]};
 }
 function place(sp,dx,dy){
  dx=dx||0;dy=dy||0;
@@ -135,7 +135,7 @@ function build(){
  $("set").innerHTML="";
  SPOTS.forEach((sp,i)=>{
   slotOf[sp]=i;open[sp]=false;
-  const b=document.createElement("button");b.type="button";b.className="spot "+sp;b.dataset.spot=sp;b.setAttribute("data-tap","");b.setAttribute("aria-label",sp);
+  const b=document.createElement("button");b.type="button";b.className="spot "+sp;b.dataset.spot=sp;b.setAttribute("data-tap","");b.setAttribute("aria-label",{box:"rock",basket:"logs"}[sp]||sp);
   b.innerHTML=`<div class="shadow"></div><div class="rise"><div class="fr"><img alt="" draggable="false"></div></div><img class="piece" src="../felt/peek-${sp}.webp" alt="" draggable="false">`;
   $("set").appendChild(b);spotEl[sp]=b;
  });
