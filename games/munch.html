@@ -290,7 +290,7 @@ function flowers(){
 
 function place(i,n){const gap=n>4?150:n>3?175:200;return {x:450+(i-(n-1)/2)*gap-50*S,y:192}}
 function plates(n){
- let s="";for(let i=0;i<n;i++){const c=place(i,n).x+50*S;const rx=n>4?64:72;s+=pic(`<ellipse cx="${c}" cy="322" rx="${rx}" ry="17" fill="#efdcb6" filter="url(#puff)"/><ellipse cx="${c}" cy="321" rx="${rx-10}" ry="12" ${stitch("#d9a659")}/>`,c-rx-20,295,2*rx+50,60)}
+ let s="";for(let i=0;i<n;i++){const c=place(i,n).x+50*S;const w=n>4?132:148,h=w*.564;s+=`<image href="../felt/soup-plate.webp" x="${c-w/2}" y="${326-h*.62}" width="${w}" height="${h}" preserveAspectRatio="none"/>`}
  $("plates").innerHTML=s;
 }
 function setFoods(){
@@ -385,7 +385,7 @@ LP.init({langs:ALLLANGS,onLang:()=>{document.title=L().title;slots.forEach(s=>s.
  onAge:()=>{if(!busy&&eaten===0){goal=[3,4,5][Math.min(2,LP.age)];setFoods();want=null;ask()}}});
 document.title=L().title;
 const SHELF=`<rect x="40" y="318" width="820" height="16" rx="3" fill="url(#flute)" filter="url(#board)"/><rect x="40" y="332" width="820" height="38" rx="2" fill="url(#corr)" filter="url(#board)"/><rect x="52" y="370" width="16" height="60" fill="#7d4421" filter="url(#board)"/><rect x="832" y="370" width="16" height="60" fill="#7d4421" filter="url(#board)"/><rect x="40" y="368" width="820" height="10" rx="3" fill="#000" opacity=".12"/><path d="M40 333h820" stroke="#8d5a2b" stroke-width="2" opacity=".5"/>`;
-$("shelf").innerHTML=pic(SHELF,20,300,860,150);
+$("shelf").innerHTML=`<image href="../felt/munch-table.webp" x="50" y="310" width="800" height="185" preserveAspectRatio="none"/>`;
 goal=[3,4,5][Math.min(2,LP.age)];fit();drawCat(false);setFoods();
 document.fonts&&document.fonts.ready.then(()=>{fit();drawCard()});
 say(L().title,HL().title,false);
