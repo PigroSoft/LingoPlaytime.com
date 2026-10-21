@@ -236,17 +236,16 @@ function drawCard(){
  g.innerHTML=`<g id="cardin"><rect id="cbg" x="0" y="0" width="10" height="10" rx="22" fill="#fffdf6" style="filter:drop-shadow(0 4px 0 #c9b583) drop-shadow(0 8px 12px #0004)"/><rect id="cst" x="0" y="0" width="10" height="10" rx="16" fill="none" stroke="#b8401f99" stroke-width="2" stroke-dasharray="8 6"/>
   <text id="ct" x="0" y="0" text-anchor="middle" font-size="34" font-weight="600" fill="#1c3f4a">${esc(t)}</text>
   ${sub?`<text id="pt" x="0" y="0" text-anchor="middle" font-size="18" font-weight="600" fill="#1c3f4a" fill-opacity=".62">${esc(sub)}</text>`:""}
-  <g id="say" role="button" aria-label="Say it again"><g transform="scale(.78)"><circle r="30" fill="#b8401f" filter="url(#puff)"/><circle r="23" ${stitch("#f6d2b8")}/><path d="M-12-7h7l10-9v32l-10-9h-7Z" fill="#fff"/><path d="M10-8q6 8 0 16" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/></g></g></g>`;
+  </g>`;
  const ct=$("ct");let fs=34;ct.setAttribute("font-size",fs);
  let tw=ct.getComputedTextLength();if(tw>520){fs=Math.floor(fs*520/tw);ct.setAttribute("font-size",fs);tw=ct.getComputedTextLength()}
  let pw=0;if(sub){pw=$("pt").getComputedTextLength()+44}
- const W=Math.max(tw+66,pw+50,200),H=sub?88:62,x0=450-W/2,y0=Math.max(VB.y+10,VB.y+(VB.h-560)*.12+8);
+ const W=Math.max(tw+60,pw+44,200),H=sub?88:62,x0=450-W/2,y0=Math.max(VB.y+10,VB.y+(VB.h-560)*.12+8);
  const set=(id,o)=>{const e=$(id);for(const k in o)e.setAttribute(k,o[k])};
  set("cbg",{x:x0,y:y0,width:W,height:H});set("cst",{x:x0+6,y:y0+6,width:W-12,height:H-12});
  set("ct",{x:450,y:y0+14+fs*.82});
  if(sub){set("pt",{x:450,y:y0+H-14})}
- $("say").setAttribute("transform",`translate(${x0+W-6} ${y0+H/2})`);
- // tall phones get a bigger card, scaled from its top centre
+  // tall phones get a bigger card, scaled from its top centre
  const k=Math.max(.7,Math.min(1.6,Math.max(1,(VB.h/VB.w)/1.34),(VB.w-40)/(W+40)));$("card").setAttribute("transform",`translate(450 ${y0}) scale(${k}) translate(-450 ${-y0})`);
  cardBot=y0+H*k;drawDots(false);
  const ci=$("cardin");ci.classList.remove("cardpop");void ci.getBoundingClientRect();ci.classList.add("cardpop");
