@@ -21,7 +21,7 @@ svg#street.swap{animation:swap .6s steps(3,jump-none)}@keyframes swap{from{opaci
 .pick{position:absolute;right:max(12px,env(safe-area-inset-right,0px));top:max(12px,env(safe-area-inset-top,0px));z-index:3;display:flex;gap:10px}
 .pick button{width:54px;height:54px;padding:7px;border:0;border-radius:50%;background:#fffdf6;box-shadow:0 3px 8px #0006;outline:2px dashed #b8401f99;outline-offset:-5px;cursor:pointer;display:grid;place-items:center}
 .pick button img{width:100%;height:100%;object-fit:contain;pointer-events:none}
-@media (max-width:700px){.pick{top:max(72px,calc(env(safe-area-inset-top,0px) + 64px))}}
+@media (max-width:700px){.pick{gap:6px}.pick button{width:44px;height:44px;padding:5px}.pick{top:max(72px,calc(env(safe-area-inset-top,0px) + 64px))}}
 .pick button.on{box-shadow:0 0 0 4px #F6C033,0 3px 8px #0006}
 .top,.stage{position:relative;z-index:1}
 .thing{cursor:pointer}
@@ -64,6 +64,8 @@ const DATA={
   {id:"heli",en:{w:"the helicopter",s:"Whop whop!"},nl:{w:"de helikopter",s:"Wap wap!"},pl:{w:"helikopter",s:"Łup łup!"},sv:{w:"helikoptern",s:"Vopp vopp!"},el:{w:"το ελικόπτερο",s:"Ουπ ουπ!"},zh:{w:"直升机",s:"突突！"},ar:{w:"الهليكوبتر",s:"ثب ثب!"},ja:{w:"ヘリコプター",s:"バラバラ！"},ko:{w:"헬리콥터",s:"두두두!"},ru:{w:"вертолёт",s:"Тр-р-р!"},tr:{w:"helikopter",s:"Pat pat!"},hi:{w:"हेलीकॉप्टर",s:"धप धप!"},de:{w:"der Hubschrauber",s:"Wumm wumm!"},es:{w:"el helicóptero",s:"¡Chop chop!"},fr:{w:"l'hélicoptère",s:"Flap flap !"},it:{w:"l'elicottero",s:"Whop whop!"},pt:{w:"o helicóptero",s:"Pá pá pá!"}},
   {id:"bird",en:{w:"the bird",s:"Tweet tweet!"},nl:{w:"de vogel",s:"Tjilp tjilp!"},pl:{w:"ptak",s:"Ćwir ćwir!"},sv:{w:"fågeln",s:"Pip pip!"},el:{w:"το πουλί",s:"Τσίου τσίου!"},zh:{w:"小鸟",s:"叽叽！"},ar:{w:"الطائر",s:"زقزق!"},ja:{w:"とり",s:"チュンチュン！"},ko:{w:"새",s:"짹짹!"},ru:{w:"птица",s:"Чик-чирик!"},tr:{w:"kuş",s:"Cik cik!"},hi:{w:"चिड़िया",s:"चीं चीं!"},de:{w:"der Vogel",s:"Piep piep!"},es:{w:"el pájaro",s:"¡Pío pío!"},fr:{w:"l'oiseau",s:"Cui cui !"},it:{w:"l'uccellino",s:"Cip cip!"},pt:{w:"o pássaro",s:"Piu piu!"}},
   {id:"truck",en:{w:"the truck",s:"Brum brum!"},nl:{w:"de vrachtwagen",s:"Broem broem!"},pl:{w:"ciężarówka",s:"Brum brum!"},sv:{w:"lastbilen",s:"Brum brum!"},el:{w:"το φορτηγό",s:"Βρουμ βρουμ!"},zh:{w:"卡车",s:"嘟嘟！"},ar:{w:"الشاحنة",s:"بروم بروم!"},ja:{w:"トラック",s:"ブーブー！"},ko:{w:"트럭",s:"부릉부릉!"},ru:{w:"грузовик",s:"Бр-р-р!"},tr:{w:"kamyon",s:"Brum brum!"},hi:{w:"ट्रक",s:"भों भों!"},de:{w:"der Lastwagen",s:"Brumm brumm!"},es:{w:"el camión",s:"¡Brum brum!"},fr:{w:"le camion",s:"Vroum vroum !"},it:{w:"il camion",s:"Brum brum!"},pt:{w:"o camião",s:"Brum brum!"}},
+  {id:"boat",en:{w:"the boat",s:"Toot toot!"},nl:{w:"de boot",s:"Toet toet!"},pl:{w:"łódź",s:"Tut tut!"},sv:{w:"båten",s:"Tut tut!"},el:{w:"η βάρκα",s:"Του του!"},zh:{w:"小船",s:"呜呜！"},ar:{w:"القارب",s:"توت توت!"},ja:{w:"ボート",s:"ポーッ！"},ko:{w:"배",s:"뿌우!"},ru:{w:"лодка",s:"Ту-ту!"},tr:{w:"tekne",s:"Düüt düüt!"},hi:{w:"नाव",s:"पों पों!"},de:{w:"das Boot",s:"Tut tut!"},es:{w:"el barco",s:"¡Tuuut!"},fr:{w:"le bateau",s:"Tut tut !"},it:{w:"la barca",s:"Tuu tuu!"},pt:{w:"o barco",s:"Pó pó!"}},
+  {id:"scooter",en:{w:"the scooter",s:"Brrmm!"},nl:{w:"de scooter",s:"Brrm!"},pl:{w:"skuter",s:"Brum!"},sv:{w:"skotern",s:"Brummm!"},el:{w:"το σκούτερ",s:"Μπρουμ!"},zh:{w:"小摩托",s:"嗡嗡！"},ar:{w:"الدراجة النارية",s:"برم برم!"},ja:{w:"スクーター",s:"ブーン！"},ko:{w:"스쿠터",s:"부릉!"},ru:{w:"скутер",s:"Бр-р-р!"},tr:{w:"scooter",s:"Vınnn!"},hi:{w:"स्कूटर",s:"भर्र भर्र!"},de:{w:"der Roller",s:"Brumm!"},es:{w:"la moto",s:"¡Brrum!"},fr:{w:"le scooter",s:"Vroum !"},it:{w:"la Vespa",s:"Brrr!"},pt:{w:"a mota",s:"Brrum!"}},
   {id:"tractor",en:{w:"the tractor",s:"Chug chug!"},nl:{w:"de tractor",s:"Toef toef!"},pl:{w:"traktor",s:"Bum bum!"},sv:{w:"traktorn",s:"Tuff tuff!"},el:{w:"το τρακτέρ",s:"Ντου ντου!"},zh:{w:"拖拉机",s:"突突！"},ar:{w:"الجرار",s:"تك تك!"},ja:{w:"トラクター",s:"ブルルン！"},ko:{w:"트랙터",s:"통통!"},ru:{w:"трактор",s:"Тр-р-р!"},tr:{w:"traktör",s:"Tak tak!"},hi:{w:"ट्रैक्टर",s:"धक धक!"},de:{w:"der Traktor",s:"Tuck tuck!"},es:{w:"el tractor",s:"¡Pum pum!"},fr:{w:"le tracteur",s:"Teuf teuf !"},it:{w:"il trattore",s:"Tum tum!"},pt:{w:"o trator",s:"Pum pum!"}},
   {id:"cow",en:{w:"the cow",s:"Moo!"},nl:{w:"de koe",s:"Boe!"},pl:{w:"krowa",s:"Muu!"},sv:{w:"kon",s:"Mu!"},el:{w:"η αγελάδα",s:"Μουου!"},zh:{w:"奶牛",s:"哞！"},ar:{w:"البقرة",s:"موو!"},ja:{w:"うし",s:"モー！"},ko:{w:"소",s:"음메!"},ru:{w:"корова",s:"Му-у!"},tr:{w:"inek",s:"Mö!"},hi:{w:"गाय",s:"बूं!"},de:{w:"die Kuh",s:"Muh!"},es:{w:"la vaca",s:"¡Muu!"},fr:{w:"la vache",s:"Meuh !"},it:{w:"la mucca",s:"Muu!"},pt:{w:"a vaca",s:"Muuu!"}},
   {id:"sheep",en:{w:"the sheep",s:"Baa!"},nl:{w:"het schaap",s:"Mè!"},pl:{w:"owca",s:"Be be!"},sv:{w:"fåret",s:"Bää!"},el:{w:"το πρόβατο",s:"Μπεεε!"},zh:{w:"绵羊",s:"咩！"},ar:{w:"الخروف",s:"ماع!"},ja:{w:"ひつじ",s:"メー！"},ko:{w:"양",s:"매애!"},ru:{w:"овца",s:"Бе-е!"},tr:{w:"koyun",s:"Mee!"},hi:{w:"भेड़",s:"में!"},de:{w:"das Schaf",s:"Mäh!"},es:{w:"la oveja",s:"¡Bee!"},fr:{w:"le mouton",s:"Bêêê !"},it:{w:"la pecora",s:"Bee!"},pt:{w:"a ovelha",s:"Béé!"}},
@@ -110,9 +112,21 @@ const SCENES={
   svg:ROAD("street-road-site.webp")+
    TH("heli","heli",600,-2,163,88)+
    TH("roller","roller",262,330,132,83)+
-   TH("crane","crane",16,392,172,155)+TH("digger","digger",196,395,166,152)+TH("dumptruck","dump",376,404,190,143)+TH("mixer","mixer",584,406,206,140)}
+   TH("crane","crane",16,392,172,155)+TH("digger","digger",196,395,166,152)+TH("dumptruck","dump",376,404,190,143)+TH("mixer","mixer",584,406,206,140)},
+ berlin:{bg:"street-bg-berlin.webp",sky:"#3e88c0",label:"Berlin",icon:"dbus",ids:["bus","tram","bike","car","dog","bird","plane"],
+  svg:ROAD("street-road.webp")+
+   TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("tram","tram",28,326,249,118)+
+   TH("car","car",200,470,138,86)+TH("bus","dbus",352,427,235,150)+TH("plane","plane",70,-14,146,62)},
+ austin:{bg:"street-bg-austin.webp",sky:"#3e88c0",label:"Austin, Texas",icon:"pickup",ids:["truck","car","bike","dog","bird","plane","police"],
+  svg:ROAD("street-road.webp")+
+   TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("police","police",40,474,147,82)+
+   TH("car","car",200,470,138,86)+TH("truck","pickup",360,420,250,148)+TH("plane","plane",70,-14,146,62)},
+ sicily:{bg:"street-bg-sicily.webp",sky:"#3e88c0",label:"Canneto beach, Sicily",icon:"boat",ids:["boat","scooter","bike","dog","bird","plane"],
+  svg:ROAD("street-road-beach.webp")+
+   TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+
+   TH("scooter","scooter",60,420,190,135)+TH("boat","boat",330,420,260,131)+TH("plane","plane",70,-14,146,62)}
 };
-const ORDER=["town","country","site"];
+const ORDER=["town","country","site","berlin","austin","sicily"];
 let sceneId="town";
 const ids=()=>SCENES[sceneId].ids;
 const T=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
@@ -124,6 +138,8 @@ let plays=0,swapping=0,want=null,misses=0,lastTap=0,last=null,lastId=null,lastPo
 
 /* real CC0 recordings (sounds.js); the synthesized versions below are a fallback */
 const SYN={
+ boat(){[0,.7].forEach(t=>{LP.tone(196,.6,"sawtooth",.1,t);LP.tone(247,.6,"sawtooth",.06,t)});LP.noise(1.3,.06,"lowpass",500,1,0,200)},
+ scooter(){for(let i=0;i<14;i++)LP.tone(150+i*14,.1,"sawtooth",.06,i*.06,230+i*14);LP.noise(.9,.07,"bandpass",1400,1.5)},
  bus(){LP.tone(55,1.1,"sawtooth",.12,0,48);LP.tone(82,1.1,"sawtooth",.06);LP.noise(.5,.12,"highpass",3000,1,1)},
  fire(){[0,1,2,3].forEach(i=>LP.tone(i%2?587:440,.42,"triangle",.14,i*.45))},
  police(){[0,1,2,3].forEach(i=>LP.tone(i%2?523:392,.42,"triangle",.14,i*.45))},
@@ -153,7 +169,7 @@ const SND=new Proxy({},{get:(_,id)=>()=>{if(!LP.sample(id,2.4))SYN[id]()}});
 function play(id,el){
  const now=Date.now();if(now-lastTap<150)return;lastTap=now;playedAt=now;lastId=id;
  const g=el||document.querySelector(`[data-thing="${id}"]`);plays++;
- const anim=["dog","bird","bike","heli","cow","sheep"].includes(id)?"hop":"go";
+ const anim=["dog","bird","bike","heli","cow","sheep","scooter"].includes(id)?"hop":"go";
  g.classList.remove("go","hop");void g.getBBox();g.classList.add(anim);
  g.querySelectorAll(".blue").forEach(b=>{b.classList.remove("blue");void b.getBBox();b.classList.add("blue")});
  document.querySelectorAll(".glow").forEach(x=>x.classList.remove("glow"));
@@ -164,7 +180,7 @@ function play(id,el){
   LPLearn.asked(want,LP.lang,false);misses++;
  }
  bubble(w(id).w+"  "+w(id).s);LPLearn.heard(id,LP.lang);
- setTimeout(()=>{LP.say(w(id).w);LP.say(w(id).s,true)},({fire:2300,police:2300,bus:2000,plane:1900,heli:1900,bird:1900,dog:1800,tram:1500,bike:1200,car:1000,truck:1800,tractor:1900,cow:1600,sheep:1400,digger:2000,dumptruck:1900,mixer:2000,crane:1700,roller:2000})[id]||1000);
+ setTimeout(()=>{LP.say(w(id).w);LP.say(w(id).s,true)},({fire:2300,police:2300,bus:2000,plane:1900,heli:1900,bird:1900,dog:1800,tram:1500,bike:1200,car:1000,truck:1800,boat:1800,scooter:1500,tractor:1900,cow:1600,sheep:1400,digger:2000,dumptruck:1900,mixer:2000,crane:1700,roller:2000})[id]||1000);
  if(want)setTimeout(()=>{if(want){bubble(fill(L().where,want));LP.say(fill(L().where,want))}},3600);
  else if(plays>=8&&!swapping){swapping=1;setTimeout(()=>{nextScene();swapping=0},4600)}
 }
