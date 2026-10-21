@@ -18,10 +18,11 @@ svg#street{width:100%;height:100%;overflow:visible}
 /* layer 1: the miniature town fills the screen, softly out of focus */
 .app{background:#4f9be6 no-repeat}
 svg#street.swap{animation:swap .6s steps(3,jump-none)}@keyframes swap{from{opacity:0;transform:translateY(24px)}}
-.pick{position:absolute;right:max(12px,env(safe-area-inset-right,0px));top:max(12px,env(safe-area-inset-top,0px));z-index:3;display:flex;gap:10px}
-.pick button{width:54px;height:54px;padding:7px;border:0;border-radius:50%;background:#fffdf6;box-shadow:0 3px 8px #0006;outline:2px dashed #b8401f99;outline-offset:-5px;cursor:pointer;display:grid;place-items:center}
+.pick{flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 24px);position:absolute;right:max(12px,env(safe-area-inset-right,0px));top:max(12px,env(safe-area-inset-top,0px));z-index:3;display:flex;gap:5px}
+.pick button{width:46px;height:46px;padding:6px;border:0;border-radius:50%;background:#fffdf6;box-shadow:0 3px 8px #0006;outline:2px dashed #b8401f99;outline-offset:-5px;cursor:pointer;display:grid;place-items:center}
 .pick button img{width:100%;height:100%;object-fit:contain;pointer-events:none}
-@media (max-width:700px){.pick{gap:6px}.pick button{width:44px;height:44px;padding:5px}.pick{top:max(72px,calc(env(safe-area-inset-top,0px) + 64px))}}
+@media (max-width:1100px){.pick{top:max(72px,calc(env(safe-area-inset-top,0px) + 64px))}}
+@media (max-width:700px){.pick{gap:6px}.pick button{width:40px;height:40px;padding:5px}.pick{top:max(72px,calc(env(safe-area-inset-top,0px) + 64px))}}
 .pick button.on{box-shadow:0 0 0 4px #F6C033,0 3px 8px #0006}
 .top,.stage{position:relative;z-index:1}
 .thing{cursor:pointer}
@@ -131,7 +132,15 @@ SCENES.london={bg:"street-bg-london.webp",sky:"#3e88c0",label:"London",icon:"bus
  svg:ROAD("street-road.webp")+
   TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+
   TH("taxi","taxi",30,474,190,86)+TH("taxi","taxi",600,466,190,86)+TH("bus","bus-red",236,420,265,148)+TH("plane","plane",70,-14,146,62)};
-const ORDER=["town","country","site","berlin","austin","sicily","london"];
+SCENES.paris={bg:"street-bg-paris.webp",sky:"#3e88c0",label:"Paris",icon:"2cv",ids:["car","bike","dog","bird","plane","bus"],
+ svg:ROAD("street-road.webp")+
+  TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+
+  TH("car","2cv",40,462,200,128)+TH("bus","dbus",330,427,235,150)+TH("car","car",620,470,138,86)+TH("plane","plane",70,-14,146,62)};
+SCENES.barcelona={bg:"street-bg-barcelona.webp",sky:"#3e88c0",label:"Barcelona",icon:"bcntaxi",ids:["taxi","tram","bike","dog","bird","plane"],
+ svg:ROAD("street-road.webp")+
+  TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("tram","tram",28,326,249,118)+
+  TH("taxi","bcntaxi",60,462,230,100)+TH("taxi","bcntaxi",400,470,230,100)+TH("plane","plane",70,-14,146,62)};
+const ORDER=["town","country","site","berlin","austin","sicily","london","paris","barcelona"];
 let sceneId="town";
 const ids=()=>SCENES[sceneId].ids;
 const T=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
