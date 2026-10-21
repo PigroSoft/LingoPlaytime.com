@@ -149,7 +149,11 @@ SCENES.rome={bg:"street-bg-rome.webp",sky:"#3e88c0",label:"Rome",icon:"fiat",ids
  svg:ROAD("street-road.webp")+
   TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("car","fiat",40,436,200,117)+
   TH("scooter","scooter",360,430,160,112)+TH("plane","plane",70,-14,146,62)};
-const ORDER=["town","country","site","berlin","austin","sicily","london","paris","barcelona","lisbon","rome"];
+SCENES.newyork={bg:"street-bg-newyork.webp",sky:"#3e88c0",label:"New York",icon:"nytaxi",ids:["taxi","police","bike","dog","bird","plane"],
+ svg:ROAD("street-road.webp")+
+  TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("police","police",40,474,147,82)+
+  TH("taxi","nytaxi",230,440,210,118)+TH("taxi","nytaxi",560,462,190,107)+TH("plane","plane",70,-14,146,62)};
+const ORDER=["town","country","site","berlin","austin","sicily","london","paris","barcelona","lisbon","rome","newyork"];
 let sceneId="town";
 const ids=()=>SCENES[sceneId].ids;
 const T=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
