@@ -209,15 +209,6 @@ function wrong(c){
 LP.init({langs:ALLLANGS,onLang:()=>{document.title=L().title;set.forEach(c=>c.el.setAttribute("aria-label",w(c.id)));bubble(want?fill(L().please,want):L().title)},onAge:()=>{want=null;clearGlow();if(!busy&&set.length&&LP.age>=1)ask()}});
 document.title=L().title;bubble(L().title);
 LP.start(L().title,()=>{spawn()});
-/* the passer-by rides along the cobbles of the town picture (just in front of the low wall, above the crates) */
-(function(){
- const app=$("app"),box=document.createElement("div");box.id="passer";
- const im=document.createElement("img");im.src="../felt/market-fox-bike.webp";im.alt="";box.appendChild(im);app.insertBefore(box,app.firstChild);
- let n=0;im.addEventListener("animationiteration",()=>{n++;im.classList.toggle("back",n%2===1)}); // there and back again
- function place(){const W=app.clientWidth,H=app.clientHeight,s=Math.max(W/1536,H/864),top=(H-864*s)*.78;
-  box.style.top=(top+864*s*.685)+"px";im.style.height=(864*s*.11)+"px";}
- addEventListener("resize",place);place();
-})();
 LP.mash((e)=>{
  if(busy||!set.length)return;
  const g=e.target.closest&&e.target.closest("[data-food]");

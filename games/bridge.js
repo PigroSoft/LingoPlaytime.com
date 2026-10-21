@@ -98,7 +98,7 @@
       (document.head || document.documentElement).appendChild(sc);
     });
     var origSpeak = ss.speak.bind(ss), origCancel = ss.cancel.bind(ss);
-    var q = [], cur = null, audio = null, gen = 0;
+    var q = [], cur = null, audio = null, gen = 0; var curAt = 0; window.LP_busy = function () { return (!!cur || q.length > 0) && Date.now() - curAt < 5000; };
     function fire(u, ev) { try { if (u["on" + ev]) u["on" + ev](new Event(ev)); } catch (e) {} }
     function langOf(u) { return (u.lang || (u.voice && u.voice.lang) || "").replace("_", "-"); }
     function clipFor(u) {
@@ -195,7 +195,7 @@
     }
     function next() {
       if (cur || !q.length) return;
-      var u = q.shift(), my = gen; cur = u;
+      var u = q.shift(), my = gen; cur = u; curAt = Date.now();
       if (muted) { fire(u, "start"); setTimeout(function () { if (my !== gen) return; fire(u, "end"); advance(my); }, 450); return; }
       var clip = clipFor(u);
       if (clip) {

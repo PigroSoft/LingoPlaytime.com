@@ -146,12 +146,14 @@
 
   LP.mash = function (fn) {
     // every tap and key shows a little sparkle straight away, whatever the game does next
-    addEventListener("pointerdown", function (e) { if (document.querySelector(".lp-start") || Date.now() - (LP._started || 0) < 350) return; LP.burst(e.clientX, e.clientY, 6); fn(e, e.clientX, e.clientY); });
+    // while a word is still being spoken, extra taps only sparkle: the child hears the whole phrase before the next one starts
+    function held(e) { return window.LP_busy && window.LP_busy() && !(e.target && e.target.closest && e.target.closest("#say,.pick,.lpbar,[data-nogate],.lp-start")); }
+    addEventListener("pointerdown", function (e) { if (document.querySelector(".lp-start") || Date.now() - (LP._started || 0) < 350) return; LP.burst(e.clientX, e.clientY, 6); if (held(e)) return; fn(e, e.clientX, e.clientY); });
     addEventListener("keydown", function (e) {
       if (document.querySelector(".lp-start") || e.repeat || e.metaKey || e.ctrlKey || e.altKey || e.key === "Tab") return;
       if (!(e.target.closest && e.target.closest("button"))) e.preventDefault();
       var x = innerWidth * (0.2 + Math.random() * 0.6), y = innerHeight * (0.3 + Math.random() * 0.4);
-      LP.burst(x, y, 6); fn(e, x, y);
+      LP.burst(x, y, 6); if (held(e)) return; fn(e, x, y);
     });
   };
 
