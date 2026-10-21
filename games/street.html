@@ -234,6 +234,10 @@ function play(id,el){
  if(want){
   if(id===want){LPLearn.asked(id,LP.lang,true);want=null;misses=0;LP.sfx.win();LP.burst(r.left+r.width/2,r.top,20);const t=fill(L().found,id);bubble(t);setTimeout(()=>LP.say(t),900);setTimeout(ask,4000);return}
   LPLearn.asked(want,LP.lang,false);misses++;
+  // a wrong tap: no name, just "not quite", then the thing to find is asked for again
+  bubble(LP.notQuite());setTimeout(()=>LP.say(LP.notQuite()),700);
+  setTimeout(()=>{if(want){bubble(fill(L().where,want));LP.say(fill(L().where,want),true)}},2300);
+  return;
  }
  bubble(w(id).w+"  "+w(id).s);LPLearn.heard(id,LP.lang);
  setTimeout(()=>{LP.say(w(id).w);LP.say(w(id).s,true)},({fire:2300,police:2300,bus:2000,plane:1900,heli:1900,bird:1900,dog:1800,tram:1500,bike:1200,car:1000,truck:1800,taxi:1100,boat:1800,scooter:1500,motorcycle:1700,cargobike:1500,horse:1800,darkcar:2000,subway:1600,escooter:1300,skateboard:1500,camper:1300,chariot:1900,tuktuk:1300,balloon:1900,tractor:1900,cow:1600,sheep:1400,digger:2000,dumptruck:1900,mixer:2000,crane:1700,roller:2000})[id]||1000);

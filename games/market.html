@@ -200,10 +200,10 @@ function finish(){
 }
 function wrong(c){
  c.el.classList.remove("no");void c.el.getBoundingClientRect();c.el.classList.add("no");
- LPLearn.heard(c.id,LP.lang);LPLearn.asked(want,LP.lang,false);
- bubble(cap(w(c.id)));LP.say(w(c.id));
+ LPLearn.asked(want,LP.lang,false);
+ bubble(LP.notQuite());LP.say(LP.notQuite());
  misses++;
- setTimeout(()=>{if(want)reask()},2000);
+ setTimeout(()=>{if(want)reask()},1500);
 }
 
 LP.init({langs:ALLLANGS,onLang:()=>{document.title=L().title;set.forEach(c=>c.el.setAttribute("aria-label",w(c.id)));bubble(want?fill(L().please,want):L().title)},onAge:()=>{want=null;clearGlow();if(!busy&&set.length&&LP.age>=1)ask()}});

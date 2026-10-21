@@ -208,7 +208,7 @@ function tapPart(id){
    later(ask,4000);return;
   }
   LPLearn.asked(want,LP.lang,false);misses++;streak=Math.max(0,streak-1);if(streak<3)$("rock").classList.remove("sway");
-  LP.sfx.pop();pop(id,false);bubble(w(id).w);LP.say(w(id).w);later(FX[id],200);
+  LP.sfx.pop();pop(id,false);bubble(LP.notQuite());LP.say(LP.notQuite());
   if(misses>=2)later(()=>glowPart(want,true),900);
   later(()=>{if(want){bubble(w(want).q);LP.say(w(want).q)}},1700);
   return;

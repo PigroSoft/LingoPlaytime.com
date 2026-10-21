@@ -402,7 +402,7 @@ LP.mash((e)=>{
  const hint=()=>{misses++;if(misses>=(LP.age===1?1:2)&&asked)asked.el.classList.add("glow")};
  if(pointed){
   if(pointed.id===want)eat(pointed);
-  else{pointed.el.classList.remove("no");void pointed.el.getBoundingClientRect();pointed.el.classList.add("no");say(cap(w(pointed.id)),cap(hw(pointed.id)));hint();setTimeout(()=>{if(want&&!busy)sayWhere()},1800)}
+  else{pointed.el.classList.remove("no");void pointed.el.getBoundingClientRect();pointed.el.classList.add("no");say(LP.notQuite(),"");hint();setTimeout(()=>{if(want&&!busy)sayWhere()},1500)}
  }else{hint();sayWhere()}
 });
 </script>

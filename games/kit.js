@@ -46,6 +46,9 @@
       speechSynthesis.speak(u);
     } catch (e) {}
   };
+  /* a wrong guess never names the thing that was tapped: say "not quite", then ask for the right one again */
+  var NQ = { en: "Not quite!", nl: "Net niet!", pl: "Jeszcze nie!", sv: "Inte riktigt!", el: "Όχι ακριβώς!", zh: "不对哦！", ar: "ليس بعد!", ja: "ちがうよ！", ko: "아니야!", ru: "Не совсем!", tr: "Henüz değil!", hi: "अभी नहीं!", de: "Nicht ganz!", es: "¡Todavía no!", fr: "Pas encore !", it: "Non ancora!", pt: "Ainda não!" };
+  LP.notQuite = function () { return NQ[LP.lang] || NQ.en; };
   LP.hush = function () { try { speechSynthesis.cancel(); } catch (e) {} };
 
   /* audio */
