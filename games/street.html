@@ -18,12 +18,19 @@ svg#street{width:100%;height:100%;overflow:visible}
 /* layer 1: the miniature town fills the screen, softly out of focus */
 .app{background:#4f9be6 no-repeat}
 svg#street.swap{animation:swap .6s steps(3,jump-none)}@keyframes swap{from{opacity:0;transform:translateY(24px)}}
-.pick{flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 24px);position:absolute;right:max(12px,env(safe-area-inset-right,0px));top:max(12px,env(safe-area-inset-top,0px));z-index:3;display:flex;gap:5px}
-.pick button{width:46px;height:46px;padding:6px;border:0;border-radius:50%;background:#fffdf6;box-shadow:0 3px 8px #0006;outline:2px dashed #b8401f99;outline-offset:-5px;cursor:pointer;display:grid;place-items:center}
-.pick button img{width:100%;height:100%;object-fit:contain;pointer-events:none}
+.pick{position:absolute;right:max(12px,env(safe-area-inset-right,0px));top:max(12px,env(safe-area-inset-top,0px));z-index:5;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 @media (max-width:1100px){.pick{top:max(72px,calc(env(safe-area-inset-top,0px) + 64px))}}
-@media (max-width:700px){.pick{gap:6px}.pick button{width:40px;height:40px;padding:5px}.pick{top:max(72px,calc(env(safe-area-inset-top,0px) + 64px))}}
-.pick button.on{box-shadow:0 0 0 4px #F6C033,0 3px 8px #0006}
+.pick button{border:0;background:#fffdf6;box-shadow:0 3px 8px #0006;outline:2px dashed #b8401f99;outline-offset:-5px;cursor:pointer;font-weight:700;font-size:17px;line-height:1;font-family:inherit;color:#2b3a42;display:flex;align-items:center;gap:8px}
+.pick .cur{height:48px;padding:6px 14px 6px 8px;border-radius:24px;min-width:150px}
+.pick .cur img{width:36px;height:36px;object-fit:contain;pointer-events:none}
+.pick .cur .nm{flex:1;text-align:left;white-space:nowrap}
+.pick .cur .car{font-size:13px;transition:transform .15s}
+.pick.open .cur .car{transform:rotate(180deg)}
+.pick .list{display:none;flex-direction:column;gap:5px;max-height:calc(100vh - 170px);overflow:auto;padding:4px}
+.pick.open .list{display:flex}
+.pick .list button{height:40px;flex:none;padding:5px 14px 5px 8px;border-radius:23px;width:100%;min-width:190px}
+.pick .list button img{width:34px;height:34px;object-fit:contain;pointer-events:none}
+.pick .list button.on{box-shadow:0 0 0 4px #F6C033,0 3px 8px #0006}
 .top,.stage{position:relative;z-index:1}
 .thing{cursor:pointer}
 .thing .hit{fill:#0000}
@@ -237,13 +244,17 @@ function setScene(n){
  sceneId=n;const S=SCENES[n];plays=0;want=null;misses=0;last=null;lastId=null;lastPoint=null;
  const app=$("app");app.style.backgroundImage=`url(../felt/${S.bg})`;app.style.backgroundColor=S.sky;
  const sv=$("street");sv.innerHTML=S.svg;sv.setAttribute("aria-label",S.label);sv.classList.remove("swap");void sv.getBBox();sv.classList.add("swap");
- document.querySelectorAll(".pick button").forEach(b=>b.classList.toggle("on",b.dataset.s===n));
+ document.querySelectorAll(".pick .list button").forEach(b=>b.classList.toggle("on",b.dataset.s===n));
+ $("pcur").innerHTML=`<img src="../felt/street-${S.icon}.webp" alt=""><span class="nm">${S.label}</span><span class="car">▼</span>`;$("pick").classList.remove("open");$("pcur").setAttribute("aria-expanded","false");
  label();bubble(L().title);placeTown();
  const nx=SCENES[ORDER[(ORDER.indexOf(n)+1)%ORDER.length]];(new Image).src="../felt/"+nx.bg;
 }
 function nextScene(){setScene(ORDER[(ORDER.indexOf(sceneId)+1)%ORDER.length]);if(LP.age>=1&&LPLearn.summary(LP.lang).met>=8)setTimeout(ask,900)}
-$("pick").innerHTML=ORDER.map(n=>`<button type="button" data-s="${n}" aria-label="${SCENES[n].label}"><img src="../felt/street-${SCENES[n].icon}.webp" alt=""></button>`).join("");
-$("pick").addEventListener("click",e=>{const b=e.target.closest("button");if(b&&b.dataset.s!==sceneId){swapping=0;setScene(b.dataset.s)}});
+$("pick").innerHTML=`<button type="button" class="cur" id="pcur" aria-haspopup="true" aria-expanded="false" aria-label="Choose a place"></button><div class="list" id="plist">`+ORDER.map(n=>`<button type="button" data-s="${n}"><img src="../felt/street-${SCENES[n].icon}.webp" alt=""><span class="nm">${SCENES[n].label}</span></button>`).join("")+`</div>`;
+$("pick").addEventListener("click",e=>{
+ if(e.target.closest("#pcur")){const o=$("pick").classList.toggle("open");$("pcur").setAttribute("aria-expanded",o);return}
+ const b=e.target.closest(".list button");if(b){if(b.dataset.s!==sceneId){swapping=0;setScene(b.dataset.s)}else $("pick").classList.remove("open")}});
+document.addEventListener("pointerdown",e=>{if(!e.target.closest(".pick"))$("pick").classList.remove("open")});
 setScene("town");document.title=L().title;
 LP.start(L().title,()=>setTimeout(ask,500));
 LP.mash((e)=>{
