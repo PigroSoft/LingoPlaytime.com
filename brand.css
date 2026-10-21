@@ -176,7 +176,7 @@ nav a[aria-current="page"],nav button[aria-current="page"],.setbtn,.sndbtn:not(.
 :root :is(.go,.cta){--felt:var(--felt-red);--fh:60px;color:#fff;text-shadow:0 1px 0 #6a120f;padding-inline:34px}
 :root .cta{--fh:64px;padding-inline:38px;font-size:20px}
 /* blue: standard and chosen */
-:root :is(.langs b,.setbtn,.sndbtn:not(.muted),.shufbtn,.pill[aria-pressed="true"],.lpbar .chip.on,nav a[aria-current="page"],nav button[aria-current="page"]){--felt:var(--felt-blue);color:#fff;text-shadow:0 1px 0 #06415e}
+:root :is(.langs b,.setbtn,.sndbtn:not(.muted),.shufbtn,.fsbtn[aria-pressed="true"],.pill[aria-pressed="true"],.lpbar .chip.on,nav a[aria-current="page"],nav button[aria-current="page"]){--felt:var(--felt-blue);color:#fff;text-shadow:0 1px 0 #06415e}
 :root .pill{--fh:46px}
 :root .lpbar .chip{--fh:46px}
 :root .sndbtn,:root .fsbtn{width:var(--fh);padding:0}
@@ -213,3 +213,6 @@ header::after{inset:4px}
 .game:hover{transform:translateY(-5px) rotate(0)}
 .game .art.felt{box-shadow:0 0 0 3px #fffdf7,0 0 0 4.5px #b8763f30,0 3px 0 #0002,0 8px 14px -6px #0005}
 @media (prefers-reduced-motion:reduce){.game:nth-child(n){transform:none}}
+
+/* tablets and narrower: compact language buttons so several languages fit on one row */
+@media (max-width:1100px){:root .lpbar .chip{--fh:36px;font-size:13px;padding-inline:10px}:root .lpbar .chip .code{font-size:11px}}

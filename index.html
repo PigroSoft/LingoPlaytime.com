@@ -247,7 +247,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   <div class="lpbar" id="lpbar" hidden>
     <div class="who" id="barWho"><svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><b id="barName"></b><small id="barAge"></small></div>
     <div class="barL" id="barL">
-      <button type="button" class="fsbtn shufbtn" id="shufBtn" aria-label="New game" title="New game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/></svg><span id="shufLbl">New game</span></button>
+      <button type="button" class="fsbtn shufbtn" id="shufBtn" aria-label="New game" title="New game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h3.5c5 0 6 10 11 10H21M3 17h3.5c1.6 0 2.8-.8 3.8-2M13.7 9.1C14.6 8 15.7 7 17.5 7H21M18.5 4.5L21 7l-2.5 2.5M18.5 14.5L21 17l-2.5 2.5"/></svg><span id="shufLbl">New game</span></button>
     </div>
     <div class="play" role="group" aria-labelledby="barPlayLbl"><span id="barPlayLbl"></span><span class="langs" id="barLangs"></span></div>
     <div class="barR" id="barR">
@@ -578,7 +578,8 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
 
   const $ = id=>document.getElementById(id);
   // first visit: a sample setup, so families see the games before filling anything in
-  const SAMPLE_PROFILE={name:"Friend",age:0,home:"en",learn:["it","fr","es","de"],active:"es",voices:{},demo:true};
+  const BROWSER_HOME=(()=>{try{for(const l of (navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||"en"])){const c=String(l).slice(0,2).toLowerCase();if(L[c])return c}}catch(e){}return "en"})();
+  const SAMPLE_PROFILE={name:"Little Raccoon",age:0,home:BROWSER_HOME,learn:BROWSER_HOME==="en"?["it"]:["en"],active:BROWSER_HOME==="en"?"it":"en",voices:{},demo:true};
   let profile = load() || {...SAMPLE_PROFILE,learn:[...SAMPLE_PROFILE.learn]};
   if(profile && !playable(profile).includes(profile.active)) profile.active=profile.learn[0];
   let draft = fresh();
@@ -586,7 +587,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   let editing = false, current = null;
 
   function fresh(){if(profile&&profile.demo){const {demo,...d}=profile;return {...d,name:"",learn:[...d.learn],voices:{}}}return profile?{...profile,learn:[...profile.learn],voices:{...(profile.voices||{})}}:{name:"",age:0,home:guessHome(),learn:[],voices:{}}}
-  function guessHome(){const nav=(navigator.language||"en").slice(0,2);return L[nav]?nav:"en"}
+  function guessHome(){return BROWSER_HOME}
   function playable(p){return [...p.learn,p.home]}
   function t(){return T[(profile||draft).home]||T.en}
   function b(){return B[(profile||draft).home]||B.en}
@@ -752,7 +753,9 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   $("sndBtn").addEventListener("click",()=>{const m=!mutedNow();try{localStorage.setItem(MKEY,m?"1":"0")}catch(e){}sndPaint();try{$("frame").contentWindow.postMessage({type:"lp-mute",muted:m},"*")}catch(e){}});
   sndPaint();
   $("fsBtn").hidden=!fsCan();
-  $("fsBtn").addEventListener("click",()=>{if(fsEl()){fsPref(false);fsExit()}else{fsPref(true);fsEnter()}});
+  const fsPaint=()=>$("fsBtn").setAttribute("aria-pressed",String(!!fsEl()));
+  $("fsBtn").addEventListener("click",()=>{if(fsEl()){fsPref(false);fsExit()}else{fsPref(true);fsEnter()}setTimeout(fsPaint,300)});
+  document.addEventListener("fullscreenchange",fsPaint);document.addEventListener("webkitfullscreenchange",fsPaint);fsPaint();
   document.addEventListener("fullscreenchange",()=>{if(!fsEl()&&view==="play"){/* left with Esc: respect it */fsPref(false)}});
 
   /* ---------- the game stage ---------- */
