@@ -140,7 +140,15 @@ SCENES.barcelona={bg:"street-bg-barcelona.webp",sky:"#3e88c0",label:"Barcelona",
  svg:ROAD("street-road.webp")+
   TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("tram","tram",28,326,249,118)+
   TH("taxi","bcntaxi",60,462,230,100)+TH("taxi","bcntaxi",400,470,230,100)+TH("plane","plane",70,-14,146,62)};
-const ORDER=["town","country","site","berlin","austin","sicily","london","paris","barcelona"];
+SCENES.lisbon={bg:"street-bg-lisbon.webp",sky:"#3e88c0",label:"Lisbon",icon:"lisbontram",ids:["tram","bike","dog","bird","plane","car"],
+ svg:ROAD("street-road.webp")+
+  TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("tram","lisbontram",30,330,215,185)+
+  TH("car","fiat",620,452,170,99)+TH("plane","plane",70,-14,146,62)};
+SCENES.rome={bg:"street-bg-rome.webp",sky:"#3e88c0",label:"Rome",icon:"fiat",ids:["car","scooter","bike","dog","bird","plane"],
+ svg:ROAD("street-road.webp")+
+  TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("car","fiat",40,436,200,117)+
+  TH("scooter","scooter",360,430,160,112)+TH("plane","plane",70,-14,146,62)};
+const ORDER=["town","country","site","berlin","austin","sicily","london","paris","barcelona","lisbon","rome"];
 let sceneId="town";
 const ids=()=>SCENES[sceneId].ids;
 const T=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
