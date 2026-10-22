@@ -216,3 +216,13 @@ header::after{inset:4px}
 
 /* tablets and narrower: compact language buttons so several languages fit on one row */
 @media (max-width:1100px){:root .lpbar .chip{--fh:36px;font-size:13px;padding-inline:10px}:root .lpbar .chip .code{font-size:11px}}
+/* word tables in the language-pair guides */
+.wordtable{margin:18px 0 26px;overflow-x:auto}
+.wordtable table{width:100%;border-collapse:collapse;background:var(--bg);border-radius:18px;overflow:hidden;font-size:17px}
+.wordtable caption{text-align:left;font-weight:700;padding:0 4px 8px;color:var(--muted);font-size:15px}
+.wordtable th,.wordtable td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--line)}
+.wordtable thead th{background:var(--sun-soft);font-family:var(--display,inherit)}
+.wordtable tbody th{font-weight:700}
+.wordtable td:first-child{width:2.4em;text-align:center;font-size:22px;padding-inline:8px}
+.wordtable tr:last-child>*{border-bottom:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
