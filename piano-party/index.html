@@ -1,0 +1,883 @@
+<!-- made by tools/game-pages.py from index.html; edit index.html, not this file -->
+<meta charset="utf-8">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Piano Party: a free language game for toddlers | LingoPlaytime</title>
+<meta name="description" content="Play the piano with your keyboard: free play, or follow a song. Learn the notes and the keys. Plays in up to four languages, with your child&#x27;s name. Free, no ads, no account.">
+<link rel="canonical" href="https://lingoplaytime.com/piano-party/">
+<meta name="lp-home-title" content="LingoPlaytime: language games for toddlers in bilingual and multilingual families">
+<meta property="og:site_name" content="LingoPlaytime"><meta property="og:type" content="website"><meta property="og:title" content="Piano Party: a free language game for toddlers | LingoPlaytime"><meta property="og:description" content="Play the piano with your keyboard: free play, or follow a song. Learn the notes and the keys. Plays in up to four languages, with your child&#x27;s name. Free, no ads, no account."><meta property="og:url" content="https://lingoplaytime.com/piano-party/"><meta property="og:image" content="https://lingoplaytime.com/assets/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://lingoplaytime.com/assets/og.jpg">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" href="/favicon.png" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"LingoPlaytime","url":"https://lingoplaytime.com/","description":"Free language games for toddlers in multilingual families. Your child taps, mashes and hears real words in up to four languages, with their own name. No ads, no accounts.","applicationCategory":"EducationalApplication","operatingSystem":"Any (web browser)","inLanguage":["en","de","es","fr","it","pt","nl","pl","sv","el","zh","ru"],"audience":{"@type":"PeopleAudience","suggestedMinAge":1,"suggestedMaxAge":7},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+/* Layout: one calm sky-blue room; one big card per view, games as a toy shelf of tiles */
+:root{
+  --bg:#EAF3FA; --paper:#FFFFFF; --ink:#18264A; --muted:#4D5B7A; --line:#C9DAEA;
+  --tomato:#E5553B; --sun:#F6C033; --teal:#1E9A8F; --lilac:#7A68D9; --sky:#3B8BD4;
+  --tomato-soft:#FCE3DD; --sun-soft:#FDF1CC; --teal-soft:#D5F0EC; --lilac-soft:#E6E1FA;
+  --display:"Fredoka","Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:22px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111A30; --paper:#1A2645; --ink:#F1F5FC; --muted:#AEBBD6; --line:#2E3C63;
+  --tomato:#FF7A61; --sun:#F8CD55; --teal:#3CC2B5; --lilac:#A396F2; --sky:#6AAEEB;
+  --tomato-soft:#3A2230; --sun-soft:#3A3322; --teal-soft:#173A3E; --lilac-soft:#2A2752; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111A30; --paper:#1A2645; --ink:#F1F5FC; --muted:#AEBBD6; --line:#2E3C63;
+  --tomato:#FF7A61; --sun:#F8CD55; --teal:#3CC2B5; --lilac:#A396F2; --sky:#6AAEEB;
+  --tomato-soft:#3A2230; --sun-soft:#3A3322; --teal-soft:#173A3E; --lilac-soft:#2A2752; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.1;text-wrap:balance;margin:0}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto}
+
+/* header */
+header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding-block:20px 16px}
+.logo{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer}
+.logo svg{flex:none}
+.logo b{font-family:var(--display);font-size:28px;font-weight:700;letter-spacing:-.01em}
+.logo b span{color:var(--tomato)}
+nav{display:flex;flex-wrap:wrap;gap:4px;margin-left:auto}
+nav a{text-decoration:none;display:inline-flex;align-items:center}
+nav a,nav button{background:none;border:0;border-radius:999px;padding:8px 14px;font-weight:700;color:var(--muted);cursor:pointer;min-height:44px}
+nav a:hover,nav button:hover{color:var(--ink);background:var(--paper)}
+nav button[aria-current="page"]{color:var(--ink);background:var(--paper);box-shadow:inset 0 0 0 2px var(--line)}
+
+
+/* card */
+.card{background:var(--paper);border-radius:var(--r);padding:clamp(20px,4vw,40px);box-shadow:0 2px 0 var(--line),0 18px 40px -28px #18264a55}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.lede{color:var(--muted);max-width:60ch;margin:10px 0 0}
+
+.sample{margin:10px 0 0;padding:10px 14px;border-radius:14px;background:#fff5d6;color:var(--ink);font-size:15px;line-height:1.5;max-width:60ch}
+/* setup */
+.setup h1{font-size:clamp(32px,5vw,48px);margin-top:6px}
+.field{display:grid;gap:10px;margin-top:30px}
+.field>label,.field>.lbl{font-family:var(--display);font-weight:600;font-size:21px}
+.hint{font-size:15px;color:var(--muted);margin-top:-6px}
+#name{width:100%;max-width:420px;font-size:26px;font-family:var(--display);padding:12px 18px;border-radius:16px;border:2px solid var(--line);background:var(--bg)}
+#name:focus{border-color:var(--sky);outline:none}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:6px 16px 6px 6px;border-radius:999px;border:2px solid var(--line);background:var(--paper);cursor:pointer;font-weight:700}
+.pill .code{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;font-size:12px;letter-spacing:.04em;background:var(--bg);color:var(--muted)}
+.pill:hover{border-color:var(--sky)}
+.pill[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.pill[aria-pressed="true"] .code{background:var(--sun);color:#18264A}
+.pill:disabled{opacity:.4;cursor:not-allowed}
+.pill.age{padding:6px 18px}
+.pill.age small{font-weight:400;opacity:.8}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:34px}
+.go{background:var(--tomato);color:#fff;border:0;border-radius:999px;padding:14px 30px;font-family:var(--display);font-size:22px;font-weight:600;cursor:pointer;min-height:56px;box-shadow:0 4px 0 #a8341f}
+.go:active{transform:translateY(3px);box-shadow:0 1px 0 #a8341f}
+.go:disabled{background:var(--line);color:var(--muted);box-shadow:none;cursor:not-allowed}
+.quiet{color:var(--muted);font-size:15px}
+.err{color:var(--tomato);font-weight:700;font-size:15px}
+
+/* games */
+.hello{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.hello span{font-family:var(--display);font-size:clamp(14px,1.8vw,17px);padding:4px 12px;border-radius:999px}
+.hello span:nth-child(4n+1){background:var(--tomato-soft)}
+.hello span:nth-child(4n+2){background:var(--teal-soft)}
+.hello span:nth-child(4n+3){background:var(--lilac-soft)}
+.hello span:nth-child(4n+4){background:var(--sun-soft)}
+.games h1{font-size:clamp(24px,3.4vw,34px)}
+.games>.card{padding:16px 24px;position:relative}
+.mascot{background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.setup{position:relative}
+.setup .mascot{position:absolute;right:clamp(8px,3vw,32px);top:-2px;width:clamp(96px,14vw,150px);cursor:default}
+.setup h1{padding-right:clamp(90px,15vw,160px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));grid-auto-rows:1fr;gap:18px;margin-top:28px}
+.game{display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit;background:var(--paper);border-radius:var(--r);padding:16px;border:2px solid var(--line);transition:transform .15s,border-color .15s}
+.game:hover{transform:translateY(-3px) rotate(-.6deg);border-color:var(--ink)}
+.game .art{aspect-ratio:4/3;max-width:100%;border-radius:14px;display:grid;place-items:center}
+.game .art.day{background:radial-gradient(circle at 82% 18%,#ffe066 0 7%,#ffe06655 10%,transparent 22%),linear-gradient(#2f6fe8,#7fc8ff 70%,#58d26b 70%,#3fae6a)}
+.game .art.night{background:radial-gradient(circle,#ffffff66 1px,transparent 1.5px) 0 0/22px 22px,radial-gradient(120% 90% at 20% 0%,#3a2a86,#241c63 50%,#140f3a)}
+.game .art.felt{background:none;display:block;overflow:hidden;box-shadow:0 3px 0 #0002,0 8px 14px -6px #0005}
+.game .art.felt img{width:100%;height:100%;display:block;object-fit:cover}
+.game .art svg{width:58%;height:auto;max-height:86%;filter:drop-shadow(0 8px 12px #0006)}
+.game h3{font-size:23px}
+.game p{margin:0;font-size:15px;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.tag{font-size:12px;font-weight:700;letter-spacing:.04em;padding:3px 10px;border-radius:999px;background:var(--bg);color:var(--muted)}
+.tag.sound{background:var(--teal-soft);color:var(--ink)}
+.dim{opacity:.45}
+.filter{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:22px}
+
+/* prose pages */
+.prose h1{font-size:clamp(32px,5vw,46px);margin-top:6px}
+.prose h2{font-size:24px;margin-top:30px}
+.prose p,.prose li{max-width:64ch}
+.prose ul{padding-left:22px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:22px}
+.tile{border-radius:18px;padding:20px;min-width:0}
+.tile h3{font-size:21px;margin-bottom:6px}
+.tile p{margin:0;font-size:16px}
+.t1{background:var(--tomato-soft)}.t2{background:var(--teal-soft)}.t3{background:var(--lilac-soft)}.t4{background:var(--sun-soft)}
+.prose .facts,.facts{padding-left:0}
+.facts{display:grid;gap:16px;margin-top:20px;padding:0;list-style:none}
+.facts li{display:block}
+.facts .k{display:block;margin-bottom:2px;font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal)}
+.facts .k.no{color:var(--tomato)}
+.danger{background:none;border:2px solid var(--tomato);color:var(--tomato);border-radius:999px;padding:10px 22px;font-weight:700;cursor:pointer;min-height:46px}
+.confirm{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:14px;padding:14px 18px;border-radius:14px;background:var(--tomato-soft)}
+.confirm button{border-radius:999px;padding:8px 18px;font-weight:700;cursor:pointer;min-height:44px;border:2px solid var(--ink);background:var(--paper)}
+.confirm .yes{background:var(--tomato);border-color:var(--tomato);color:#fff}
+.soon span{display:inline-block;margin-top:10px;padding:8px 18px;border-radius:999px;background:var(--sun-soft);font-family:var(--display);font-weight:600;font-size:20px}
+.price{font-family:var(--display);font-size:40px;font-weight:600}
+
+/* parent gate */
+.gate{position:fixed;inset:0;display:grid;place-items:center;padding:24px;background:#0c1428b3;z-index:20}
+.gate .card{max-width:420px;text-align:center}
+.hold{position:relative;overflow:hidden;margin-top:20px;width:100%;border:0;border-radius:999px;padding:16px;background:var(--ink);color:var(--paper);font-family:var(--display);font-size:20px;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none;min-height:56px}
+.hold i{position:absolute;inset:0 auto 0 0;width:0;background:var(--teal);opacity:.6}
+.hold span{position:relative}
+.close{margin-top:12px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;min-height:44px}
+/* settings bar: the one place settings live, above every game */
+.lpbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-bottom:18px;padding:8px 8px 8px 18px;border-radius:32px;background:var(--paper);box-shadow:0 0 0 2px var(--line),0 10px 24px -18px #18264a66}
+.lpbar .who{display:flex;align-items:baseline;gap:8px;min-width:0}
+.lpbar .who b{font-family:var(--display);font-size:22px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:12ch}
+.lpbar .who small{color:var(--muted);font-weight:700;font-size:14px;white-space:nowrap}
+.lpbar .play{display:flex;align-items:center;gap:10px;flex:1 1 auto;min-width:0}
+.lpbar .langs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}
+#barPlayLbl{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.lpbar{user-select:none;-webkit-user-select:none}
+.lpbar .who{cursor:default}
+.lpbar .chip{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:4px 14px 4px 5px;border-radius:999px;border:2px solid var(--line);font:inherit;font-weight:700;font-size:16px;white-space:nowrap;color:var(--ink);background:var(--paper);cursor:pointer;transition:transform .12s}
+.lpbar .chip:hover{border-color:var(--sky)}
+.lpbar .chip:active{transform:scale(.95)}
+.lpbar .chip .code{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;font-size:11px;letter-spacing:.04em;background:var(--paper);color:var(--muted)}
+.lpbar .chip.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.lpbar .chip.on .code{background:var(--sun);color:#18264A}
+.lpbar .who .lock{flex:none;width:16px;height:16px;color:var(--muted);align-self:center}
+.lpbar .note{flex-basis:100%;font-size:14px;color:var(--muted);padding-left:2px}
+.setbtn{display:inline-flex;align-items:center;gap:8px;margin-left:auto;min-height:48px;padding:8px 20px 8px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);font-weight:700;box-shadow:0 3px 0 var(--line);cursor:pointer}
+.setbtn{position:relative;overflow:hidden;isolation:isolate;touch-action:none;user-select:none;-webkit-user-select:none}
+.setbtn .fill{position:absolute;inset:0 auto 0 0;width:0;z-index:-1;background:linear-gradient(90deg,var(--tomato),var(--sun))}
+.setbtn.holding{background:var(--ink)}
+.setbtn.nudge{animation:nudge .45s}
+@keyframes nudge{20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.setbtn svg{width:18px;height:18px}
+.setbtn:hover{border-color:var(--tomato)}
+.setbtn small{display:block;font-weight:400;font-size:12px;opacity:.85;line-height:1.1}
+.setbtn span{display:grid;text-align:start;line-height:1.15}
+.vrows{display:grid;gap:10px}
+.vrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.vrow .lname{display:inline-flex;align-items:center;gap:8px;min-width:150px;font-weight:700}
+.vrow .lname .code{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font-size:12px;background:var(--bg);color:var(--muted)}
+.vrow select{flex:1;min-width:0;max-width:360px;min-height:44px;padding:6px 12px;border-radius:12px;border:2px solid var(--line);background:var(--paper);font:inherit}
+.hear{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);cursor:pointer;font-size:15px}
+.hear:hover{background:var(--ink);color:var(--paper)}
+.vrow .none{color:var(--tomato);font-size:15px;font-weight:700}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:16;background:var(--bg)}
+@media (max-width:1000px){#barPlayLbl{display:none}}
+@media (max-width:640px){.lpbar{border-radius:24px}.setbtn{margin-left:0}}
+
+/* game stage */
+.stagebar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:12px}
+.stagebar h2{font-size:28px}
+.back{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 16px;border-radius:999px;border:0;background:var(--paper);font-weight:700;cursor:pointer;box-shadow:inset 0 0 0 2px var(--line)}
+.back:hover{box-shadow:inset 0 0 0 2px var(--ink)}
+.frame{display:block;width:100%;height:min(76vh,760px);min-height:440px;border:0;border-radius:var(--r);background:var(--paper);box-shadow:0 0 0 2px var(--line)}
+button.game{font:inherit;text-align:start;cursor:pointer}
+
+
+/* play mode: the page never scrolls, the game fills the window, chrome is one thin row each */
+html.playing,html.playing body{height:100dvh;overflow:hidden;overscroll-behavior:none}
+html.playing body{display:flex;flex-direction:column;padding:0;margin:0}
+html.playing .wrap{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;max-width:none;width:100%}
+html.playing header,html.playing .stagebar h2,html.playing #barPlayLbl,html.playing .lpbar .who small,html.playing .lpbar .who .lock,html.playing body::before{display:none}
+html.playing main{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+html.playing #v-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+html.playing .stagebar{display:none}
+html.playing .frame{flex:1 1 auto;height:auto;min-height:0;border-radius:0;box-shadow:none}
+html.playing .lpbar{position:static;margin:0;gap:4px 10px;padding:3px 6px 3px 8px;border-radius:0;box-shadow:0 1px 0 var(--line)}
+html.playing .lpbar .who b{font-size:16px}
+html.playing .lpbar .chip{min-height:34px;padding:2px 12px 2px 3px;font-size:14px;gap:5px}
+html.playing .lpbar .chip .code{width:26px;height:26px;font-size:10px}
+html.playing .setbtn{min-height:34px;padding:2px 14px 2px 10px;box-shadow:none}
+html.playing .setbtn small{display:none}
+html.playing .back{min-height:34px;padding:2px 12px;font-size:14px}
+html.playing .lpbar .note{font-size:12px;flex-basis:auto;margin-left:auto}
+html.playing footer{display:none}
+html.playing .lpbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center}html.playing .barR{justify-self:end;margin-left:0}html.playing .play{justify-self:center}html.playing .setbtn{margin-left:0}
+html.playing .lpbar .play{overflow-x:auto;scrollbar-width:none}html.playing .lpbar .langs{flex-wrap:nowrap}
+html.playing .lpbar .who{display:none}
+@media (max-width:640px){html.playing .lpbar .chip .own,html.playing .setbtn span{display:none}html.playing .lpbar .chip{padding:2px 3px 2px 3px}html.playing .setbtn{padding:2px 10px}html.playing .back span{display:none}html.playing .back{padding:2px 8px}html.playing .lpbar .note{display:none}html.playing footer{font-size:9.5px}}
+.fsbtn{flex:none;display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;padding:0}
+.fsbtn:hover{border-color:var(--sky)}
+.barL,.barR{display:flex;align-items:center;gap:8px;flex:none}.barR{margin-left:auto}
+.shufbtn{width:auto;display:inline-flex;align-items:center;gap:6px;padding:0 14px 0 10px;font-weight:700;font-size:14px;white-space:nowrap}
+html:not(.playing) .shufbtn{display:none}
+@media (max-width:640px){.shufbtn span{display:none}.shufbtn{padding:0;width:34px;justify-content:center}}
+.fsbtn svg{width:16px;height:16px}
+
+/* settings sheet */
+.sheet{position:fixed;inset:0;z-index:30;overflow-y:auto;background:#0c1428b3;padding-block:max(24px,env(safe-area-inset-top,0px)) 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sheet>.card{max-width:860px;margin:0 auto}
+.sheethead{display:flex;justify-content:flex-end;margin-bottom:-8px}
+footer a{color:var(--ink);font-weight:700}footer a.tiny{font-size:11px;font-weight:400;color:var(--muted);margin-left:8px}.eu{display:inline-flex;align-items:center;gap:5px;margin:0 2px;padding:0;font-size:12px;font-weight:600;line-height:1.6;vertical-align:middle;opacity:.85}.eu svg{flex:none}
+footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:var(--muted)}footer .eu{padding:0;font-size:inherit;line-height:inherit}
+
+@media (max-width:640px){nav{margin-left:0;width:100%}nav button{padding:8px 10px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+</style>
+<link rel="stylesheet" href="/brand.css">
+
+<div class="wrap">
+  <header>
+    <button class="logo" id="logo" type="button" aria-label="LingoPlaytime home">
+      <img src="/felt/logo.webp" alt="LingoPlaytime" width="900" height="207">
+    </button>
+    <nav aria-label="Main">
+      <button type="button" data-view="games" id="nav-games"></button>
+      <a href="/blog/" id="nav-parents"></a>
+      <button type="button" data-view="app" id="nav-app"></button>
+      <button type="button" data-view="privacy" id="nav-privacy"></button>
+    </nav>
+  </header>
+
+  <div class="lpbar" id="lpbar" hidden>
+    <div class="who" id="barWho"><svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><b id="barName"></b><small id="barAge"></small></div>
+    <div class="barL" id="barL">
+      <button type="button" class="fsbtn shufbtn" id="shufBtn" aria-label="New game" title="New game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h3.5c5 0 6 10 11 10H21M3 17h3.5c1.6 0 2.8-.8 3.8-2M13.7 9.1C14.6 8 15.7 7 17.5 7H21M18.5 4.5L21 7l-2.5 2.5M18.5 14.5L21 17l-2.5 2.5"/></svg><span id="shufLbl">New game</span></button>
+    </div>
+    <div class="play" role="group" aria-labelledby="barPlayLbl"><span id="barPlayLbl"></span><span class="langs" id="barLangs"></span></div>
+    <div class="barR" id="barR">
+    <button type="button" class="fsbtn sndbtn" id="sndBtn" aria-pressed="false" aria-label="Sound" title="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor"/><path class="on" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/><path class="off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
+    <button type="button" class="fsbtn" id="fsBtn" aria-label="Fullscreen" title="Fullscreen" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    <button type="button" class="setbtn" id="nav-settings"><i class="fill" id="setFill" aria-hidden="true"></i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span><span id="barSettings"></span><small id="barSettingsSub"></small></span></button>
+    </div>
+    <div class="note" id="barNote" hidden></div>
+  </div>
+
+  <main id="main">
+    <!-- PLAY -->
+    <section id="v-play" hidden>
+      <div class="stagebar">
+        <button type="button" class="back" id="backBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span id="backLbl"></span></button>
+        <h2 id="playTitle"></h2>
+      </div>
+      <iframe class="frame" id="frame" title="Game" allow="autoplay; fullscreen"></iframe>
+    </section>
+
+    <!-- SETUP -->
+    <section class="card setup" id="v-setup" hidden>
+      <div class="mascot" id="mascotS" aria-hidden="true"><div id="mascotSi"></div></div>
+      <div class="eyebrow" id="s-eyebrow"></div>
+      <h1 id="s-title"></h1>
+      <p class="lede" id="s-lede"></p>
+      <form id="setupForm" novalidate>
+        <div class="field">
+          <label for="name" id="s-name"></label>
+          <p class="hint" id="s-name-hint"></p>
+          <input id="name" maxlength="24" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="field">
+          <div class="lbl" id="s-age"></div>
+          <div class="pills" id="ages" role="group" aria-labelledby="s-age"></div>
+        </div>
+        <div class="field">
+          <div class="lbl" id="s-home"></div>
+          <p class="hint" id="s-home-hint"></p>
+          <div class="pills" id="homeLangs" role="group" aria-labelledby="s-home"></div>
+        </div>
+        <div class="field">
+          <div class="lbl" id="s-learn"></div>
+          <p class="hint" id="s-learn-hint"></p>
+          <div class="pills" id="learnLangs" role="group" aria-labelledby="s-learn"></div>
+        </div>
+        <div class="field" id="f-active" hidden>
+          <div class="lbl" id="s-active"></div>
+          <div class="pills" id="activeLangs" role="group" aria-labelledby="s-active"></div>
+        </div>
+        <div class="field" id="f-voices" hidden>
+          <div class="lbl" id="s-voices"></div>
+          <p class="hint" id="s-voices-hint"></p>
+          <div class="vrows" id="voiceRows"></div>
+        </div>
+        <div class="actions">
+          <button class="go" type="submit" id="s-go"></button>
+          <button class="back" type="button" id="s-cancel" hidden></button>
+          <span class="err" id="s-err" aria-live="polite"></span>
+        </div>
+        <p class="quiet" id="s-privacy" style="margin-top:18px"></p>
+      </form>
+    </section>
+
+    <!-- GAMES -->
+    <section class="games" id="v-games" hidden>
+      <div class="card">
+        <div class="gtext">
+          <div class="eyebrow" id="g-eyebrow"></div>
+          <h1 id="g-title"></h1>
+          <div class="hello" id="hello"></div>
+          <button type="button" class="cta" id="g-cta"></button>
+        </div>
+        <button type="button" class="mascot" id="mascotG" tabindex="-1" aria-hidden="true"><div id="mascotGi"></div></button>
+      </div>
+      <div class="filter">
+        <span class="quiet" id="g-filter"></span>
+        <p class="sample" id="g-sample" hidden></p>
+      </div>
+      <div class="grid" id="gameGrid"></div>
+    </section>
+
+
+    <!-- APP -->
+    <section class="card prose" id="v-app" hidden>
+      <div class="eyebrow" id="app-0"></div>
+      <h1 id="app-1"></h1>
+      <p class="lede" id="app-2"></p>
+      <p id="app-3"></p>
+      <p class="soon"><span id="app-4"></span></p>
+    </section>
+
+    <!-- PRIVACY -->
+    <section class="card prose" id="v-privacy" hidden>
+      <div class="eyebrow" id="priv-0"></div>
+      <h1 id="priv-1"></h1>
+      <ul class="facts" id="facts"></ul>
+      <h2 id="fg-0"></h2>
+      <p id="fg-1"></p>
+      <button class="danger" type="button" id="forget"></button>
+      <div class="confirm" id="forgetConfirm" hidden>
+        <span id="fg-3"></span>
+        <button class="yes" type="button" id="forgetYes"></button>
+        <button type="button" id="forgetNo"></button>
+      </div>
+      <p class="quiet" id="forgetDone" aria-live="polite"></p>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="bf">
+      <img class="bf-logo" src="/felt/logo.webp" alt="LingoPlaytime" width="330" height="76">
+      <div class="bf-nav" id="bf-nav">
+        <button type="button" class="lnk" data-fview="games" id="bf-games"></button>
+        <a id="bf-blog" href="/blog/"></a>
+        <button type="button" class="lnk" data-fview="app" id="bf-app"></button>
+        <button type="button" class="lnk" data-fview="privacy" id="bf-priv"></button>
+      </div>
+      <p class="bf-tag"><span id="ft-0"></span><span class="sep"> · </span><span id="ft-1"></span></p>
+      <p id="ft-2"></p>
+      <p><span id="ft-4"></span> <a href="https://pigrosoft.com" target="_blank" rel="noopener" id="ft-5"></a></p>
+      <p class="bf-eu"><span class="eub"><img src="/felt/badge-eu.webp" alt="" width="76" height="76"></span><span id="ft-3"></span></p>
+      <p class="bf-legal"><a href="/impressum.html" id="bf-legal"></a><span class="sep"> · </span><button type="button" class="lnk" data-fview="privacy" id="bf-pp"></button></p>
+    </div>
+  </footer>
+</div>
+
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="s-title"></div>
+
+<div class="gate" id="gate" hidden role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <div class="card">
+    <h2 id="gateTitle"></h2>
+    <p class="quiet" id="gateText"></p>
+    <button class="hold" type="button" id="holdBtn"><i id="holdFill"></i><span id="holdLabel"></span></button>
+    <button class="close" type="button" id="gateClose"></button>
+  </div>
+</div>
+
+<script src="/games/voice.js"></script>
+<script src="/games/look.js"></script>
+<script src="/assets/raccoon.js"></script>
+<script>
+(function(){
+  /* ---------- data ---------- */
+  const LANGS = [
+    {c:"en",n:"English",own:"English",hi:"Hello"},
+    {c:"de",n:"German",own:"Deutsch",hi:"Hallo"},
+    {c:"es",n:"Spanish",own:"Español",hi:"Hola"},
+    {c:"fr",n:"French",own:"Français",hi:"Bonjour"},
+    {c:"it",n:"Italian",own:"Italiano",hi:"Ciao"},
+    {c:"pt",n:"Portuguese",own:"Português",hi:"Olá"},
+    {c:"nl",n:"Dutch",own:"Nederlands",hi:"Hallo"},
+    {c:"pl",n:"Polish",own:"Polski",hi:"Cześć"},
+    {c:"sv",n:"Swedish",own:"Svenska",hi:"Hej"},
+    {c:"el",n:"Greek",own:"Ελληνικά",hi:"Γεια σου"},
+    {c:"zh",n:"Chinese",own:"中文",hi:"你好"},
+    {c:"ar",n:"Arabic",own:"العربية",hi:"مرحبا",rtl:true},
+    {c:"ja",n:"Japanese",own:"日本語",hi:"こんにちは"},
+    {c:"ko",n:"Korean",own:"한국어",hi:"안녕"},
+    {c:"ru",n:"Russian",own:"Русский",hi:"Привет"},
+    {c:"tr",n:"Turkish",own:"Türkçe",hi:"Merhaba"},
+    {c:"hi",n:"Hindi",own:"हिन्दी",hi:"नमस्ते"}
+  ];
+  const L = Object.fromEntries(LANGS.map(l=>[l.c,l]));
+  const ALLL = LANGS.map(l=>l.c);
+  const MAX_LEARN = 4;
+
+  // UI copy follows the child's home language; English is the fallback.
+  const T = {
+    en:{games:"Games",parents:"Blog",app:"iPad app",privacy:"Privacy",merch:"Shop",settings:"Settings",
+      sEyebrow:"Set up in under a minute",sTitle:"Who's playing today?",sLede:"Tell us a little about your child. The games use their name and speak their languages.",
+      name:"Child's name",nameHint:"A first name or nickname is perfect.",namePh:"e.g. Mila",
+      age:"How old?",ages:["Tiny","Small","Big"],ageSub:["1–2","3–4","5–7"],
+      home:"Main language",homeHint:"The language your child hears most. The whole site, including the blog, uses it too.",learn:"Languages to play in",learnHint:"Pick up to 4.",
+      go:"Let's play!",privacyNote:"Saved only on this device. We never see it.",
+      errName:"Add a name first.",errLearn:"Pick at least one language to play in.",
+      gEyebrow:"Pick a game",gCta:"Start playing",gTitle:n=>`${n}'s playroom`,filter:(a,l)=>`Showing games for ${a} kids, in ${l}.`,
+      plays:"Plays in",sound:"Real sounds",
+      gateTitle:"Grown-ups only",gateText:"Hold the button for 3 seconds to change settings.",hold:"Hold to open",close:"Back to the games"},
+    de:{games:"Spiele",parents:"Blog",app:"iPad-App",privacy:"Datenschutz",merch:"Shop",settings:"Einstellungen",
+      sEyebrow:"In einer Minute eingerichtet",sTitle:"Wer spielt heute?",sLede:"Erzähl uns ein bisschen über dein Kind. Die Spiele nennen es beim Namen und sprechen seine Sprachen.",
+      name:"Name des Kindes",nameHint:"Vorname oder Spitzname reicht.",namePh:"z. B. Mila",
+      age:"Wie alt?",ages:["Winzig","Klein","Groß"],ageSub:["1–2","3–4","5–7"],
+      home:"Hauptsprache",homeHint:"Die Sprache, die dein Kind am meisten hört. Die ganze Seite, auch der Blog, ist dann in dieser Sprache.",learn:"Sprachen zum Spielen",learnHint:"Bis zu 4 auswählen.",
+      go:"Los geht's!",privacyNote:"Nur auf diesem Gerät gespeichert. Wir sehen es nie.",
+      errName:"Bitte zuerst einen Namen eingeben.",errLearn:"Bitte mindestens eine Sprache wählen.",
+      gEyebrow:"Such dir ein Spiel aus",gCta:"Los geht's",gTitle:n=>`${n}s Spielzimmer`,filter:(a,l)=>`Spiele für ${a}, auf ${l}.`,
+      plays:"Spielt auf",sound:"Echte Geräusche",
+      gateTitle:"Nur für Erwachsene",gateText:"Halte den Knopf 3 Sekunden gedrückt, um die Einstellungen zu ändern.",hold:"Gedrückt halten",close:"Zurück zu den Spielen"},
+    es:{games:"Juegos",parents:"Blog",app:"App para iPad",privacy:"Privacidad",merch:"Tienda",settings:"Ajustes",
+      sEyebrow:"Listo en un minuto",sTitle:"¿Quién juega hoy?",sLede:"Cuéntanos un poco sobre tu peque. Los juegos dicen su nombre y hablan sus idiomas.",
+      name:"Nombre del niño o niña",nameHint:"Basta con el nombre o un apodo.",namePh:"p. ej. Mila",
+      age:"¿Qué edad?",ages:["Mini","Pequeño","Grande"],ageSub:["1–2","3–4","5–7"],
+      home:"Idioma principal",homeHint:"El idioma que tu hijo oye más. Todo el sitio, también el blog, aparece en este idioma.",learn:"Idiomas para jugar",learnHint:"Elige hasta 4.",
+      go:"¡A jugar!",privacyNote:"Se guarda solo en este dispositivo. Nunca lo vemos.",
+      errName:"Primero escribe un nombre.",errLearn:"Elige al menos un idioma.",
+      gEyebrow:"Elige un juego",gCta:"¡A jugar!",gTitle:n=>`La sala de juegos de ${n}`,filter:(a,l)=>`Juegos para ${a}, en ${l}.`,
+      plays:"Se juega en",sound:"Sonidos reales",
+      gateTitle:"Solo adultos",gateText:"Mantén pulsado el botón 3 segundos para cambiar los ajustes.",hold:"Mantén pulsado",close:"Volver a los juegos"},
+    fr:{games:"Jeux",parents:"Blog",app:"App iPad",privacy:"Confidentialité",merch:"Boutique",settings:"Réglages",
+      sEyebrow:"Prêt en une minute",sTitle:"Qui joue aujourd'hui ?",sLede:"Parlez-nous un peu de votre enfant. Les jeux disent son prénom et parlent ses langues.",
+      name:"Prénom de l'enfant",nameHint:"Un prénom ou un surnom suffit.",namePh:"ex. Mila",
+      age:"Quel âge ?",ages:["Tout-petit","Petit","Grand"],ageSub:["1–2","3–4","5–7"],
+      home:"Langue principale",homeHint:"La langue que votre enfant entend le plus. Tout le site, blog compris, s'affiche dans cette langue.",learn:"Langues pour jouer",learnHint:"Jusqu'à 4.",
+      go:"On joue !",privacyNote:"Enregistré seulement sur cet appareil. Nous ne le voyons jamais.",
+      errName:"Ajoutez d'abord un prénom.",errLearn:"Choisissez au moins une langue.",
+      gEyebrow:"Choisis un jeu",gCta:"On joue !",gTitle:n=>`La salle de jeux de ${n}`,filter:(a,l)=>`Jeux pour ${a}, en ${l}.`,
+      plays:"Se joue en",sound:"Vrais sons",
+      gateTitle:"Réservé aux adultes",gateText:"Maintenez le bouton 3 secondes pour modifier les réglages.",hold:"Maintenir",close:"Retour aux jeux"},
+    it:{games:"Giochi",parents:"Blog",app:"App per iPad",privacy:"Privacy",merch:"Negozio",settings:"Impostazioni",
+      sEyebrow:"Pronto in un minuto",sTitle:"Chi gioca oggi?",sLede:"Raccontaci qualcosa del tuo bambino. I giochi usano il suo nome e parlano le sue lingue.",
+      name:"Nome del bambino",nameHint:"Basta il nome o un soprannome.",namePh:"es. Mila",
+      age:"Quanti anni?",ages:["Piccino","Piccolo","Grande"],ageSub:["1–2","3–4","5–7"],
+      home:"Lingua principale",homeHint:"La lingua che tuo figlio sente di più. Tutto il sito, anche il blog, sarà in questa lingua.",learn:"Lingue per giocare",learnHint:"Scegline fino a 4.",
+      go:"Giochiamo!",privacyNote:"Salvato solo su questo dispositivo. Noi non lo vediamo mai.",
+      errName:"Scrivi prima un nome.",errLearn:"Scegli almeno una lingua.",
+      gEyebrow:"Scegli un gioco",gCta:"Giochiamo!",gTitle:n=>`La stanza dei giochi di ${n}`,filter:(a,l)=>`Giochi per ${a}, in ${l}.`,
+      plays:"Si gioca in",sound:"Suoni veri",
+      gateTitle:"Solo per adulti",gateText:"Tieni premuto il pulsante per 3 secondi per cambiare le impostazioni.",hold:"Tieni premuto",close:"Torna ai giochi"},
+    pt:{games:"Jogos",parents:"Blog",app:"App para iPad",privacy:"Privacidade",merch:"Loja",settings:"Definições",
+      sEyebrow:"Pronto em um minuto",sTitle:"Quem vai brincar hoje?",sLede:"Conte um pouco sobre a sua criança. Os jogos usam o nome dela e falam as suas línguas.",
+      name:"Nome da criança",nameHint:"Primeiro nome ou apelido já basta.",namePh:"ex. Mila",
+      age:"Que idade?",ages:["Bebé","Pequeno","Grande"],ageSub:["1–2","3–4","5–7"],
+      home:"Língua principal",homeHint:"A língua que o teu filho mais ouve. Todo o site, incluindo o blog, fica nessa língua.",learn:"Línguas para brincar",learnHint:"Escolha até 4.",
+      go:"Vamos brincar!",privacyNote:"Guardado só neste aparelho. Nós nunca vemos.",
+      errName:"Primeiro escreva um nome.",errLearn:"Escolha pelo menos uma língua.",
+      gEyebrow:"Escolha um jogo",gCta:"Vamos brincar!",gTitle:n=>`A sala de brincar de ${n}`,filter:(a,l)=>`Jogos para ${a}, em ${l}.`,
+      plays:"Joga-se em",sound:"Sons reais",
+      gateTitle:"Só para adultos",gateText:"Segure o botão por 3 segundos para mudar as definições.",hold:"Segure",close:"Voltar aos jogos"}
+  };
+
+  // Games live in games/ next to this page. Each loads a small bridge that reads the settings bar.
+  /* text for the parts of the page outside the settings tables, per main language */
+  const STATIC = {"en": {"games": {"peek": ["Peekaboo", "Curtains, boxes and bushes hide animals. Any tap opens one, so peek away."], "face": ["Where's your nose?", "Tap a nose, eyes or toes, hear each word, then point to your very own."], "street": ["Street sounds", "Buses, bikes, a plane and a dog. Tap anything to hear it and its name."], "dress": ["Get dressed", "Rain, sun or snow? Put on the right clothes one word at a time, then go out."], "night": ["Goodnight room", "Say goodnight to the moon, the lamp and the teddy. It ends all by itself."], "sky": ["Sky Words", "Planes fly past carrying pictures. Tap the one you hear and learn its word."], "farm": ["Old MacDonald's Farm", "Tap an animal to hear its real sound and its name, then sing the song."], "piano": ["Piano Party", "Play the piano with your keyboard: free play, or follow a song. Learn the notes and the keys."], "drum": ["Drum Parade", "Bang the drums or mash any key. Every hit is a beat, a word or a number."], "train": ["Word Train", "Ride from station to station and find the word waiting at each stop."], "paint": ["Paint the World", "Everything starts grey. Each tap splashes on a color and says its name."], "soup": ["Little Soup Pot", "A hungry friend wants soup. Add the food, stir the pot and serve it up."], "flappy": ["Flappy Words", "Tap to fly through the gaps, catch pictures, hear each word two ways."], "ark": ["Noah's Ark", "Tap an animal and two hop aboard, two by two. Hear its name and a number."], "pairs": ["Pairs", "A memory game: every pair is a picture and its word in another language."], "market": ["At the market", "A raccoon asks for fruit, bread or cheese, and you tap it into the basket."], "munch": ["Munch munch", "A hungry caterpillar eats fruit, counts the bites, and turns into a butterfly."]}, "app": ["LingoPlaytime for iPad", "Coming soon to iPad", "We're building an iPad app that locks the screen to the game, so a toddler can slap every corner without leaving the app, opening a menu or messaging your boss.", "It will also remember which words your child has heard (on the iPad only), work offline, and bring extra games. iPhone and Mac versions will follow. The website stays free, with no ads.", "Coming soon"], "priv": ["Privacy", "We don't know your child's name. Only your device does."], "facts": [["Stored", "Your child's name, age group, main language and the languages they're learning, plus which words they have heard and answered."], ["Where", "In this browser on this device. It never reaches us."], ["Not stored", "Everything else. No accounts, no logins, no email, no photos."], ["No", "Ads, tracking cookies, or social buttons. So there's no cookie banner either."], ["Sounds", "Played from files on our own site. Your child's name is never sent to a voice service."], ["Counting", "At most a cookieless visit counter, so we know roughly how many people come by."], ["Hosting", "The site is hosted on GitHub Pages. Like any web server, GitHub logs visitors' IP addresses for a short time to deliver and protect the site. GitHub's own privacy policy applies to that."], ["Who", "{pigro}, Berlin, is responsible for this site. You can ask what we hold, have it corrected or deleted, object, or complain to a data protection authority. Contact details are in the {imp}."], ["Paying", "If you buy the app later, the payment company sees your email. That is kept apart from anything about your child."]], "forget": ["Forget everything", "This wipes the name, languages and learned words from this device and goes back to the sample setup.", "Forget everything", "Wipe the setup on this device?", "Yes, wipe it", "Keep it", "Done. Nothing about your child is stored on this device now."], "foot": ["Little games, lots of languages", "No ads, no accounts", "By a parent and educator", "Made in the EU", "Questions or problems?", "Get support from Pigrosoft"], "sample": "This is a sample setup. To add your child's name and the languages your family speaks, hold <b>{settings}</b> for 3 seconds."}, "de": {"games": {"peek": ["Kuckuck", "Kuckuck! Hinter Vorhängen, Kisten und Büschen stecken Tiere. Jedes Tippen öffnet eins."], "face": ["Wo ist deine Nase?", "Tippe auf Nase, Augen oder Zehen, hör das Wort und zeig dann auf deine eigenen."], "street": ["Auf der Straße", "Busse, Fahrräder, ein Flugzeug und ein Hund. Tippe drauf und hör, wie es klingt und heißt."], "dress": ["Anziehen!", "Regen, Sonne oder Schnee? Zieh die passenden Sachen an, ein Wort nach dem anderen."], "night": ["Gute Nacht", "Sag dem Mond, der Lampe und dem Teddy gute Nacht. Das Spiel endet ganz von selbst."], "sky": ["Himmelswörter", "Flugzeuge fliegen mit Bildern vorbei. Tippe auf das, das du hörst, und lern sein Wort."], "farm": ["Old MacDonalds Bauernhof", "Tippe auf ein Tier, hör sein echtes Geräusch und seinen Namen und sing dann das Lied."], "piano": ["Klavierparty", "Spiel Klavier mit der Tastatur: frei oder mit einem Lied. Lerne die Noten und die Tasten."], "drum": ["Trommelparade", "Hau auf die Trommeln oder jede Taste. Jeder Schlag ist ein Takt, ein Wort oder eine Zahl."], "train": ["Wörterzug", "Fahr von Bahnhof zu Bahnhof und finde an jeder Haltestelle das passende Wort."], "paint": ["Mal die Welt an", "Alles ist erst grau. Jedes Tippen kleckst eine Farbe hin und sagt ihren Namen."], "soup": ["Kleiner Suppentopf", "Ein hungriger Freund will Suppe. Gib Zutaten dazu, rühr um und serviere sie."], "flappy": ["Flatterwörter", "Tippe, um durch die Lücken zu fliegen, fang Bilder und hör jedes Wort auf zwei Arten."], "ark": ["Die Arche Noah", "Tippe auf ein Tier, und zwei hüpfen an Bord, immer zu zweit. Hör Namen und Zahlen."], "pairs": ["Paare finden", "Ein Memo-Spiel: Jedes Paar ist ein Bild und sein Wort in einer anderen Sprache."], "market": ["Auf dem Markt", "Ein Waschbär bittet um Obst, Brot oder Käse, und du tippst es in den Korb."], "munch": ["Mampf mampf", "Eine hungrige Raupe frisst Obst, zählt die Bissen und wird zum Schmetterling."]}, "app": ["LingoPlaytime für iPad", "Bald für iPad", "Wir bauen eine iPad-App, die den Bildschirm auf das Spiel sperrt. So kann ein Kleinkind überall draufhauen, ohne die App zu verlassen, ein Menü zu öffnen oder deiner Chefin zu schreiben.", "Sie merkt sich außerdem, welche Wörter dein Kind schon gehört hat (nur auf dem iPad), funktioniert offline und bringt zusätzliche Spiele mit. iPhone und Mac folgen später. Die Website bleibt kostenlos und werbefrei.", "Bald verfügbar"], "priv": ["Datenschutz", "Wir kennen den Namen deines Kindes nicht. Nur dein Gerät kennt ihn."], "facts": [["Gespeichert", "Name, Altersgruppe und Hauptsprache deines Kindes sowie die Sprachen, die es lernt, dazu welche Wörter es gehört und beantwortet hat."], ["Wo", "In diesem Browser auf diesem Gerät. Bei uns kommt nichts an."], ["Nicht gespeichert", "Alles andere. Keine Konten, keine Logins, keine E-Mail, keine Fotos."], ["Keine", "Werbung, Tracking-Cookies oder Social-Buttons. Deshalb gibt es auch kein Cookie-Banner."], ["Töne", "Kommen aus Dateien auf unserer eigenen Seite. Der Name deines Kindes wird nie an einen Sprachdienst geschickt."], ["Zählen", "Höchstens ein Besuchszähler ohne Cookies, damit wir ungefähr wissen, wie viele vorbeischauen."], ["Hosting", "Die Seite liegt bei GitHub Pages. Wie jeder Webserver speichert GitHub die IP-Adressen der Besucher kurz, um die Seite auszuliefern und zu schützen. Dafür gilt GitHubs eigene Datenschutzerklärung."], ["Verantwortlich", "{pigro}, Berlin, ist für diese Seite verantwortlich. Du kannst Auskunft, Berichtigung oder Löschung verlangen, widersprechen oder dich bei einer Datenschutzbehörde beschweren. Die Kontaktdaten stehen im {imp}."], ["Bezahlen", "Wenn du später die App kaufst, sieht der Zahlungsanbieter deine E-Mail-Adresse. Das bleibt getrennt von allem, was dein Kind betrifft."]], "forget": ["Alles vergessen", "Damit werden Name, Sprachen und gelernte Wörter von diesem Gerät gelöscht, und es gilt wieder die Beispiel-Einstellung.", "Alles vergessen", "Die Einstellungen auf diesem Gerät löschen?", "Ja, löschen", "Behalten", "Erledigt. Auf diesem Gerät ist jetzt nichts mehr über dein Kind gespeichert."], "foot": ["Kleine Spiele, viele Sprachen", "Keine Werbung, keine Konten", "Von einem Vater und Pädagogen", "Made in the EU", "Fragen oder Probleme?", "Hilfe von Pigrosoft"], "sample": "Das ist eine Beispiel-Einstellung. Um den Namen deines Kindes und eure Sprachen einzutragen, halte <b>{settings}</b> 3 Sekunden lang gedrückt."}, "es": {"games": {"peek": ["Cucú", "¡Cucú! Cortinas, cajas y arbustos esconden animales. Cada toque abre uno."], "face": ["¿Dónde está tu nariz?", "Toca la nariz, los ojos o los dedos, oye la palabra y señala los tuyos."], "street": ["En la calle", "Autobuses, bicis, un avión y un perro. Toca para oír cómo suena y cómo se llama."], "dress": ["¡A vestirse!", "¿Lluvia, sol o nieve? Ponte la ropa adecuada, palabra a palabra, y sal a la calle."], "night": ["Buenas noches", "Dale las buenas noches a la luna, la lámpara y el osito. El juego termina solo."], "sky": ["Palabras en el cielo", "Pasan aviones con dibujos. Toca el que oyes y aprende cómo se dice esa palabra."], "farm": ["La granja del viejo MacDonald", "Toca un animal, escucha su sonido real y su nombre, y luego canta la canción."], "piano": ["Fiesta de piano", "Toca el piano con el teclado: libre o siguiendo una canción. Aprende las notas y las teclas."], "drum": ["Desfile de tambores", "Golpea los tambores o cualquier tecla. Cada golpe es un ritmo, una palabra o un número."], "train": ["El tren de las palabras", "Viaja de estación en estación y encuentra la palabra que espera en cada parada."], "paint": ["Pinta el mundo", "Todo empieza en gris. Cada toque salpica un color nuevo y dice su nombre."], "soup": ["La ollita de sopa", "Un amigo con hambre quiere sopa. Añade la comida, remueve la olla y sírvela."], "flappy": ["Palabras voladoras", "Toca para volar entre los huecos, atrapa dibujos y oye cada palabra de dos maneras."], "ark": ["El arca de Noé", "Toca un animal y suben dos a bordo, de dos en dos. Oye cada nombre y el número dos."], "pairs": ["Parejas", "Un juego de memoria en el que cada pareja es un dibujo y su palabra en otro idioma."], "market": ["En el mercado", "Un mapache pide fruta, pan o queso, y tú lo tocas para meterlo en la cesta."], "munch": ["Ñam ñam", "Una oruga hambrienta come fruta, cuenta los bocados y se convierte en mariposa."]}, "app": ["LingoPlaytime para iPad", "Muy pronto en iPad", "Estamos creando una app para iPad que bloquea la pantalla en el juego, para que un niño pequeño pueda aporrear donde quiera sin salir de la app, abrir un menú ni escribirle a tu jefe.", "Además recordará qué palabras ha oído tu hijo (solo en el iPad), funcionará sin conexión y traerá juegos extra. Las versiones para iPhone y Mac llegarán después. La web sigue siendo gratis y sin anuncios.", "Muy pronto"], "priv": ["Privacidad", "No sabemos el nombre de tu hijo. Solo lo sabe tu dispositivo."], "facts": [["Se guarda", "El nombre de tu hijo, su grupo de edad, su idioma principal y los idiomas que está aprendiendo, además de las palabras que ha oído y respondido."], ["Dónde", "En este navegador, en este dispositivo. Nunca nos llega."], ["No se guarda", "Todo lo demás. Sin cuentas, sin inicio de sesión, sin correo, sin fotos."], ["Sin", "Anuncios, cookies de seguimiento ni botones sociales. Por eso tampoco hay aviso de cookies."], ["Sonidos", "Se reproducen desde archivos de nuestra propia web. El nombre de tu hijo nunca se envía a un servicio de voz."], ["Recuento", "Como mucho, un contador de visitas sin cookies, para saber más o menos cuánta gente pasa."], ["Alojamiento", "La web está alojada en GitHub Pages. Como cualquier servidor, GitHub registra las direcciones IP de los visitantes durante poco tiempo para servir y proteger la web. Para eso rige la política de privacidad de GitHub."], ["Responsable", "{pigro}, Berlín, es el responsable de esta web. Puedes pedir qué datos tenemos, corregirlos o borrarlos, oponerte o reclamar ante una autoridad de protección de datos. Los datos de contacto están en el {imp}."], ["Pagos", "Si más adelante compras la app, la empresa de pagos verá tu correo. Eso se guarda aparte de todo lo relacionado con tu hijo."]], "forget": ["Olvidarlo todo", "Esto borra el nombre, los idiomas y las palabras aprendidas de este dispositivo y vuelve a la configuración de ejemplo.", "Olvidarlo todo", "¿Borrar la configuración de este dispositivo?", "Sí, borrarla", "Conservarla", "Listo. Ya no hay nada sobre tu hijo guardado en este dispositivo."], "foot": ["Juegos pequeños, muchos idiomas", "Sin anuncios, sin cuentas", "Hecho por un padre y educador", "Made in the EU", "¿Preguntas o problemas?", "Ayuda de Pigrosoft"], "sample": "Esta es una configuración de ejemplo. Para poner el nombre de tu hijo y los idiomas de tu familia, mantén pulsado <b>{settings}</b> 3 segundos."}, "fr": {"games": {"peek": ["Coucou", "Coucou ! Rideaux, boîtes et buissons cachent des animaux. Chaque toucher en ouvre un."], "face": ["Où est ton nez ?", "Touche le nez, les yeux ou les orteils, écoute le mot, puis montre les tiens."], "street": ["Dans la rue", "Des bus, des vélos, un avion et un chien. Touche tout pour entendre son bruit et son nom."], "dress": ["On s'habille !", "Pluie, soleil ou neige ? Mets les bons vêtements, un mot à la fois, puis sors dehors."], "night": ["Bonne nuit", "Dis bonne nuit à la lune, à la lampe et au nounours. Le jeu se termine tout seul."], "sky": ["Les mots du ciel", "Des avions passent avec des images. Touche celle que tu entends et apprends son mot."], "farm": ["La ferme du vieux MacDonald", "Touche un animal, écoute son vrai cri et son nom, puis chante la petite chanson."], "piano": ["La fête du piano", "Joue du piano avec le clavier : en jeu libre ou en suivant une chanson. Apprends les notes et les touches."], "drum": ["La parade des tambours", "Tape sur les tambours ou une touche. Chaque coup est un rythme, un mot ou un chiffre."], "train": ["Le train des mots", "Va de gare en gare et trouve le mot qui t'attend à chaque arrêt du train."], "paint": ["Colorie le monde", "Tout commence en gris. Chaque toucher éclabousse une couleur et dit son nom."], "soup": ["La petite marmite", "Un ami affamé veut de la soupe. Ajoute les ingrédients, remue la marmite et sers."], "flappy": ["Les mots volants", "Touche pour voler entre les trous, attrape des images, entends chaque mot de deux façons."], "ark": ["L'arche de Noé", "Touche un animal et deux montent à bord, deux par deux. Entends son nom et un chiffre."], "pairs": ["Paires", "Un jeu de mémoire où chaque paire est une image et son mot dans une autre langue."], "market": ["Au marché", "Un raton laveur demande des fruits, du pain ou du fromage, et tu les mets dans le panier."], "munch": ["Miam miam", "Une chenille affamée mange des fruits, compte les bouchées et devient papillon."]}, "app": ["LingoPlaytime pour iPad", "Bientôt sur iPad", "Nous préparons une app iPad qui verrouille l'écran sur le jeu : un tout-petit peut taper partout sans quitter l'app, ouvrir de menu ni écrire à votre patron.", "Elle retiendra aussi les mots que votre enfant a entendus (sur l'iPad uniquement), fonctionnera hors ligne et proposera des jeux en plus. Les versions iPhone et Mac suivront. Le site reste gratuit et sans publicité.", "Bientôt disponible"], "priv": ["Confidentialité", "Nous ne connaissons pas le prénom de votre enfant. Seul votre appareil le connaît."], "facts": [["Enregistré", "Le prénom de votre enfant, sa tranche d'âge, sa langue principale et les langues qu'il apprend, ainsi que les mots entendus et les réponses données."], ["Où", "Dans ce navigateur, sur cet appareil. Rien ne nous parvient."], ["Non enregistré", "Tout le reste. Pas de compte, pas de connexion, pas d'e-mail, pas de photos."], ["Pas de", "Publicité, cookies de suivi ou boutons de réseaux sociaux. Donc pas de bandeau cookies non plus."], ["Sons", "Joués à partir de fichiers hébergés sur notre propre site. Le prénom de votre enfant n'est jamais envoyé à un service vocal."], ["Comptage", "Au plus un compteur de visites sans cookies, pour savoir à peu près combien de personnes passent."], ["Hébergement", "Le site est hébergé sur GitHub Pages. Comme tout serveur web, GitHub conserve brièvement les adresses IP des visiteurs pour servir et protéger le site. La politique de confidentialité de GitHub s'applique à cela."], ["Responsable", "{pigro}, Berlin, est responsable de ce site. Vous pouvez demander quelles données nous détenons, les faire corriger ou effacer, vous opposer ou porter plainte auprès d'une autorité de protection des données. Les coordonnées figurent dans l'{imp}."], ["Paiement", "Si vous achetez l'app plus tard, le prestataire de paiement verra votre e-mail. Cela reste séparé de tout ce qui concerne votre enfant."]], "forget": ["Tout oublier", "Cela efface le prénom, les langues et les mots appris de cet appareil et revient à la configuration d'exemple.", "Tout oublier", "Effacer la configuration de cet appareil ?", "Oui, effacer", "La garder", "C'est fait. Plus rien sur votre enfant n'est enregistré sur cet appareil."], "foot": ["Petits jeux, plein de langues", "Sans pub, sans compte", "Par un parent et éducateur", "Made in the EU", "Des questions ou un problème ?", "Aide de Pigrosoft"], "sample": "Ceci est une configuration d'exemple. Pour ajouter le prénom de votre enfant et les langues de votre famille, maintenez <b>{settings}</b> appuyé 3 secondes."}, "it": {"games": {"peek": ["Cucù", "Cucù! Tende, scatole e cespugli nascondono animali. Ogni tocco ne apre uno."], "face": ["Dov'è il tuo naso?", "Tocca il naso, gli occhi o le dita dei piedi, ascolta la parola e poi indica i tuoi."], "street": ["Per strada", "Autobus, bici, un aereo e un cane. Tocca ogni cosa per sentire il suono e il nome."], "dress": ["Vestiamoci!", "Pioggia, sole o neve? Metti i vestiti giusti, una parola alla volta, e poi fuori."], "night": ["Buonanotte", "Di' buonanotte alla luna, alla lampada e all'orsetto. Il gioco finisce da solo."], "sky": ["Parole nel cielo", "Passano aerei con delle immagini. Tocca quella che senti e impara la parola."], "farm": ["La fattoria del vecchio MacDonald", "Tocca un animale, senti il suo verso vero e il suo nome, poi canta la canzone."], "piano": ["La festa del pianoforte", "Suona il pianoforte con la tastiera: libero o seguendo una canzone. Impara le note e i tasti."], "drum": ["La parata dei tamburi", "Batti sui tamburi o su un tasto qualsiasi. Ogni colpo è un ritmo, una parola o un numero."], "train": ["Il treno delle parole", "Viaggia di stazione in stazione e trova la parola che aspetta a ogni fermata."], "paint": ["Colora il mondo", "All'inizio è tutto grigio. Ogni tocco schizza un colore e dice il suo nome."], "soup": ["La pentolina", "Un amico affamato vuole la minestra. Aggiungi il cibo, mescola la pentola e servi."], "flappy": ["Parole volanti", "Tocca per volare tra i varchi, prendi le immagini e senti ogni parola in due modi."], "ark": ["L'Arca di Noè", "Tocca un animale e ne salgono due a bordo, a due a due. Senti il nome e un numero."], "pairs": ["Coppie", "Un memory in cui ogni coppia è un'immagine e la sua parola in un'altra lingua."], "market": ["Al mercato", "Un procione chiede frutta, pane o formaggio, e tu lo tocchi per metterlo nel cestino."], "munch": ["Gnam gnam", "Un bruco affamato mangia frutta, conta i morsi e diventa una bellissima farfalla."]}, "app": ["LingoPlaytime per iPad", "In arrivo su iPad", "Stiamo costruendo un'app per iPad che blocca lo schermo sul gioco, così un bimbo piccolo può picchiare dove vuole senza uscire dall'app, aprire un menu o scrivere al tuo capo.", "Ricorderà anche quali parole tuo figlio ha già sentito (solo sull'iPad), funzionerà offline e avrà giochi in più. Seguiranno le versioni per iPhone e Mac. Il sito resta gratuito e senza pubblicità.", "In arrivo"], "priv": ["Privacy", "Non conosciamo il nome di tuo figlio. Lo conosce solo il tuo dispositivo."], "facts": [["Salvato", "Il nome di tuo figlio, la fascia d'età, la lingua principale e le lingue che sta imparando, più le parole ascoltate e le risposte date."], ["Dove", "In questo browser, su questo dispositivo. Non arriva mai a noi."], ["Non salvato", "Tutto il resto. Niente account, niente login, niente email, niente foto."], ["Niente", "Pubblicità, cookie di tracciamento o pulsanti social. Quindi niente banner dei cookie."], ["Suoni", "Riprodotti da file sul nostro sito. Il nome di tuo figlio non viene mai inviato a un servizio vocale."], ["Conteggio", "Al massimo un contatore di visite senza cookie, per sapere più o meno quante persone passano."], ["Hosting", "Il sito è ospitato su GitHub Pages. Come ogni server web, GitHub registra per poco tempo gli indirizzi IP dei visitatori per servire e proteggere il sito. Per questo vale l'informativa privacy di GitHub."], ["Titolare", "{pigro}, Berlino, è responsabile di questo sito. Puoi chiedere quali dati abbiamo, farli correggere o cancellare, opporti o presentare reclamo a un'autorità per la protezione dei dati. I contatti sono nell'{imp}."], ["Pagamenti", "Se in futuro compri l'app, la società di pagamento vedrà la tua email. Questo resta separato da tutto ciò che riguarda tuo figlio."]], "forget": ["Dimentica tutto", "Cancella il nome, le lingue e le parole imparate da questo dispositivo e torna alla configurazione di esempio.", "Dimentica tutto", "Cancellare la configurazione su questo dispositivo?", "Sì, cancella", "Tienila", "Fatto. Su questo dispositivo non c'è più nulla su tuo figlio."], "foot": ["Piccoli giochi, tante lingue", "Niente pubblicità, niente account", "Da un genitore ed educatore", "Made in the EU", "Domande o problemi?", "Assistenza da Pigrosoft"], "sample": "Questa è una configurazione di esempio. Per aggiungere il nome di tuo figlio e le lingue della tua famiglia, tieni premuto <b>{settings}</b> per 3 secondi."}, "pt": {"games": {"peek": ["Cucu", "Cucu! Cortinas, caixas e arbustos escondem animais. Cada toque abre um deles."], "face": ["Onde está o teu nariz?", "Toca no nariz, nos olhos ou nos dedos, ouve a palavra e aponta para os teus."], "street": ["Na rua", "Autocarros, bicicletas, um avião e um cão. Toca em tudo para ouvir o som e o nome."], "dress": ["Vamos vestir!", "Chuva, sol ou neve? Veste a roupa certa, uma palavra de cada vez, e vai lá para fora."], "night": ["Boa noite", "Diz boa noite à lua, ao candeeiro e ao ursinho. O jogo acaba sozinho no fim."], "sky": ["Palavras no céu", "Passam aviões com imagens. Toca na que ouves e aprende como se diz a palavra."], "farm": ["A quinta do velho MacDonald", "Toca num animal, ouve o som verdadeiro e o nome dele, e depois canta a canção."], "piano": ["Festa do piano", "Toca piano com o teclado: livre ou a seguir uma canção. Aprende as notas e as teclas."], "drum": ["Desfile de tambores", "Bate nos tambores ou em qualquer tecla. Cada pancada é um ritmo, uma palavra ou um número."], "train": ["O comboio das palavras", "Viaja de estação em estação e encontra a palavra que espera em cada paragem."], "paint": ["Pinta o mundo", "Tudo começa cinzento. Cada toque salpica uma cor nova e diz o nome dela."], "soup": ["A panelinha de sopa", "Um amigo com fome quer sopa. Junta a comida, mexe o tacho e serve a sopa."], "flappy": ["Palavras voadoras", "Toca para voar pelos buracos, apanha imagens e ouve cada palavra de duas maneiras."], "ark": ["A arca de Noé", "Toca num animal e sobem dois a bordo, dois a dois. Ouve cada nome e o número dois."], "pairs": ["Pares", "Um jogo de memória em que cada par é uma imagem e a sua palavra noutra língua."], "market": ["No mercado", "Um guaxinim pede uma coisa de cada vez, e tu tocas para a pôr no cesto."], "munch": ["Nham nham", "Uma lagarta com fome come fruta, conta as dentadas e vira uma linda borboleta."]}, "app": ["LingoPlaytime para iPad", "Em breve no iPad", "Estamos a criar uma app para iPad que prende o ecrã ao jogo, para que uma criança pequena possa bater onde quiser sem sair da app, abrir um menu ou mandar um e-mail ao teu chefe.", "Vai também lembrar-se das palavras que o teu filho já ouviu (só no iPad), funcionar offline e trazer jogos extra. As versões para iPhone e Mac virão depois. O site continua gratuito e sem anúncios.", "Em breve"], "priv": ["Privacidade", "Não sabemos o nome do teu filho. Só o teu dispositivo sabe."], "facts": [["Guardado", "O nome do teu filho, a faixa etária, a língua principal e as línguas que está a aprender, e as palavras que ouviu e respondeu."], ["Onde", "Neste navegador, neste dispositivo. Nunca chega até nós."], ["Não guardado", "Tudo o resto. Sem contas, sem login, sem e-mail, sem fotografias."], ["Sem", "Anúncios, cookies de rastreio ou botões de redes sociais. Por isso também não há aviso de cookies."], ["Sons", "Tocados a partir de ficheiros do nosso próprio site. O nome do teu filho nunca é enviado para um serviço de voz."], ["Contagem", "No máximo um contador de visitas sem cookies, para sabermos mais ou menos quantas pessoas passam por cá."], ["Alojamento", "O site está alojado no GitHub Pages. Como qualquer servidor web, o GitHub regista durante pouco tempo os endereços IP dos visitantes para entregar e proteger o site. Para isso aplica-se a política de privacidade do GitHub."], ["Responsável", "{pigro}, Berlim, é o responsável por este site. Podes pedir que dados temos, corrigi-los ou apagá-los, opor-te ou apresentar queixa a uma autoridade de proteção de dados. Os contactos estão no {imp}."], ["Pagamento", "Se mais tarde comprares a app, a empresa de pagamentos verá o teu e-mail. Isso fica separado de tudo o que diz respeito ao teu filho."]], "forget": ["Esquecer tudo", "Isto apaga o nome, as línguas e as palavras aprendidas deste dispositivo e volta à configuração de exemplo.", "Esquecer tudo", "Apagar a configuração deste dispositivo?", "Sim, apagar", "Manter", "Feito. Já não há nada sobre o teu filho guardado neste dispositivo."], "foot": ["Pequenos jogos, muitas línguas", "Sem anúncios, sem contas", "Feito por um pai e educador", "Made in the EU", "Dúvidas ou problemas?", "Ajuda da Pigrosoft"], "sample": "Esta é uma configuração de exemplo. Para pôr o nome do teu filho e as línguas da tua família, mantém <b>{settings}</b> premido durante 3 segundos."}};
+  const ST=()=>STATIC[(profile||draft).home]||STATIC.en;
+  const gname=g=>(ST().games[g.id]||[g.name])[0], gblurb=g=>(ST().games[g.id]||[0,g.blurb])[1];
+  const LEGAL={en:["Legal notice","Privacy policy"],de:["Impressum","Datenschutzerklärung"],es:["Aviso legal","Política de privacidad"],fr:["Mentions légales","Politique de confidentialité"],it:["Note legali","Informativa sulla privacy"],pt:["Aviso legal","Política de privacidade"]};
+  const legalOf=()=>LEGAL[(profile||draft).home]||LEGAL.en;
+  function applyStatic(){
+    const x=ST(),set=(id,v)=>{const e=$(id);if(e)e.textContent=v};
+    x.app.forEach((v,i)=>set("app-"+i,v));x.priv.forEach((v,i)=>set("priv-"+i,v));
+    $("facts").innerHTML=x.facts.map(([k,v],i)=>`<li><span class="k${i===2||i===3?" no":""}">${esc(k)}</span><span>${esc(v).replace("{imp}",'<a href="/impressum.html">'+esc(legalOf()[0])+'</a>').replace("{pigro}",'<a href="https://pigrosoft.com" target="_blank" rel="noopener">Pigrosoft</a>')}</span></li>`).join("");
+    ["fg-0","fg-1","forget","fg-3","forgetYes","forgetNo"].forEach((id,i)=>set(id,x.forget[i]));
+    x.foot.forEach((v,i)=>set("ft-"+i,v));
+    const T0=t(),lg=legalOf();
+    set("bf-games",T0.games);set("bf-app",T0.app);set("bf-priv",T0.privacy);set("bf-legal",lg[0]);set("bf-pp",lg[1]);
+    $("bf-blog").textContent=T0.parents;$("bf-blog").setAttribute("href",$("nav-parents").getAttribute("href"));
+    $("g-sample").innerHTML=x.sample.replace("{settings}",esc(t().settings));
+  }
+  const GAMES = [
+    {id:"street",name:"Street sounds",blurb:"Buses, bikes, a plane and a dog. Tap anything to hear it and its name.",min:0,sound:false,langs:ALLL,art:"street"},
+    {id:"train",name:"Word Train",blurb:"Ride from station to station and find the word waiting at each stop.",min:0,sound:false,langs:ALLL,art:"train"},
+    {id:"sky",name:"Sky Words",blurb:"Planes fly past carrying pictures. Tap the one you hear and learn its word.",min:0,sound:false,langs:ALLL,art:"sky"},
+    {id:"peek",name:"Kuckuck",blurb:"Curtains, boxes and bushes hide animals. Any tap opens one, so peek away.",min:0,sound:true,langs:ALLL,art:"peek"},
+    {id:"face",name:"Where's your nose?",blurb:"Tap a nose, eyes or toes, hear each word, then point to your very own.",min:0,sound:false,langs:ALLL,art:"face"},
+    {id:"dress",name:"Get dressed",blurb:"Rain, sun or snow? Put on the right clothes one word at a time, then go out.",min:0,sound:false,langs:ALLL,art:"dress"},
+    {id:"night",name:"Goodnight room",blurb:"Say goodnight to the moon, the lamp and the teddy. It ends all by itself.",min:0,sound:false,langs:ALLL,art:"night"},
+    {id:"farm",name:"Old MacDonald's Farm",blurb:"Tap an animal to hear its real sound and its name, then sing the song.",min:0,sound:true,langs:ALLL,art:"farm"},
+    {id:"piano",name:"Piano Party",blurb:"Play the piano with your keyboard: free play, or follow a song. Learn the notes and the keys.",min:0,sound:false,langs:ALLL,art:"piano"},
+    {id:"drum",name:"Drum Parade",blurb:"Bang the drums or mash any key. Every hit is a beat, a word or a number.",min:0,sound:false,langs:ALLL,art:"drum"},
+    {id:"paint",name:"Paint the World",blurb:"Everything starts grey. Each tap splashes on a color and says its name.",min:1,sound:false,langs:ALLL,art:"paint"},
+    {id:"soup",name:"Little Soup Pot",blurb:"A hungry friend wants soup. Add the food, stir the pot and serve it up.",min:1,sound:false,langs:ALLL,art:"soup"},
+    {id:"flappy",name:"Flappy Words",blurb:"Tap to fly through the gaps, catch pictures, hear each word two ways.",min:1,sound:false,langs:ALLL,art:"flappy"},
+    {id:"ark",name:"Noah's Ark",blurb:"Tap an animal and two hop aboard, two by two. Hear its name and a number.",min:0,sound:false,langs:ALLL,art:"ark"},
+    {id:"market",name:"At the market",blurb:"A raccoon asks for fruit, bread or cheese, and you tap it into the basket.",min:0,sound:false,langs:ALLL,art:"market"},
+    {id:"munch",name:"Munch munch",blurb:"A hungry caterpillar eats fruit, counts the bites, and turns into a butterfly.",min:0,sound:false,langs:ALLL,art:"munch"},
+    {id:"pairs",name:"Pairs",blurb:"A memory game: every pair is a picture and its word in another language.",min:2,sound:false,langs:ALLL,art:"pairs"},
+  ];
+  const GAME = Object.fromEntries(GAMES.map(g=>[g.id,g]));
+  /* every game has its own address, lingoplaytime.com/<slug>/, for sharing and search.
+     The folder pages are copies of this page made by tools/game-pages.py. */
+  const SLUG={peek:"peekaboo",face:"nose",street:"street-sounds",dress:"get-dressed",night:"goodnight",sky:"sky-words",farm:"farm",drum:"drum-parade",piano:"piano-party",train:"word-train",paint:"paint",soup:"soup",flappy:"flappy-words",ark:"noahs-ark",market:"market",munch:"munch",pairs:"pairs"};
+  const BYSLUG=Object.fromEntries(Object.entries(SLUG).map(([k,v])=>[v,k]));
+  const routeGame=()=>BYSLUG[location.pathname.replace(/^\/+|\/+$/g,"").split("/")[0]]||null;
+  const HOME_TITLE=(document.querySelector('meta[name="lp-home-title"]')||{}).content||document.title;
+  // swap the game frame without adding browser history, so Back leaves the game instead of stepping inside it
+  function frameTo(url){const f=$("frame");try{f.contentWindow.location.replace(url)}catch(e){f.src=url}}
+  // shelf thumbnails: a shared drawing on a day or night sky, like the games themselves
+  const TILE={peek:["rabbit","night"],face:["teddy","night"],street:["bus","day"],dress:["umbrella","day"],night:["moon","night"],sky:["rocket","day"],farm:["cow","day"],drum:["star","night"],piano:["star","night"],train:["train","day"],paint:["flower","night"],soup:["bear","night"],flappy:["duck","day"],pairs:["apple","night"],ark:["lion","day"],market:["apple","day"],munch:["caterpillar","day"]};
+  const ART = {
+    peek:`<svg viewBox="0 0 120 90" width="70%" aria-hidden="true"><rect x="22" y="12" width="76" height="66" rx="6" fill="#BFE3F7" stroke="#8A5A33" stroke-width="4"/><path d="M24 14h24v62c-6-4-10 2-14-2s-8 2-10-2Z" fill="var(--tomato)"/><path d="M96 14H72v62c6-4 10 2 14-2s8 2 10-2Z" fill="var(--tomato)"/><circle cx="60" cy="44" r="12" fill="var(--sun)"/><circle cx="56" cy="42" r="2" fill="var(--ink)"/><circle cx="64" cy="42" r="2" fill="var(--ink)"/></svg>`,
+    face:`<svg viewBox="0 0 120 90" width="66%" aria-hidden="true"><circle cx="60" cy="46" r="32" fill="#E2AE84"/><path d="M28 42c-2-24 18-36 34-34 22 2 34 16 30 34-8-8-16-12-24-12-4 6-14 10-20 8 2-4 2-6 0-8-8 2-14 6-20 12Z" fill="#5A3A22"/><circle cx="48" cy="46" r="4" fill="var(--ink)"/><circle cx="72" cy="46" r="4" fill="var(--ink)"/><ellipse cx="60" cy="56" rx="5" ry="4" fill="var(--tomato)"/><path d="M50 66c6 6 14 6 20 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+    market:`<svg viewBox="0 0 120 90" width="76%" aria-hidden="true"><rect x="0" y="0" width="120" height="16" fill="#d9483b"/><circle cx="10" cy="16" r="10" fill="#d9483b"/><circle cx="30" cy="16" r="10" fill="#f6e6c6"/><circle cx="50" cy="16" r="10" fill="#d9483b"/><circle cx="70" cy="16" r="10" fill="#f6e6c6"/><circle cx="90" cy="16" r="10" fill="#d9483b"/><circle cx="110" cy="16" r="10" fill="#f6e6c6"/><rect x="0" y="68" width="120" height="22" fill="#a9703c"/><rect x="8" y="52" width="32" height="18" fill="#c8955a"/><rect x="44" y="52" width="32" height="18" fill="#c8955a"/><rect x="80" y="52" width="32" height="18" fill="#c8955a"/><circle cx="18" cy="46" r="8" fill="#ff4d5e"/><circle cx="32" cy="46" r="8" fill="#ff4d5e"/><circle cx="54" cy="46" r="8" fill="#ff8a3d"/><circle cx="68" cy="46" r="8" fill="#ff8a3d"/><circle cx="90" cy="46" r="8" fill="#ffd23f"/><circle cx="104" cy="46" r="8" fill="#ffd23f"/></svg>`,
+    munch:`<svg viewBox="0 0 120 90" width="76%" aria-hidden="true"><circle cx="24" cy="60" r="14" fill="#ff7eb6"/><circle cx="48" cy="60" r="14" fill="#9b7bff"/><circle cx="72" cy="60" r="14" fill="#ff7eb6"/><circle cx="96" cy="54" r="18" fill="#ffd23f"/><circle cx="102" cy="49" r="4" fill="#fff"/><circle cx="90" cy="49" r="4" fill="#fff"/><circle cx="103" cy="50" r="2" fill="#18264A"/><circle cx="91" cy="50" r="2" fill="#18264A"/><path d="M92 36l-4-12M102 35l5-12" stroke="#18264A" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+    street:`<svg viewBox="0 0 120 90" width="76%" aria-hidden="true"><rect x="10" y="30" width="100" height="40" rx="8" fill="var(--tomato)"/><g fill="#bfe6fb"><rect x="18" y="38" width="18" height="14" rx="2"/><rect x="42" y="38" width="18" height="14" rx="2"/><rect x="66" y="38" width="18" height="14" rx="2"/><rect x="90" y="38" width="14" height="14" rx="2"/></g><circle cx="32" cy="72" r="8" fill="var(--ink)"/><circle cx="88" cy="72" r="8" fill="var(--ink)"/></svg>`,
+    dress:`<svg viewBox="0 0 120 90" width="62%" aria-hidden="true"><path d="M34 22l16-8c4 6 16 6 20 0l16 8 12 20-14 8-6-8v42H42V42l-6 8-14-8Z" fill="var(--sun)"/><path d="M60 18v66" stroke="#d99a13" stroke-width="3"/></svg>`,
+    night:`<svg viewBox="0 0 120 90" width="62%" aria-hidden="true"><circle cx="60" cy="45" r="30" fill="#F7E7A6"/><circle cx="74" cy="36" r="28" fill="#1c2547"/><path d="M38 46q5 4 10 0" stroke="var(--ink)" stroke-width="3" fill="none"/><path d="M92 18l2 5 5 1-4 3 1 5-4-3-4 3 1-5-4-3 5-1Z" fill="var(--sun)"/></svg>`,
+    pairs:`<svg viewBox="0 0 120 90" width="72%" aria-hidden="true"><rect x="16" y="14" width="40" height="56" rx="7" fill="#fff" transform="rotate(-8 36 42)"/><rect x="62" y="16" width="40" height="56" rx="7" fill="var(--teal)" transform="rotate(7 82 44)"/><circle cx="36" cy="40" r="11" fill="var(--tomato)" transform="rotate(-8 36 42)"/><path d="M72 30h20M72 40h20M72 50h14" stroke="#fff8" stroke-width="4" transform="rotate(7 82 44)"/></svg>`,
+    sky:`<svg viewBox="0 0 120 90" width="70%" aria-hidden="true"><g fill="#fff"><circle cx="40" cy="48" r="16"/><circle cx="58" cy="38" r="20"/><circle cx="78" cy="48" r="15"/><rect x="34" y="46" width="52" height="18" rx="9"/></g></svg>`,
+    farm:`<svg viewBox="0 0 120 90" width="70%" aria-hidden="true"><rect x="30" y="38" width="60" height="40" fill="var(--tomato)"/><path d="M24 40 60 14 96 40Z" fill="var(--ink)"/><rect x="52" y="54" width="16" height="24" fill="#fff"/></svg>`,
+    piano:`<svg viewBox="0 0 120 90" width="70%" aria-hidden="true"><rect x="12" y="24" width="96" height="50" rx="8" fill="#fff"/><path d="M32 24v50M52 24v50M72 24v50M92 24v50" stroke="#c9b48a" stroke-width="2"/><rect x="26" y="24" width="12" height="30" rx="3" fill="#4a3426"/><rect x="46" y="24" width="12" height="30" rx="3" fill="#4a3426"/><rect x="86" y="24" width="12" height="30" rx="3" fill="#4a3426"/><circle cx="22" cy="14" r="5" fill="var(--tomato)"/></svg>`,
+    drum:`<svg viewBox="0 0 120 90" width="70%" aria-hidden="true"><ellipse cx="60" cy="34" rx="34" ry="10" fill="#fff"/><path d="M26 34v30c0 6 15 11 34 11s34-5 34-11V34" fill="var(--lilac)"/><path d="M30 10 52 30M90 10 68 30" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/></svg>`,
+    train:`<svg viewBox="0 0 120 90" width="76%" aria-hidden="true"><rect x="10" y="36" width="34" height="26" rx="5" fill="var(--teal)"/><rect x="48" y="36" width="28" height="26" rx="5" fill="var(--sun)"/><rect x="80" y="36" width="28" height="26" rx="5" fill="var(--tomato)"/><g fill="var(--ink)"><circle cx="20" cy="66" r="6"/><circle cx="36" cy="66" r="6"/><circle cx="62" cy="66" r="6"/><circle cx="94" cy="66" r="6"/></g></svg>`,
+    paint:`<svg viewBox="0 0 120 90" width="70%" aria-hidden="true"><circle cx="42" cy="40" r="18" fill="var(--tomato)"/><circle cx="70" cy="34" r="16" fill="var(--sun)"/><circle cx="64" cy="58" r="17" fill="var(--sky)"/></svg>`,
+    soup:`<svg viewBox="0 0 120 90" width="70%" aria-hidden="true"><path d="M22 40h76c0 22-17 36-38 36S22 62 22 40Z" fill="var(--ink)"/><circle cx="48" cy="34" r="8" fill="var(--tomato)"/><circle cx="68" cy="32" r="7" fill="var(--teal)"/><path d="M50 22c-4-6 4-8 0-14M66 20c-4-6 4-8 0-14" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+    flappy:`<svg viewBox="0 0 120 90" width="70%" aria-hidden="true"><rect x="80" y="0" width="16" height="30" fill="var(--teal)"/><rect x="80" y="60" width="16" height="30" fill="var(--teal)"/><circle cx="42" cy="46" r="13" fill="var(--sun)"/><circle cx="46" cy="42" r="3" fill="var(--ink)"/><path d="M54 46l8 3-8 3Z" fill="var(--tomato)"/></svg>`
+  };
+  const ART_BG = {piano:"var(--lilac-soft)",market:"var(--sky)",munch:"var(--sun-soft)",peek:"var(--tomato-soft)",face:"var(--teal-soft)",street:"var(--sky)",dress:"var(--lilac-soft)",night:"#1c2547",pairs:"var(--sun-soft)",ark:"var(--sky)",sky:"var(--sky)",farm:"var(--sun-soft)",drum:"var(--lilac-soft)",train:"var(--teal-soft)",paint:"var(--bg)",soup:"var(--tomato-soft)",flappy:"var(--sky)"};
+
+  // Settings-bar copy, in the home language.
+  const B = {
+    en:{playing:"Playing in",back:"All games",save:"Save",cancel:"Cancel",locked:"Name, age and languages are locked",sub:"Hold to change",
+      active:"Games play in",voices:"Voices",voicesHint:"Pick the voice that sounds right for each language. Tap ▶ to hear it.",hear:"Hear it",recorded:"Recorded voice (best)",auto:"Best available",none:"No voice for this language on this device. Words will show without sound.",
+      note:(g,w,h)=>`${g} doesn't speak ${w} yet, so it's playing in ${h}.`},
+    de:{playing:"Spielt auf",back:"Alle Spiele",save:"Speichern",cancel:"Abbrechen",locked:"Name, Alter und Sprachen gesperrt",sub:"Zum Ändern gedrückt halten",
+      active:"Spiele laufen auf",voices:"Stimmen",voicesHint:"Wähle für jede Sprache die Stimme, die richtig klingt. Tippe auf ▶ zum Anhören.",hear:"Anhören",recorded:"Aufgenommene Stimme (beste)",auto:"Beste verfügbare",none:"Auf diesem Gerät gibt es keine Stimme für diese Sprache. Die Wörter erscheinen ohne Ton.",
+      note:(g,w,h)=>`${g} gibt es noch nicht auf ${w}. Es läuft auf ${h}.`},
+    es:{playing:"Jugando en",back:"Todos los juegos",save:"Guardar",cancel:"Cancelar",locked:"Nombre, edad e idiomas bloqueados",sub:"Mantén pulsado para cambiar",
+      active:"Los juegos van en",voices:"Voces",voicesHint:"Elige la voz que suene bien en cada idioma. Toca ▶ para oírla.",hear:"Escuchar",recorded:"Voz grabada (la mejor)",auto:"La mejor disponible",none:"No hay voz para este idioma en este dispositivo. Las palabras se verán sin sonido.",
+      note:(g,w,h)=>`${g} aún no está en ${w}, así que se juega en ${h}.`},
+    fr:{playing:"On joue en",back:"Tous les jeux",save:"Enregistrer",cancel:"Annuler",locked:"Prénom, âge et langues verrouillés",sub:"Maintenir pour modifier",
+      active:"Les jeux sont en",voices:"Voix",voicesHint:"Choisissez la voix qui sonne juste pour chaque langue. Touchez ▶ pour l'écouter.",hear:"Écouter",recorded:"Voix enregistrée (la meilleure)",auto:"La meilleure disponible",none:"Aucune voix pour cette langue sur cet appareil. Les mots s'affichent sans son.",
+      note:(g,w,h)=>`${g} n'existe pas encore en ${w}, on joue donc en ${h}.`},
+    it:{playing:"Si gioca in",back:"Tutti i giochi",save:"Salva",cancel:"Annulla",locked:"Nome, età e lingue bloccati",sub:"Tieni premuto per cambiare",
+      active:"I giochi sono in",voices:"Voci",voicesHint:"Scegli la voce giusta per ogni lingua. Tocca ▶ per sentirla.",hear:"Ascolta",recorded:"Voce registrata (la migliore)",auto:"La migliore disponibile",none:"Nessuna voce per questa lingua su questo dispositivo. Le parole appariranno senza suono.",
+      note:(g,w,h)=>`${g} non è ancora in ${w}, quindi si gioca in ${h}.`},
+    pt:{playing:"A jogar em",back:"Todos os jogos",save:"Guardar",cancel:"Cancelar",locked:"Nome, idade e línguas bloqueados",sub:"Segure para mudar",
+      active:"Os jogos são em",voices:"Vozes",voicesHint:"Escolha a voz que soa bem em cada língua. Toque em ▶ para ouvir.",hear:"Ouvir",recorded:"Voz gravada (a melhor)",auto:"A melhor disponível",none:"Não há voz para esta língua neste aparelho. As palavras aparecem sem som.",
+      note:(g,w,h)=>`${g} ainda não está em ${w}, por isso joga-se em ${h}.`}
+  };
+  // What the Settings voice check says, per language.
+  const SAMPLE = {en:"Hello! The dog, the cat, the apple.",de:"Hallo! Der Hund, die Katze, der Apfel.",it:"Ciao! Il cane, il gatto, la mela.",es:"¡Hola! El perro, el gato, la manzana.",fr:"Bonjour ! Le chien, le chat, la pomme.",pt:"Olá! O cão, o gato, a maçã."};
+
+  /* ---------- storage: this device only ---------- */
+  const KEY="lingoplaytime.profile.v1";
+  function load(){try{const p=JSON.parse(localStorage.getItem(KEY));return p&&p.name&&p.learn&&p.learn.length?p:null}catch(e){return null}}
+  function save(p){try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}}
+  function wipe(){try{localStorage.removeItem(KEY);localStorage.removeItem("lingoplaytime.words.v1")}catch(e){}}
+
+  const $ = id=>document.getElementById(id);
+  // first visit: a sample setup, so families see the games before filling anything in
+  const BROWSER_HOME=(()=>{try{for(const l of (navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||"en"])){const c=String(l).slice(0,2).toLowerCase();if(L[c])return c}}catch(e){}return "en"})();
+  const SAMPLE_PROFILE={name:"Little Raccoon",age:0,home:BROWSER_HOME,learn:BROWSER_HOME==="en"?["it"]:["en"],active:BROWSER_HOME==="en"?"it":"en",voices:{},demo:true};
+  let profile = load() || {...SAMPLE_PROFILE,learn:[...SAMPLE_PROFILE.learn]};
+  if(profile && !playable(profile).includes(profile.active)) profile.active=profile.learn[0];
+  let draft = fresh();
+  let view = "games";
+  let editing = false, current = null;
+
+  function fresh(){if(profile&&profile.demo){const {demo,...d}=profile;return {...d,name:"",learn:[...d.learn],voices:{}}}return profile?{...profile,learn:[...profile.learn],voices:{...(profile.voices||{})}}:{name:"",age:0,home:guessHome(),learn:[],voices:{}}}
+  function guessHome(){return BROWSER_HOME}
+  function playable(p){return [...p.learn,p.home]}
+  function t(){return T[(profile||draft).home]||T.en}
+  function b(){return B[(profile||draft).home]||B.en}
+  function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+  function settings(){return {name:profile.name,age:profile.age,home:profile.home,learn:[...profile.learn],active:profile.active,voices:{...(profile.voices||{})}}}
+
+  // Same choice the bridge makes inside a game: the bar's language if the game has it, else the next best.
+  function gameLang(g,p){const order=[p.active,...p.learn,p.home,"en"];return order.find(c=>g.langs.includes(c))||g.langs[0]}
+
+  /* ---------- render ---------- */
+  function applyLang(){
+    const home=(profile||draft).home;
+    document.documentElement.lang=home;
+    document.documentElement.dir=L[home]&&L[home].rtl?"rtl":"ltr";
+    const s=t();
+    ["games","parents","app","privacy"].forEach(k=>$("nav-"+k).textContent=s[k]);
+    $("nav-games").disabled=!profile;
+    $("nav-parents").setAttribute("href","/"+(["de","es","fr","it","pt"].includes(home)?home+"/":"")+"blog/"+(location.protocol==="file:"?"index.html":""));
+    applyStatic();
+    renderBar();
+  }
+
+  function renderBar(){
+    const bar=$("lpbar");
+    bar.hidden=!profile;
+    if(!profile)return;
+    const s=t(),x=b(),p=profile;
+    $("barName").textContent=p.name;
+    $("barAge").textContent=`${s.ages[p.age]} · ${s.ageSub[p.age]}`;
+    $("barPlayLbl").textContent=x.playing;
+    $("barSettings").textContent=s.settings;$("barSettingsSub").textContent=x.sub;$("barWho").title=x.locked;
+    $("barLangs").innerHTML=playable(p).map(c=>`<button type="button" class="chip${p.active===c?" on":""}" data-code="${c}" aria-pressed="${p.active===c}" lang="${c}"><span class="code">${c.toUpperCase()}</span><span class="own">${esc(L[c].own)}</span></button>`).join("");
+    const g=view==="play"&&current?GAME[current]:null;
+    const got=g?gameLang(g,p):null;
+    $("barNote").hidden=!(g&&got!==p.active);
+    if(g&&got!==p.active)$("barNote").textContent=x.note(gname(g),L[p.active].own,L[got].own);
+  }
+
+  function show(v){
+    if((v==="games"||v==="play")&&!profile) v="setup";
+    if(v==="setup"&&profile&&!editing) v="games";
+    if(view==="play"&&v!=="play"){frameTo("about:blank");current=null;document.title=HOME_TITLE}
+    if(v!=="play"&&v!=="setup"&&routeGame())history.pushState(null,"","/");
+    view=v;
+    document.documentElement.classList.toggle("playing",v==="play");
+    const bb=$("backBtn");
+    if(v==="play"){$("barL").prepend(bb)}else if(bb.parentNode.id==="barL"){document.querySelector(".stagebar").prepend(bb)}
+    document.querySelectorAll("main>section").forEach(s=>s.hidden=s.id!=="v-"+v);
+    document.querySelectorAll("nav [data-view]").forEach(b=>b.setAttribute("aria-current",(b.dataset.view===v||(v==="play"&&b.dataset.view==="games"))?"page":"false"));
+    if(v==="setup")renderSetup();
+    if(v==="games")renderGames();
+    renderBar();
+    window.scrollTo(0,0);
+  }
+
+  function langPill(code,pressed,disabled,group){
+    const l=L[code];
+    return `<button type="button" class="pill" data-group="${group}" data-code="${code}" aria-pressed="${pressed}" ${disabled?"disabled":""} lang="${code}"><span class="code">${code.toUpperCase()}</span>${esc(l.own)}</button>`;
+  }
+
+  /* the raccoon host: one colour per age group, waves on arrival, cheers when you pick an age */
+  let racG=null,racS=null,racGAge=-1,racSAge=-1;
+  function mascotGames(age){
+    const card=$("mascotG").parentNode;if(!card.dataset.room){const R=["night-room","night-room-pink","night-room-forest","night-room-lilac"];card.dataset.room=R[Math.floor(Math.random()*R.length)];card.style.setProperty("--hero",`url(/felt/${card.dataset.room}.webp)`)}
+    if(!racG){racG=LPRaccoon.create($("mascotGi"),{age});racGAge=age;$("mascotG").addEventListener("pointerdown",()=>racG.trick());setTimeout(()=>racG.wave(),500)}
+    else if(racGAge!==age){racG.setAge(age);racGAge=age;racG.delight()}
+  }
+  function mascotSetup(age,cheer){
+    if(!racS){racS=LPRaccoon.create($("mascotSi"),{age});racSAge=age}
+    else if(racSAge!==age){racS.setAge(age);racSAge=age;if(cheer)racS.delight()}
+  }
+  function renderSetup(){
+    document.documentElement.lang=draft.home;
+    document.documentElement.dir=L[draft.home].rtl?"rtl":"ltr";
+    mascotSetup(draft.age,true);
+    const s=T[draft.home]||T.en,x=B[draft.home]||B.en;
+    $("s-eyebrow").textContent=editing?s.settings:s.sEyebrow;
+    $("s-title").textContent=editing?draft.name||s.sTitle:s.sTitle;
+    $("s-lede").textContent=s.sLede;
+    $("s-name").textContent=s.name;$("s-name-hint").textContent=s.nameHint;$("name").placeholder=s.namePh;
+    if(document.activeElement!==$("name"))$("name").value=draft.name;
+    $("s-age").textContent=s.age;$("s-home").textContent=s.home;$("s-home-hint").textContent=s.homeHint||"";$("s-learn").textContent=s.learn;
+    $("s-learn-hint").textContent=s.learnHint+` (${draft.learn.length}/${MAX_LEARN})`;
+    $("s-go").textContent=editing?x.save:s.go;
+    $("s-cancel").hidden=!editing;$("s-cancel").textContent=x.cancel;
+    $("s-privacy").textContent=s.privacyNote;
+    $("ages").innerHTML=s.ages.map((a,i)=>`<button type="button" class="pill age" data-group="age" data-i="${i}" aria-pressed="${draft.age===i}">${esc(a)} <small>${s.ageSub[i]}</small></button>`).join("");
+    $("homeLangs").innerHTML=LANGS.map(l=>langPill(l.c,draft.home===l.c,false,"home")).join("");
+    const full=draft.learn.length>=MAX_LEARN;
+    $("learnLangs").innerHTML=LANGS.filter(l=>l.c!==draft.home).map(l=>{const on=draft.learn.includes(l.c);return langPill(l.c,on,full&&!on,"learn")}).join("");
+    $("f-active").hidden=true;$("f-voices").hidden=!editing;
+    if(!editing)return;
+    if(!playable(draft).includes(draft.active))draft.active=draft.learn[0]||draft.home;
+    $("s-active").textContent=x.active;
+    $("activeLangs").innerHTML=playable(draft).map(c=>langPill(c,draft.active===c,false,"active")).join("");
+    $("s-voices").textContent=x.voices;$("s-voices-hint").textContent=x.voicesHint;
+    LPVoice.ready(renderVoices);
+  }
+
+  function renderVoices(){
+    const x=B[draft.home]||B.en;
+    $("voiceRows").innerHTML=playable(draft).map(c=>{
+      const vs=LPVoice.list(LPVoice.tag(c)),pick=(draft.voices||{})[c]||"";
+      const head=`<span class="lname" lang="${c}"><span class="code">${c.toUpperCase()}</span>${esc(L[c].own)}</span>`;
+      if(!vs.length)return `<div class="vrow">${head}<span class="none">${esc(x.none)}</span></div>`;
+      const rec=REC.includes(c),opts=`<option value="">${rec?esc(x.recorded||B.en.recorded):esc(x.auto)+" ("+esc(vs[0].name)+")"}</option>`+vs.map(v=>`<option value="${esc(v.name)}"${v.name===pick?" selected":""}>${esc(v.name)}</option>`).join("");
+      return `<div class="vrow">${head}<select id="v-${c}" data-voice="${c}" aria-label="${esc(x.voices)}: ${esc(L[c].own)}">${opts}</select><button type="button" class="hear" data-hear="${c}" aria-label="${esc(x.hear)}: ${esc(L[c].own)}">▶</button></div>`;
+    }).join("");
+  }
+  const REC=["de","en","es","fr","it","pt","nl","pl","sv","el","zh","ru"];
+  // the default voice is the recorded one: play a clip from a game's bank, the same voice the games use
+  function hearRecorded(c){
+    const play=()=>{const bank=(window.LP_CLIPS||{})[c];const k=bank&&Object.keys(bank)[0];if(!k)return;try{new Audio("data:audio/mpeg;base64,"+bank[k]).play()}catch(e){}};
+    if((window.LP_CLIPS||{})[c])return play();
+    const s=document.createElement("script");s.src="/games/audio/"+(["de","en","es","fr","it","pt"].includes(c)?"ark":"sky")+"."+c+".js";s.onload=play;document.head.appendChild(s);
+  }
+  function hear(c){
+    try{
+      speechSynthesis.cancel();
+      if(REC.includes(c)&&!(draft.voices||{})[c]){hearRecorded(c);return}
+      const v=LPVoice.best(LPVoice.tag(c),(draft.voices||{})[c]);if(!v)return;
+      const u=new SpeechSynthesisUtterance(SAMPLE[c]||L[c].hi);u.voice=v;u.lang=v.lang;u.rate=.9;u.pitch=1;speechSynthesis.speak(u);
+    }catch(e){}
+  }
+
+  function renderGames(){
+    const s=t(),p=profile;
+    mascotGames(p.age);
+    $("g-eyebrow").textContent=s.gEyebrow;
+    $("g-title").textContent=s.gTitle(p.name);
+    $("g-cta").textContent=s.gCta+" →";
+    // the child's name, greeted in every language they play in
+    $("hello").innerHTML=[p.home,...p.learn].map(c=>`<span lang="${c}" dir="${L[c].rtl?"rtl":"ltr"}">${esc(L[c].hi)}, ${esc(p.name)}!</span>`).join("");
+    const names=p.learn.map(c=>L[c].own).join(", ");
+    $("g-filter").textContent=s.filter(s.ages[p.age].toLowerCase()+" ("+s.ageSub[p.age]+")",names);
+    $("g-sample").hidden=!p.demo;
+    const sorted=[...GAMES];
+    $("gameGrid").innerHTML=sorted.map(g=>{
+      const tooBig=false;
+      return `<button type="button" class="game${tooBig?" dim":""}" data-game="${g.id}">
+        <div class="art felt"><img src="/felt/thumb-${g.id}.webp" alt="" width="600" height="448" loading="lazy" draggable="false"></div>
+        <h3>${esc(gname(g))}</h3><p>${esc(gblurb(g))}</p>
+        <span class="playnow">${esc(T[profile.home]?T[profile.home].gCta:T.en.gCta)}</span>
+</button>`;
+    }).join("");
+  }
+
+  /* ---------- fullscreen ---------- */
+  const FSK="lp-fullscreen", FSL={en:"Fullscreen",de:"Vollbild",es:"Pantalla completa",fr:"Plein écran",it:"Schermo intero",pt:"Ecrã inteiro"};
+  const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  const fsCan=()=>!!(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen);
+  function fsEnter(){const e=document.documentElement;try{const r=(e.requestFullscreen||e.webkitRequestFullscreen).call(e,{navigationUI:"hide"});if(r&&r.catch)r.catch(()=>{})}catch(x){}}
+  function fsExit(){try{const r=(document.exitFullscreen||document.webkitExitFullscreen).call(document);if(r&&r.catch)r.catch(()=>{})}catch(x){}}
+  function fsPref(v){try{if(v===undefined)return localStorage.getItem(FSK)==="1";localStorage.setItem(FSK,v?"1":"0")}catch(e){return false}}
+  const SHL={en:"New game",de:"Neues Spiel",es:"Juego nuevo",fr:"Nouveau jeu",it:"Nuovo gioco",pt:"Novo jogo"};
+  function shufLabel(){const l=SHL[profile&&profile.home]||SHL.en;$("shufLbl").textContent=l;$("shufBtn").title=l;$("shufBtn").setAttribute("aria-label",l)}
+  $("shufBtn").addEventListener("click",()=>{const ids=GAMES.map(g=>g.id).filter(i=>i!==current&&SLUG[i]);if(ids.length)openGame(ids[Math.floor(Math.random()*ids.length)])});
+  function fsLabel(){const l=FSL[profile&&profile.home]||FSL.en;$("fsBtn").title=l;$("fsBtn").setAttribute("aria-label",l)}
+  const SNL={en:["Sound on","Sound off"],de:["Ton an","Ton aus"],es:["Sonido activado","Sonido desactivado"],fr:["Son activé","Son coupé"],it:["Audio attivo","Audio disattivato"],pt:["Som ligado","Som desligado"]};
+  const MKEY="lingoplaytime.muted";
+  function mutedNow(){try{return localStorage.getItem(MKEY)==="1"}catch(e){return false}}
+  function sndPaint(){const m=mutedNow(),l=SNL[profile&&profile.home]||SNL.en,b=$("sndBtn");b.setAttribute("aria-pressed",String(m));b.classList.toggle("muted",m);b.title=l[m?1:0];b.setAttribute("aria-label",l[m?1:0])}
+  $("sndBtn").addEventListener("click",()=>{const m=!mutedNow();try{localStorage.setItem(MKEY,m?"1":"0")}catch(e){}sndPaint();try{$("frame").contentWindow.postMessage({type:"lp-mute",muted:m},"*")}catch(e){}});
+  sndPaint();
+  $("fsBtn").hidden=!fsCan();
+  const fsPaint=()=>$("fsBtn").setAttribute("aria-pressed",String(!!fsEl()));
+  $("fsBtn").addEventListener("click",()=>{if(fsEl()){fsPref(false);fsExit()}else{fsPref(true);fsEnter()}setTimeout(fsPaint,300)});
+  document.addEventListener("fullscreenchange",fsPaint);document.addEventListener("webkitfullscreenchange",fsPaint);fsPaint();
+  document.addEventListener("fullscreenchange",()=>{if(!fsEl()&&view==="play"){/* left with Esc: respect it */fsPref(false)}});
+
+  /* ---------- the game stage ---------- */
+  function openGame(id,replace){
+    const g=GAME[id];if(!g||!profile)return;
+    current=id;
+    const path="/"+SLUG[id]+"/";if(location.pathname!==path)history[replace?"replaceState":"pushState"](null,"",path);
+    document.title=gname(g)+" | LingoPlaytime";
+    $("playTitle").textContent=gname(g);
+    $("backLbl").textContent=b().back;
+    const q=new URLSearchParams({lp:JSON.stringify(settings()),name:profile.name});
+    $("frame").title=gname(g);
+    frameTo(`/games/${id}.html?${q}`);
+    show("play");
+    fsLabel();shufLabel();sndPaint();
+    if(fsCan()&&fsPref()&&!fsEl())fsEnter();
+    setTimeout(()=>{try{$("frame").focus()}catch(e){}},300);
+  }
+  function tellGame(){
+    if(view!=="play")return;
+    try{$("frame").contentWindow.postMessage({type:"lp-settings",settings:settings()},"*")}catch(e){}
+  }
+
+  /* ---------- settings sheet ---------- */
+  function openSettings(){
+    editing=true;draft=fresh();
+    const sec=$("v-setup");$("sheet").appendChild(sec);sec.hidden=false;
+    $("sheet").hidden=false;renderSetup();
+    setTimeout(()=>$("name").focus(),50);
+  }
+  function closeSettings(){
+    editing=false;
+    const sec=$("v-setup");sec.hidden=true;$("main").appendChild(sec);
+    $("sheet").hidden=true;
+    applyLang();
+    if(view==="games")renderGames();
+    $("nav-settings").focus();
+  }
+
+  /* ---------- events ---------- */
+  $("name").addEventListener("input",e=>{draft.name=e.target.value.trimStart()});
+  $("setupForm").addEventListener("click",e=>{
+    const btn=e.target.closest("[data-group]");if(!btn)return;
+    const g=btn.dataset.group;
+    if(g==="age")draft.age=+btn.dataset.i;
+    if(g==="active")draft.active=btn.dataset.code;
+    if(g==="home"){draft.home=btn.dataset.code;draft.learn=draft.learn.filter(c=>c!==draft.home)}
+    if(g==="learn"){const c=btn.dataset.code;draft.learn=draft.learn.includes(c)?draft.learn.filter(x=>x!==c):[...draft.learn,c].slice(0,MAX_LEARN)}
+    $("s-err").textContent="";
+    renderSetup();
+    const again=document.querySelector(`#setupForm [data-group="${g}"][data-${g==="age"?"i":"code"}="${g==="age"?draft.age:btn.dataset.code}"]`);
+    if(again)again.focus();
+  });
+  $("setupForm").addEventListener("submit",e=>{
+    e.preventDefault();
+    const s=T[draft.home]||T.en;
+    draft.name=$("name").value.trim();
+    if(!draft.name){$("s-err").textContent=s.errName;$("name").focus();return}
+    if(!draft.learn.length){$("s-err").textContent=s.errLearn;return}
+    const want=draft.active||(profile&&profile.active);const keep=playable(draft).includes(want)?want:draft.learn[0];
+    profile={...draft,learn:[...draft.learn],active:keep,voices:{...(draft.voices||{})}};
+    save(profile);
+    if(editing){closeSettings();tellGame();renderBar();}
+    else if(routeGame())openGame(routeGame(),true);
+    else show("games");
+  });
+  $("s-cancel").addEventListener("click",closeSettings);
+  $("sheet").addEventListener("keydown",e=>{if(e.key==="Escape")closeSettings()});
+
+  // the bar's language buttons switch the game live; only the child's profile is locked
+  $("barLangs").addEventListener("click",e=>{
+    const btn=e.target.closest("[data-code]");if(!btn||!profile)return;
+    if(profile.active===btn.dataset.code)return;
+    profile.active=btn.dataset.code;save(profile);
+    renderBar();tellGame();
+    const again=$("barLangs").querySelector(`[data-code="${profile.active}"]`);if(again)again.focus();
+  });
+  // voice choices in the settings sheet
+  $("voiceRows").addEventListener("change",e=>{const sel=e.target.closest("[data-voice]");if(!sel)return;draft.voices=draft.voices||{};if(sel.value)draft.voices[sel.dataset.voice]=sel.value;else delete draft.voices[sel.dataset.voice];hear(sel.dataset.voice)});
+  $("voiceRows").addEventListener("click",e=>{const b=e.target.closest("[data-hear]");if(b)hear(b.dataset.hear)});
+  $("g-cta").addEventListener("click",()=>{const g=document.querySelector("#gameGrid [data-game]");if(g)openGame(g.dataset.game)});
+  $("gameGrid").addEventListener("click",e=>{const g=e.target.closest("[data-game]");if(g)openGame(g.dataset.game)});
+  $("backBtn").addEventListener("click",()=>show("games"));
+  document.querySelectorAll("nav [data-view]").forEach(btn=>btn.addEventListener("click",()=>show(btn.dataset.view)));
+  document.querySelectorAll("footer [data-fview]").forEach(btn=>btn.addEventListener("click",()=>show(btn.dataset.fview)));
+  $("logo").addEventListener("click",()=>show(profile?"games":"setup"));
+
+  // parent gate: hold for 3 seconds, then the settings sheet opens over whatever is playing
+  let holdTimer=null,holdStart=0,raf=0;
+  const HOLD=3000;
+  function tick(){const p=Math.min(1,(performance.now()-holdStart)/HOLD);$("setFill").style.width=(p*100)+"%";if(p<1)raf=requestAnimationFrame(tick)}
+  function startHold(e){e.preventDefault();if(holdTimer)return;holdStart=performance.now();$("nav-settings").classList.add("holding");raf=requestAnimationFrame(tick);
+    holdTimer=setTimeout(()=>{holdTimer=null;cancelAnimationFrame(raf);$("setFill").style.width="0";$("nav-settings").classList.remove("holding");openSettings()},HOLD)}
+  function cancelHold(){if(!holdTimer)return;const short=performance.now()-holdStart<600;clearTimeout(holdTimer);holdTimer=null;cancelAnimationFrame(raf);$("setFill").style.width="0";$("nav-settings").classList.remove("holding");
+    if(short){const b=$("nav-settings");b.classList.remove("nudge");void b.offsetWidth;b.classList.add("nudge")}}
+  function closeGate(){}
+  const sb=$("nav-settings");
+  sb.addEventListener("pointerdown",startHold);
+  ["pointerup","pointerleave","pointercancel"].forEach(ev=>sb.addEventListener(ev,cancelHold));
+  sb.addEventListener("keydown",e=>{if((e.key===" "||e.key==="Enter")){e.preventDefault();if(!e.repeat)startHold(e)}});
+  sb.addEventListener("keyup",e=>{if(e.key===" "||e.key==="Enter")cancelHold()});
+  sb.addEventListener("contextmenu",e=>e.preventDefault());
+
+  // forget everything
+  $("forget").addEventListener("click",()=>{$("forgetConfirm").hidden=false;$("forgetDone").textContent=""});
+  $("forgetNo").addEventListener("click",()=>{$("forgetConfirm").hidden=true});
+  $("forgetYes").addEventListener("click",()=>{
+    wipe();profile={...SAMPLE_PROFILE,learn:[...SAMPLE_PROFILE.learn]};draft=fresh();
+    $("forgetConfirm").hidden=true;$("forgetDone").textContent=ST().forget[6];
+    applyLang();
+  });
+
+  applyLang();
+  const hv=(location.hash||"").slice(1),r0=routeGame();
+  if(r0&&profile&&!hv)openGame(r0,true);
+  else show(["games","app","privacy"].includes(hv)?hv:view);
+  // links like /#play or /#play/farm jump straight into a game
+  if(hv==="play"||hv.startsWith("play/")){const id=hv.slice(5),el=document.querySelector("#gameGrid [data-game]");const t=GAME[id]?id:(el&&el.dataset.game);if(t)openGame(t,true)}
+  addEventListener("popstate",()=>{const r=routeGame();if(r){if(r!==current)openGame(r,true)}else if(view==="play")show("games")});
+})();
+</script>
+

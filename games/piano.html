@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Piano party</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{color-scheme:light;--ink:#18264A;--display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif;
+ --felt-red:url(../felt/btn-red.webp);--felt-blue:url(../felt/btn-blue.webp);--felt-beige:url(../felt/btn-beige.webp)}
+html,body{height:100%;margin:0}
+body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.app{position:relative;height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:max(10px,env(safe-area-inset-top,0px)) 0 0 0;background:#2a1a12 url(../felt/peek-stage.webp) center 40%/cover no-repeat}
+.app::before{content:"";position:absolute;inset:0;background:linear-gradient(#0a0f2a55,#0a0f2a22 40%,#1a0d0877);pointer-events:none}
+.app>*{position:relative}
+.top{display:flex;justify-content:center;min-height:56px;padding:0 16px}
+#bubble{font-size:clamp(22px,4vw,38px);min-height:1.2em;transition:transform .15s;text-align:center;max-width:94vw}
+#bubble.bump{transform:scale(1.08)}
+/* felt buttons, same 9-slice as the drum game */
+.fb{--felt:var(--felt-beige);--fh:38px;position:relative;isolation:isolate;box-sizing:border-box;height:var(--fh);border:0;background:none;box-shadow:none;border-radius:0;color:#4a3213;text-shadow:0 1px 0 #fff8;padding:0 20px;font:800 16px/1 var(--display);display:inline-grid;align-items:center;cursor:pointer;white-space:nowrap}
+.fb::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border:solid transparent;border-width:calc(var(--fh)*.5);border-image:var(--felt) 157 fill/calc(var(--fh)*.58)/calc(var(--fh)*.0926) round;filter:drop-shadow(0 3px 2px #1b0d0566)}
+.fb.red{--felt:var(--felt-red);color:#fff8ec;text-shadow:0 1px 0 #6a1a10}
+.fb.blue{--felt:var(--felt-blue);color:#fff;text-shadow:0 1px 0 #06415e}
+.fb:active{transform:translateY(2px)}
+.fb:focus-visible{outline:4px solid #ffd84a;outline-offset:3px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px 10px;justify-content:center;padding:0 12px;min-height:40px}
+.ctl .fb[hidden]{display:none}
+#menu{position:fixed;z-index:30;display:flex;flex-direction:column;gap:4px;padding:8px;background:#fff4dc;border:2px dashed #b8401f99;border-radius:20px;box-shadow:0 10px 30px #0008;min-width:210px;max-width:92vw;max-height:62vh;overflow:auto}
+#menu[hidden]{display:none}
+#menu button{font:700 17px/1.1 var(--display);color:#2b3a42;background:#fffdf6;border:0;border-radius:16px;padding:10px 14px;text-align:left;cursor:pointer;display:flex;gap:10px;align-items:center}
+#menu button.on{box-shadow:0 0 0 3px #F6C033}
+#menu button:focus-visible{outline:3px solid #3B8BD4}
+#menu .sep{font:700 12px var(--body);letter-spacing:.06em;text-transform:uppercase;color:#8a6a40;padding:6px 8px 0}
+#strip{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;min-height:18px;padding:4px 18px 0;max-width:min(980px,100%);margin:0 auto}
+#strip .d{width:12px;height:12px;border-radius:50%;background:var(--c);opacity:.4;transition:transform .12s,opacity .12s}
+#strip .d.ok{opacity:1}
+#strip .d.now{opacity:1;transform:scale(1.7);box-shadow:0 0 0 2px #fff}
+.stage{flex:1;min-height:70px;display:flex;justify-content:center;position:relative}
+.lanes{position:relative;width:min(980px,calc(100% - 24px));height:100%}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+#big{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);min-width:min(34vh,150px);height:min(34vh,150px);border-radius:50%;display:grid;place-items:center;background:var(--c,#fff);color:#fff;font:700 min(20vh,96px)/1 var(--display);text-shadow:0 4px 0 #0005;box-shadow:0 8px 0 #0004,inset 0 0 0 8px #fff5;pointer-events:none;padding:0 18px;box-sizing:border-box}
+#big[hidden]{display:none}
+#big small{position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);font:700 24px var(--display);white-space:nowrap;color:#fff;text-shadow:0 3px 0 #0008;background:#0006;border-radius:14px;padding:2px 14px}
+.pal{position:absolute;bottom:0;height:min(40vh,300px);width:auto;pointer-events:none;filter:drop-shadow(0 8px 6px #0006);display:none}
+.pal.l{left:max(8px,calc(50% - 490px - 190px))}
+@media (min-width:1500px) and (min-height:560px){.pal{display:block}}
+.pal.hop{animation:hop .26s steps(1)}
+@keyframes hop{0%{transform:translateY(-16px) rotate(-3deg)}50%{transform:translateY(-6px) rotate(2deg)}100%{transform:none}}
+.piano{position:relative;width:min(980px,calc(100% - 24px));margin:14px auto max(12px,env(safe-area-inset-bottom,0px));height:clamp(132px,29vh,270px);touch-action:none}
+.piano::before{content:"";position:absolute;left:-8px;right:-8px;top:-16px;height:20px;border-radius:12px 12px 0 0;background:#9c2b22;box-shadow:inset 0 3px 0 #c8483b,0 -2px 0 #0004;background-image:repeating-linear-gradient(90deg,#0000 0 14px,#ffffff22 14px 18px)}
+.key{position:absolute;top:0;border:0;padding:0;margin:0;font-family:var(--display);cursor:pointer;touch-action:none;transition:transform .06s,filter .06s}
+.key.w{width:calc(100% / 11 - 3px);height:100%;margin-left:1.5px;border-radius:0 0 16px 16px;background:linear-gradient(#fffaf0,#f1e3c3);box-shadow:inset 0 -12px 0 #dccaa0,0 6px 0 #0005;color:#3c2f20;outline:2px dashed #b8401f44;outline-offset:-7px}
+.key.b{width:calc(100% / 11 * .58);height:62%;z-index:2;border-radius:0 0 12px 12px;background:linear-gradient(#4a3426,#2f2118);box-shadow:inset 0 -8px 0 #1b120c,0 5px 0 #0007;color:#f6ead0;outline:2px dashed #ffffff22;outline-offset:-5px}
+.key .nm{position:absolute;left:0;right:0;top:34%;text-align:center;font-weight:700;font-size:clamp(11px,1.7vw,20px);opacity:.9;pointer-events:none}
+.key .ltr{position:absolute;left:8%;right:8%;bottom:7%;height:34%;max-height:70px;display:grid;place-items:center;border-radius:12px;background:var(--c);color:#fff;font-weight:700;font-size:clamp(16px,3vw,34px);text-shadow:0 2px 0 #0005;pointer-events:none;box-shadow:inset 0 -4px 0 #0003}
+.key.b .ltr{background:#6e5442;bottom:9%;height:26%}
+.key.down{transform:translateY(7px);filter:brightness(1.12)}
+.key.w.down{box-shadow:inset 0 -6px 0 #dccaa0,0 2px 0 #0005,0 0 0 5px var(--c)}
+.key.b.down{box-shadow:inset 0 -4px 0 #1b120c,0 2px 0 #0007,0 0 0 4px #fff8}
+.key.tgt{animation:pulse .7s steps(2) infinite}
+.key.tgt::after{content:"";position:absolute;inset:-4px;border-radius:inherit;box-shadow:0 0 0 5px #ffd84a,0 0 26px 8px #ffd84acc;pointer-events:none}
+@keyframes pulse{50%{filter:brightness(1.25)}}
+.fl{position:fixed;z-index:25;pointer-events:none;font:700 34px var(--display);color:var(--c);text-shadow:0 2px 0 #fff,0 0 8px #fff8;animation:flt 1s steps(8) forwards}
+@keyframes flt{to{transform:translate(var(--dx),-130px) rotate(var(--r));opacity:0}}
+@media (prefers-reduced-motion:reduce){.fl,.pal.hop,.key.tgt{animation:none}.key{transition:none}}
+@media (max-width:560px){.fb{--fh:34px;padding:0 14px;font-size:14px}#big small{font-size:18px}}
+</style>
+</head>
+<body>
+<script>window.LP_GAME="piano"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
+<div class="app" id="app">
+  <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
+  <div class="ctl" id="ctl">
+    <button type="button" class="fb blue" id="bSong" aria-haspopup="true"></button>
+    <button type="button" class="fb" id="bHow" aria-haspopup="true" hidden></button>
+    <button type="button" class="fb red" id="bListen" hidden></button>
+    <button type="button" class="fb" id="bKbd" aria-haspopup="true"></button>
+    <button type="button" class="fb" id="bNames" aria-haspopup="true"></button>
+  </div>
+  <div id="strip" aria-hidden="true"></div>
+  <div class="stage" id="stage">
+    <img class="pal l" id="pal" src="../felt/raccoon-brown.webp" alt="" draggable="false">
+    <div class="lanes" id="lanes"><canvas id="cv"></canvas><div id="big" hidden></div></div>
+  </div>
+  <div class="piano" id="piano" role="group" aria-label="Piano"></div>
+</div>
+<div id="menu" hidden role="menu"></div>
+<script>
+/* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
+const DATA=(()=>{
+ const LG=["en","nl","pl","sv","el","zh","ar","ja","ko","ru","tr","hi","de","es","fr","it","pt"];
+ const sol={
+  en:"Doh|Ray|Me|Fah|Soh|Lah|Tee",nl:"Do|Re|Mi|Fa|Sol|La|Si",pl:"Do|Re|Mi|Fa|Sol|La|Si",sv:"Do|Re|Mi|Fa|Sol|La|Si",
+  el:"Ντο|Ρε|Μι|Φα|Σολ|Λα|Σι",zh:"哆|来|咪|发|唆|拉|西",ar:"دو|ري|مي|فا|صول|لا|سي",ja:"ド|レ|ミ|ファ|ソ|ラ|シ",
+  ko:"도|레|미|파|솔|라|시",ru:"До|Ре|Ми|Фа|Соль|Ля|Си",tr:"Do|Re|Mi|Fa|Sol|La|Si",hi:"सा|रे|ग|म|प|ध|नि",
+  de:"Do|Re|Mi|Fa|Sol|La|Si",es:"Do|Re|Mi|Fa|Sol|La|Si",fr:"Do|Ré|Mi|Fa|Sol|La|Si",it:"Do|Re|Mi|Fa|Sol|La|Si",pt:"Dó|Ré|Mi|Fá|Sol|Lá|Si"
+ };
+ const abc=l=>(["de","sv","pl"].includes(l)?"C|D|E|F|G|A|H":"C|D|E|F|G|A|B").split("|");
+ const words=[];
+ for(let i=0;i<7;i++){const w={id:"n"+i};LG.forEach(l=>{w[l]=sol[l].split("|")[i]});words.push(w)}
+ for(let i=0;i<7;i++){const w={id:"l"+i};LG.forEach(l=>{w[l]=abc(l)[i]});words.push(w)}
+ const T={
+  twinkle:{en:"Twinkle, Twinkle, Little Star",nl:"Twinkel, twinkel, kleine ster",pl:"Błyszcz, błyszcz, mała gwiazdko",sv:"Blinka lilla stjärna",el:"Λάμπε, λάμπε, αστεράκι",zh:"一闪一闪亮晶晶",ar:"تألقي تألقي يا نجمة صغيرة",ja:"きらきらぼし",ko:"반짝반짝 작은 별",ru:"Мерцай, мерцай, звёздочка",tr:"Parla parla küçük yıldız",hi:"टिमटिम तारे",de:"Funkel, funkel, kleiner Stern",es:"Brilla, brilla, estrellita",fr:"Ah ! vous dirai-je, maman",it:"Brilla, brilla, piccola stella",pt:"Brilha, brilha, estrelinha"},
+  mary:{en:"Mary Had a Little Lamb",nl:"Marietje had een lammetje",pl:"Mary miała małą owieczkę",sv:"Mary hade ett litet lamm",el:"Η Μαίρη είχε ένα αρνάκι",zh:"玛丽有只小羊羔",ar:"لماري حمل صغير",ja:"メリーさんのひつじ",ko:"메리에겐 작은 양이 있었어요",ru:"У Мэри был маленький ягнёнок",tr:"Mary'nin küçük kuzusu",hi:"मैरी का छोटा मेमना",de:"Mary hatte ein Lämmchen",es:"María tenía un corderito",fr:"Marie avait un petit agneau",it:"Mary aveva un agnellino",pt:"A Maria tinha um cordeirinho"},
+  buns:{en:"Hot Cross Buns",nl:"Hete kruisbroodjes",pl:"Gorące bułeczki",sv:"Varma bullar",el:"Ζεστά ψωμάκια",zh:"热腾腾的面包",ar:"كعكات ساخنة",ja:"ホットクロスバンズ",ko:"뜨거운 빵",ru:"Горячие булочки",tr:"Sıcak çörekler",hi:"गरम बन",de:"Heiße Brötchen",es:"Panecillos calientes",fr:"Brioches chaudes",it:"Panini caldi",pt:"Pãezinhos quentes"},
+  jacques:{en:"Are You Sleeping?",nl:"Broeder Jacob",pl:"Panie Janie",sv:"Broder Jakob",el:"Αδελφέ Ιάκωβε",zh:"两只老虎",ar:"الأخ يعقوب",ja:"フレール・ジャック",ko:"자크 형제",ru:"Братец Яков",tr:"Kardeş Jacques",hi:"भाई जैक्स",de:"Bruder Jakob",es:"Fray Santiago",fr:"Frère Jacques",it:"Fra Martino",pt:"Frère Jacques"},
+  ode:{en:"Ode to Joy",nl:"Ode aan de vreugde",pl:"Oda do radości",sv:"Ode till glädjen",el:"Ύμνος στη χαρά",zh:"欢乐颂",ar:"نشيد الفرح",ja:"歓喜の歌",ko:"환희의 송가",ru:"Ода к радости",tr:"Neşeye övgü",hi:"आनंद का गीत",de:"Freude, schöner Götterfunken",es:"Oda a la alegría",fr:"Ode à la joie",it:"Inno alla gioia",pt:"Ode à alegria"},
+  jingle:{en:"Jingle Bells",nl:"Jingle Bells",pl:"Dzwonki sań",sv:"Bjällerklang",el:"Τζίνγκλ Μπελς",zh:"铃儿响叮当",ar:"جينغل بيلز",ja:"ジングルベル",ko:"징글벨",ru:"Джингл Беллс",tr:"Jingle Bells",hi:"जिंगल बेल्स",de:"Jingle Bells",es:"Cascabel",fr:"Vive le vent",it:"Jingle Bells",pt:"Jingle Bells"},
+  birthday:{en:"Happy Birthday",nl:"Happy Birthday",pl:"Happy Birthday",sv:"Grattis på födelsedagen",el:"Χρόνια πολλά",zh:"祝你生日快乐",ar:"عيد ميلاد سعيد",ja:"ハッピーバースデー",ko:"생일 축하합니다",ru:"С днём рождения",tr:"İyi ki doğdun",hi:"जन्मदिन मुबारक",de:"Zum Geburtstag viel Glück",es:"Cumpleaños feliz",fr:"Joyeux anniversaire",it:"Tanti auguri a te",pt:"Parabéns a você"},
+  lune:{en:"By the Light of the Moon",nl:"Bij het licht van de maan",pl:"W świetle księżyca",sv:"I månens sken",el:"Στο φως του φεγγαριού",zh:"月光下",ar:"على ضوء القمر",ja:"月あかりで",ko:"달빛 아래",ru:"При свете луны",tr:"Ay ışığında",hi:"चाँदनी में",de:"Im Mondschein",es:"A la luz de la luna",fr:"Au clair de la lune",it:"Al chiaro di luna",pt:"Ao luar"}
+ };
+ Object.keys(T).forEach(k=>words.push(Object.assign({id:"t_"+k},T[k])));
+ return {words,lines:{
+  en:{title:"Piano party",go:"Press any key!",listen:"Listen!",done:"Well done!"},
+  nl:{title:"Pianofeestje",go:"Druk op een toets!",listen:"Luister!",done:"Goed gedaan!"},
+  pl:{title:"Pianinowa zabawa",go:"Naciśnij dowolny klawisz!",listen:"Posłuchaj!",done:"Brawo!"},
+  sv:{title:"Pianofest",go:"Tryck på en tangent!",listen:"Lyssna!",done:"Bra jobbat!"},
+  el:{title:"Πάρτι πιάνου",go:"Πάτα ένα πλήκτρο!",listen:"Άκου!",done:"Μπράβο!"},
+  zh:{title:"钢琴派对",go:"按任意一个键！",listen:"听！",done:"太棒了！"},
+  ar:{title:"حفلة بيانو",go:"اضغط أي زر!",listen:"استمع!",done:"أحسنت!"},
+  ja:{title:"ピアノパーティー",go:"どれかキーをおしてね！",listen:"きいてね！",done:"よくできました！"},
+  ko:{title:"피아노 파티",go:"아무 키나 눌러요!",listen:"들어 봐!",done:"잘했어요!"},
+  ru:{title:"Пианино-вечеринка",go:"Нажми любую клавишу!",listen:"Слушай!",done:"Молодец!"},
+  tr:{title:"Piyano partisi",go:"Herhangi bir tuşa bas!",listen:"Dinle!",done:"Aferin!"},
+  hi:{title:"पियानो पार्टी",go:"कोई भी बटन दबाओ!",listen:"सुनो!",done:"शाबाश!"},
+  de:{title:"Klavierparty",go:"Drück eine Taste!",listen:"Hör zu!",done:"Gut gemacht!"},
+  es:{title:"Fiesta de piano",go:"¡Pulsa una tecla!",listen:"¡Escucha!",done:"¡Muy bien!"},
+  fr:{title:"Fête du piano",go:"Appuie sur une touche !",listen:"Écoute !",done:"Bravo !"},
+  it:{title:"Festa del pianoforte",go:"Premi un tasto!",listen:"Ascolta!",done:"Bravo!"},
+  pt:{title:"Festa do piano",go:"Carrega numa tecla!",listen:"Ouve!",done:"Muito bem!"}
+ }};
+})();
+
+/* Parent-facing controls, in the main language (the site has these six; other languages see English). */
+const UI={
+ en:{free:"Free play",songs:"Songs",how:"How to play",mash:"Any key plays the song",follow:"Press the glowing key",rhythm:"Falling notes",kbd:"Keyboard",auto:"Auto",names:"Names",off:"Off",sol:"Do Re Mi",abc:"C D E",listen:"Listen",again:"Play",stars:"Stars"},
+ de:{free:"Frei spielen",songs:"Lieder",how:"So spielst du",mash:"Jede Taste spielt das Lied",follow:"Leuchtende Taste drücken",rhythm:"Fallende Noten",kbd:"Tastatur",auto:"Automatisch",names:"Notennamen",off:"Aus",sol:"Do Re Mi",abc:"C D E",listen:"Zuhören",again:"Spielen",stars:"Sterne"},
+ es:{free:"Juego libre",songs:"Canciones",how:"Cómo jugar",mash:"Cualquier tecla toca la canción",follow:"Pulsa la tecla que brilla",rhythm:"Notas que caen",kbd:"Teclado",auto:"Automático",names:"Nombres",off:"No",sol:"Do Re Mi",abc:"C D E",listen:"Escuchar",again:"Jugar",stars:"Estrellas"},
+ fr:{free:"Jeu libre",songs:"Chansons",how:"Comment jouer",mash:"N'importe quelle touche joue la chanson",follow:"Appuie sur la touche qui brille",rhythm:"Notes qui tombent",kbd:"Clavier",auto:"Auto",names:"Noms des notes",off:"Non",sol:"Do Ré Mi",abc:"C D E",listen:"Écouter",again:"Jouer",stars:"Étoiles"},
+ it:{free:"Gioco libero",songs:"Canzoni",how:"Come si gioca",mash:"Qualsiasi tasto suona la canzone",follow:"Premi il tasto che brilla",rhythm:"Note che cadono",kbd:"Tastiera",auto:"Automatica",names:"Nomi delle note",off:"No",sol:"Do Re Mi",abc:"C D E",listen:"Ascolta",again:"Gioca",stars:"Stelle"},
+ pt:{free:"Jogo livre",songs:"Canções",how:"Como jogar",mash:"Qualquer tecla toca a canção",follow:"Carrega na tecla que brilha",rhythm:"Notas a cair",kbd:"Teclado",auto:"Automático",names:"Nomes das notas",off:"Não",sol:"Dó Ré Mi",abc:"C D E",listen:"Ouvir",again:"Jogar",stars:"Estrelas"}
+};
+const U=()=>UI[LP.home]||UI.en;
+
+/* Songs (all public domain). Notes are name+octave with an optional length in beats: C4*2 is two beats, C4/2 is half a beat, R is a rest. */
+const SONGS=[
+ {id:"twinkle",bpm:100,s:"C4 C4 G4 G4 A4 A4 G4*2 F4 F4 E4 E4 D4 D4 C4*2 G4 G4 F4 F4 E4 E4 D4*2 G4 G4 F4 F4 E4 E4 D4*2 C4 C4 G4 G4 A4 A4 G4*2 F4 F4 E4 E4 D4 D4 C4*2"},
+ {id:"mary",bpm:110,s:"E4 D4 C4 D4 E4 E4 E4*2 D4 D4 D4*2 E4 G4 G4*2 E4 D4 C4 D4 E4 E4 E4 E4 D4 D4 E4 D4 C4*4"},
+ {id:"buns",bpm:100,s:"E4 D4 C4*2 E4 D4 C4*2 C4/2 C4/2 C4/2 C4/2 D4/2 D4/2 D4/2 D4/2 E4 D4 C4*2"},
+ {id:"jacques",bpm:104,s:"C4 D4 E4 C4 C4 D4 E4 C4 E4 F4 G4*2 E4 F4 G4*2 G4/2 A4/2 G4/2 F4/2 E4 C4 G4/2 A4/2 G4/2 F4/2 E4 C4 C4 G4 C4*2 C4 G4 C4*2"},
+ {id:"ode",bpm:108,s:"E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 E4*1.5 D4/2 D4*2 E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 D4*1.5 C4/2 C4*2"},
+ {id:"jingle",bpm:120,s:"E4 E4 E4*2 E4 E4 E4*2 E4 G4 C4*1.5 D4/2 E4*4 F4 F4 F4*1.5 F4/2 F4 E4 E4 E4/2 E4/2 E4 D4 D4 E4 D4*2 G4*2"},
+ {id:"birthday",bpm:100,s:"C4*0.75 C4*0.25 D4 C4 F4 E4*2 C4*0.75 C4*0.25 D4 C4 G4 F4*2 C4*0.75 C4*0.25 C5 A4 F4 E4 D4*2 A#4*0.75 A#4*0.25 A4 F4 G4 F4*2"},
+ {id:"lune",bpm:96,s:"C4 C4 C4 D4 E4*2 D4*2 C4 E4 D4 D4 C4*4 C4 C4 C4 D4 E4*2 D4*2 C4 E4 D4 D4 C4*4"}
+];
+const BASE={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+function parse(str){
+ const out=[];let t=0;
+ str.trim().split(/\s+/).forEach(tok=>{
+  const m=/^([A-GR])(#?)(\d?)(?:([*\/])([\d.]+))?$/.exec(tok);if(!m)return;
+  let b=1;if(m[4]==="*")b=parseFloat(m[5]);else if(m[4]==="/")b=1/parseFloat(m[5]);
+  const s=m[1]==="R"?null:BASE[m[1]]+(m[2]?1:0)+((+m[3]||4)-4)*12;
+  out.push({s,b,t});t+=b;
+ });
+ return out;
+}
+SONGS.forEach(s=>{s.notes=parse(s.s);s.pn=s.notes.filter(n=>n.s!=null)});
+
+/* Keys: the home row is the white keys (C4 up to F5) and the row above it the black keys, matched by position on the keyboard so any layout works. */
+const KEYS=[
+ {c:"KeyA",s:0,w:0},{c:"KeyW",s:1,b:1},{c:"KeyS",s:2,w:1},{c:"KeyE",s:3,b:2},{c:"KeyD",s:4,w:2},{c:"KeyF",s:5,w:3},{c:"KeyT",s:6,b:4},{c:"KeyG",s:7,w:4},
+ {c:"KeyY",s:8,b:5},{c:"KeyH",s:9,w:5},{c:"KeyU",s:10,b:6},{c:"KeyJ",s:11,w:6},{c:"KeyK",s:12,w:7},{c:"KeyO",s:13,b:8},{c:"KeyL",s:14,w:8},{c:"KeyP",s:15,b:9},
+ {c:"Semicolon",s:16,w:9},{c:"Quote",s:17,w:10}
+];
+const BYCODE=Object.fromEntries(KEYS.map(k=>[k.c,k])),BYSEMI=Object.fromEntries(KEYS.map(k=>[k.s,k]));
+const LAYOUTS={
+ qwerty:{KeyA:"A",KeyS:"S",KeyD:"D",KeyF:"F",KeyG:"G",KeyH:"H",KeyJ:"J",KeyK:"K",KeyL:"L",Semicolon:";",Quote:"'",KeyW:"W",KeyE:"E",KeyT:"T",KeyY:"Y",KeyU:"U",KeyO:"O",KeyP:"P"},
+ qwertz:{KeyA:"A",KeyS:"S",KeyD:"D",KeyF:"F",KeyG:"G",KeyH:"H",KeyJ:"J",KeyK:"K",KeyL:"L",Semicolon:"Ö",Quote:"Ä",KeyW:"W",KeyE:"E",KeyT:"T",KeyY:"Z",KeyU:"U",KeyO:"O",KeyP:"P"},
+ azerty:{KeyA:"Q",KeyS:"S",KeyD:"D",KeyF:"F",KeyG:"G",KeyH:"H",KeyJ:"J",KeyK:"K",KeyL:"L",Semicolon:"M",Quote:"Ù",KeyW:"Z",KeyE:"E",KeyT:"T",KeyY:"Y",KeyU:"U",KeyO:"O",KeyP:"P"},
+ dvorak:{KeyA:"A",KeyS:"O",KeyD:"E",KeyF:"U",KeyG:"I",KeyH:"D",KeyJ:"H",KeyK:"T",KeyL:"N",Semicolon:"S",Quote:"-",KeyW:",",KeyE:".",KeyT:"Y",KeyY:"F",KeyU:"G",KeyO:"R",KeyP:"L"},
+ colemak:{KeyA:"A",KeyS:"R",KeyD:"S",KeyF:"T",KeyG:"D",KeyH:"H",KeyJ:"N",KeyK:"E",KeyL:"I",Semicolon:"O",Quote:"'",KeyW:"W",KeyE:"F",KeyT:"G",KeyY:"J",KeyU:"L",KeyO:"Y",KeyP:";"}
+};
+const LAYNAME={qwerty:"QWERTY",qwertz:"QWERTZ",azerty:"AZERTY",dvorak:"Dvorak",colemak:"Colemak"};
+const NATCOL=["#e5453b","#f47c1c","#f4b81a","#4fa73f","#1e8fd0","#7a56c8","#e86aa8"],NAT={0:0,2:1,4:2,5:3,7:4,9:5,11:6};
+const pcNat=s=>NAT[((s%12)+12)%12];
+const colorOf=s=>{const i=pcNat(s);return i==null?"#6e5442":NATCOL[i]};
+
+const $=id=>document.getElementById(id);
+const W=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
+const L=()=>LP.t(DATA.lines);
+const wd=(id)=>{const w=W[id];return w[LP.lang]||w.en};
+const store={get(k,d){try{return localStorage.getItem("lp.piano."+k)||d}catch(e){return d}},set(k,v){try{localStorage.setItem("lp.piano."+k,v)}catch(e){}}};
+
+let layout=store.get("layout","auto"),namesMode=store.get("names","sol"),learned={};
+let gen=0,mode="free",how=null,song=null,pos=0,wrong=0,demoing=false,locked=false,R=null,raf=0,demoT=[];
+const held={};
+const defaultHow=()=>["mash","follow","rhythm"][Math.min(2,LP.age||0)];
+const curHow=()=>how||defaultHow();
+
+/* labels on the keys follow the parent's keyboard */
+function guessLayout(){
+ const seen=Object.keys(learned);if(!seen.length)return"qwerty";
+ let best="qwerty",bs=-1;
+ Object.keys(LAYOUTS).forEach(n=>{const sc=seen.filter(c=>LAYOUTS[n][c]===learned[c]).length;if(sc>bs){bs=sc;best=n}});
+ return best;
+}
+const effLayout=()=>layout==="auto"?guessLayout():layout;
+const label=code=>(layout==="auto"&&learned[code])||LAYOUTS[effLayout()][code]||LAYOUTS.qwerty[code];
+function relabel(){document.querySelectorAll(".key").forEach(el=>{el.querySelector(".ltr").textContent=label(el.dataset.code);el.setAttribute("aria-label",(nameOf(+el.dataset.s)||"")+" "+label(el.dataset.code))});refreshCtl()}
+function learn(e){
+ if(layout!=="auto"||!BYCODE[e.code]||!e.key||e.key.length!==1||e.key===" ")return;
+ const v=e.key.toUpperCase();if(learned[e.code]!==v){learned[e.code]=v;relabel()}
+}
+try{if(navigator.keyboard&&navigator.keyboard.getLayoutMap)navigator.keyboard.getLayoutMap().then(m=>{KEYS.forEach(k=>{const v=m.get(k.c);if(v&&v.length===1)learned[k.c]=v.toUpperCase()});relabel()}).catch(()=>{})}catch(e){}
+
+/* note names, spoken and shown in the language being learned */
+function nameOf(s){const i=pcNat(s);if(i==null||namesMode==="off")return"";return namesMode==="abc"?wd("l"+i):wd("n"+i)}
+function sayNote(s){
+ if(namesMode==="off"||mode==="rhythm"||(window.LP_busy&&window.LP_busy()))return;
+ const n=nameOf(s);if(n)LP.say(n);
+}
+
+/* ---- the piano: synthesized for now (partials, a bright start that mellows, a soft hammer thump) ---- */
+let ac=null,bus=null,nbuf=null;const live=[];
+function audio(){
+ if(ac&&bus)return ac;
+ const a=LP.ac();if(!a)return null;
+ ac=a;bus=a.createGain();bus.gain.value=0.9;
+ const c=a.createDynamicsCompressor();c.threshold.value=-16;c.ratio.value=4;bus.connect(c);c.connect(a.destination);
+ return ac;
+}
+function voice(semi,vel,delay,dur){
+ const a=audio();if(!a)return null;
+ const f=261.626*Math.pow(2,semi/12),t=a.currentTime+(delay||0),T=Math.max(1.3,3.8-semi*.07);
+ const out=a.createGain(),lp=a.createBiquadFilter();
+ lp.type="lowpass";lp.Q.value=.4;lp.frequency.setValueAtTime(Math.min(12000,f*18),t);lp.frequency.exponentialRampToValueAtTime(Math.max(1000,f*3.2),t+.8);
+ out.gain.setValueAtTime(.0001,t);out.gain.linearRampToValueAtTime(vel*.4,t+.006);out.gain.exponentialRampToValueAtTime(vel*.11,t+.3);out.gain.exponentialRampToValueAtTime(.0001,t+T);
+ lp.connect(out);out.connect(bus);
+ const oscs=[];
+ [[1,"sine",1],[2,"sine",.42],[3,"sine",.2],[4.01,"sine",.1],[1.003,"triangle",.3],[5.02,"sine",.05]].forEach((p,i)=>{
+  const o=a.createOscillator(),g=a.createGain();o.type=p[1];o.frequency.value=f*p[0];
+  g.gain.setValueAtTime(p[2],t);g.gain.exponentialRampToValueAtTime(p[2]*.04,t+T/(1+i*.55));
+  o.connect(g);g.connect(lp);o.start(t);o.stop(t+T+.1);oscs.push(o);
+ });
+ if(!nbuf){nbuf=a.createBuffer(1,a.sampleRate*.05,a.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+ const ns=a.createBufferSource(),nf=a.createBiquadFilter(),ng=a.createGain();
+ ns.buffer=nbuf;nf.type="bandpass";nf.frequency.value=Math.min(4000,f*5);nf.Q.value=.8;
+ ng.gain.setValueAtTime(vel*.09,t);ng.gain.exponentialRampToValueAtTime(.0001,t+.04);ns.connect(nf);nf.connect(ng);ng.connect(bus);ns.start(t);
+ const v={t,end:t+T,rel(at){
+  const n=Math.max(a.currentTime,at||0),g=out.gain;
+  try{if(g.cancelAndHoldAtTime)g.cancelAndHoldAtTime(n);else g.cancelScheduledValues(n);g.setTargetAtTime(.0001,n,.07)}catch(e){}
+  oscs.forEach(o=>{try{o.stop(n+.45)}catch(e){}});
+ }};
+ const now=a.currentTime;for(let i=live.length-1;i>=0;i--)if(live[i].end<now)live.splice(i,1);
+ live.push(v);if(live.length>24)live.shift().rel(0);
+ if(dur)v.rel(t+dur);
+ return v;
+}
+
+/* ---- drawing the piano ---- */
+const KEYEL={},LANE={};
+function buildPiano(){
+ const p=$("piano");p.innerHTML="";
+ const wl=100/11;
+ KEYS.forEach(k=>{
+  const b=document.createElement("button");b.type="button";b.className="key "+(k.b?"b":"w");b.dataset.s=k.s;b.dataset.code=k.c;
+  b.style.setProperty("--c",colorOf(k.s));
+  b.innerHTML='<span class="nm"></span><span class="ltr"></span>';
+  if(k.b){b.style.left=`calc(${k.b*wl}% - ${wl*.29}% )`;LANE[k.s]={cx:k.b/11,w:.58/11}}
+  else{b.style.left=`${k.w*wl}%`;LANE[k.s]={cx:(k.w+.5)/11,w:.84/11}}
+  p.appendChild(b);KEYEL[k.s]=b;
+ });
+ renameKeys();relabel();
+}
+function renameKeys(){KEYS.forEach(k=>{KEYEL[k.s].querySelector(".nm").textContent=k.b?"":nameOf(k.s)})}
+function showDown(s,on){const el=KEYEL[s];if(el)el.classList.toggle("down",on)}
+function setTarget(s){document.querySelectorAll(".key.tgt").forEach(e=>e.classList.remove("tgt"));if(s!=null&&KEYEL[s])KEYEL[s].classList.add("tgt")}
+let nfl=0;
+function fx(s,quiet){
+ const el=KEYEL[s];if(!el)return;const r=el.getBoundingClientRect();
+ if(!quiet)LP.burst(r.left+r.width/2,r.top+r.height*.15,5);
+ if(nfl<20&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
+  nfl++;const f=document.createElement("div");f.className="fl";f.textContent=["♪","♫","♩"][Math.floor(Math.random()*3)];
+  f.style.setProperty("--c",colorOf(s));f.style.left=(r.left+r.width/2-12)+"px";f.style.top=(r.top-6)+"px";
+  f.style.setProperty("--dx",(Math.random()*80-40)+"px");f.style.setProperty("--r",(Math.random()*50-25)+"deg");
+  document.body.appendChild(f);setTimeout(()=>{f.remove();nfl--},1000);
+ }
+ const p=$("pal");p.classList.remove("hop");void p.offsetWidth;p.classList.add("hop");
+}
+function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
+
+/* ---- playing ---- */
+const PENT=[0,2,4,7,9,12,14,16];
+const pent=id=>{let h=0;String(id).split("").forEach(c=>h=(h*31+c.charCodeAt(0))>>>0);return PENT[h%PENT.length]};
+function playUser(s,id,vel,quiet){
+ const v=voice(s,vel);held[id]={v,s};showDown(s,true);fx(s,quiet);if(vel>=.9)sayNote(s);
+}
+function release(id){const h=held[id];if(!h)return;if(h.v)h.v.rel();showDown(h.s,false);delete held[id]}
+
+function keyDown(s,id){
+ if(locked)return;
+ if(demoing||mode==="free"||!song){playUser(s!=null?s:pent(id),id,1);return}
+ if(mode==="mash")return mashPress(id);
+ if(mode==="follow")return followPress(s,id);
+ if(mode==="rhythm")return rhythmPress(s,id);
+}
+function arpeggio(){
+ const start=Math.floor(Math.random()*3),a=audio();if(!a)return;
+ for(let i=0;i<5;i++){const s=PENT[start+i];setTimeout(()=>{voice(s,.8,0,.5);showDown(s,true);fx(s,true);setTimeout(()=>showDown(s,false),120)},i*90)}
+}
+
+/* strip of coloured dots: the song at a glance */
+function drawStrip(){
+ const st=$("strip");st.innerHTML="";
+ if(!song||mode==="rhythm"||mode==="free")return;
+ song.pn.forEach(n=>{const d=document.createElement("span");d.className="d";d.style.setProperty("--c",colorOf(n.s));st.appendChild(d)});
+ setStrip();
+}
+function setStrip(){
+ [...$("strip").children].forEach((d,i)=>{d.classList.toggle("ok",i<pos);d.classList.toggle("now",i===pos)});
+ const n=song&&song.pn[pos];
+ setTarget(mode==="follow"||mode==="mash"?(n?n.s:null):null);
+ const big=$("big");
+ if(mode==="follow"&&n&&!demoing){
+  const k=BYSEMI[n.s];big.hidden=false;big.style.setProperty("--c",colorOf(n.s));
+  big.innerHTML=label(k.c)+(nameOf(n.s)?"<small>"+nameOf(n.s)+"</small>":"");
+ }else big.hidden=true;
+}
+function mashPress(id){
+ const n=song.pn[pos];if(!n)return;
+ playUser(n.s,id,1);pos++;setStrip();
+ if(pos>=song.pn.length)finishSong();
+}
+function followPress(s,id){
+ const n=song.pn[pos];if(!n)return;
+ if(s===n.s){playUser(s,id,1);pos++;wrong=0;setStrip();if(pos>=song.pn.length)finishSong()}
+ else{playUser(s!=null?s:pent(id),id,.45,true);if(++wrong>=2){wrong=0;const el=KEYEL[n.s];el.classList.remove("tgt");void el.offsetWidth;el.classList.add("tgt")}}
+}
+function finishSong(stars){
+ locked=true;const g=gen;setTarget(null);$("big").hidden=true;
+ LP.celebrate();bubble((stars?"★".repeat(stars)+"☆".repeat(3-stars)+"  ":"")+L().done);LP.say(L().done);
+ setTimeout(()=>{
+  locked=false;if(g!==gen)return;
+  if(mode==="rhythm")startSong(song.id);
+  else{const i=SONGS.indexOf(song);startSong(SONGS[(i+1)%SONGS.length].id,true)}
+ },4300);
+}
+
+/* listen: the song plays itself with the keys lighting up */
+function stopAll(){
+ demoT.forEach(clearTimeout);demoT=[];demoing=false;R=null;if(raf)cancelAnimationFrame(raf);raf=0;
+ Object.keys(held).forEach(release);setTarget(null);draw(0);
+}
+function listen(){
+ if(!song)return;
+ const spb=60/song.bpm;demoing=true;pos=0;setStrip();bubble(L().listen);LP.say(L().listen);
+ song.pn.forEach((n,i)=>{
+  demoT.push(setTimeout(()=>{voice(n.s,.85,0,n.b*spb*.92);showDown(n.s,true);fx(n.s,true);demoT.push(setTimeout(()=>showDown(n.s,false),Math.min(280,n.b*spb*850)));pos=i+1;setStrip()},900+n.t*spb*1000));
+ });
+ const last=song.pn[song.pn.length-1];
+ demoT.push(setTimeout(()=>{demoing=false;beginPlay()},900+(last.t+last.b)*spb*1000+700));
+}
+function beginPlay(){
+ pos=0;wrong=0;
+ if(mode==="rhythm")startRhythm();
+ else{drawStrip();bubble(song&&mode==="mash"?L().go:(song?wd("t_"+song.id):L().title));if(song&&mode==="mash")LP.say(L().go)}
+}
+function startSong(id,auto){
+ stopAll();const g=++gen;song=SONGS.find(s=>s.id===id);mode=curHow();pos=0;wrong=0;
+ refreshCtl();$("strip").innerHTML="";
+ const title=wd("t_"+id);bubble(title);
+ if(mode==="rhythm"){setTimeout(()=>{if(g===gen&&!R)startRhythm()},auto?400:1800)}
+ else{drawStrip();setTimeout(()=>{if(g===gen&&!demoing&&pos===0)listen()},auto?600:1400)}
+}
+function freePlay(){stopAll();gen++;song=null;mode="free";pos=0;$("strip").innerHTML="";$("big").hidden=true;bubble(L().title);refreshCtl()}
+
+/* ---- falling notes ---- */
+const cv=$("cv"),cx=cv.getContext("2d");let CW=0,CH=0;
+function fit(){const r=cv.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1);CW=r.width;CH=r.height;cv.width=Math.max(1,r.width*d);cv.height=Math.max(1,r.height*d);cx.setTransform(d,0,0,d,0,0);draw(R?ac.currentTime:0)}
+addEventListener("resize",fit);if(window.ResizeObserver)new ResizeObserver(fit).observe($("lanes"));
+const TEMPO=()=>[.7,.85,1][Math.min(2,LP.age||0)];
+function rr(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.arcTo(x+w,y,x+w,y+h,r);cx.arcTo(x+w,y+h,x,y+h,r);cx.arcTo(x,y+h,x,y,r);cx.arcTo(x,y,x+w,y,r);cx.closePath()}
+function draw(now){
+ cx.clearRect(0,0,CW,CH);if(!R)return;
+ const line=CH-8;
+ cx.fillStyle="#0a0f2a66";rr(0,0,CW,CH,14);cx.fill();
+ cx.strokeStyle="#ffffff14";cx.lineWidth=1;for(let i=1;i<11;i++){cx.beginPath();cx.moveTo(i*CW/11,0);cx.lineTo(i*CW/11,CH);cx.stroke()}
+ cx.fillStyle="#ffd84acc";cx.fillRect(0,line,CW,4);
+ const sp=(CH-8)/R.FT;
+ R.notes.forEach(n=>{
+  const ln=LANE[n.s];if(!ln)return;
+  const y0=line-(n.T-now)*sp,h=Math.max(30,n.d*sp),top=y0-h;if(top>CH||y0<-4)return;
+  const w=ln.w*CW,x=ln.cx*CW-w/2;
+  cx.globalAlpha=n.st===2?.28:(n.st===1?.35:1);
+  cx.fillStyle=n.st===1?"#ffd84a":colorOf(n.s);rr(x,top,w,h,Math.min(12,w/3));cx.fill();
+  cx.lineWidth=3;cx.strokeStyle="#fff";cx.stroke();
+  cx.fillStyle="#fff";cx.font="700 "+Math.max(14,Math.min(26,w*.55))+"px Fredoka,system-ui,sans-serif";cx.textAlign="center";cx.textBaseline="middle";
+  cx.shadowColor="#0008";cx.shadowBlur=3;cx.fillText(label(BYSEMI[n.s].c),x+w/2,y0-Math.min(h/2,24));cx.shadowBlur=0;
+  cx.globalAlpha=1;
+ });
+}
+function startRhythm(){
+ const a=audio();if(!a||!song)return;
+ const spb=60/(song.bpm*TEMPO()),FT=2.6,t0=a.currentTime+FT*.9;
+ R={spb,FT,t0,hits:0,win:[.38,.3,.24][Math.min(2,LP.age||0)],
+  notes:song.pn.map(n=>({s:n.s,T:t0+n.t*spb,d:Math.max(.14,n.b*spb*.9),st:0}))};
+ R.total=R.notes.length;const l=R.notes[R.notes.length-1];R.end=l.T+l.d+1.2;
+ $("strip").innerHTML="";$("big").hidden=true;bubble(wd("t_"+song.id));
+ fit();frame();
+}
+function frame(){
+ if(!R){draw(0);return}
+ const now=ac.currentTime;draw(now);
+ R.notes.forEach(n=>{if(n.st===0&&now>n.T+R.win){n.st=2;voice(n.s,.3,0,n.d);showDown(n.s,true);fx(n.s,true);setTimeout(()=>showDown(n.s,false),160)}});
+ if(now>R.end){const f=R.hits/R.total,stars=f>=.8?3:f>=.5?2:1;R=null;draw(0);finishSong(stars);return}
+ raf=requestAnimationFrame(frame);
+}
+function rhythmPress(s,id){
+ if(!R){playUser(s!=null?s:pent(id),id,1);return}
+ const now=ac.currentTime;let hit=null;
+ if(s!=null)for(const n of R.notes)if(n.st===0&&n.s===s&&Math.abs(now-n.T)<=R.win){hit=n;break}
+ if(hit){hit.st=1;R.hits++;playUser(s,id,1)}
+ else playUser(s!=null?s:pent(id),id,.5,true);
+}
+function mashAny(id){
+ if(mode==="mash"&&song&&!demoing)return mashPress(id);
+}
+
+/* ---- keyboard and touch ---- */
+const ctlBtn=t=>t&&t.closest&&t.closest(".ctl,#menu");
+addEventListener("keydown",e=>{
+ if(document.querySelector(".lp-start")||e.metaKey||e.ctrlKey||e.altKey||e.key==="Tab")return;
+ if(e.key==="Escape"&&!$("menu").hidden){closeMenu();return}
+ if(ctlBtn(e.target)&&(e.key==="Enter"||e.key===" "))return;
+ e.preventDefault();if(e.repeat)return;
+ learn(e);
+ const code=e.code||e.key,k=BYCODE[e.code];
+ if(k)keyDown(k.s,"k:"+code);
+ else if(e.code==="Space"&&(mode==="free"||!song)&&!locked)arpeggio();
+ else keyDown(null,"k:"+code);
+});
+addEventListener("keyup",e=>{release("k:"+(e.code||e.key))});
+const down={};
+$("piano").addEventListener("pointerdown",e=>{
+ const el=e.target.closest(".key");if(!el)return;e.preventDefault();
+ try{el.setPointerCapture(e.pointerId)}catch(x){}
+ down[e.pointerId]=el;keyDown(+el.dataset.s,"p:"+e.pointerId);
+});
+$("piano").addEventListener("pointermove",e=>{
+ const cur=down[e.pointerId];if(!cur)return;
+ const el=document.elementFromPoint(e.clientX,e.clientY),k=el&&el.closest&&el.closest(".key");
+ if(k&&k!==cur){release("p:"+e.pointerId);down[e.pointerId]=k;keyDown(+k.dataset.s,"p:"+e.pointerId)}
+});
+const up=e=>{if(down[e.pointerId]){release("p:"+e.pointerId);delete down[e.pointerId]}};
+$("piano").addEventListener("pointerup",up);$("piano").addEventListener("pointercancel",up);
+/* a tap on the stage plays the note in that lane, or the next song note when mashing */
+$("stage").addEventListener("pointerdown",e=>{
+ if(e.target.closest("button"))return;
+ const r=$("lanes").getBoundingClientRect(),fx_=(e.clientX-r.left)/r.width;
+ const wi=Math.max(0,Math.min(10,Math.floor(fx_*11))),k=KEYS.find(k=>k.w===wi);
+ if(k){keyDown(k.s,"p:"+e.pointerId);setTimeout(()=>release("p:"+e.pointerId),260)}
+});
+
+/* ---- controls and menus ---- */
+let menuFor=null;
+function closeMenu(){$("menu").hidden=true;menuFor=null}
+function openMenu(btn,items){
+ if(menuFor===btn){closeMenu();return}
+ const m=$("menu");m.innerHTML="";
+ items.forEach(it=>{
+  if(it.sep){const d=document.createElement("div");d.className="sep";d.textContent=it.sep;m.appendChild(d);return}
+  const b=document.createElement("button");b.type="button";b.setAttribute("role","menuitem");b.textContent=it.t;if(it.on)b.classList.add("on");
+  b.onclick=()=>{closeMenu();it.fn()};m.appendChild(b);
+ });
+ m.hidden=false;menuFor=btn;
+ const r=btn.getBoundingClientRect();m.style.left=Math.max(8,Math.min(innerWidth-m.offsetWidth-8,r.left))+"px";m.style.top=(r.bottom+6)+"px";
+}
+document.addEventListener("pointerdown",e=>{if(!e.target.closest("#menu")&&!e.target.closest(".ctl"))closeMenu()},true);
+function refreshCtl(){
+ const u=U();
+ $("bSong").textContent="🎵 "+(song?wd("t_"+song.id):u.free)+" ▾";
+ $("bHow").hidden=!song;$("bHow").textContent=u[curHow()]+" ▾";
+ $("bListen").hidden=!song||mode==="rhythm";$("bListen").textContent="▶ "+u.listen;
+ $("bKbd").textContent="⌨ "+(layout==="auto"?u.auto+" ("+LAYNAME[guessLayout()]+")":LAYNAME[layout])+" ▾";
+ $("bNames").textContent="♪ "+u.names+": "+(namesMode==="off"?u.off:namesMode==="sol"?u.sol:u.abc)+" ▾";
+}
+$("bSong").onclick=()=>{const u=U();openMenu($("bSong"),[{t:"🎹 "+u.free,on:!song,fn:freePlay},{sep:u.songs}].concat(SONGS.map(s=>({t:wd("t_"+s.id),on:song&&song.id===s.id,fn:()=>startSong(s.id)}))))};
+$("bHow").onclick=()=>{const u=U();openMenu($("bHow"),["mash","follow","rhythm"].map(h=>({t:u[h],on:curHow()===h,fn:()=>{how=h;if(song)startSong(song.id,true);else refreshCtl()}})))};
+$("bListen").onclick=()=>{if(song){stopAll();pos=0;listen()}};
+$("bKbd").onclick=()=>{const u=U();openMenu($("bKbd"),[{t:u.auto,on:layout==="auto",fn:()=>{layout="auto";store.set("layout","auto");relabel()}}].concat(Object.keys(LAYNAME).map(n=>({t:LAYNAME[n],on:layout===n,fn:()=>{layout=n;store.set("layout",n);relabel()}}))))};
+$("bNames").onclick=()=>{const u=U();openMenu($("bNames"),[["off",u.off],["sol",u.sol],["abc",u.abc]].map(p=>({t:p[1],on:namesMode===p[0],fn:()=>{namesMode=p[0];store.set("names",p[0]);renameKeys();relabel()}})))};
+
+LP.init({langs:ALLLANGS,
+ onLang:()=>{document.title=L().title;renameKeys();relabel();if(!song)bubble(L().title)},
+ onAge:()=>{if(song&&!how)startSong(song.id,true);else refreshCtl()}});
+document.title=L().title;
+LP.start(L().title,()=>{
+ buildPiano();fit();refreshCtl();bubble(L().title);
+ setTimeout(()=>{if(!song&&mode==="free"&&!Object.keys(held).length)bubble(L().go)},1600);
+});
+</script>
+</body>
+</html>
