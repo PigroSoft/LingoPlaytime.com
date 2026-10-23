@@ -23,7 +23,8 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 .fb.blue{--felt:var(--felt-blue);color:#fff;text-shadow:0 1px 0 #06415e}
 .fb:active{transform:translateY(2px)}
 .fb:focus-visible{outline:4px solid #ffd84a;outline-offset:3px}
-.ctl{display:flex;flex-wrap:wrap;gap:8px 10px;justify-content:center;padding:6px 12px max(12px,env(safe-area-inset-bottom,0px));min-height:40px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px 10px;justify-content:center;padding:6px 12px max(12px,env(safe-area-inset-bottom,0px));min-height:40px;position:absolute;left:0;right:0;bottom:0}
+.under{flex:.85;min-height:64px}
 .ctl .fb[hidden]{display:none}
 #menu{position:fixed;z-index:30;display:flex;flex-direction:column;gap:4px;padding:8px;background:#fff4dc;border:2px dashed #b8401f99;border-radius:20px;box-shadow:0 10px 30px #0008;min-width:210px;max-width:92vw;max-height:62vh;overflow:auto}
 #menu[hidden]{display:none}
@@ -35,7 +36,7 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 #strip .d{width:12px;height:12px;border-radius:50%;background:var(--c);opacity:.4;transition:transform .12s,opacity .12s}
 #strip .d.ok{opacity:1}
 #strip .d.now{opacity:1;transform:scale(1.7);box-shadow:0 0 0 2px #fff}
-.stage{flex:1;min-height:70px;display:flex;justify-content:center;position:relative}
+.stage{flex:1.15;min-height:70px;display:flex;justify-content:center;position:relative}
 .lanes{position:relative;width:min(980px,calc(100% - 24px));height:100%}
 #cv{position:absolute;inset:0;width:100%;height:100%}
 #big{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);min-width:min(34vh,150px);height:min(34vh,150px);border-radius:50%;display:grid;place-items:center;background:var(--c,#fff);color:#fff;font:700 min(20vh,96px)/1 var(--display);text-shadow:0 4px 0 #0005;box-shadow:0 8px 0 #0004,inset 0 0 0 8px #fff5;pointer-events:none;padding:0 18px;box-sizing:border-box}
@@ -46,7 +47,7 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 @media (min-width:1500px) and (min-height:560px){.pal{display:block}}
 .pal.hop{animation:hop .26s steps(1)}
 @keyframes hop{0%{transform:translateY(-16px) rotate(-3deg)}50%{transform:translateY(-6px) rotate(2deg)}100%{transform:none}}
-.piano{position:relative;width:min(980px,calc(100% - 24px));margin:14px auto 8px;height:clamp(132px,29vh,270px);touch-action:none}
+.piano{position:relative;width:min(980px,calc(100% - 24px));margin:14px auto 0;height:clamp(132px,29vh,270px);touch-action:none}
 .piano::before{content:"";position:absolute;left:-8px;right:-8px;top:-16px;height:20px;border-radius:12px 12px 0 0;background:#9c2b22;box-shadow:inset 0 3px 0 #c8483b,0 -2px 0 #0004;background-image:repeating-linear-gradient(90deg,#0000 0 14px,#ffffff22 14px 18px)}
 .key{position:absolute;top:0;border:0;padding:0;margin:0;font-family:var(--display);cursor:pointer;touch-action:none;transition:transform .06s,filter .06s}
 .key.w{width:calc(100% / 11 - 3px);height:100%;margin-left:1.5px;border-radius:0 0 18px 18px;background:linear-gradient(#fff0,#fff0 70%,#b9985a55) ,url(../felt/key-cream.webp) center/200px;box-shadow:inset 0 -10px 12px #b9985a66,0 6px 0 #0005;color:#3c2f20;outline:2px dashed #b8401f55;outline-offset:-7px}
@@ -76,6 +77,7 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
     <div class="lanes" id="lanes"><canvas id="cv"></canvas><div id="big" hidden></div></div>
   </div>
   <div class="piano" id="piano" role="group" aria-label="Piano"></div>
+  <div class="under" aria-hidden="true"></div>
   <div class="ctl" id="ctl">
     <button type="button" class="fb blue" id="bSong" aria-haspopup="true"></button>
     <button type="button" class="fb" id="bHow" aria-haspopup="true" hidden></button>
