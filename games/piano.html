@@ -25,7 +25,8 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 .fb:focus-visible{outline:4px solid #ffd84a;outline-offset:3px}
 .ctl{display:flex;flex-wrap:wrap;gap:8px 10px;justify-content:center;padding:6px 12px max(12px,env(safe-area-inset-bottom,0px));min-height:40px;position:absolute;left:0;right:0;bottom:0}
 .under{flex:.85;min-height:64px}
-.ctl .fb[hidden]{display:none}
+.ctl .fb[hidden],#bListen[hidden]{display:none}
+#bListen{--fh:60px;position:absolute;top:10px;right:6px;z-index:5;padding:0 30px;font-size:24px}
 #menu{position:fixed;z-index:30;display:flex;flex-direction:column;gap:4px;padding:8px;background:#fff4dc;border:2px dashed #b8401f99;border-radius:20px;box-shadow:0 10px 30px #0008;min-width:210px;max-width:92vw;max-height:62vh;overflow:auto}
 #menu[hidden]{display:none}
 #menu button{font:700 17px/1.1 var(--display);color:#2b3a42;background:#fffdf6;border:0;border-radius:16px;padding:10px 14px;text-align:left;cursor:pointer;display:flex;gap:10px;align-items:center}
@@ -64,7 +65,7 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 .fl{position:fixed;z-index:25;pointer-events:none;font:700 34px var(--display);color:var(--c);text-shadow:0 2px 0 #fff,0 0 8px #fff8;animation:flt 1s steps(8) forwards}
 @keyframes flt{to{transform:translate(var(--dx),-130px) rotate(var(--r));opacity:0}}
 @media (prefers-reduced-motion:reduce){.fl,.pal.hop,.key.tgt{animation:none}.key{transition:none}}
-@media (max-width:560px){.fb{--fh:34px;padding:0 14px;font-size:14px}#big small{font-size:18px}}
+@media (max-width:560px){#bListen{--fh:44px;top:0;right:0;padding:0 20px;font-size:18px}.fb{--fh:34px;padding:0 14px;font-size:14px}#big small{font-size:18px}}
 </style>
 </head>
 <body>
@@ -73,7 +74,7 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
   <div class="stage" id="stage">
     <img class="pal l" id="pal" src="../felt/raccoon-brown.webp" alt="" draggable="false">
-    <div class="lanes" id="lanes"><canvas id="cv"></canvas><div id="big" hidden></div></div>
+    <div class="lanes" id="lanes"><button type="button" class="fb red" id="bListen" hidden></button><canvas id="cv"></canvas><div id="big" hidden></div></div>
   </div>
   <div id="strip" aria-hidden="true"></div>
   <div class="piano" id="piano" role="group" aria-label="Piano"></div>
@@ -81,7 +82,6 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
   <div class="ctl" id="ctl">
     <button type="button" class="fb blue" id="bSong" aria-haspopup="true"></button>
     <button type="button" class="fb" id="bHow" aria-haspopup="true" hidden></button>
-    <button type="button" class="fb red" id="bListen" hidden></button>
     <button type="button" class="fb" id="bKbd" aria-haspopup="true"></button>
     <button type="button" class="fb" id="bNames" aria-haspopup="true"></button>
   </div>
@@ -450,7 +450,7 @@ function mashAny(id){
 }
 
 /* ---- keyboard and touch ---- */
-const ctlBtn=t=>t&&t.closest&&t.closest(".ctl,#menu");
+const ctlBtn=t=>t&&t.closest&&t.closest(".ctl,#menu,#bListen");
 addEventListener("keydown",e=>{
  if(document.querySelector(".lp-start")||e.metaKey||e.ctrlKey||e.altKey||e.key==="Tab")return;
  if(e.key==="Escape"&&!$("menu").hidden){closeMenu();return}
