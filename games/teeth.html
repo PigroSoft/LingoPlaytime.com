@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sparkly teeth</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{color-scheme:light;--ink:#18264A;--display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif;
+ --felt-red:url(../felt/btn-red.webp);--felt-blue:url(../felt/btn-blue.webp);--felt-beige:url(../felt/btn-beige.webp)}
+html,body{height:100%;margin:0}
+body{background:#8fb8c4;color:#fff;font-family:var(--body);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.app{position:relative;height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:max(10px,env(safe-area-inset-top,0px)) 0 0 0;background:#8fb8c4 url(../felt/bg-bathroom.webp) center 30%/cover no-repeat}
+.app::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#0000 40%,#0a2a4040);pointer-events:none}
+.app>*{position:relative}
+.top{display:flex;flex-direction:column;align-items:center;gap:8px;min-height:56px;padding:0 16px}
+#bubble{font-size:clamp(22px,4vw,38px);min-height:1.2em;transition:transform .15s;text-align:center;max-width:94vw}
+#bubble.bump{transform:scale(1.08)}
+#word{font:700 clamp(34px,7vw,72px)/1 var(--display);color:#fff;text-shadow:0 4px 0 #1d6b8c,0 0 18px #fff9;min-height:1em;opacity:0;transition:opacity .2s,transform .2s;transform:scale(.9);pointer-events:none;text-align:center;max-width:94vw}
+#word.on{opacity:1;transform:scale(1)}
+#clock{display:flex;align-items:center;gap:10px;min-height:30px;font:700 22px var(--display);color:#fff;text-shadow:0 2px 0 #1d6b8c}
+#clock[hidden]{display:none}
+#bar{width:min(320px,60vw);height:14px;border-radius:9px;background:#ffffff66;overflow:hidden;box-shadow:inset 0 2px 3px #0003}
+#bar i{display:block;height:100%;width:0;background:#f6c033;border-radius:9px;transition:width .3s linear}
+.stage{flex:1;min-height:120px;position:relative}
+#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.fb{--felt:var(--felt-beige);--fh:44px;position:relative;isolation:isolate;box-sizing:border-box;height:var(--fh);border:0;background:none;box-shadow:none;border-radius:0;color:#4a3213;text-shadow:0 1px 0 #fff8;padding:0 26px;font:800 20px/1 var(--display);display:inline-grid;align-items:center;cursor:pointer;white-space:nowrap}
+.fb::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border:solid transparent;border-width:calc(var(--fh)*.5);border-image:var(--felt) 157 fill/calc(var(--fh)*.58)/calc(var(--fh)*.0926) round;filter:drop-shadow(0 3px 2px #1b0d0566)}
+.fb.red{--felt:var(--felt-red);color:#fff8ec;text-shadow:0 1px 0 #6a1a10}
+.fb:active{transform:translateY(2px)}
+.fb:focus-visible{outline:4px solid #ffd84a;outline-offset:3px}
+.ctl{display:flex;justify-content:center;padding:4px 12px max(14px,env(safe-area-inset-bottom,0px))}
+@media (max-width:560px){.fb{--fh:40px;padding:0 20px;font-size:17px}}
+</style>
+</head>
+<body>
+<script>window.LP_GAME="teeth"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
+<div class="app" id="app">
+  <div class="top">
+    <div id="bubble" class="k-bubble" aria-live="polite"></div>
+    <div id="word" aria-hidden="true"></div>
+    <div id="clock" hidden><span id="time">2:00</span><div id="bar"><i></i></div></div>
+  </div>
+  <div class="stage" id="stage"><canvas id="cv" aria-label="A big smile with germs on the teeth"></canvas></div>
+  <div class="ctl"><button type="button" class="fb red" id="bTimer"></button></div>
+</div>
+<script>
+/* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
+const DATA=(()=>{
+ const LG=["en","nl","pl","sv","el","zh","ar","ja","ko","ru","tr","hi","de","es","fr","it","pt"];
+ const t=(id,s)=>{const a=s.split("|"),w={id};LG.forEach((l,i)=>w[l]=a[i]);return w};
+ const words=[
+  t("tooth","Tooth|Tand|Ząb|Tand|Δόντι|牙齿|سن|歯|이|Зуб|Diş|दाँत|Zahn|Diente|Dent|Dente|Dente"),
+  t("brush","Toothbrush|Tandenborstel|Szczoteczka|Tandborste|Οδοντόβουρτσα|牙刷|فرشاة أسنان|はブラシ|칫솔|Зубная щётка|Diş fırçası|टूथब्रश|Zahnbürste|Cepillo de dientes|Brosse à dents|Spazzolino|Escova de dentes"),
+  t("paste","Toothpaste|Tandpasta|Pasta do zębów|Tandkräm|Οδοντόπαστα|牙膏|معجون أسنان|はみがき粉|치약|Зубная паста|Diş macunu|टूथपेस्ट|Zahnpasta|Pasta de dientes|Dentifrice|Dentifricio|Pasta de dentes"),
+  t("smile","Smile|Lach|Uśmiech|Leende|Χαμόγελο|微笑|ابتسامة|えがお|미소|Улыбка|Gülümseme|मुस्कान|Lächeln|Sonrisa|Sourire|Sorriso|Sorriso"),
+  t("clean","Clean|Schoon|Czysto|Rent|Καθαρό|干净|نظيف|きれい|깨끗해|Чисто|Temiz|साफ़|Sauber|Limpio|Propre|Pulito|Limpo"),
+  t("bubbles","Bubbles|Bellen|Bąbelki|Bubblor|Φούσκες|泡泡|فقاعات|あわあわ|거품|Пузырьки|Köpükler|झाग|Blasen|Burbujas|Bulles|Bolle|Bolhas"),
+  t("z0","Top left|Linksboven|Na górze po lewej|Uppe till vänster|Πάνω αριστερά|左上|أعلى اليسار|左うえ|왼쪽 위|Вверху слева|Sol üst|ऊपर बाएँ|Oben links|Arriba a la izquierda|En haut à gauche|In alto a sinistra|Em cima à esquerda"),
+  t("z1","Top right|Rechtsboven|Na górze po prawej|Uppe till höger|Πάνω δεξιά|右上|أعلى اليمين|右うえ|오른쪽 위|Вверху справа|Sağ üst|ऊपर दाएँ|Oben rechts|Arriba a la derecha|En haut à droite|In alto a destra|Em cima à direita"),
+  t("z2","Bottom right|Rechtsonder|Na dole po prawej|Nere till höger|Κάτω δεξιά|右下|أسفل اليمين|右した|오른쪽 아래|Внизу справа|Sağ alt|नीचे दाएँ|Unten rechts|Abajo a la derecha|En bas à droite|In basso a destra|Em baixo à direita"),
+  t("z3","Bottom left|Linksonder|Na dole po lewej|Nere till vänster|Κάτω αριστερά|左下|أسفل اليسار|左した|왼쪽 아래|Внизу слева|Sol alt|नीचे बाएँ|Unten links|Abajo a la izquierda|En bas à gauche|In basso a sinistra|Em baixo à esquerda")
+ ];
+ return {words,lines:{
+  en:{title:"Sparkly teeth",go:"Scrub the germs away!",done:"Sparkly clean!"},
+  nl:{title:"Blinkende tanden",go:"Poets de bacteriën weg!",done:"Blinkend schoon!"},
+  pl:{title:"Lśniące zęby",go:"Wyszoruj bakterie!",done:"Lśniąco czyste!"},
+  sv:{title:"Blanka tänder",go:"Borsta bort bakterierna!",done:"Blänkande rent!"},
+  el:{title:"Λαμπερά δόντια",go:"Διώξε τα μικρόβια!",done:"Γυαλιστερά καθαρά!"},
+  zh:{title:"亮晶晶的牙齿",go:"把细菌刷掉！",done:"亮晶晶，真干净！"},
+  ar:{title:"أسنان لامعة",go:"نظّف الجراثيم!",done:"نظيفة ولامعة!"},
+  ja:{title:"ぴかぴかの歯",go:"ばいきんをやっつけよう！",done:"ぴかぴか！"},
+  ko:{title:"반짝반짝 치아",go:"세균을 쓱쓱 닦아요!",done:"반짝반짝 깨끗해!"},
+  ru:{title:"Сверкающие зубки",go:"Прогони микробов!",done:"Блестяще чисто!"},
+  tr:{title:"Pırıl pırıl dişler",go:"Mikropları temizle!",done:"Pırıl pırıl!"},
+  hi:{title:"चमकते दाँत",go:"कीटाणुओं को भगाओ!",done:"चमचमाते साफ़!"},
+  de:{title:"Blitzblanke Zähne",go:"Schrubb die Bakterien weg!",done:"Blitzblank sauber!"},
+  es:{title:"Dientes brillantes",go:"¡Quita los bichitos!",done:"¡Limpios y brillantes!"},
+  fr:{title:"Dents qui brillent",go:"Chasse les microbes !",done:"Propres et brillantes !"},
+  it:{title:"Denti splendenti",go:"Via i germi!",done:"Pulitissimi e brillanti!"},
+  pt:{title:"Dentes a brilhar",go:"Esfrega os germes!",done:"Limpinhos e brilhantes!"}
+ }};
+})();
+/* Parent-facing button text, in the main language. */
+const UI={
+ en:{start:"2-minute timer",stop:"Stop"},de:{start:"2-Minuten-Timer",stop:"Stopp"},es:{start:"Temporizador de 2 minutos",stop:"Parar"},
+ fr:{start:"Minuteur de 2 minutes",stop:"Arrêter"},it:{start:"Timer di 2 minuti",stop:"Ferma"},pt:{start:"Temporizador de 2 minutos",stop:"Parar"}
+};
+const U=()=>UI[LP.home]||UI.en;
+const $=id=>document.getElementById(id);
+const W=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
+const L=()=>LP.t(DATA.lines);
+const wd=id=>{const w=W[id];return w[LP.lang]||w.en};
+
+/* ---- the mouth ---- */
+const cv=$("cv"),cx=cv.getContext("2d");let CW=0,CH=0,M=null;
+const img={};["cream","gum"].forEach(k=>{const i=new Image();i.onload=()=>{img[k]=i;pats()};i.src="../felt/key-"+k+".webp"});
+const pat={};function pats(){["cream","gum"].forEach(k=>{if(img[k]){const p=cx.createPattern(img[k],"repeat");try{p.setTransform(new DOMMatrix().scale(.5))}catch(e){}pat[k]=p}})}
+const DIRT=["#b5892f","#7a5a2e","#7fa23a","#a0522d","#c9a227"];
+const teeth=[];
+for(let i=0;i<16;i++){
+ const bl=[];let s=(i+1)*9301+49297;const r=()=>(s=(s*9301+49297)%233280)/233280;
+ for(let k=0;k<5;k++)bl.push({x:(r()-.5)*.55,y:.2+r()*.65,r:.16+r()*.14,c:DIRT[Math.floor(r()*5)]});
+ teeth.push({i,dirt:1,glow:0,bl,regen:0});
+}
+const zoneOf=i=>i<8?(i<4?0:1):(i<12?3:2);   /* top left, top right, bottom left, bottom right; order of play: 0 1 2 3 = TL, TR, BR, BL */
+const ZORDER=[0,1,2,3];
+const zoneTeeth=z=>teeth.filter(t=>zoneOf(t.i)===(z===2?2:z===3?3:z));
+function layout(){
+ const r=cv.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1);CW=r.width;CH=r.height;
+ cv.width=Math.max(1,CW*d);cv.height=Math.max(1,CH*d);cx.setTransform(d,0,0,d,0,0);pats();
+ const rx=Math.min(CW*.47,(CH*.47)/.62),ry=rx*.62,mx=CW/2,my=CH/2;
+ const tw=rx*2*.78/8,span=rx*2*.78;
+ M={rx,ry,mx,my,tw};
+ teeth.forEach(t=>{
+  const top=t.i<8,k=top?t.i:t.i-8,u=((k+.5)/8-.5)*2*.78,x=mx+u*rx,edge=ry*.62*Math.sqrt(1-u*u),th=ry*.56*(1.08-.35*Math.abs(u));
+  t.x=x;t.w=tw*.92;t.h=th;t.top=top;t.base=top?my-edge:my+edge;t.y=top?t.base-8:t.base-th;t.hh=th+8;
+ });
+}
+function rr(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.arcTo(x+w,y,x+w,y+h,r);cx.arcTo(x+w,y+h,x,y+h,r);cx.arcTo(x,y+h,x,y,r);cx.arcTo(x,y,x+w,y,r);cx.closePath()}
+function toothPath(t){
+ const x=t.x-t.w/2,y=t.y,w=t.w,h=t.hh,c=w*.38;cx.beginPath();
+ if(t.top){cx.moveTo(x,y);cx.lineTo(x+w,y);cx.lineTo(x+w,y+h-c);cx.quadraticCurveTo(x+w,y+h,x+w-c,y+h);cx.lineTo(x+c,y+h);cx.quadraticCurveTo(x,y+h,x,y+h-c)}
+ else{cx.moveTo(x,y+h);cx.lineTo(x+w,y+h);cx.lineTo(x+w,y+c);cx.quadraticCurveTo(x+w,y,x+w-c,y);cx.lineTo(x+c,y);cx.quadraticCurveTo(x,y,x,y+c)}
+ cx.closePath();
+}
+let now=0,pulse=0;
+function drawMouth(){
+ const {rx,ry,mx,my}=M;
+ /* lips */
+ cx.save();cx.beginPath();cx.ellipse(mx,my,rx*1.07,ry*1.13,0,0,7);cx.fillStyle=pat.gum||"#d9565f";cx.fill();cx.lineWidth=5;cx.strokeStyle="#8d2a33";cx.setLineDash([14,10]);cx.stroke();cx.setLineDash([]);cx.restore();
+ /* inside */
+ cx.save();cx.beginPath();cx.ellipse(mx,my,rx,ry,0,0,7);cx.fillStyle="#4a1219";cx.fill();cx.clip();
+ /* tongue */
+ cx.beginPath();cx.ellipse(mx,my+ry*.42,rx*.34,ry*.3,0,0,7);cx.fillStyle="#d46a74";cx.fill();
+ /* gums */
+ cx.fillStyle=pat.gum||"#d9565f";
+ [-1,1].forEach(sg=>{cx.beginPath();cx.moveTo(mx-rx-4,my+sg*(ry+4));for(let a=-1;a<=1.0001;a+=.05){const e=ry*.62*Math.sqrt(Math.max(0,1-a*a));cx.lineTo(mx+a*rx,my+sg*e)}cx.lineTo(mx+rx+4,my+sg*(ry+4));cx.closePath();cx.fill();cx.lineWidth=3;cx.strokeStyle="#8d2a33";cx.stroke()});
+ cx.restore();
+}
+function drawTooth(t){
+ cx.save();toothPath(t);cx.fillStyle=pat.cream||"#fbf3df";cx.fill();
+ cx.clip();
+ /* soft shade at the edges */
+ const g=cx.createLinearGradient(t.x-t.w/2,0,t.x+t.w/2,0);g.addColorStop(0,"#b9985a55");g.addColorStop(.25,"#fff0");g.addColorStop(.75,"#fff0");g.addColorStop(1,"#b9985a55");cx.fillStyle=g;cx.fillRect(t.x-t.w,t.y-2,t.w*2,t.hh+4);
+ /* germs */
+ const n=Math.ceil(t.dirt*5-.001);
+ for(let k=0;k<n;k++){const b=t.bl[k],a=Math.min(1,t.dirt*5-k),bx=t.x+b.x*t.w,by=t.y+(t.top?b.y:1-b.y)*t.hh*.9+ (t.top?0:t.hh*.05),br=b.r*t.w*(.6+.4*a);
+  cx.globalAlpha=Math.min(1,a*1.4);cx.fillStyle=b.c;cx.beginPath();cx.arc(bx,by,br,0,7);cx.fill();
+  if(k<2){cx.fillStyle="#fff";cx.beginPath();cx.arc(bx-br*.38,by-br*.15,br*.3,0,7);cx.arc(bx+br*.38,by-br*.15,br*.3,0,7);cx.fill();cx.fillStyle="#222";cx.beginPath();cx.arc(bx-br*.34,by-br*.1,br*.14,0,7);cx.arc(bx+br*.42,by-br*.1,br*.14,0,7);cx.fill()}}
+ cx.globalAlpha=1;
+ if(t.glow>0){cx.fillStyle="rgba(255,255,255,"+(t.glow*.8)+")";cx.fillRect(t.x-t.w,t.y-2,t.w*2,t.hh+4)}
+ cx.restore();
+ cx.save();toothPath(t);cx.lineWidth=2.5;cx.strokeStyle="#c9b48a";cx.stroke();cx.restore();
+ if(t.glow>0){t.glow=Math.max(0,t.glow-.03);const p=1-t.glow;[[-1,-1],[1,-1],[0,1],[1,.6]].forEach((o,j)=>{star(t.x+o[0]*t.w*(.3+p*.9),t.y+t.hh/2+o[1]*t.hh*(.2+p*.5),(8+j*2)*t.glow,p*3+j)})}
+}
+function star(x,y,r,a){if(r<.5)return;cx.save();cx.translate(x,y);cx.rotate(a);cx.fillStyle="#ffd84a";cx.beginPath();for(let i=0;i<10;i++){const rr_=i%2?r*.45:r,th=i*Math.PI/5-Math.PI/2;cx.lineTo(Math.cos(th)*rr_,Math.sin(th)*rr_)}cx.closePath();cx.fill();cx.restore()}
+
+/* zone guide */
+function drawZone(z){
+ const ts=teeth.filter(t=>zoneOf(t.i)===z);if(!ts.length)return;
+ const x0=Math.min(...ts.map(t=>t.x-t.w/2))-8,x1=Math.max(...ts.map(t=>t.x+t.w/2))+8,y0=Math.min(...ts.map(t=>t.y))-8,y1=Math.max(...ts.map(t=>t.y+t.hh))+8;
+ cx.save();cx.lineWidth=6;cx.strokeStyle="rgba(255,216,74,"+(.65+.35*Math.sin(pulse))+")";cx.shadowColor="#ffd84a";cx.shadowBlur=18;rr(x0,y0,x1-x0,y1-y0,18);cx.stroke();cx.restore();
+}
+
+/* foam */
+const foam=[];
+function addFoam(x,y){if(foam.length>70)foam.shift();foam.push({x:x+(Math.random()-.5)*30,y:y+(Math.random()-.5)*20,r:5+Math.random()*9,vy:-.4-Math.random()*.6,life:1})}
+function drawFoam(){foam.forEach(f=>{f.y+=f.vy;f.life-=.014;cx.globalAlpha=Math.max(0,f.life)*.85;cx.fillStyle="#e9f7ff";cx.strokeStyle="#9fd3ea";cx.lineWidth=2;cx.beginPath();cx.arc(f.x,f.y,f.r,0,7);cx.fill();cx.stroke()});cx.globalAlpha=1;for(let i=foam.length-1;i>=0;i--)if(foam[i].life<=0)foam.splice(i,1)}
+
+/* the toothbrush follows the pointer */
+const br={x:0,y:0,tx:0,ty:0,wig:0,idle:true,keyT:0};
+function drawBrush(){
+ if(!M)return;const s=Math.min(CW,CH)*.075;
+ br.x+=(br.tx-br.x)*.35;br.y+=(br.ty-br.y)*.35;br.wig*=.9;
+ cx.save();cx.translate(br.x,br.y);cx.rotate(-.55+Math.sin(now*.05)*br.wig*.35);
+ cx.shadowColor="#0005";cx.shadowBlur=8;cx.shadowOffsetY=4;
+ cx.fillStyle="#3b8bd4";rr(s*.3,-s*.28,s*3.6,s*.56,s*.28);cx.fill();
+ cx.fillStyle="#2a6fb0";rr(-s*.9,-s*.5,s*1.7,s*.3,s*.12);cx.fill();
+ cx.shadowColor="transparent";
+ cx.fillStyle="#fdfdf8";rr(-s*.95,-s*.5,s*1.8,s*.16,s*.06);cx.fill();
+ cx.strokeStyle="#cfe3ee";cx.lineWidth=2;for(let k=0;k<7;k++){const bx=-s*.85+k*s*.26;cx.beginPath();cx.moveTo(bx,-s*.5);cx.lineTo(bx,-s*.34);cx.stroke()}
+ cx.fillStyle="#6dc7ee";rr(s*1.4,-s*.2,s*.9,s*.4,s*.2);cx.fill();
+ cx.restore();
+}
+
+/* ---- game state ---- */
+let timer=null,round=0,locked=false,lastScrub=0,cleaned=0,wordTimer=0,hasPointer=false;
+const guided=()=>(LP.age||0)>=1||!!timer;
+function curZone(){
+ if(timer)return Math.min(3,Math.floor((performance.now()-timer.t0)/30000));
+ if(!guided())return -1;
+ for(const z of ZORDER)if(teeth.some(t=>zoneOf(t.i)===z&&t.dirt>0))return z;return -1;
+}
+let lastZone=-2;
+function caption(){
+ const z=curZone();bubble(z>=0?wd("z"+z):L().go);
+ if(z!==lastZone&&z>=0){lastZone=z;if(!locked&&(timer||cleaned>0))LP.say(wd("z"+z))}
+ if(z<0)lastZone=-2;
+}
+function bubble(t){const b=$("bubble");if(b.textContent===t)return;b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
+function showWord(t){const w=$("word");w.textContent=t;w.classList.add("on");clearTimeout(wordTimer);wordTimer=setTimeout(()=>w.classList.remove("on"),1300)}
+const WORDS=["tooth","clean","smile","bubbles","brush","paste"];
+let nClean=0;
+function toothClean(t){
+ t.glow=1;nClean++;cleaned++;
+ const pent=[784,880,988,1175,1319,1568];LP.tone(pent[nClean%6],.45,"triangle",.14);LP.tone(pent[nClean%6]*2,.3,"sine",.05,.05);
+ const r=cv.getBoundingClientRect();LP.burst(r.left+t.x,r.top+t.y+t.hh/2,7);
+ if(!(window.LP_busy&&window.LP_busy())){const id=LP.next("w",WORDS);LP.say(wd(id));showWord(wd(id))}
+ if(timer)t.regen=performance.now()+1400;
+ const z=zoneOf(t.i);
+ if(!timer&&teeth.filter(x=>zoneOf(x.i)===z).every(x=>x.dirt<=0))LP.sfx.chime();
+ if(!timer&&teeth.every(x=>x.dirt<=0))allClean();
+ caption();
+}
+function allClean(){
+ locked=true;LP.celebrate();bubble(L().done);LP.say(L().done);showWord(wd("smile"));
+ setTimeout(()=>{locked=false;reset()},5200);
+}
+function reset(){teeth.forEach(t=>{t.dirt=1;t.glow=0});round++;lastZone=-2;cleaned=0;caption()}
+function scrub(t,p){
+ if(locked||t.dirt<=0)return;
+ if(timer&&performance.now()<t.regen)return;
+ t.dirt=Math.max(0,t.dirt-p);if(t.dirt===0)toothClean(t);
+}
+function hit(x,y){return teeth.filter(t=>x>t.x-t.w/2-10&&x<t.x+t.w/2+10&&y>t.y-6&&y<t.y+t.hh+6)}
+function sound(x){
+ const n=performance.now();if(n-lastScrub<75)return;lastScrub=n;
+ LP.noise(.09,.07,"bandpass",2600+Math.random()*1800,1.4);
+}
+let px=0,py=0;
+cv.addEventListener("pointermove",e=>{
+ const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+ const d=hasPointer?Math.hypot(x-px,y-py):0;px=x;py=y;hasPointer=true;
+ br.tx=x;br.ty=y;br.wig=Math.min(2,br.wig+d/40);
+ if(d<1.5)return;
+ const hs=hit(x,y),p=Math.min(.22,d/220);
+ if(hs.length){sound();addFoam(x,y);hs.forEach(t=>scrub(t,p))}
+});
+cv.addEventListener("pointerdown",e=>{
+ const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;px=x;py=y;hasPointer=true;br.tx=x;br.ty=y;br.wig=1.5;
+ try{cv.setPointerCapture(e.pointerId)}catch(_){}
+ const hs=hit(x,y);if(hs.length){sound();addFoam(x,y);hs.forEach(t=>scrub(t,.3))}
+});
+cv.addEventListener("pointerleave",()=>{hasPointer=false});
+/* any key brushes a tooth in the current zone */
+addEventListener("keydown",e=>{
+ if(document.querySelector(".lp-start")||e.metaKey||e.ctrlKey||e.altKey||e.key==="Tab")return;
+ if(e.target.closest&&e.target.closest("button")&&(e.key==="Enter"||e.key===" "))return;
+ e.preventDefault();if(e.repeat||locked||!M)return;
+ const z=curZone();let c=teeth.filter(t=>t.dirt>0&&(z<0||zoneOf(t.i)===z)&&!(timer&&performance.now()<t.regen));
+ if(!c.length)c=teeth.filter(t=>t.dirt>0);
+ if(!c.length)return;
+ const t=c[Math.floor(Math.random()*c.length)],cy_=t.y+t.hh/2;
+ br.tx=t.x;br.ty=cy_;br.wig=2;sound();addFoam(t.x,cy_);scrub(t,.55);
+});
+
+/* ---- the 2-minute timer ---- */
+const fmt=s=>Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0");
+function startTimer(){
+ reset();timer={t0:performance.now(),z:-1};$("clock").hidden=false;lastZone=-2;refresh();caption();
+}
+function stopTimer(){timer=null;$("clock").hidden=true;reset();refresh()}
+function tick(){
+ if(timer){
+  const el=(performance.now()-timer.t0)/1000;
+  if(el>=120){const wasTimer=timer;timer=null;$("clock").hidden=true;refresh();teeth.forEach(t=>t.dirt=0);locked=true;LP.celebrate();bubble(L().done);LP.say(L().done);showWord(wd("smile"));setTimeout(()=>{locked=false;reset()},5500)}
+  else{
+   $("time").textContent=fmt(120-el);$("bar").firstElementChild.style.width=(el/120*100)+"%";
+   const z=Math.min(3,Math.floor(el/30));if(z!==timer.z){if(timer.z>=0)LP.sfx.chime();timer.z=z;caption()}
+   teeth.forEach(t=>{if(t.dirt<=0&&performance.now()>t.regen&&zoneOf(t.i)===z){t.dirt=.6}});
+  }
+ }
+}
+function refresh(){$("bTimer").textContent=timer?"■ "+U().stop:"⏱ "+U().start}
+$("bTimer").onclick=()=>{timer?stopTimer():startTimer()};
+
+function frame(ts){
+ now=ts;pulse=ts*.006;
+ if(M){
+  cx.clearRect(0,0,CW,CH);drawMouth();teeth.forEach(drawTooth);
+  const z=curZone();if(z>=0&&!locked)drawZone(z);
+  drawFoam();
+  if(!hasPointer&&br.x===0&&br.y===0){br.x=br.tx=M.mx+M.rx*.45;br.y=br.ty=M.my+M.ry*1.2}
+  drawBrush();
+ }
+ tick();requestAnimationFrame(frame);
+}
+addEventListener("resize",layout);if(window.ResizeObserver)new ResizeObserver(layout).observe($("stage"));
+LP.init({langs:ALLLANGS,
+ onLang:()=>{document.title=L().title;lastZone=-2;refresh();caption()},
+ onAge:()=>{lastZone=-2;caption()}});
+document.title=L().title;
+LP.start(L().title,()=>{layout();refresh();caption();requestAnimationFrame(frame)});
+</script>
+</body>
+</html>
