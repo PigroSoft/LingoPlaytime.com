@@ -32,7 +32,7 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 #menu button.on{box-shadow:0 0 0 3px #F6C033}
 #menu button:focus-visible{outline:3px solid #3B8BD4}
 #menu .sep{font:700 12px var(--body);letter-spacing:.06em;text-transform:uppercase;color:#8a6a40;padding:6px 8px 0}
-#strip{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;min-height:18px;padding:4px 18px 0;max-width:min(980px,100%);margin:0 auto}
+#strip{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;min-height:18px;padding:0 18px 26px;max-width:min(980px,100%);margin:0 auto}
 #strip .d{width:12px;height:12px;border-radius:50%;background:var(--c);opacity:.4;transition:transform .12s,opacity .12s}
 #strip .d.ok{opacity:1}
 #strip .d.now{opacity:1;transform:scale(1.7);box-shadow:0 0 0 2px #fff}
@@ -71,11 +71,11 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 <script>window.LP_GAME="piano"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="piano-samples.js"></script>
 <div class="app" id="app">
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
-  <div id="strip" aria-hidden="true"></div>
   <div class="stage" id="stage">
     <img class="pal l" id="pal" src="../felt/raccoon-brown.webp" alt="" draggable="false">
     <div class="lanes" id="lanes"><canvas id="cv"></canvas><div id="big" hidden></div></div>
   </div>
+  <div id="strip" aria-hidden="true"></div>
   <div class="piano" id="piano" role="group" aria-label="Piano"></div>
   <div class="under" aria-hidden="true"></div>
   <div class="ctl" id="ctl">
