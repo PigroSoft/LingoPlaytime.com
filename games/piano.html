@@ -43,11 +43,11 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 #big{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);min-width:min(34vh,150px);height:min(34vh,150px);border-radius:50%;display:grid;place-items:center;background:var(--c,#fff);color:#fff;font:700 min(20vh,96px)/1 var(--display);text-shadow:0 4px 0 #0005;box-shadow:0 8px 0 #0004,inset 0 0 0 8px #fff5;pointer-events:none;padding:0 18px;box-sizing:border-box}
 #big[hidden]{display:none}
 #big small{position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);font:700 24px var(--display);white-space:nowrap;color:#fff;text-shadow:0 3px 0 #0008;background:#0006;border-radius:14px;padding:2px 14px}
-.pal{position:absolute;bottom:0;height:min(40vh,300px);width:auto;pointer-events:none;filter:drop-shadow(0 8px 6px #0006);display:none}
-.pal.l{left:max(8px,calc(50% - 490px - 190px))}
-@media (min-width:1500px) and (min-height:560px){.pal{display:block}}
-.pal.hop{animation:hop .26s steps(1)}
-@keyframes hop{0%{transform:translateY(-16px) rotate(-3deg)}50%{transform:translateY(-6px) rotate(2deg)}100%{transform:none}}
+.rw{--rw:min(32vh,270px);position:absolute;bottom:calc(var(--rw) * -.2);left:max(4px,calc(50% - 490px - 190px));width:var(--rw);aspect-ratio:1;pointer-events:none;transform-origin:50% 100%;z-index:0}
+.rw.l{--t:-4deg}.rw.r{--t:4deg}
+@media (max-width:700px){.rw{--rw:min(24vh,150px)}}
+.rw.hop{animation:hop .26s steps(1)}
+@keyframes hop{0%{transform:translateY(-14px) rotate(var(--t,-3deg))}50%{transform:translateY(-5px) rotate(calc(var(--t,3deg) * -.5))}100%{transform:none}}
 .piano{position:relative;width:min(980px,calc(100% - 24px));margin:14px auto 0;height:clamp(132px,29vh,270px);touch-action:none}
 .piano::before{content:"";position:absolute;left:-8px;right:-8px;top:-16px;height:20px;border-radius:12px 12px 0 0;background:#9c2b22;box-shadow:inset 0 3px 0 #c8483b,0 -2px 0 #0004;background-image:repeating-linear-gradient(90deg,#0000 0 14px,#ffffff22 14px 18px)}
 .key{position:absolute;top:0;border:0;padding:0;margin:0;font-family:var(--display);cursor:pointer;touch-action:none;transition:transform .06s,filter .06s}
@@ -64,16 +64,16 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 @keyframes pulse{50%{filter:brightness(1.25)}}
 .fl{position:fixed;z-index:25;pointer-events:none;font:700 34px var(--display);color:var(--c);text-shadow:0 2px 0 #fff,0 0 8px #fff8;animation:flt 1s steps(8) forwards}
 @keyframes flt{to{transform:translate(var(--dx),-130px) rotate(var(--r));opacity:0}}
-@media (prefers-reduced-motion:reduce){.fl,.pal.hop,.key.tgt{animation:none}.key{transition:none}}
+@media (prefers-reduced-motion:reduce){.fl,.rw.hop,.key.tgt{animation:none}.key{transition:none}}
 @media (max-width:560px){#bListen{--fh:44px;top:0;right:0;padding:0 20px;font-size:18px}.fb{--fh:34px;padding:0 14px;font-size:14px}#big small{font-size:18px}}
 </style>
 </head>
 <body>
-<script>window.LP_GAME="piano"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="piano-samples.js"></script>
+<script>window.LP_GAME="piano"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="piano-samples.js"></script><script src="../assets/raccoon.js"></script>
 <div class="app" id="app">
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
   <div class="stage" id="stage">
-    <img class="pal l" id="pal" src="../felt/raccoon-brown.webp" alt="" draggable="false">
+    <div class="rw" id="rw"><div id="rac"></div></div>
     <div class="lanes" id="lanes"><button type="button" class="fb red" id="bListen" hidden></button><canvas id="cv"></canvas><div id="big" hidden></div></div>
   </div>
   <div id="strip" aria-hidden="true"></div>
@@ -308,8 +308,20 @@ function fx(s,quiet){
   f.style.setProperty("--dx",(Math.random()*80-40)+"px");f.style.setProperty("--r",(Math.random()*50-25)+"deg");
   document.body.appendChild(f);setTimeout(()=>{f.remove();nfl--},1000);
  }
- const p=$("pal");p.classList.remove("hop");void p.offsetWidth;p.classList.add("hop");
+  dance();
 }
+/* the raccoon dances on the stage: a hop on every note, and a pose picked by mode and age */
+const rac=LPRaccoon.create($("rac"),{age:LP.age||0});
+let dn=0,lastPose=0,lastPt=-1;
+function dance(){
+ const w=$("rw");w.classList.remove("hop","l","r");void w.offsetWidth;w.classList.add("hop",dn%2?"l":"r");
+ dn++;if(demoing||mode==="follow")return;
+ const now=Date.now();if(now-lastPose<900)return;
+ const age=LP.age||0;
+ if(mode==="rhythm"){if(dn%3===0){lastPose=now;rac.clap()}}
+ else if(dn%4===0){lastPose=now;(age===0?[rac.wave,rac.clap,rac.wave]:age===1?[rac.clap,rac.wave,rac.delight]:[rac.clap,rac.delight,rac.wave])[Math.floor(dn/4)%3]()}
+}
+function racPoint(){if(mode==="follow"&&!demoing&&song&&pos!==lastPt){lastPt=pos;rac.point()}}
 function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
 
 /* ---- playing ---- */
@@ -342,6 +354,7 @@ function drawStrip(){
 function setStrip(){
  [...$("strip").children].forEach((d,i)=>{d.classList.toggle("ok",i<pos);d.classList.toggle("now",i===pos)});
  const n=song&&song.pn[pos];
+ racPoint();
  setTarget(mode==="follow"||mode==="mash"?(n?n.s:null):null);
  const big=$("big");
  if(mode==="follow"&&n&&!demoing){
@@ -357,11 +370,11 @@ function mashPress(id){
 function followPress(s,id){
  const n=song.pn[pos];if(!n)return;
  if(s===n.s){playUser(s,id,1);pos++;wrong=0;setStrip();if(pos>=song.pn.length)finishSong()}
- else{playUser(s!=null?s:pent(id),id,.45,true);if(++wrong>=2){wrong=0;const el=KEYEL[n.s];el.classList.remove("tgt");void el.offsetWidth;el.classList.add("tgt")}}
+ else{playUser(s!=null?s:pent(id),id,.45,true);if(++wrong>=2){wrong=0;lastPt=-1;racPoint();const el=KEYEL[n.s];el.classList.remove("tgt");void el.offsetWidth;el.classList.add("tgt")}}
 }
 function finishSong(stars){
  locked=true;const g=gen;setTarget(null);$("big").hidden=true;
- LP.celebrate();bubble((stars?"★".repeat(stars)+"☆".repeat(3-stars)+"  ":"")+L().done);LP.say(L().done);
+ rac.delight();setTimeout(()=>rac.clap(),760);LP.celebrate();bubble((stars?"★".repeat(stars)+"☆".repeat(3-stars)+"  ":"")+L().done);LP.say(L().done);
  setTimeout(()=>{
   locked=false;if(g!==gen)return;
   if(mode==="rhythm")startSong(song.id);
@@ -372,7 +385,7 @@ function finishSong(stars){
 /* listen: the song plays itself with the keys lighting up */
 function stopAll(){
  demoT.forEach(clearTimeout);demoT=[];demoing=false;R=null;if(raf)cancelAnimationFrame(raf);raf=0;
- Object.keys(held).forEach(release);setTarget(null);draw(0);paused=false;if(typeof listenBtn==='function')listenBtn();
+ Object.keys(held).forEach(release);setTarget(null);draw(0);paused=false;if(typeof listenBtn==='function')listenBtn();if(typeof rac!=='undefined')rac.still();
 }
 let paused=false;
 function listenBtn(){const u=U();$("bListen").textContent=demoing?"⏸ "+u.pause:"▶ "+u.listen}
@@ -381,6 +394,7 @@ function listen(from){
  from=from||0;paused=false;
  const spb=60/song.bpm,t0=from?song.pn[from].t:0,lead=from?250:900;
  demoing=true;pos=from;setStrip();if(!from){bubble(L().listen);LP.say(L().listen)}
+ const lastN=song.pn[song.pn.length-1];rac.listen((lastN.t+lastN.b-t0)*spb*1000+lead+500);
  song.pn.forEach((n,i)=>{
   if(i<from)return;
   demoT.push(setTimeout(()=>{voice(n.s,.85,0,n.b*spb*.92);showDown(n.s,true);fx(n.s,true);demoT.push(setTimeout(()=>showDown(n.s,false),Math.min(280,n.b*spb*850)));pos=i+1;setStrip()},lead+(n.t-t0)*spb*1000));
@@ -396,7 +410,7 @@ function beginPlay(){
  else{drawStrip();bubble(song&&mode==="mash"?L().go:(song?wd("t_"+song.id):L().title));if(song&&mode==="mash")LP.say(L().go)}
 }
 function startSong(id,auto,quiet){
- stopAll();const g=++gen;song=SONGS.find(s=>s.id===id);mode=curHow();pos=0;wrong=0;
+ stopAll();const g=++gen;song=SONGS.find(s=>s.id===id);mode=curHow();pos=0;wrong=0;lastPt=-1;rac.setAge(LP.age||0);setTimeout(()=>{if(g===gen&&!demoing)rac.wave()},300);
  refreshCtl();$("strip").innerHTML="";
  const title=wd("t_"+id);bubble(title);
  if(mode==="rhythm"){setTimeout(()=>{if(g===gen&&!R)startRhythm()},auto?400:1800)}
