@@ -92,75 +92,53 @@ const W=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
 const L=()=>LP.t(DATA.lines);
 const wd=id=>{const w=W[id];return w[LP.lang]||w.en};
 
-/* ---- the mouth ---- */
+/* ---- the mouth: one handmade felt picture, with the teeth located on it ---- */
 const cv=$("cv"),cx=cv.getContext("2d");let CW=0,CH=0,M=null;
-const img={};["cream","gum"].forEach(k=>{const i=new Image();i.onload=()=>{img[k]=i;pats()};i.src="../felt/key-"+k+".webp"});
-const pat={};function pats(){["cream","gum"].forEach(k=>{if(img[k]){const p=cx.createPattern(img[k],"repeat");try{p.setTransform(new DOMMatrix().scale(.5))}catch(e){}pat[k]=p}})}
-const DIRT=["#b5892f","#7a5a2e","#7fa23a","#a0522d","#c9a227"];
-const teeth=[];
-for(let i=0;i<16;i++){
- const bl=[];let s=(i+1)*9301+49297;const r=()=>(s=(s*9301+49297)%233280)/233280;
- for(let k=0;k<5;k++)bl.push({x:(r()-.5)*.55,y:.2+r()*.65,r:.16+r()*.14,c:DIRT[Math.floor(r()*5)]});
- teeth.push({i,dirt:1,glow:0,bl,regen:0});
-}
-const zoneOf=i=>i<8?(i<4?0:1):(i<12?3:2);   /* top left, top right, bottom left, bottom right; order of play: 0 1 2 3 = TL, TR, BR, BL */
+const IMG={};
+["mouth","brush","germ-0","germ-1","germ-2","germ-3","germ-4","germ-5"].forEach(k=>{const i=new Image();i.src="../felt/teeth-"+k+".webp";IMG[k]=i});
+/* tooth boxes in the picture's own pixels (the mouth cut-out is 1424 x 846 and starts at 73,135 in the source) */
+const SRC=[[255,385,330,455],[375,545,300,445],[540,780,285,440],[780,1010,290,440],[1010,1180,295,445],[1165,1295,330,460],
+ [275,395,600,700],[375,515,645,760],[510,650,690,790],[650,785,700,800],[785,920,700,800],[920,1055,690,790],[1050,1185,645,755],[1165,1280,595,700]];
+const MW=1424,MH=846,OX=73,OY=135;
+const teeth=SRC.map((b,i)=>{
+ let s=(i+3)*9301+49297;const r=()=>(s=(s*9301+49297)%233280)/233280;
+ const bl=[];for(let k=0;k<3;k++)bl.push({x:.22+k*.28+(r()-.5)*.12,y:.35+r()*.4,g:Math.floor(r()*6),p:r()*6});
+ return {i,dirt:1,glow:0,bl,regen:0,nx:(b[0]-OX)/MW,nx1:(b[1]-OX)/MW,ny:(b[2]-OY)/MH,ny1:(b[3]-OY)/MH,top:i<6};
+});
+/* top left, top right, bottom left, bottom right; order of play: top left, top right, bottom right, bottom left */
 const ZORDER=[0,1,2,3];
-const zoneTeeth=z=>teeth.filter(t=>zoneOf(t.i)===(z===2?2:z===3?3:z));
+const zoneOf=i=>i<6?(i<3?0:1):(i<10?3:2);
 function layout(){
  const r=cv.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1);CW=r.width;CH=r.height;
- cv.width=Math.max(1,CW*d);cv.height=Math.max(1,CH*d);cx.setTransform(d,0,0,d,0,0);pats();
- const rx=Math.min(CW*.47,(CH*.47)/.62),ry=rx*.62,mx=CW/2,my=CH/2;
- const tw=rx*2*.78/8,span=rx*2*.78;
- M={rx,ry,mx,my,tw};
- teeth.forEach(t=>{
-  const top=t.i<8,k=top?t.i:t.i-8,u=((k+.5)/8-.5)*2*.78,x=mx+u*rx,edge=ry*.62*Math.sqrt(1-u*u),th=ry*.56*(1.08-.35*Math.abs(u));
-  t.x=x;t.w=tw*.92;t.h=th;t.top=top;t.base=top?my-edge:my+edge;t.y=top?t.base-8:t.base-th;t.hh=th+8;
- });
-}
-function rr(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.arcTo(x+w,y,x+w,y+h,r);cx.arcTo(x+w,y+h,x,y+h,r);cx.arcTo(x,y+h,x,y,r);cx.arcTo(x,y,x+w,y,r);cx.closePath()}
-function toothPath(t){
- const x=t.x-t.w/2,y=t.y,w=t.w,h=t.hh,c=w*.38;cx.beginPath();
- if(t.top){cx.moveTo(x,y);cx.lineTo(x+w,y);cx.lineTo(x+w,y+h-c);cx.quadraticCurveTo(x+w,y+h,x+w-c,y+h);cx.lineTo(x+c,y+h);cx.quadraticCurveTo(x,y+h,x,y+h-c)}
- else{cx.moveTo(x,y+h);cx.lineTo(x+w,y+h);cx.lineTo(x+w,y+c);cx.quadraticCurveTo(x+w,y,x+w-c,y);cx.lineTo(x+c,y);cx.quadraticCurveTo(x,y,x,y+c)}
- cx.closePath();
+ cv.width=Math.max(1,CW*d);cv.height=Math.max(1,CH*d);cx.setTransform(d,0,0,d,0,0);
+ const sc=Math.min(CW*.96/MW,CH*.96/MH),w=MW*sc,h=MH*sc,x0=(CW-w)/2,y0=(CH-h)/2;
+ M={sc,w,h,x0,y0,mx:CW/2,my:CH/2};
+ teeth.forEach(t=>{t.x0=x0+t.nx*w;t.x1=x0+t.nx1*w;t.y=y0+t.ny*h;t.y1=y0+t.ny1*h;t.x=(t.x0+t.x1)/2;t.w=t.x1-t.x0;t.hh=t.y1-t.y})
 }
 let now=0,pulse=0;
-function drawMouth(){
- const {rx,ry,mx,my}=M;
- /* lips */
- cx.save();cx.beginPath();cx.ellipse(mx,my,rx*1.07,ry*1.13,0,0,7);cx.fillStyle=pat.gum||"#d9565f";cx.fill();cx.lineWidth=5;cx.strokeStyle="#8d2a33";cx.setLineDash([14,10]);cx.stroke();cx.setLineDash([]);cx.restore();
- /* inside */
- cx.save();cx.beginPath();cx.ellipse(mx,my,rx,ry,0,0,7);cx.fillStyle="#4a1219";cx.fill();cx.clip();
- /* tongue */
- cx.beginPath();cx.ellipse(mx,my+ry*.42,rx*.34,ry*.3,0,0,7);cx.fillStyle="#d46a74";cx.fill();
- /* gums */
- cx.fillStyle=pat.gum||"#d9565f";
- [-1,1].forEach(sg=>{cx.beginPath();cx.moveTo(mx-rx-4,my+sg*(ry+4));for(let a=-1;a<=1.0001;a+=.05){const e=ry*.62*Math.sqrt(Math.max(0,1-a*a));cx.lineTo(mx+a*rx,my+sg*e)}cx.lineTo(mx+rx+4,my+sg*(ry+4));cx.closePath();cx.fill();cx.lineWidth=3;cx.strokeStyle="#8d2a33";cx.stroke()});
- cx.restore();
-}
+function drawMouth(){if(IMG.mouth.complete&&IMG.mouth.naturalWidth)cx.drawImage(IMG.mouth,M.x0,M.y0,M.w,M.h)}
+function rr(x,y,w,h,r){cx.beginPath();cx.moveTo(x+r,y);cx.arcTo(x+w,y,x+w,y+h,r);cx.arcTo(x+w,y+h,x,y+h,r);cx.arcTo(x,y+h,x,y,r);cx.arcTo(x,y,x+w,y,r);cx.closePath()}
 function drawTooth(t){
- cx.save();toothPath(t);cx.fillStyle=pat.cream||"#fbf3df";cx.fill();
- cx.clip();
- /* soft shade at the edges */
- const g=cx.createLinearGradient(t.x-t.w/2,0,t.x+t.w/2,0);g.addColorStop(0,"#b9985a55");g.addColorStop(.25,"#fff0");g.addColorStop(.75,"#fff0");g.addColorStop(1,"#b9985a55");cx.fillStyle=g;cx.fillRect(t.x-t.w,t.y-2,t.w*2,t.hh+4);
- /* germs */
- const n=Math.ceil(t.dirt*5-.001);
- for(let k=0;k<n;k++){const b=t.bl[k],a=Math.min(1,t.dirt*5-k),bx=t.x+b.x*t.w,by=t.y+(t.top?b.y:1-b.y)*t.hh*.9+ (t.top?0:t.hh*.05),br=b.r*t.w*(.6+.4*a);
-  cx.globalAlpha=Math.min(1,a*1.4);cx.fillStyle=b.c;cx.beginPath();cx.arc(bx,by,br,0,7);cx.fill();
-  if(k<2){cx.fillStyle="#fff";cx.beginPath();cx.arc(bx-br*.38,by-br*.15,br*.3,0,7);cx.arc(bx+br*.38,by-br*.15,br*.3,0,7);cx.fill();cx.fillStyle="#222";cx.beginPath();cx.arc(bx-br*.34,by-br*.1,br*.14,0,7);cx.arc(bx+br*.42,by-br*.1,br*.14,0,7);cx.fill()}}
+ /* germs sit on the tooth; they shrink away as it gets clean */
+ const n=Math.ceil(t.dirt*2-.001),sz=Math.min(t.w*.5,t.hh*.8,120);
+ for(let k=0;k<n;k++){
+  const b=t.bl[k],a=Math.min(1,t.dirt*2-k),im=IMG["germ-"+b.g];if(!im.complete||!im.naturalWidth)continue;
+  const bob=Math.sin(now*.004+b.p)*sz*.05,s=sz*(.55+.45*a),gx=t.x0+b.x*t.w,gy=t.y+b.y*t.hh+bob;
+  cx.globalAlpha=Math.min(1,a*1.6);cx.save();cx.translate(gx,gy);cx.rotate(Math.sin(now*.003+b.p)*.12);cx.drawImage(im,-s/2,-s/2,s,s*im.naturalHeight/im.naturalWidth);cx.restore();
+ }
  cx.globalAlpha=1;
- if(t.glow>0){cx.fillStyle="rgba(255,255,255,"+(t.glow*.8)+")";cx.fillRect(t.x-t.w,t.y-2,t.w*2,t.hh+4)}
- cx.restore();
- cx.save();toothPath(t);cx.lineWidth=2.5;cx.strokeStyle="#c9b48a";cx.stroke();cx.restore();
- if(t.glow>0){t.glow=Math.max(0,t.glow-.03);const p=1-t.glow;[[-1,-1],[1,-1],[0,1],[1,.6]].forEach((o,j)=>{star(t.x+o[0]*t.w*(.3+p*.9),t.y+t.hh/2+o[1]*t.hh*(.2+p*.5),(8+j*2)*t.glow,p*3+j)})}
+ if(t.glow>0){
+  cx.save();rr(t.x0,t.y,t.w,t.hh,t.w*.2);cx.fillStyle="rgba(255,255,255,"+(t.glow*.7)+")";cx.fill();cx.restore();
+  t.glow=Math.max(0,t.glow-.03);const p=1-t.glow;[[-1,-1],[1,-1],[0,1],[1,.6]].forEach((o,j)=>{star(t.x+o[0]*t.w*(.3+p*.9),t.y+t.hh/2+o[1]*t.hh*(.2+p*.5),(10+j*3)*t.glow,p*3+j)});
+ }
 }
 function star(x,y,r,a){if(r<.5)return;cx.save();cx.translate(x,y);cx.rotate(a);cx.fillStyle="#ffd84a";cx.beginPath();for(let i=0;i<10;i++){const rr_=i%2?r*.45:r,th=i*Math.PI/5-Math.PI/2;cx.lineTo(Math.cos(th)*rr_,Math.sin(th)*rr_)}cx.closePath();cx.fill();cx.restore()}
 
 /* zone guide */
 function drawZone(z){
  const ts=teeth.filter(t=>zoneOf(t.i)===z);if(!ts.length)return;
- const x0=Math.min(...ts.map(t=>t.x-t.w/2))-8,x1=Math.max(...ts.map(t=>t.x+t.w/2))+8,y0=Math.min(...ts.map(t=>t.y))-8,y1=Math.max(...ts.map(t=>t.y+t.hh))+8;
- cx.save();cx.lineWidth=6;cx.strokeStyle="rgba(255,216,74,"+(.65+.35*Math.sin(pulse))+")";cx.shadowColor="#ffd84a";cx.shadowBlur=18;rr(x0,y0,x1-x0,y1-y0,18);cx.stroke();cx.restore();
+ const x0=Math.min(...ts.map(t=>t.x0))-8,x1=Math.max(...ts.map(t=>t.x1))+8,y0=Math.min(...ts.map(t=>t.y))-8,y1=Math.max(...ts.map(t=>t.y1))+8;
+ cx.save();cx.lineWidth=6;cx.strokeStyle="rgba(255,216,74,"+(.65+.35*Math.sin(pulse))+")";cx.shadowColor="#ffd84a";cx.shadowBlur=18;rr(x0,y0,x1-x0,y1-y0,22);cx.stroke();cx.restore();
 }
 
 /* foam */
@@ -168,20 +146,15 @@ const foam=[];
 function addFoam(x,y){if(foam.length>70)foam.shift();foam.push({x:x+(Math.random()-.5)*30,y:y+(Math.random()-.5)*20,r:5+Math.random()*9,vy:-.4-Math.random()*.6,life:1})}
 function drawFoam(){foam.forEach(f=>{f.y+=f.vy;f.life-=.014;cx.globalAlpha=Math.max(0,f.life)*.85;cx.fillStyle="#e9f7ff";cx.strokeStyle="#9fd3ea";cx.lineWidth=2;cx.beginPath();cx.arc(f.x,f.y,f.r,0,7);cx.fill();cx.stroke()});cx.globalAlpha=1;for(let i=foam.length-1;i>=0;i--)if(foam[i].life<=0)foam.splice(i,1)}
 
-/* the toothbrush follows the pointer */
-const br={x:0,y:0,tx:0,ty:0,wig:0,idle:true,keyT:0};
+/* the felt toothbrush follows the pointer, bristles at the pointer */
+const br={x:0,y:0,tx:0,ty:0,wig:0};
 function drawBrush(){
- if(!M)return;const s=Math.min(CW,CH)*.075;
+ const im=IMG.brush;if(!M||!im.complete||!im.naturalWidth)return;
+ const w=Math.min(CW*.28,CH*.5,360),h=w*im.naturalHeight/im.naturalWidth;
  br.x+=(br.tx-br.x)*.35;br.y+=(br.ty-br.y)*.35;br.wig*=.9;
- cx.save();cx.translate(br.x,br.y);cx.rotate(-.55+Math.sin(now*.05)*br.wig*.35);
- cx.shadowColor="#0005";cx.shadowBlur=8;cx.shadowOffsetY=4;
- cx.fillStyle="#3b8bd4";rr(s*.3,-s*.28,s*3.6,s*.56,s*.28);cx.fill();
- cx.fillStyle="#2a6fb0";rr(-s*.9,-s*.5,s*1.7,s*.3,s*.12);cx.fill();
- cx.shadowColor="transparent";
- cx.fillStyle="#fdfdf8";rr(-s*.95,-s*.5,s*1.8,s*.16,s*.06);cx.fill();
- cx.strokeStyle="#cfe3ee";cx.lineWidth=2;for(let k=0;k<7;k++){const bx=-s*.85+k*s*.26;cx.beginPath();cx.moveTo(bx,-s*.5);cx.lineTo(bx,-s*.34);cx.stroke()}
- cx.fillStyle="#6dc7ee";rr(s*1.4,-s*.2,s*.9,s*.4,s*.2);cx.fill();
- cx.restore();
+ cx.save();cx.translate(br.x,br.y);cx.rotate(Math.sin(now*.05)*br.wig*.12);
+ cx.shadowColor="#0006";cx.shadowBlur=10;cx.shadowOffsetY=6;
+ cx.drawImage(im,-w*.31,-h*.26,w,h);cx.restore();
 }
 
 /* ---- game state ---- */
@@ -281,7 +254,7 @@ function frame(ts){
   cx.clearRect(0,0,CW,CH);drawMouth();teeth.forEach(drawTooth);
   const z=curZone();if(z>=0&&!locked)drawZone(z);
   drawFoam();
-  if(!hasPointer&&br.x===0&&br.y===0){br.x=br.tx=M.mx+M.rx*.45;br.y=br.ty=M.my+M.ry*1.2}
+  if(!hasPointer&&br.x===0&&br.y===0){br.x=br.tx=M.mx+M.w*.3;br.y=br.ty=M.my+M.h*.3}
   drawBrush();
  }
  tick();requestAnimationFrame(frame);

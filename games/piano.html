@@ -135,12 +135,12 @@ const DATA=(()=>{
 
 /* Parent-facing controls, in the main language (the site has these six; other languages see English). */
 const UI={
- en:{free:"Free play",songs:"Songs",how:"How to play",mash:"Any key plays the song",follow:"Press the glowing key",rhythm:"Falling notes",kbd:"Keyboard",auto:"Auto",names:"Names",off:"Off",sol:"Do Re Mi",abc:"C D E",listen:"Listen",again:"Play",stars:"Stars"},
- de:{free:"Frei spielen",songs:"Lieder",how:"So spielst du",mash:"Jede Taste spielt das Lied",follow:"Leuchtende Taste drücken",rhythm:"Fallende Noten",kbd:"Tastatur",auto:"Automatisch",names:"Notennamen",off:"Aus",sol:"Do Re Mi",abc:"C D E",listen:"Zuhören",again:"Spielen",stars:"Sterne"},
- es:{free:"Juego libre",songs:"Canciones",how:"Cómo jugar",mash:"Cualquier tecla toca la canción",follow:"Pulsa la tecla que brilla",rhythm:"Notas que caen",kbd:"Teclado",auto:"Automático",names:"Nombres",off:"No",sol:"Do Re Mi",abc:"C D E",listen:"Escuchar",again:"Jugar",stars:"Estrellas"},
- fr:{free:"Jeu libre",songs:"Chansons",how:"Comment jouer",mash:"N'importe quelle touche joue la chanson",follow:"Appuie sur la touche qui brille",rhythm:"Notes qui tombent",kbd:"Clavier",auto:"Auto",names:"Noms des notes",off:"Non",sol:"Do Ré Mi",abc:"C D E",listen:"Écouter",again:"Jouer",stars:"Étoiles"},
- it:{free:"Gioco libero",songs:"Canzoni",how:"Come si gioca",mash:"Qualsiasi tasto suona la canzone",follow:"Premi il tasto che brilla",rhythm:"Note che cadono",kbd:"Tastiera",auto:"Automatica",names:"Nomi delle note",off:"No",sol:"Do Re Mi",abc:"C D E",listen:"Ascolta",again:"Gioca",stars:"Stelle"},
- pt:{free:"Jogo livre",songs:"Canções",how:"Como jogar",mash:"Qualquer tecla toca a canção",follow:"Carrega na tecla que brilha",rhythm:"Notas a cair",kbd:"Teclado",auto:"Automático",names:"Nomes das notas",off:"Não",sol:"Dó Ré Mi",abc:"C D E",listen:"Ouvir",again:"Jogar",stars:"Estrelas"}
+ en:{pause:"Pause",free:"Free play",songs:"Songs",how:"How to play",mash:"Any key plays the song",follow:"Press the glowing key",rhythm:"Falling notes",kbd:"Keyboard",auto:"Auto",names:"Names",off:"Off",sol:"Do Re Mi",abc:"C D E",listen:"Listen",again:"Play",stars:"Stars"},
+ de:{pause:"Pause",free:"Frei spielen",songs:"Lieder",how:"So spielst du",mash:"Jede Taste spielt das Lied",follow:"Leuchtende Taste drücken",rhythm:"Fallende Noten",kbd:"Tastatur",auto:"Automatisch",names:"Notennamen",off:"Aus",sol:"Do Re Mi",abc:"C D E",listen:"Zuhören",again:"Spielen",stars:"Sterne"},
+ es:{pause:"Pausa",free:"Juego libre",songs:"Canciones",how:"Cómo jugar",mash:"Cualquier tecla toca la canción",follow:"Pulsa la tecla que brilla",rhythm:"Notas que caen",kbd:"Teclado",auto:"Automático",names:"Nombres",off:"No",sol:"Do Re Mi",abc:"C D E",listen:"Escuchar",again:"Jugar",stars:"Estrellas"},
+ fr:{pause:"Pause",free:"Jeu libre",songs:"Chansons",how:"Comment jouer",mash:"N'importe quelle touche joue la chanson",follow:"Appuie sur la touche qui brille",rhythm:"Notes qui tombent",kbd:"Clavier",auto:"Auto",names:"Noms des notes",off:"Non",sol:"Do Ré Mi",abc:"C D E",listen:"Écouter",again:"Jouer",stars:"Étoiles"},
+ it:{pause:"Pausa",free:"Gioco libero",songs:"Canzoni",how:"Come si gioca",mash:"Qualsiasi tasto suona la canzone",follow:"Premi il tasto che brilla",rhythm:"Note che cadono",kbd:"Tastiera",auto:"Automatica",names:"Nomi delle note",off:"No",sol:"Do Re Mi",abc:"C D E",listen:"Ascolta",again:"Gioca",stars:"Stelle"},
+ pt:{pause:"Pausa",free:"Jogo livre",songs:"Canções",how:"Como jogar",mash:"Qualquer tecla toca a canção",follow:"Carrega na tecla que brilha",rhythm:"Notas a cair",kbd:"Teclado",auto:"Automático",names:"Nomes das notas",off:"Não",sol:"Dó Ré Mi",abc:"C D E",listen:"Ouvir",again:"Jogar",stars:"Estrelas"}
 };
 const U=()=>UI[LP.home]||UI.en;
 
@@ -372,17 +372,24 @@ function finishSong(stars){
 /* listen: the song plays itself with the keys lighting up */
 function stopAll(){
  demoT.forEach(clearTimeout);demoT=[];demoing=false;R=null;if(raf)cancelAnimationFrame(raf);raf=0;
- Object.keys(held).forEach(release);setTarget(null);draw(0);
+ Object.keys(held).forEach(release);setTarget(null);draw(0);paused=false;if(typeof listenBtn==='function')listenBtn();
 }
-function listen(){
+let paused=false;
+function listenBtn(){const u=U();$("bListen").textContent=demoing?"⏸ "+u.pause:"▶ "+u.listen}
+function listen(from){
  if(!song)return;
- const spb=60/song.bpm;demoing=true;pos=0;setStrip();bubble(L().listen);LP.say(L().listen);
+ from=from||0;paused=false;
+ const spb=60/song.bpm,t0=from?song.pn[from].t:0,lead=from?250:900;
+ demoing=true;pos=from;setStrip();if(!from){bubble(L().listen);LP.say(L().listen)}
  song.pn.forEach((n,i)=>{
-  demoT.push(setTimeout(()=>{voice(n.s,.85,0,n.b*spb*.92);showDown(n.s,true);fx(n.s,true);demoT.push(setTimeout(()=>showDown(n.s,false),Math.min(280,n.b*spb*850)));pos=i+1;setStrip()},900+n.t*spb*1000));
+  if(i<from)return;
+  demoT.push(setTimeout(()=>{voice(n.s,.85,0,n.b*spb*.92);showDown(n.s,true);fx(n.s,true);demoT.push(setTimeout(()=>showDown(n.s,false),Math.min(280,n.b*spb*850)));pos=i+1;setStrip()},lead+(n.t-t0)*spb*1000));
  });
  const last=song.pn[song.pn.length-1];
- demoT.push(setTimeout(()=>{demoing=false;beginPlay()},900+(last.t+last.b)*spb*1000+700));
+ demoT.push(setTimeout(()=>{demoing=false;listenBtn();beginPlay()},lead+(last.t+last.b-t0)*spb*1000+700));
+ listenBtn();
 }
+function pauseListen(){const p=pos;stopAll();pos=p;paused=true;setStrip();listenBtn()}
 function beginPlay(){
  pos=0;wrong=0;
  if(mode==="rhythm")startRhythm();
@@ -503,13 +510,13 @@ function refreshCtl(){
  const u=U();
  $("bSong").textContent="🎵 "+(song?wd("t_"+song.id):u.free)+" ▾";
  $("bHow").hidden=!song;$("bHow").textContent=u[curHow()]+" ▾";
- $("bListen").hidden=!song||mode==="rhythm";$("bListen").textContent="▶ "+u.listen;
+ $("bListen").hidden=!song||mode==="rhythm";listenBtn();
  $("bKbd").textContent="⌨ "+(layout==="auto"?u.auto+" ("+LAYNAME[guessLayout()]+")":LAYNAME[layout])+" ▾";
  $("bNames").textContent="♪ "+u.names+": "+(namesMode==="off"?u.off:namesMode==="sol"?u.sol:u.abc)+" ▾";
 }
 $("bSong").onclick=()=>{const u=U();openMenu($("bSong"),[{t:"🎹 "+u.free,on:!song,fn:freePlay},{sep:u.songs}].concat(SONGS.map(s=>({t:wd("t_"+s.id),on:song&&song.id===s.id,fn:()=>startSong(s.id)}))))};
 $("bHow").onclick=()=>{const u=U();openMenu($("bHow"),["mash","follow","rhythm"].map(h=>({t:u[h],on:curHow()===h,fn:()=>{how=h;if(song)startSong(song.id,true);else refreshCtl()}})))};
-$("bListen").onclick=()=>{if(song){stopAll();pos=0;listen()}};
+$("bListen").onclick=()=>{if(!song)return;if(demoing){pauseListen();return}const p=pos;if(paused&&p>0&&p<song.pn.length){stopAll();listen(p)}else{stopAll();pos=0;listen()}};
 $("bKbd").onclick=()=>{const u=U();openMenu($("bKbd"),[{t:u.auto,on:layout==="auto",fn:()=>{layout="auto";store.set("layout","auto");relabel()}}].concat(Object.keys(LAYNAME).map(n=>({t:LAYNAME[n],on:layout===n,fn:()=>{layout=n;store.set("layout",n);relabel()}}))))};
 $("bNames").onclick=()=>{const u=U();openMenu($("bNames"),[["off",u.off],["sol",u.sol],["abc",u.abc]].map(p=>({t:p[1],on:namesMode===p[0],fn:()=>{namesMode=p[0];store.set("names",p[0]);renameKeys();relabel()}})))};
 
