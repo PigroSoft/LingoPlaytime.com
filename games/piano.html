@@ -23,7 +23,7 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 .fb.blue{--felt:var(--felt-blue);color:#fff;text-shadow:0 1px 0 #06415e}
 .fb:active{transform:translateY(2px)}
 .fb:focus-visible{outline:4px solid #ffd84a;outline-offset:3px}
-.ctl{display:flex;flex-wrap:wrap;gap:8px 10px;justify-content:center;padding:0 12px;min-height:40px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px 10px;justify-content:center;padding:6px 12px max(12px,env(safe-area-inset-bottom,0px));min-height:40px}
 .ctl .fb[hidden]{display:none}
 #menu{position:fixed;z-index:30;display:flex;flex-direction:column;gap:4px;padding:8px;background:#fff4dc;border:2px dashed #b8401f99;border-radius:20px;box-shadow:0 10px 30px #0008;min-width:210px;max-width:92vw;max-height:62vh;overflow:auto}
 #menu[hidden]{display:none}
@@ -46,17 +46,17 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 @media (min-width:1500px) and (min-height:560px){.pal{display:block}}
 .pal.hop{animation:hop .26s steps(1)}
 @keyframes hop{0%{transform:translateY(-16px) rotate(-3deg)}50%{transform:translateY(-6px) rotate(2deg)}100%{transform:none}}
-.piano{position:relative;width:min(980px,calc(100% - 24px));margin:14px auto max(12px,env(safe-area-inset-bottom,0px));height:clamp(132px,29vh,270px);touch-action:none}
+.piano{position:relative;width:min(980px,calc(100% - 24px));margin:14px auto 8px;height:clamp(132px,29vh,270px);touch-action:none}
 .piano::before{content:"";position:absolute;left:-8px;right:-8px;top:-16px;height:20px;border-radius:12px 12px 0 0;background:#9c2b22;box-shadow:inset 0 3px 0 #c8483b,0 -2px 0 #0004;background-image:repeating-linear-gradient(90deg,#0000 0 14px,#ffffff22 14px 18px)}
 .key{position:absolute;top:0;border:0;padding:0;margin:0;font-family:var(--display);cursor:pointer;touch-action:none;transition:transform .06s,filter .06s}
-.key.w{width:calc(100% / 11 - 3px);height:100%;margin-left:1.5px;border-radius:0 0 16px 16px;background:linear-gradient(#fffaf0,#f1e3c3);box-shadow:inset 0 -12px 0 #dccaa0,0 6px 0 #0005;color:#3c2f20;outline:2px dashed #b8401f44;outline-offset:-7px}
-.key.b{width:calc(100% / 11 * .58);height:62%;z-index:2;border-radius:0 0 12px 12px;background:linear-gradient(#4a3426,#2f2118);box-shadow:inset 0 -8px 0 #1b120c,0 5px 0 #0007;color:#f6ead0;outline:2px dashed #ffffff22;outline-offset:-5px}
+.key.w{width:calc(100% / 11 - 3px);height:100%;margin-left:1.5px;border-radius:0 0 18px 18px;background:linear-gradient(#fff0,#fff0 70%,#b9985a55) ,url(../felt/key-cream.webp) center/200px;box-shadow:inset 0 -10px 12px #b9985a66,0 6px 0 #0005;color:#3c2f20;outline:2px dashed #b8401f55;outline-offset:-7px}
+.key.b{width:calc(100% / 11 * .58);height:62%;z-index:2;border-radius:0 0 14px 14px;background:linear-gradient(#0000,#0000 65%,#0006),url(../felt/key-brown.webp) center/160px;box-shadow:inset 0 -8px 10px #0006,0 5px 0 #0007;color:#f6ead0;outline:2px dashed #ffffff33;outline-offset:-5px}
 .key .nm{position:absolute;left:0;right:0;top:34%;text-align:center;font-weight:700;font-size:clamp(11px,1.7vw,20px);opacity:.9;pointer-events:none}
-.key .ltr{position:absolute;left:8%;right:8%;bottom:7%;height:34%;max-height:70px;display:grid;place-items:center;border-radius:12px;background:var(--c);color:#fff;font-weight:700;font-size:clamp(16px,3vw,34px);text-shadow:0 2px 0 #0005;pointer-events:none;box-shadow:inset 0 -4px 0 #0003}
-.key.b .ltr{background:#6e5442;bottom:9%;height:26%}
+.key .ltr{position:absolute;left:8%;right:8%;bottom:7%;height:34%;max-height:70px;display:grid;place-items:center;border-radius:12px;background:var(--c) url(../felt/key-cream.webp) center/120px;background-blend-mode:multiply;color:#fff;font-weight:700;font-size:clamp(16px,3vw,34px);text-shadow:0 2px 0 #0007;pointer-events:none;box-shadow:inset 0 -4px 0 #0003,0 0 0 2px #fff6}
+.key.b .ltr{background:#7a5f4a url(../felt/key-cream.webp) center/120px;background-blend-mode:multiply;bottom:9%;height:26%}
 .key.down{transform:translateY(7px);filter:brightness(1.12)}
-.key.w.down{box-shadow:inset 0 -6px 0 #dccaa0,0 2px 0 #0005,0 0 0 5px var(--c)}
-.key.b.down{box-shadow:inset 0 -4px 0 #1b120c,0 2px 0 #0007,0 0 0 4px #fff8}
+.key.w.down{box-shadow:inset 0 -5px 8px #b9985a66,0 2px 0 #0005,0 0 0 5px var(--c)}
+.key.b.down{box-shadow:inset 0 -4px 8px #0006,0 2px 0 #0007,0 0 0 4px #fff8}
 .key.tgt{animation:pulse .7s steps(2) infinite}
 .key.tgt::after{content:"";position:absolute;inset:-4px;border-radius:inherit;box-shadow:0 0 0 5px #ffd84a,0 0 26px 8px #ffd84acc;pointer-events:none}
 @keyframes pulse{50%{filter:brightness(1.25)}}
@@ -70,6 +70,12 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 <script>window.LP_GAME="piano"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="piano-samples.js"></script>
 <div class="app" id="app">
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
+  <div id="strip" aria-hidden="true"></div>
+  <div class="stage" id="stage">
+    <img class="pal l" id="pal" src="../felt/raccoon-brown.webp" alt="" draggable="false">
+    <div class="lanes" id="lanes"><canvas id="cv"></canvas><div id="big" hidden></div></div>
+  </div>
+  <div class="piano" id="piano" role="group" aria-label="Piano"></div>
   <div class="ctl" id="ctl">
     <button type="button" class="fb blue" id="bSong" aria-haspopup="true"></button>
     <button type="button" class="fb" id="bHow" aria-haspopup="true" hidden></button>
@@ -77,12 +83,6 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
     <button type="button" class="fb" id="bKbd" aria-haspopup="true"></button>
     <button type="button" class="fb" id="bNames" aria-haspopup="true"></button>
   </div>
-  <div id="strip" aria-hidden="true"></div>
-  <div class="stage" id="stage">
-    <img class="pal l" id="pal" src="../felt/raccoon-brown.webp" alt="" draggable="false">
-    <div class="lanes" id="lanes"><canvas id="cv"></canvas><div id="big" hidden></div></div>
-  </div>
-  <div class="piano" id="piano" role="group" aria-label="Piano"></div>
 </div>
 <div id="menu" hidden role="menu"></div>
 <script>
@@ -191,16 +191,16 @@ const L=()=>LP.t(DATA.lines);
 const wd=(id)=>{const w=W[id];return w[LP.lang]||w.en};
 const store={get(k,d){try{return localStorage.getItem("lp.piano."+k)||d}catch(e){return d}},set(k,v){try{localStorage.setItem("lp.piano."+k,v)}catch(e){}}};
 
-let layout=store.get("layout","auto"),namesMode=store.get("names","sol"),learned={};
+let layout=store.get("layout","auto"),namesMode=store.get("names","off"),learned={};
 let gen=0,mode="free",how=null,song=null,pos=0,wrong=0,demoing=false,locked=false,R=null,raf=0,demoT=[];
 const held={};
-const defaultHow=()=>["mash","follow","rhythm"][Math.min(2,LP.age||0)];
+const defaultHow=()=>["mash","mash","follow"][Math.min(2,LP.age||0)];
 const curHow=()=>how||defaultHow();
 
 /* labels on the keys follow the parent's keyboard */
+const langLayout=()=>({de:"qwertz",fr:"azerty"})[LP.home]||"qwerty";
 function guessLayout(){
- const seen=Object.keys(learned);if(!seen.length)return"qwerty";
- let best="qwerty",bs=-1;
+ const seen=Object.keys(learned);let best=langLayout(),bs=seen.filter(c=>LAYOUTS[best][c]===learned[c]).length;
  Object.keys(LAYOUTS).forEach(n=>{const sc=seen.filter(c=>LAYOUTS[n][c]===learned[c]).length;if(sc>bs){bs=sc;best=n}});
  return best;
 }
@@ -386,12 +386,12 @@ function beginPlay(){
  if(mode==="rhythm")startRhythm();
  else{drawStrip();bubble(song&&mode==="mash"?L().go:(song?wd("t_"+song.id):L().title));if(song&&mode==="mash")LP.say(L().go)}
 }
-function startSong(id,auto){
+function startSong(id,auto,quiet){
  stopAll();const g=++gen;song=SONGS.find(s=>s.id===id);mode=curHow();pos=0;wrong=0;
  refreshCtl();$("strip").innerHTML="";
  const title=wd("t_"+id);bubble(title);
  if(mode==="rhythm"){setTimeout(()=>{if(g===gen&&!R)startRhythm()},auto?400:1800)}
- else{drawStrip();setTimeout(()=>{if(g===gen&&!demoing&&pos===0)listen()},auto?600:1400)}
+ else{drawStrip();if(quiet)beginPlay();else setTimeout(()=>{if(g===gen&&!demoing&&pos===0)listen()},auto?600:1400)}
 }
 function freePlay(){stopAll();gen++;song=null;mode="free";pos=0;$("strip").innerHTML="";$("big").hidden=true;bubble(L().title);refreshCtl()}
 
@@ -494,7 +494,7 @@ function openMenu(btn,items){
   b.onclick=()=>{closeMenu();it.fn()};m.appendChild(b);
  });
  m.hidden=false;menuFor=btn;
- const r=btn.getBoundingClientRect();m.style.left=Math.max(8,Math.min(innerWidth-m.offsetWidth-8,r.left))+"px";m.style.top=(r.bottom+6)+"px";
+ const r=btn.getBoundingClientRect();m.style.left=Math.max(8,Math.min(innerWidth-m.offsetWidth-8,r.left))+"px";m.style.top=Math.max(8,r.top-6-m.offsetHeight)+"px";
 }
 document.addEventListener("pointerdown",e=>{if(!e.target.closest("#menu")&&!e.target.closest(".ctl"))closeMenu()},true);
 function refreshCtl(){
@@ -512,12 +512,11 @@ $("bKbd").onclick=()=>{const u=U();openMenu($("bKbd"),[{t:u.auto,on:layout==="au
 $("bNames").onclick=()=>{const u=U();openMenu($("bNames"),[["off",u.off],["sol",u.sol],["abc",u.abc]].map(p=>({t:p[1],on:namesMode===p[0],fn:()=>{namesMode=p[0];store.set("names",p[0]);renameKeys();relabel()}})))};
 
 LP.init({langs:ALLLANGS,
- onLang:()=>{document.title=L().title;renameKeys();relabel();if(!song)bubble(L().title)},
+ onLang:()=>{document.title=L().title;renameKeys();relabel();bubble(song?wd("t_"+song.id):L().title)},
  onAge:()=>{if(song&&!how)startSong(song.id,true);else refreshCtl()}});
 document.title=L().title;
 LP.start(L().title,()=>{
- buildPiano();fit();refreshCtl();bubble(L().title);
- setTimeout(()=>{if(!song&&mode==="free"&&!Object.keys(held).length)bubble(L().go)},1600);
+ buildPiano();fit();startSong(SONGS[0].id,true,true);
 });
 </script>
 </body>
