@@ -160,7 +160,7 @@ function place(){
 addEventListener("resize",place);requestAnimationFrame(place);setTimeout(place,300);
 
 /* ---- sound: real recordings where we have them ---- */
-const snd=(id,max)=>{try{return LP.sample(id,max||2.2)}catch(e){return false}};
+const snd=()=>false; // no animal or vehicle sounds: the story stays soft
 const beep=(f,at)=>LP.tone(f,.25,"sine",.03,at||0);
 function rumble(){LP.noise(2.4,.04,"lowpass",200,.8,0,100)}
 function knock(){[0,.5,1].forEach(t=>LP.noise(.08,.18,"lowpass",380,2,t))}
@@ -172,17 +172,17 @@ const ALL=["pip","cat","duck","dog","p1","p2","p3","p5","bird","crane","digger",
 const CROSS=[["pip",452],["cat",404],["duck",500],["p1",440],["p2",480],["p3",420],["p5",520]];
 const SC=[
  // 1 morning
- ()=>{drive(false);put("pip",210,404,1);show("pip");put("bird",532,134,1);show("bird");at(3000,()=>snd("bird",1.4));at(10000,()=>snd("bird",1.2))},
+ ()=>{drive(false);put("pip",210,404,1);show("pip");put("bird",532,134,1);show("bird");},
  // 2 the dog waits across the road
- ()=>{put("pip",210,404,1);show("pip");put("dog",730,556,1);show("dog");hopIt("dog");drive(true);at(5000,()=>LP.sfx.soft());at(16000,()=>snd("dog",.9))},
+ ()=>{put("pip",210,404,1);show("pip");put("dog",730,556,1);show("dog");hopIt("dog");drive(true);at(5000,()=>LP.sfx.soft());},
  // 3 too loud, too fast
  ()=>{put("pip",210,404,1);show("pip");put("dog",730,556,1);show("dog");put("cat",120,404,1);put("duck",300,404,1);show("cat");show("duck");drive(true);
-  at(7000,()=>snd("duck",.9));at(15000,()=>snd("cat",.9))},
+  },
  // 4 a thought
  ()=>{drive(false);put("pip",450,404);show("pip");tag("think",true);put("dog",730,556,1);show("dog");at(1800,()=>LP.sfx.soft());at(8400,()=>LP.sfx.twinkle())},
  // 5 knock on doors, neighbours come
  ()=>{tag("think",false);put("pip",450,404);show("pip");put("p1",900,404,1);put("p2",960,404,1);put("p3",-60,404,1);put("p5",-120,404,1);["p1","p2","p3","p5"].forEach(show);
-  at(600,knock);at(3200,()=>{put("p1",560,404);put("p3",340,404)});at(6000,()=>{put("p2",650,404);put("p5",250,404);snd("dog",.8)});at(13000,()=>{put("cat",120,404);put("duck",190,404);show("cat");show("duck")})},
+  at(600,knock);at(3200,()=>{put("p1",560,404);put("p3",340,404)});at(6000,()=>{put("p2",650,404);put("p5",250,404)});at(13000,()=>{put("cat",120,404);put("duck",190,404);show("cat");show("duck")})},
  // 6 yes
  ()=>{put("pip",450,404);show("pip");put("p1",560,404,1);put("p2",650,404,1);put("p3",340,404,1);put("p5",250,404,1);["p1","p2","p3","p5"].forEach(show);put("cat",150,404,1);put("duck",110,404,1);show("cat");show("duck");put("dog",730,556,1);show("dog");
   at(2400,()=>{["pip","p1","p2","p3","p5"].forEach(hopIt);LP.sfx.chime()})},
@@ -200,7 +200,7 @@ const SC=[
  // 9 the hug
  ()=>{document.querySelectorAll("#zebra rect").forEach(r=>r.classList.add("on"));park("bus",70);park("car",730);show("police",false);
   CROSS.forEach(([id,x])=>{put(id,x,id==="cat"||id==="duck"?548:id==="pip"?540:552,1);show(id)});put("dog",600,556,1);show("dog");put("pip",560,540,1);
-  at(1200,()=>{hopIt("pip");hopIt("dog");snd("dog",.8);LP.sfx.twinkle()});at(8000,()=>LP.sfx.soft())},
+  at(1200,()=>{hopIt("pip");hopIt("dog");LP.sfx.twinkle()});at(8000,()=>LP.sfx.soft())},
  // 10 goodnight
  ()=>{document.querySelectorAll("#zebra rect").forEach(r=>r.classList.add("on"));park("bus",70);park("car",730);show("police",false);
   CROSS.forEach(([id,x])=>{put(id,x,id==="cat"||id==="duck"?548:id==="pip"?540:552,1);show(id)});put("dog",600,556,1);show("dog");put("pip",560,540,1);
