@@ -110,14 +110,14 @@ const F=f=>`../felt/${f}.webp`;
 const PAR={1:.554,2:.558,3:.504,5:.62};
 const ACT=[]; // [id, file, w, h]
 const add=(id,f,w,h)=>ACT.push([id,f,w,h]);
+add("bus","street-bus",150,80);add("car","street-car",100,62);
 add("pip","raccoon-grey-side",104,103);
 add("cat","street-cat",52,64);add("duck","street-duck",54,60);
 add("dog","street-dog",92,87);
 [1,2,3,5].forEach(n=>add("p"+n,"street-person"+n,Math.round(104*PAR[n]),104));
 add("bird","street-bird",50,51);
 add("crane","street-crane",120,108);add("digger","street-digger",112,102);add("roller","street-roller",120,75);
-add("bus","street-bus",178,95);add("car","street-car",120,75);add("police","street-police",140,78);
-const CARS={bus:{lane:468,t:26,d:-4},car:{lane:512,t:20,d:-12},police:{lane:468,t:32,d:-20}};
+const CARS={bus:{lane:482,t:26,d:-4},car:{lane:518,t:20,d:-12}};
 const stage=$("st");
 let svg=`<image href="${F("street-road")}" x="-900" y="330" width="2700" height="300" preserveAspectRatio="none"/>
  <rect x="-900" y="520" width="2700" height="80" fill="#b6a4a9"/><rect x="-900" y="520" width="2700" height="9" fill="#d9b988"/>
@@ -194,15 +194,15 @@ const SC=[
   at(16400,()=>{put("digger",-160,470);put("roller",1060,500);put("crane",-160,404)})},
  // 8 cars stop; everyone crosses
  ()=>{show("crane",false);show("digger",false);show("roller",false);document.querySelectorAll("#zebra rect").forEach(r=>r.classList.add("on"));
-  put("bus",0,468,1);put("car",0,512,1);put("police",0,468,1);park("bus",70);park("car",730);park("police",-250);
+  park("bus",70);park("car",840);
   put("pip",450,404,1);show("pip");put("p1",430,404,1);put("p2",520,404,1);put("cat",350,404,1);put("duck",560,404,1);put("p3",300,404,1);put("p5",610,404,1);["p1","p2","p3","p5","cat","duck"].forEach(show);put("dog",730,556,1);show("dog");
   CROSS.forEach(([id,x],i)=>at(2600+i*800,()=>put(id,x,id==="cat"||id==="duck"?548:id==="pip"?540:i%2?530:552)));at(1800,()=>LP.sfx.soft())},
  // 9 the hug
- ()=>{document.querySelectorAll("#zebra rect").forEach(r=>r.classList.add("on"));park("bus",70);park("car",730);show("police",false);
+ ()=>{document.querySelectorAll("#zebra rect").forEach(r=>r.classList.add("on"));park("bus",70);park("car",840);
   CROSS.forEach(([id,x])=>{put(id,x,id==="cat"||id==="duck"?548:id==="pip"?540:552,1);show(id)});put("dog",600,556,1);show("dog");put("pip",560,540,1);
   at(1200,()=>{hopIt("pip");hopIt("dog");LP.sfx.twinkle()});at(8000,()=>LP.sfx.soft())},
  // 10 goodnight
- ()=>{document.querySelectorAll("#zebra rect").forEach(r=>r.classList.add("on"));park("bus",70);park("car",730);show("police",false);
+ ()=>{document.querySelectorAll("#zebra rect").forEach(r=>r.classList.add("on"));park("bus",70);park("car",840);
   CROSS.forEach(([id,x])=>{put(id,x,id==="cat"||id==="duck"?548:id==="pip"?540:552,1);show(id)});put("dog",600,556,1);show("dog");put("pip",560,540,1);
   tag("moon",true);tag("stars",true);$("dark").style.opacity=".52";at(3000,()=>LP.sfx.twinkle())}
 ];
@@ -211,7 +211,7 @@ const CLEAN=()=>{
  try{speechSynthesis.cancel()}catch(e){}
  stopLull();
  document.querySelectorAll("#zebra rect").forEach(r=>r.classList.remove("on"));
- ALL.forEach(id=>show(id,false));["bus","car","police"].forEach(id=>{A[id].m.classList.remove("drive");A[id].m.style.transform="";show(id,false)});
+ ALL.forEach(id=>show(id,false));["bus","car"].forEach(id=>{A[id].m.classList.remove("drive");A[id].m.style.transform="";show(id,false)});
  tag("think",false);tag("moon",false);tag("stars",false);$("dark").style.opacity="0";
 };
 
