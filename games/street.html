@@ -337,7 +337,7 @@ function label(){document.querySelectorAll("[data-thing]").forEach(g=>{const i=g
 const fill=(tpl,id)=>tpl.replace("{w}",w(id).w);
 
 let paris2cv=false;
-const SND=new Proxy({},{get:(_,id)=>()=>{const k=(id==='truck'&&sceneId==='austin')?'countrycar':(id==='tuktuk'&&sceneId==='sicily')?'italiancar':(id==='car'&&sceneId==='paris'&&paris2cv)?'frenchcar':id;if(k==='darkcar'||k==='countrycar'||k==='italiancar'||k==='frenchcar'||!LP.sample(id==='rat'?'mouse':id,2.4))SYN[k]()}});
+const SND=new Proxy({},{get:(_,id)=>()=>{const k=(id==='truck'&&sceneId==='austin')?'countrycar':(id==='tuktuk'&&sceneId==='sicily')?'italiancar':(id==='car'&&sceneId==='paris'&&paris2cv)?'frenchcar':id;if(k==='darkcar'||k==='countrycar'||k==='italiancar'||k==='frenchcar'||!LP.sample(id==='rat'?'mouse':id,id==='subway'?3.4:2.4))SYN[k]()}});
 function play(id,el){
  const now=Date.now();if(now-lastTap<150)return;lastTap=now;
  if(id.startsWith("hello_")){ // a person: the greeting is in the place's own language, whatever the child is learning
