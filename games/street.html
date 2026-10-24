@@ -190,7 +190,35 @@ const SYN={
  horse(){LP.tone(500,.5,"sawtooth",.05,0,900);LP.tone(900,.35,"sawtooth",.05,.45,350);for(let i=0;i<4;i++)LP.tone(180,.06,"square",.07,1+i*.22,120)},
  seagull(){[0,.45,.8].forEach((t,i)=>{LP.tone(1250-i*80,.32,"sawtooth",.06,t,1700-i*120);LP.tone(1900,.3,"sine",.03,t,1500)})},
  crow(){[0,.55].forEach(t=>{LP.tone(430,.3,"sawtooth",.09,t,290);LP.tone(215,.3,"square",.04,t,150);LP.noise(.26,.09,"bandpass",950,2,t)})},
- darkcar(){for(let i=0;i<8;i++){LP.tone(130,.14,"sine",.18,i*.25,42);if(i%2)LP.noise(.06,.07,"highpass",6500,1,i*.25+.125);LP.tone(i%4<2?220:277,.1,"sawtooth",.03,i*.25+.125)}},
+ /* the black car's stereo: two bars of techno at 128 bpm (four-on-the-floor kick, offbeat open hats, claps, an acid bassline and a minor stab) */
+ darkcar(){
+  const a=LP.ac();if(!a)return;
+  const B=60/128,S=B/4,t0=a.currentTime+.05,out=a.createGain();out.gain.value=.9;
+  const comp=a.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=6;out.connect(comp).connect(a.destination);
+  const nb=a.createBuffer(1,a.sampleRate,a.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
+  const env=(g,t,v,at,d)=>{g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+at);g.gain.exponentialRampToValueAtTime(.0001,t+at+d)};
+  const kick=t=>{const o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(170,t);o.frequency.exponentialRampToValueAtTime(46,t+.12);o.frequency.exponentialRampToValueAtTime(38,t+.4);env(g,t,.95,.004,.38);o.connect(g).connect(out);o.start(t);o.stop(t+.45);
+   const c=a.createBufferSource(),cf=a.createBiquadFilter(),cg=a.createGain();c.buffer=nb;cf.type="highpass";cf.frequency.value=3000;env(cg,t,.18,.001,.015);c.connect(cf).connect(cg).connect(out);c.start(t);c.stop(t+.03)};
+  const hat=(t,open)=>{const c=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();c.buffer=nb;f.type="highpass";f.frequency.value=open?6500:9000;env(g,t,open?.2:.07,.002,open?.11:.025);c.connect(f).connect(g).connect(out);c.start(t,Math.random()*.5);c.stop(t+.15)};
+  const clap=t=>{[0,.012,.024].forEach((d,k)=>{const c=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();c.buffer=nb;f.type="bandpass";f.frequency.value=1500;f.Q.value=.9;env(g,t+d,k<2?.14:.22,.001,k<2?.012:.13);c.connect(f).connect(g).connect(out);c.start(t+d,Math.random()*.5);c.stop(t+d+.2)})};
+  /* acid bass: a sawtooth through a resonant low-pass whose cutoff snaps down on every note */
+  const acid=(t,f,len,acc)=>{const o=a.createOscillator(),lp=a.createBiquadFilter(),g=a.createGain();o.type="sawtooth";o.frequency.setValueAtTime(f,t);lp.type="lowpass";lp.Q.value=14;
+   lp.frequency.setValueAtTime(acc?2400:1400,t);lp.frequency.exponentialRampToValueAtTime(260,t+len);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(acc?.3:.22,t+.006);g.gain.setValueAtTime(acc?.3:.22,t+len*.7);g.gain.exponentialRampToValueAtTime(.0001,t+len);
+   o.connect(lp).connect(g).connect(out);o.start(t);o.stop(t+len+.02)};
+  const stab=(t,notes)=>{notes.forEach(f=>{[-6,6].forEach(dt=>{const o=a.createOscillator(),lp=a.createBiquadFilter(),g=a.createGain();o.type="sawtooth";o.frequency.value=f;o.detune.value=dt;lp.type="lowpass";lp.frequency.setValueAtTime(2600,t);lp.frequency.exponentialRampToValueAtTime(500,t+.16);env(g,t,.028,.004,.16);o.connect(lp).connect(g).connect(out);o.start(t);o.stop(t+.2)})})};
+  const BASS=[55,0,55,82.4,0,55,110,0,55,0,82.4,55,0,65.4,0,98];
+  const ACC=[1,0,0,1,0,0,1,0,0,0,1,0,0,1,0,1];
+  for(let bar=0;bar<2;bar++)for(let st=0;st<16;st++){
+   const t=t0+(bar*16+st)*S;
+   if(st%4===0)kick(t);
+   if(st%4===2)hat(t,true);else hat(t,false);
+   if(st===4||st===12)clap(t);
+   if(BASS[st]&&!(bar===0&&st<2))acid(t,BASS[st],S*.85,ACC[st]);
+   if(st===3||st===10||(bar===1&&st===14))stab(t,[220,261.6,329.6,392]);
+  }
+  /* a last kick and a crash to end on */
+  kick(t0+32*S);hat(t0+32*S,true);
+ },
  subway(){LP.noise(1.4,.2,"bandpass",500,1.2,0,2600);LP.tone(70,1.3,"sawtooth",.06,0,150);LP.tone(900,.2,"sine",.05,1.3,900)},
  escooter(){LP.tone(300,1,"sine",.07,0,900);LP.tone(310,1,"triangle",.05,0,910);LP.noise(.8,.04,"highpass",3000,1)},
  skateboard(){LP.noise(1.2,.12,"lowpass",350,1,0,900);for(let i=0;i<4;i++)LP.tone(160,.05,"square",.08,.1+i*.28,90)},
@@ -227,7 +255,7 @@ function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump"
 function label(){document.querySelectorAll("[data-thing]").forEach(g=>g.setAttribute("aria-label",w(g.dataset.thing).w))}
 const fill=(tpl,id)=>tpl.replace("{w}",w(id).w);
 
-const SND=new Proxy({},{get:(_,id)=>()=>{if(!LP.sample(id,2.4))SYN[id]()}});
+const SND=new Proxy({},{get:(_,id)=>()=>{if(id==='darkcar'||!LP.sample(id,2.4))SYN[id]()}});
 function play(id,el){
  const now=Date.now();if(now-lastTap<150)return;lastTap=now;playedAt=now;lastId=id;
  const g=el||document.querySelector(`[data-thing="${id}"]`);plays++;
@@ -246,7 +274,7 @@ function play(id,el){
   return;
  }
  bubble(w(id).w+"  "+w(id).s);LPLearn.heard(id,LP.lang);
- setTimeout(()=>{LP.say(w(id).w);LP.say(w(id).s,true)},({fire:2300,police:2300,bus:2000,plane:1900,heli:1900,bird:1900,crow:1800,seagull:1800,dog:1800,tram:1500,bike:1200,car:1000,truck:1800,taxi:1100,boat:1800,scooter:1500,motorcycle:1700,cargobike:1500,horse:1800,darkcar:2000,subway:1600,escooter:1300,skateboard:1500,camper:1300,chariot:1900,tuktuk:1300,balloon:1900,tractor:1900,cow:1600,sheep:1400,digger:2000,dumptruck:1900,mixer:2000,crane:1700,roller:2000})[id]||1000);
+ setTimeout(()=>{LP.say(w(id).w);LP.say(w(id).s,true)},({fire:2300,police:2300,bus:2000,plane:1900,heli:1900,bird:1900,crow:1800,seagull:1800,dog:1800,tram:1500,bike:1200,car:1000,truck:1800,taxi:1100,boat:1800,scooter:1500,motorcycle:1700,cargobike:1500,horse:1800,darkcar:4300,subway:1600,escooter:1300,skateboard:1500,camper:1300,chariot:1900,tuktuk:1300,balloon:1900,tractor:1900,cow:1600,sheep:1400,digger:2000,dumptruck:1900,mixer:2000,crane:1700,roller:2000})[id]||1000);
  if(want)setTimeout(()=>{if(want){bubble(fill(L().where,want));LP.say(fill(L().where,want))}},3600);
  else if(plays>=8&&!swapping){swapping=1;setTimeout(()=>{nextScene();swapping=0},4600)}
 }
