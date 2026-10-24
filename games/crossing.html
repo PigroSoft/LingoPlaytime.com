@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pip and the safe crossing</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{color-scheme:light;--ink:#18264A;--paper:#FFFDF8;--display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif}
+html,body{height:100%;margin:0}
+body{background:#2f6fe8;color:#fff;font-family:var(--body);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.app{position:relative;height:100%;display:flex;flex-direction:column;box-sizing:border-box;padding:max(12px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(116px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#4f9be6 no-repeat}
+.top{position:relative;z-index:3;display:flex;justify-content:center;min-height:60px}
+#bubble{font-size:clamp(17px,2.5vw,27px);line-height:1.25;max-width:min(900px,94vw);text-align:center;transition:transform .15s}
+.stage{position:relative;z-index:1;flex:1;min-height:0;display:flex;align-items:flex-end}
+svg#st{width:100%;height:100%;overflow:visible}
+.act{transition:transform 2s steps(10),opacity .9s;will-change:transform}
+.act.hid{opacity:0;pointer-events:none}
+.bob{transform-box:fill-box;transform-origin:50% 100%}
+.act.live .bob{animation:bob 1.4s steps(1) infinite}
+.act.hop .bob{animation:hop .8s steps(4) 2}
+@keyframes bob{0%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg) translateY(-1%)}}
+@keyframes hop{40%{transform:translateY(-20px) scale(1.05)}}
+.mv{transform-box:fill-box}
+.mv.drive{animation:dl var(--t,9s) steps(110) infinite;animation-delay:var(--d,0s)}
+@keyframes dl{from{transform:translateX(-340px)}to{transform:translateX(1300px)}}
+#zebra rect{fill:#fffaf0;opacity:0;transition:opacity .6s}
+#zebra rect.on{opacity:.93}
+#think{transition:opacity .8s}
+#think.hid{opacity:0}
+#moon,#stars{transition:opacity 2s}
+#moon.hid,#stars.hid{opacity:0}
+#dark{position:absolute;inset:0;z-index:2;background:#050a24;opacity:0;pointer-events:none;transition:opacity 4s}
+.bar{position:absolute;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom,0px));z-index:5;display:flex;justify-content:center;align-items:center;gap:14px;pointer-events:none}
+.bar button{pointer-events:auto;width:56px;height:56px;border:0;border-radius:50%;background:#fffdf6;box-shadow:0 3px 8px #0006;outline:2px dashed #b8401f99;outline-offset:-5px;cursor:pointer;display:grid;place-items:center;padding:0;color:var(--ink)}
+.bar button.big{width:70px;height:70px}
+.bar button:active{transform:translateY(3px)}
+.bar button:focus-visible{outline:4px solid #F6C033;outline-offset:3px}
+.bar svg{width:46%;height:46%;fill:currentColor}
+.dots{position:absolute;left:0;right:0;bottom:calc(max(14px,env(safe-area-inset-bottom,0px)) + 82px);z-index:5;display:flex;justify-content:center;gap:9px;pointer-events:none}
+.dots i{width:10px;height:10px;border-radius:50%;background:#fff6;box-shadow:0 1px 3px #0006}
+.dots i.on{background:#F6C033}
+.dots i.past{background:#fffd}
+#listen{position:fixed;inset:0;z-index:3000;background:#000;display:none;color:#fff2;font-size:34px;align-items:center;justify-content:center;cursor:pointer}
+#listen.on{display:flex}
+#intro{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:linear-gradient(#0b1a44cc,#0b1a44ee);text-align:center;padding:24px}
+#intro.gone{display:none}
+#intro img{height:min(34vh,260px);width:auto;filter:drop-shadow(0 6px 8px #0008)}
+#intro h1{font-family:var(--display);font-size:clamp(26px,5vw,48px);margin:0;max-width:16em;text-shadow:0 2px 0 #0008}
+#go{width:96px;height:96px;border:0;border-radius:50%;background:#fffdf6;box-shadow:0 4px 12px #0008;outline:3px dashed #b8401f99;outline-offset:-7px;cursor:pointer;display:grid;place-items:center;padding:0;color:var(--ink)}
+#go svg{width:44%;height:44%;fill:currentColor;margin-left:8%}
+#go:focus-visible{outline:5px solid #F6C033;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.act,.mv.drive,.act.live .bob,.act.hop .bob{animation:none!important;transition:opacity .9s}#dark{transition:none}}
+</style>
+</head>
+<body>
+<script>window.LP_GAME="crossing"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="sounds.js"></script>
+<div class="app" id="app">
+  <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
+  <div class="stage">
+    <svg id="st" viewBox="0 0 900 560" preserveAspectRatio="xMidYMax meet" role="img" aria-label="A felt town street with a road and a raccoon"></svg>
+  </div>
+  <div id="dark"></div>
+  <div class="dots" id="dots"></div>
+  <div class="bar">
+    <button type="button" id="prev" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M6 5h3v14H6zM20 5v14L10 12z"/></svg></button>
+    <button type="button" id="pp" class="big" aria-label="Pause"><svg viewBox="0 0 24 24" id="ppi"></svg></button>
+    <button type="button" id="next" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M15 5h3v14h-3zM4 5v14l10-7z"/></svg></button>
+    <button type="button" id="lis" aria-label="Screen off, keep listening"><svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/></svg></button>
+  </div>
+  <div id="intro">
+    <img src="../felt/raccoon-grey.webp" alt="">
+    <h1 id="ititle"></h1>
+    <button type="button" id="go" aria-label="Play story"><svg viewBox="0 0 24 24"><path d="M6 4v16l14-8z"/></svg></button>
+  </div>
+</div>
+<div id="listen" role="button" aria-label="Tap to wake the screen">&#9790;</div>
+<script>
+/* Every line this story can say. tools/phrases.js reads DATA to record them. */
+const DATA={
+ words:[],
+ lines:{
+  en:{"title": "Pip and the safe crossing", "s1": "Pip the raccoon woke up in a little town, and the morning was bright.", "s2": "Pip wanted to see the dog, who was waiting on the other side of the road.", "s3": "But the road was loud, the cars were fast, and Pip, Cat and Duck were far too small to cross.", "s4": "Pip sat and thought. People built this road, so people can change it.", "s5": "So Pip knocked on doors, and the neighbours came out to listen.", "s6": "Together they asked for a safe place to cross, and the town said yes.", "s7": "The diggers came, the roller rolled, and the workers painted bright stripes.", "s8": "Now the cars stop, and everyone crosses together.", "s9": "Pip hugged the dog. One small voice and a few good friends had changed the street.", "s10": "The world is made by people, and people can make it kinder. Goodnight, Pip. Goodnight, everyone."},
+  de:{"title": "Pip und der sichere Übergang", "s1": "Pip, der Waschbär, wachte in einer kleinen Stadt auf, und der Morgen war hell.", "s2": "Pip wollte den Hund besuchen, der auf der anderen Straßenseite wartete.", "s3": "Aber die Straße war laut, die Autos waren schnell, und Pip, Katze und Ente waren viel zu klein zum Überqueren.", "s4": "Pip setzte sich und dachte nach. Menschen haben diese Straße gebaut, also können Menschen sie verändern.", "s5": "Da klopfte Pip an Türen, und die Nachbarn kamen heraus und hörten zu.", "s6": "Gemeinsam baten sie um einen sicheren Platz zum Überqueren, und die Stadt sagte ja.", "s7": "Die Bagger kamen, die Walze rollte, und die Arbeiter malten helle Streifen.", "s8": "Jetzt halten die Autos an, und alle gehen zusammen hinüber.", "s9": "Pip umarmte den Hund. Eine kleine Stimme und ein paar gute Freunde hatten die Straße verändert.", "s10": "Die Welt wird von Menschen gemacht, und Menschen können sie freundlicher machen. Gute Nacht, Pip. Gute Nacht, alle zusammen."},
+  es:{"title": "Pip y el paso seguro", "s1": "Pip, el mapache, se despertó en un pueblo pequeño, y la mañana era brillante.", "s2": "Pip quería ver al perro, que esperaba al otro lado de la calle.", "s3": "Pero la calle era ruidosa, los coches iban rápido, y Pip, el gato y el pato eran demasiado pequeños para cruzar.", "s4": "Pip se sentó a pensar. Las personas construyeron esta calle, así que las personas pueden cambiarla.", "s5": "Entonces Pip llamó a las puertas, y los vecinos salieron a escuchar.", "s6": "Juntos pidieron un lugar seguro para cruzar, y el pueblo dijo que sí.", "s7": "Llegaron las excavadoras, pasó la apisonadora, y los obreros pintaron rayas brillantes.", "s8": "Ahora los coches se detienen, y todos cruzan juntos.", "s9": "Pip abrazó al perro. Una voz pequeña y unos buenos amigos habían cambiado la calle.", "s10": "El mundo lo hacen las personas, y las personas pueden hacerlo más amable. Buenas noches, Pip. Buenas noches a todos."},
+  fr:{"title": "Pip et le passage sûr", "s1": "Pip le raton laveur s'est réveillé dans une petite ville, et le matin était lumineux.", "s2": "Pip voulait voir le chien, qui attendait de l'autre côté de la route.", "s3": "Mais la route était bruyante, les voitures allaient vite, et Pip, le chat et le canard étaient bien trop petits pour traverser.", "s4": "Pip s'est assis et a réfléchi. Des gens ont construit cette route, alors des gens peuvent la changer.", "s5": "Alors Pip a frappé aux portes, et les voisins sont sortis pour écouter.", "s6": "Ensemble, ils ont demandé un endroit sûr pour traverser, et la ville a dit oui.", "s7": "Les pelleteuses sont arrivées, le rouleau a roulé, et les ouvriers ont peint de belles bandes blanches.", "s8": "Maintenant les voitures s'arrêtent, et tout le monde traverse ensemble.", "s9": "Pip a serré le chien dans ses bras. Une petite voix et quelques bons amis avaient changé la rue.", "s10": "Le monde est fait par des gens, et des gens peuvent le rendre plus gentil. Bonne nuit, Pip. Bonne nuit à tous."},
+  it:{"title": "Pip e l'attraversamento sicuro", "s1": "Pip il procione si svegliò in una piccola città, e la mattina era luminosa.", "s2": "Pip voleva vedere il cane, che aspettava dall'altra parte della strada.", "s3": "Ma la strada era rumorosa, le auto erano veloci, e Pip, il gatto e l'anatra erano troppo piccoli per attraversare.", "s4": "Pip si sedette a pensare. Le persone hanno costruito questa strada, quindi le persone possono cambiarla.", "s5": "Così Pip bussò alle porte, e i vicini uscirono ad ascoltare.", "s6": "Insieme chiesero un posto sicuro dove attraversare, e la città disse di sì.", "s7": "Arrivarono le scavatrici, il rullo passò, e gli operai dipinsero strisce luminose.", "s8": "Ora le auto si fermano, e tutti attraversano insieme.", "s9": "Pip abbracciò il cane. Una piccola voce e qualche buon amico avevano cambiato la strada.", "s10": "Il mondo è fatto dalle persone, e le persone possono renderlo più gentile. Buonanotte, Pip. Buonanotte a tutti."},
+  pt:{"title": "Pip e a travessia segura", "s1": "Pip, o guaxinim, acordou numa cidadezinha, e a manhã estava clara.", "s2": "Pip queria ver o cachorro, que esperava do outro lado da rua.", "s3": "Mas a rua era barulhenta, os carros eram rápidos, e Pip, o gato e o pato eram pequenos demais para atravessar.", "s4": "Pip sentou e pensou. As pessoas construíram esta rua, então as pessoas podem mudá-la.", "s5": "Então Pip bateu nas portas, e os vizinhos saíram para ouvir.", "s6": "Juntos, pediram um lugar seguro para atravessar, e a cidade disse sim.", "s7": "Vieram as escavadeiras, o rolo passou, e os operários pintaram faixas brilhantes.", "s8": "Agora os carros param, e todos atravessam juntos.", "s9": "Pip abraçou o cachorro. Uma voz pequena e alguns bons amigos tinham mudado a rua.", "s10": "O mundo é feito pelas pessoas, e as pessoas podem torná-lo mais gentil. Boa noite, Pip. Boa noite a todos."},
+  nl:{"title": "Pip en de veilige oversteek", "s1": "Pip de wasbeer werd wakker in een klein stadje, en de ochtend was helder.", "s2": "Pip wilde de hond zien, die aan de overkant van de weg wachtte.", "s3": "Maar de weg was lawaaiig, de auto's reden snel, en Pip, de kat en de eend waren veel te klein om over te steken.", "s4": "Pip ging zitten en dacht na. Mensen hebben deze weg gebouwd, dus mensen kunnen hem veranderen.", "s5": "Toen klopte Pip op deuren, en de buren kwamen naar buiten om te luisteren.", "s6": "Samen vroegen ze om een veilige plek om over te steken, en de stad zei ja.", "s7": "De graafmachines kwamen, de wals reed, en de arbeiders schilderden heldere strepen.", "s8": "Nu stoppen de auto's, en iedereen steekt samen over.", "s9": "Pip knuffelde de hond. Een kleine stem en een paar goede vrienden hadden de straat veranderd.", "s10": "De wereld wordt door mensen gemaakt, en mensen kunnen haar vriendelijker maken. Welterusten, Pip. Welterusten, allemaal."},
+  pl:{"title": "Pip i bezpieczne przejście", "s1": "Szop Pip obudził się w małym miasteczku, a poranek był jasny.", "s2": "Pip chciał zobaczyć psa, który czekał po drugiej stronie ulicy.", "s3": "Ale ulica była głośna, samochody jechały szybko, a Pip, kot i kaczka byli za mali, żeby ją przejść.", "s4": "Pip usiadł i pomyślał. Ludzie zbudowali tę ulicę, więc ludzie mogą ją zmienić.", "s5": "Pip zapukał więc do drzwi, a sąsiedzi wyszli, żeby posłuchać.", "s6": "Razem poprosili o bezpieczne miejsce do przejścia, a miasto się zgodziło.", "s7": "Przyjechały koparki, przejechał walec, a robotnicy namalowali jasne pasy.", "s8": "Teraz samochody się zatrzymują, a wszyscy przechodzą razem.", "s9": "Pip przytulił psa. Jeden mały głos i kilku dobrych przyjaciół zmieniło ulicę.", "s10": "Świat tworzą ludzie, a ludzie mogą go uczynić życzliwszym. Dobranoc, Pip. Dobranoc wszystkim."},
+  sv:{"title": "Pip och det säkra övergångsstället", "s1": "Tvättbjörnen Pip vaknade i en liten stad, och morgonen var ljus.", "s2": "Pip ville träffa hunden, som väntade på andra sidan vägen.", "s3": "Men vägen var högljudd, bilarna körde fort, och Pip, katten och anden var alldeles för små för att gå över.", "s4": "Pip satte sig och tänkte. Människor byggde den här vägen, så människor kan ändra den.", "s5": "Då knackade Pip på dörrar, och grannarna kom ut för att lyssna.", "s6": "Tillsammans bad de om ett säkert ställe att gå över, och staden sa ja.", "s7": "Grävmaskinerna kom, vältan rullade, och arbetarna målade ljusa ränder.", "s8": "Nu stannar bilarna, och alla går över tillsammans.", "s9": "Pip kramade hunden. En liten röst och några goda vänner hade förändrat gatan.", "s10": "Världen görs av människor, och människor kan göra den snällare. God natt, Pip. God natt, alla."},
+  el:{"title": "Ο Πιπ και η ασφαλής διάβαση", "s1": "Ο ρακούν Πιπ ξύπνησε σε μια μικρή πόλη, και το πρωί ήταν λαμπερό.", "s2": "Ο Πιπ ήθελε να δει τον σκύλο, που περίμενε στην άλλη μεριά του δρόμου.", "s3": "Μα ο δρόμος ήταν θορυβώδης, τα αυτοκίνητα έτρεχαν, και ο Πιπ, η γάτα και η πάπια ήταν πολύ μικροί για να περάσουν.", "s4": "Ο Πιπ κάθισε και σκέφτηκε. Οι άνθρωποι έφτιαξαν αυτόν τον δρόμο, άρα οι άνθρωποι μπορούν να τον αλλάξουν.", "s5": "Έτσι ο Πιπ χτύπησε πόρτες, και οι γείτονες βγήκαν να ακούσουν.", "s6": "Μαζί ζήτησαν ένα ασφαλές σημείο για να περνούν, και η πόλη είπε ναι.", "s7": "Ήρθαν οι εκσκαφείς, πέρασε ο οδοστρωτήρας, και οι εργάτες ζωγράφισαν φωτεινές ρίγες.", "s8": "Τώρα τα αυτοκίνητα σταματούν, και όλοι περνούν μαζί.", "s9": "Ο Πιπ αγκάλιασε τον σκύλο. Μια μικρή φωνή και μερικοί καλοί φίλοι είχαν αλλάξει τον δρόμο.", "s10": "Τον κόσμο τον φτιάχνουν οι άνθρωποι, και οι άνθρωποι μπορούν να τον κάνουν πιο ευγενικό. Καληνύχτα, Πιπ. Καληνύχτα σε όλους."},
+  zh:{"title": "皮普和安全过街", "s1": "浣熊皮普在一个小镇里醒来，早晨阳光明亮。", "s2": "皮普想去看小狗，小狗在马路对面等着。", "s3": "可是马路很吵，汽车开得很快，皮普、小猫和小鸭子都太小了，过不去。", "s4": "皮普坐下来想了想。马路是人修的，所以人可以改变它。", "s5": "于是皮普去敲邻居的门，大家都走出来听。", "s6": "大家一起请求修一个安全过街的地方，小镇说好。", "s7": "挖掘机来了，压路机开过，工人们画上了明亮的条纹。", "s8": "现在汽车都停下来，大家一起过马路。", "s9": "皮普抱住了小狗。一个小小的声音和几个好朋友，改变了这条街。", "s10": "世界是人创造的，人也能让它变得更温柔。晚安，皮普。大家晚安。"},
+  ar:{"title": "بيب والعبور الآمن", "s1": "استيقظ الراكون بيب في بلدة صغيرة، وكان الصباح مشرقًا.", "s2": "أراد بيب أن يرى الكلب الذي كان ينتظر على الجانب الآخر من الطريق.", "s3": "لكن الطريق كان صاخبًا، والسيارات سريعة، وكان بيب والقطة والبطة أصغر من أن يعبروا.", "s4": "جلس بيب وفكّر. الناس بنوا هذا الطريق، إذن يستطيع الناس تغييره.", "s5": "فطرق بيب الأبواب، وخرج الجيران ليسمعوا.", "s6": "طلبوا معًا مكانًا آمنًا للعبور، وقالت البلدة نعم.", "s7": "جاءت الحفّارات، ومرّت المدحلة، ورسم العمال خطوطًا لامعة.", "s8": "الآن تتوقف السيارات، ويعبر الجميع معًا.", "s9": "عانق بيب الكلب. صوت صغير وبضعة أصدقاء طيبين غيّروا الشارع.", "s10": "العالم يصنعه الناس، ويستطيع الناس أن يجعلوه ألطف. تصبح على خير يا بيب. تصبحون على خير جميعًا."},
+  ja:{"title": "ピップとあんぜんなおうだんほどう", "s1": "アライグマのピップは、ちいさなまちで目をさましました。あさはあかるく、いい天気でした。", "s2": "ピップは、道のむこうがわで待っているいぬに会いたいなと思いました。", "s3": "でも道はうるさくて、くるまははやくて、ピップとねことあひるは、ちいさすぎてわたれません。", "s4": "ピップはすわって考えました。道は人がつくったのだから、人がかえることもできる。", "s5": "そこでピップはドアをトントンとたたき、ご近所さんが出てきて話をききました。", "s6": "みんなでいっしょに、あんぜんにわたれる場所をおねがいすると、まちは「いいよ」といいました。", "s7": "ショベルカーがきて、ローラーがころがり、しごとの人たちがあかるいしまをかきました。", "s8": "いまは、くるまがとまって、みんないっしょにわたります。", "s9": "ピップはいぬをぎゅっとしました。ちいさな声と、なかまたちが、まちをかえたのです。", "s10": "せかいは人がつくったもの。人はせかいを、もっとやさしくできます。おやすみ、ピップ。みんな、おやすみなさい。"},
+  ko:{"title": "핍과 안전한 횡단보도", "s1": "너구리 핍은 작은 마을에서 눈을 떴어요. 아침 햇살이 환했어요.", "s2": "핍은 길 건너에서 기다리는 강아지를 만나고 싶었어요.", "s3": "하지만 길은 시끄럽고 자동차는 빨라서, 핍과 고양이와 오리는 너무 작아서 건널 수 없었어요.", "s4": "핍은 앉아서 생각했어요. 이 길은 사람들이 만들었으니까, 사람들이 바꿀 수도 있어.", "s5": "그래서 핍은 이웃집 문을 두드렸고, 이웃들이 나와서 귀 기울여 들었어요.", "s6": "모두 함께 안전하게 건널 곳을 부탁했고, 마을은 좋다고 했어요.", "s7": "굴착기가 오고, 롤러가 지나가고, 일하는 사람들이 밝은 줄무늬를 그렸어요.", "s8": "이제 자동차가 멈추고, 모두 함께 길을 건너요.", "s9": "핍은 강아지를 꼭 안아 주었어요. 작은 목소리와 좋은 친구들이 거리를 바꾸었어요.", "s10": "세상은 사람들이 만들고, 사람들은 세상을 더 다정하게 만들 수 있어요. 잘 자, 핍. 모두 잘 자요."},
+  ru:{"title": "Пип и безопасный переход", "s1": "Енот Пип проснулся в маленьком городке, и утро было ясным.", "s2": "Пип хотел увидеть собаку, которая ждала на другой стороне дороги.", "s3": "Но дорога была шумной, машины ехали быстро, а Пип, кошка и утка были слишком малы, чтобы перейти.", "s4": "Пип сел и задумался. Люди построили эту дорогу, значит, люди могут её изменить.", "s5": "Тогда Пип постучал в двери, и соседи вышли послушать.", "s6": "Вместе они попросили безопасное место для перехода, и город сказал да.", "s7": "Приехали экскаваторы, прокатился каток, и рабочие нарисовали яркие полосы.", "s8": "Теперь машины останавливаются, и все переходят вместе.", "s9": "Пип обнял собаку. Один тихий голос и несколько добрых друзей изменили улицу.", "s10": "Мир создают люди, и люди могут сделать его добрее. Спокойной ночи, Пип. Спокойной ночи всем."},
+  tr:{"title": "Pip ve güvenli geçit", "s1": "Rakun Pip küçük bir kasabada uyandı, sabah çok aydınlıktı.", "s2": "Pip yolun karşısında bekleyen köpeği görmek istedi.", "s3": "Ama yol gürültülüydü, arabalar hızlıydı, Pip, kedi ve ördek geçmek için çok küçüktü.", "s4": "Pip oturdu ve düşündü. Bu yolu insanlar yaptı, o zaman insanlar değiştirebilir.", "s5": "Bunun üzerine Pip kapıları çaldı, komşular dinlemek için dışarı çıktı.", "s6": "Birlikte güvenli bir geçit istediler ve kasaba evet dedi.", "s7": "Kepçeler geldi, silindir geçti, işçiler parlak çizgiler çizdi.", "s8": "Şimdi arabalar duruyor, herkes birlikte karşıya geçiyor.", "s9": "Pip köpeğe sarıldı. Küçük bir ses ve birkaç iyi arkadaş sokağı değiştirmişti.", "s10": "Dünyayı insanlar yapar, insanlar onu daha iyi bir yer yapabilir. İyi geceler, Pip. Herkese iyi geceler."},
+  hi:{"title": "पिप और सुरक्षित सड़क पार", "s1": "रैकून पिप एक छोटे शहर में जागा, और सुबह बहुत उजली थी।", "s2": "पिप कुत्ते से मिलना चाहता था, जो सड़क के दूसरी तरफ़ उसका इंतज़ार कर रहा था।", "s3": "लेकिन सड़क पर बहुत शोर था, गाड़ियाँ तेज़ थीं, और पिप, बिल्ली और बत्तख सड़क पार करने के लिए बहुत छोटे थे।", "s4": "पिप बैठकर सोचने लगा। इस सड़क को लोगों ने बनाया है, तो लोग इसे बदल भी सकते हैं।", "s5": "तो पिप ने दरवाज़े खटखटाए, और पड़ोसी सुनने के लिए बाहर आ गए।", "s6": "सबने मिलकर सड़क पार करने की सुरक्षित जगह माँगी, और शहर ने हाँ कह दी।", "s7": "खुदाई मशीनें आईं, रोलर चला, और मज़दूरों ने चमकीली धारियाँ बनाईं।", "s8": "अब गाड़ियाँ रुक जाती हैं, और सब साथ मिलकर सड़क पार करते हैं।", "s9": "पिप ने कुत्ते को गले लगा लिया। एक छोटी-सी आवाज़ और कुछ अच्छे दोस्तों ने गली बदल दी थी।", "s10": "दुनिया को लोग बनाते हैं, और लोग उसे और दयालु बना सकते हैं। शुभ रात्रि, पिप। सबको शुभ रात्रि।"}
+ }
+};
+
+const L=()=>LP.t(DATA.lines);
+const TAGS={en:"en-GB",de:"de-DE",es:"es-ES",fr:"fr-FR",it:"it-IT",pt:"pt-PT",nl:"nl-NL",pl:"pl-PL",sv:"sv-SE",el:"el-GR",zh:"zh-CN",ar:"ar-SA",ja:"ja-JP",ko:"ko-KR",ru:"ru-RU",tr:"tr-TR",hi:"hi-IN"};
+const $=id=>document.getElementById(id);
+const PLAY='<path d="M6 4v16l14-8z"/>',PAUSE='<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
+
+/* ---- the felt town: one background, a road, and actors that move in held frames ---- */
+const F=f=>`../felt/${f}.webp`;
+const PAR={1:.554,2:.558,3:.504,5:.62};
+const ACT=[]; // [id, file, w, h]
+const add=(id,f,w,h)=>ACT.push([id,f,w,h]);
+add("pip","raccoon-grey-side",104,103);
+add("cat","street-cat",52,64);add("duck","street-duck",54,60);
+add("dog","street-dog",92,87);
+[1,2,3,5].forEach(n=>add("p"+n,"street-person"+n,Math.round(104*PAR[n]),104));
+add("bird","street-bird",50,51);
+add("crane","street-crane",120,108);add("digger","street-digger",112,102);add("roller","street-roller",120,75);
+add("bus","street-bus",178,95);add("car","street-car",120,75);add("police","street-police",140,78);
+const CARS={bus:{lane:468,t:8.5,d:-1},car:{lane:512,t:6.2,d:-3},police:{lane:468,t:10.5,d:-6}};
+const stage=$("st");
+let svg=`<image href="${F("street-road")}" x="-900" y="330" width="2700" height="300" preserveAspectRatio="none"/>
+ <rect x="-900" y="520" width="2700" height="80" fill="#b6a4a9"/><rect x="-900" y="520" width="2700" height="9" fill="#d9b988"/>
+ <image href="${F("street-tree")}" x="462" y="144" width="151" height="250"/>
+ <g id="zebra">${[0,1,2,3,4].map(i=>`<rect x="380" y="${424+i*19}" width="140" height="11" rx="3"/>`).join("")}</g>`;
+ACT.forEach(([id,f,w,h])=>{
+ const car=CARS[id];
+ svg+=`<g class="act hid${car?" car":""}" id="a-${id}" data-w="${w}" data-h="${h}"><g class="${car?"mv":"bob"}" id="m-${id}"><image href="${f.startsWith("street")?F(f):F(f)}" width="${w}" height="${h}"/></g></g>`;
+});
+svg+=`<g id="think" class="hid"><image href="${F("cloud-1")}" x="520" y="40" width="190" height="120"/><image href="${F("street-crane")}" x="570" y="62" width="90" height="81"/></g>
+ <image id="moon" class="hid" href="${F("night-moon")}" x="730" y="30" width="110" height="110"/>
+ <image id="stars" class="hid" href="${F("night-stars")}" x="140" y="20" width="170" height="130"/>`;
+stage.innerHTML=svg;
+const A={};ACT.forEach(([id,f,w,h])=>{A[id]={g:$("a-"+id),m:$("m-"+id),w,h}});
+function put(id,fx,fy,instant){
+ const a=A[id];if(!a)return;
+ if(instant){a.g.style.transition="none"}
+ a.g.style.transform=`translate(${Math.round(fx-a.w/2)}px,${Math.round(fy-a.h)}px)`;
+ if(instant){void a.g.getBBox();a.g.style.transition=""}
+}
+const show=(id,on=true)=>{const a=A[id];if(!a)return;a.g.classList.toggle("hid",!on);a.g.classList.toggle("live",on&&!CARS[id])};
+const hopIt=id=>{const g=A[id]&&A[id].g;if(!g)return;g.classList.remove("hop");void g.getBBox();g.classList.add("hop")};
+function drive(on){
+ Object.keys(CARS).forEach(id=>{const c=CARS[id],m=A[id].m;
+  if(on){put(id,0,c.lane,true);m.style.setProperty("--t",c.t+"s");m.style.setProperty("--d",c.d+"s");m.style.transform="";m.classList.add("drive");show(id)}
+  else{m.classList.remove("drive");show(id,false)}});
+}
+function park(id,x){const m=A[id].m;m.classList.remove("drive");m.style.transform=`translateX(${x}px)`;put(id,0,CARS[id].lane,true);show(id)}
+const tag=(sel,on)=>{const e=$(sel);if(e)e.classList.toggle("hid",!on)};
+
+/* the miniature town behind, scaled like the street game so the pavement meets the felt road */
+function place(){
+ const m=stage.getScreenCTM();if(!m)return;
+ const curb=m.f+m.d*352,top=$("app").getBoundingClientRect().top,y=curb-top;
+ const W=innerWidth,s=Math.max(W/1536,y/(864*.86),.2);
+ const app=$("app");app.style.backgroundImage=`url(../felt/street-bg.webp)`;
+ app.style.backgroundSize=(1536*s)+"px "+(864*s)+"px";
+ app.style.backgroundPosition=((W-1536*s)/2)+"px "+(y-864*.86*s)+"px";
+}
+addEventListener("resize",place);requestAnimationFrame(place);setTimeout(place,300);
+
+/* ---- sound: real recordings where we have them ---- */
+const snd=(id,max)=>{try{return LP.sample(id,max||2.2)}catch(e){return false}};
+const beep=(f,at)=>LP.tone(f,.16,"square",.05,at||0);
+function rumble(){LP.noise(1.6,.14,"lowpass",260,.8,0,120);LP.tone(70,1.6,"sawtooth",.04,0,58)}
+function knock(){[0,.28,.56].forEach(t=>LP.noise(.07,.5,"lowpass",420,2,t))}
+
+/* ---- the nine scenes. Each sets who is where; at(ms,fn) schedules a beat that dies if the scene changes ---- */
+let gen=0,cur=-1,paused=false,started=false,done=false,timers=[];
+const at=(ms,fn)=>{const g=gen;timers.push(setTimeout(()=>{if(g===gen)fn()},ms))};
+const ALL=["pip","cat","duck","dog","p1","p2","p3","p5","bird","crane","digger","roller"];
+const CROSS=[["pip",452],["cat",404],["duck",500],["p1",440],["p2",480],["p3",420],["p5",520]];
+const SC=[
+ // 1 morning
+ ()=>{drive(false);put("pip",210,404,1);show("pip");put("bird",532,134,1);show("bird");at(700,()=>snd("bird",1.8));at(3200,()=>snd("bird",1.4))},
+ // 2 the dog waits across the road
+ ()=>{put("pip",210,404,1);show("pip");put("dog",730,556,1);show("dog");hopIt("dog");drive(true);at(900,()=>snd("bus",2.4));at(3300,()=>snd("car",1.6));at(5200,()=>snd("dog",1.4))},
+ // 3 too loud, too fast
+ ()=>{put("pip",210,404,1);show("pip");put("dog",730,556,1);show("dog");put("cat",120,404,1);put("duck",300,404,1);show("cat");show("duck");drive(true);
+  at(600,()=>snd("car",1.8));at(2400,()=>snd("bus",2.4));at(4800,()=>snd("duck",1.6));at(6200,()=>snd("cat",1.6));at(7600,()=>snd("police",1.4))},
+ // 4 a thought
+ ()=>{drive(false);put("pip",450,404);show("pip");tag("think",true);put("dog",730,556,1);show("dog");at(900,()=>LP.sfx.soft());at(4200,()=>LP.sfx.twinkle())},
+ // 5 knock on doors, neighbours come
+ ()=>{tag("think",false);put("pip",450,404);show("pip");put("p1",900,404,1);put("p2",960,404,1);put("p3",-60,404,1);put("p5",-120,404,1);["p1","p2","p3","p5"].forEach(show);
+  at(300,knock);at(1600,()=>{put("p1",560,404);put("p3",340,404)});at(3000,()=>{put("p2",650,404);put("p5",250,404);snd("dog",1.2)});at(4300,()=>{put("cat",120,404);put("duck",190,404);show("cat");show("duck")})},
+ // 6 yes
+ ()=>{put("pip",450,404);show("pip");put("p1",560,404,1);put("p2",650,404,1);put("p3",340,404,1);put("p5",250,404,1);["p1","p2","p3","p5"].forEach(show);put("cat",150,404,1);put("duck",110,404,1);show("cat");show("duck");put("dog",730,556,1);show("dog");
+  at(600,()=>{["pip","p1","p2","p3","p5"].forEach(hopIt);LP.sfx.win()});at(4000,()=>LP.sfx.chime())},
+ // 7 the works
+ ()=>{["p1","p2","p3","p5","cat","duck"].forEach(id=>{show(id,id==="p1"||id==="p3");});put("p1",640,404,1);put("p3",760,404,1);put("pip",450,404,1);show("pip");
+  put("crane",260,404,1);show("crane");put("digger",-120,470,1);show("digger");put("roller",1000,500,1);show("roller");put("dog",730,556,1);show("dog");
+  at(500,()=>{put("digger",250,470);rumble()});at(2600,()=>{put("roller",520,500);rumble()});
+  const z=[...document.querySelectorAll("#zebra rect")];z.forEach((r,i)=>at(4300+i*650,()=>{r.classList.add("on");beep(660+i*60)}));
+  at(8200,()=>{put("digger",-160,470);put("roller",1060,500);put("crane",-160,404)})},
+ // 8 cars stop; everyone crosses
+ ()=>{show("crane",false);show("digger",false);show("roller",false);document.querySelectorAll("#zebra rect").forEach(r=>r.classList.add("on"));
+  put("bus",0,468,1);put("car",0,512,1);put("police",0,468,1);park("bus",70);park("car",730);park("police",-250);
+  put("pip",450,404,1);show("pip");put("p1",430,404,1);put("p2",520,404,1);put("cat",350,404,1);put("duck",560,404,1);put("p3",300,404,1);put("p5",610,404,1);["p1","p2","p3","p5","cat","duck"].forEach(show);put("dog",730,556,1);show("dog");
+  CROSS.forEach(([id,x],i)=>at(1200+i*350,()=>put(id,x,id==="cat"||id==="duck"?548:id==="pip"?540:i%2?530:552)));at(900,()=>LP.sfx.soft())},
+ // 9 the hug
+ ()=>{document.querySelectorAll("#zebra rect").forEach(r=>r.classList.add("on"));park("bus",70);park("car",730);show("police",false);
+  CROSS.forEach(([id,x])=>{put(id,x,id==="cat"||id==="duck"?548:id==="pip"?540:552,1);show(id)});put("dog",600,556,1);show("dog");put("pip",560,540,1);
+  at(600,()=>{hopIt("pip");hopIt("dog");snd("dog",1.2);LP.sfx.twinkle()});at(3200,()=>{LP.celebrate()})},
+ // 10 goodnight
+ ()=>{document.querySelectorAll("#zebra rect").forEach(r=>r.classList.add("on"));park("bus",70);park("car",730);show("police",false);
+  CROSS.forEach(([id,x])=>{put(id,x,id==="cat"||id==="duck"?548:id==="pip"?540:552,1);show(id)});put("dog",600,556,1);show("dog");put("pip",560,540,1);
+  tag("moon",true);tag("stars",true);$("dark").style.opacity=".52";at(1500,()=>LP.sfx.twinkle())}
+];
+const CLEAN=()=>{
+ gen++;timers.forEach(clearTimeout);timers=[];
+ try{speechSynthesis.cancel()}catch(e){}
+ stopLull();
+ document.querySelectorAll("#zebra rect").forEach(r=>r.classList.remove("on"));
+ ALL.forEach(id=>show(id,false));["bus","car","police"].forEach(id=>{A[id].m.classList.remove("drive");A[id].m.style.transform="";show(id,false)});
+ tag("think",false);tag("moon",false);tag("stars",false);$("dark").style.opacity="0";
+};
+
+/* ---- narration: one line per scene, the next scene begins when the voice stops ---- */
+const dots=$("dots");dots.innerHTML=SC.map(()=>"<i></i>").join("");
+function mark(i){[...dots.children].forEach((d,k)=>{d.className=k===i?"on":k<i?"past":""})}
+function line(i){const k="s"+(i+1);return L()[k]||DATA.lines.en[k]}
+function speak(i,done_){
+ const text=line(i),g=gen;let over=false;
+ const finish=()=>{if(over||g!==gen)return;over=true;done_()};
+ const wait=Math.max(5000,text.length*95);
+ timers.push(setTimeout(finish,wait+4000));
+ try{
+  const u=new SpeechSynthesisUtterance(text);u.lang=TAGS[LP.lang]||LP.lang;u.rate=.85;
+  u.onend=finish;u.onerror=()=>setTimeout(finish,wait);
+  speechSynthesis.speak(u);
+ }catch(e){setTimeout(finish,wait)}
+}
+function goto(i){
+ CLEAN();cur=Math.max(0,Math.min(SC.length-1,i));done=false;
+ mark(cur);$("bubble").textContent=line(cur);
+ SC[cur]();
+ $("ppi").innerHTML=paused?PLAY:PAUSE;
+ if(paused)return;
+ const g=gen;
+ at(500,()=>speak(cur,()=>{
+  if(cur<SC.length-1)at(1600,()=>goto(cur+1));
+  else at(1800,lullaby);
+ }));
+}
+function setPaused(p){paused=p;$("ppi").innerHTML=p?PLAY:PAUSE;$("pp").setAttribute("aria-label",p?"Play":"Pause");
+ if(p){gen++;timers.forEach(clearTimeout);timers=[];try{speechSynthesis.cancel()}catch(e){}stopLull()}else goto(cur<0?0:cur)}
+
+/* ---- the lullaby: the same slow tunes as the Goodnight room, fading with the dark ---- */
+const TUNES=[
+ {bpm:58,t:"E4:1 E4:1 G4:2 E4:1 E4:1 G4:2 E4:1 G4:1 C5:1 B4:1 A4:2 A4:1 G4:1 D4:1 E4:1 F4:2 D4:1 D4:1 E4:1 F4:2 D4:1 F4:1 B4:1 A4:1 G4:2 E4:1 E4:1 G4:1 C5:2 B4:1 A4:2 G4:2 G4:1 A4:1 B4:1 C5:4"},
+ {bpm:52,t:"G4:2 E4:1 D4:1 E4:2 G4:2 A4:2 G4:1 E4:1 D4:4 E4:2 D4:1 C4:1 D4:2 E4:2 G4:2 E4:2 C4:4 G4:2 A4:1 C5:1 A4:2 G4:2 E4:2 D4:1 E4:1 G4:4 A4:2 G4:1 E4:1 D4:2 C4:2 C4:6"}
+];
+const SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const freq=nm=>{const m=/^([A-G])(\d)$/.exec(nm);return 440*Math.pow(2,(SEMI[m[1]]+12*(+m[2]-4)-9)/12)};
+let lull=[],tuneIx=0;
+function stopLull(){lull.forEach(o=>{try{o&&o.stop()}catch(e){}});lull=[]}
+function lullaby(){
+ done=true;
+ const T=TUNES[tuneIx++%TUNES.length],spb=60/T.bpm,notes=T.t.split(" ").map(x=>x.split(":")),total=notes.reduce((a,x)=>a+ +x[1],0);
+ let t=.8,beat=0;
+ for(let b=0;b<total;b+=4){const v=.034*(1-b/total*.7);lull.push(LP.tone(130.8,spb*4.6,"sine",v,.8+b*spb),LP.tone(196,spb*4.6,"sine",v*.5,.8+b*spb))}
+ notes.forEach((x,i)=>{const f=freq(x[0]);const b=+x[1],left=notes.length-i,slow=left<=3?1+(4-left)*.12:1,fade=1-beat/total*.55,len=b*spb*slow;
+  lull.push(LP.tone(f,Math.max(1.6,len*1.7),"sine",.062*fade,t),LP.tone(f*1.004,Math.max(1.6,len*1.7),"sine",.03*fade,t),LP.tone(f*2,.7,"sine",.012*fade,t));t+=len;beat+=b});
+ $("dark").style.opacity=".78";
+}
+
+/* ---- screen off: the story keeps going on a black screen, for the dark ---- */
+let wl=null;
+async function listenOn(){$("listen").classList.add("on");try{if(navigator.wakeLock)wl=await navigator.wakeLock.request("screen")}catch(e){}}
+function listenOff(){$("listen").classList.remove("on");try{wl&&wl.release()}catch(e){}wl=null}
+$("lis").addEventListener("click",listenOn);$("listen").addEventListener("click",listenOff);
+addEventListener("keydown",e=>{if(e.key==="Escape")listenOff()});
+
+$("prev").addEventListener("click",()=>{paused=false;goto(cur<=0?0:cur-1)});
+$("next").addEventListener("click",()=>{paused=false;goto(cur>=SC.length-1?0:cur+1)});
+$("pp").addEventListener("click",()=>setPaused(!paused));
+$("go").addEventListener("click",()=>{if(started)return;started=true;$("intro").classList.add("gone");LP.ac();goto(0)});
+
+LP.init({langs:ALLLANGS,onLang:()=>{document.title=L().title;$("ititle").textContent=L().title;if(started&&!paused)goto(Math.max(0,cur))}});
+document.title=L().title;$("ititle").textContent=L().title;
+LP.start(L().title,()=>{});
+</script>
+</body>
+</html>
