@@ -119,7 +119,8 @@ const CHARS={
  plane:{n:"✈️ Plane",body:"#5aa9e6",trim:"#e8f4ff"},
  rocket:{n:"🚀 Rocket",body:"#e63946",trim:"#f1faee"},
  balloon:{n:"🎈 Balloon",body:"#9b5de5",trim:"#f0e6ff"},
- bee:{n:"🐝 Bee",body:"#ffca3a",trim:"#2b2118"}};
+ bee:{n:"🐝 Bee",body:"#ffca3a",trim:"#2b2118"},
+ heli:{n:"🚁 Helicopter",body:"#e8742a",trim:"#f3d9a8"}};
 const charSel=document.getElementById("char");
 for(const k in CHARS){const o=document.createElement("option");o.value=k;o.textContent=CHARS[k].n;charSel.appendChild(o)}
 let charKey="bird";try{charKey=localStorage.getItem("fw-char")||charKey}catch(e){}
@@ -223,7 +224,7 @@ for(const [e,n] of [["🐶","peek-dog"],["🐱","sky-cat"],["🍎","food-apple"]
  ["🌈","sky-rainbow"],["🦋","sky-butterfly"],["🦕","fw-dino"],["⛰️","fw-mountain"],["☂️","sky-umbrella"],["🚲","fw-bicycle"],["🌋","fw-volcano"],["🕷️","sky-spider"],["🏰","fw-castle"],["🐉","fw-dragon"],["🤖","fw-robot"],["🏝️","fw-island"],["🌲","fw-forest"],["⚡","fw-storm"],["🪐","fw-planet"],["🏴‍☠️","fw-pirate"],["🦄","fw-unicorn"],["🏞️","fw-waterfall"],["🐧","fw-penguin"],["👨‍🚀","fw-astronaut"]])PIC[strip(e)]=n+".webp";
 function pic(e){const n=PIC[strip(e)];return n?img(n):null}
 // flyers: [file, frames, width in r, frame width, frame height]
-const FLY={bird:["sky-bird.webp",4,3.7,141,150],plane:["sky-biplane.webp",1,4.5,218,142],rocket:["fw-rocket.webp",1,4.5,420,263],balloon:["fw-hotair.webp",1,3,238,391],bee:["fw-bee.webp",1,3.8,345,318]};
+const FLY={bird:["sky-bird.webp",4,3.7,141,150],plane:["sky-biplane.webp",1,4.5,218,142],rocket:["fw-rocket.webp",1,4.5,420,263],balloon:["fw-hotair.webp",1,3,238,391],bee:["fw-bee.webp",1,3.8,345,318],heli:["street-heli.webp",1,5.4,640,345]};
 const PIPE={CW:128,capH:57,SL:120,bw:95,capW:124,bx:16};
 const TINT={morning:"#ffd9b8",day:null,evening:"#ff9c7a",night:"#3c4a96"};
 const tod=()=>{const h=new Date().getHours();return h>=6&&h<10?"morning":h>=10&&h<17?"day":h>=17&&h<20?"evening":"night"};
@@ -266,10 +267,15 @@ function drawFlyer(b){
  const f=FLY[charKey]||FLY.bird,im=img(f[0]);if(!ok(im))return;
  const w=b.r*f[2],h=w*f[4]/f[3],now=performance.now();
  let fr=0;if(f[1]>1){const step=b.vy<0?70:170;fr=Math.floor(now/step)%f[1]}
- cx.save();cx.translate(b.x,b.y);cx.rotate(charKey==="balloon"?b.rot*.35:b.rot);
+ cx.save();cx.translate(b.x,b.y);cx.rotate(charKey==="balloon"?b.rot*.35:charKey==="heli"?b.rot*.5:b.rot);
  cx.shadowColor="#0004";cx.shadowBlur=6;cx.shadowOffsetY=4;
  if(charKey==='bird')cx.scale(-1,1); // the bird art faces left
- cx.drawImage(im,fr*f[3],0,f[3],f[4],-w/2,-h/2,w,h);
+ if(charKey==="heli"){
+  /* body still, rotor strip squashed back and forth so the blades whir; spins faster while climbing */
+  const k=w/f[3],cut=32,rx=375,ph=Math.floor(now/(b.vy<0?45:70))%4,sx=[1,.55,.85,.4][ph];
+  cx.drawImage(im,0,cut,f[3],f[4]-cut,-w/2,-h/2+cut*k,w,(f[4]-cut)*k);
+  cx.drawImage(im,0,0,f[3],cut,-w/2+rx*k*(1-sx),-h/2,w*sx,cut*k);
+ }else cx.drawImage(im,fr*f[3],0,f[3],f[4],-w/2,-h/2,w,h);
  cx.restore();
 }
 function draw(){
