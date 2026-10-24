@@ -27,7 +27,7 @@ PLAN = {
  "sicily":   ("Ciao!",       kok("if_sara", "it")),
  "london":   ("Hello!",      kok("bf_emma", "en-gb")),
  "paris":    ("Bonjour!",    kok("ff_siwis", "fr-fr")),
- "barcelona":("¡Hola!",      piper("es-carlfm-x-low")),
+ "barcelona":("¡Hola!",      kok("ef_dora", "es", 0.95)),
  "lisbon":   ("Olá!",        kok("pf_dora", "pt-br")),
  "rome":     ("Ciao!",       kok("im_nicola", "it")),
  "newyork":  ("Hey! I am walking here!", kok("am_michael", "en-us", 1.0)),

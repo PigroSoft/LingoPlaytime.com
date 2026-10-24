@@ -115,7 +115,7 @@ const DATA={
 
 /* ---- scenes: a felt town plate behind a felt road strip, with things standing on it ---- */
 /* THB: a thing placed in the background picture's own pixels (1536 x 864), so it stays on the water whatever the window size; placeTown() converts it */
-const PAR={6:.60,5:.62,1:.554,2:.558,3:.504,4:.546};
+const PAR={7:.68,6:.60,5:.62,1:.554,2:.558,3:.504,4:.546};
 const PER=(place,doll,x,id)=>{const h=104,w=Math.round(h*PAR[doll]);return TH(id||"hello_"+place,"person"+doll,x,404-h,w,h)};
 const BEAR=x=>TH("hello_bear","bear",x,284,86,120);
 const HELLO={town:"Hello!",country:"Hello!",site:"Hello!",berlin:"Hallo!",austin:"Alright, alright, alright!",sicily:"Ciao!",london:"Hello!",paris:"Bonjour!",barcelona:"¡Hola!",lisbon:"Olá!",rome:"Ciao!",newyork:"Hey! I'm walking here!",bear:"Hallöchen!"};
@@ -171,7 +171,7 @@ SCENES.paris={bg:"street-bg-paris.webp",sky:"#3e88c0",label:"Paris",icon:"2cv",i
   TH("car","2cv",40,462,200,128)+TH("bus","dbus",330,427,235,150)+TH("car","car",620,470,138,86)+TH("escooter","escooter2",232,314,78,88)+TH("balloon","balloon",740,70,70,129)+TH("plane","plane",70,-14,146,62)};
 SCENES.barcelona={bg:"street-bg-barcelona.webp",sky:"#3e88c0",label:"Barcelona",icon:"bcntaxi",ids:["taxi","tram","car","skateboard","bike","dog","bird","plane"],
  svg:ROAD("street-road.webp")+
-  PER("barcelona",2,300)+TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("skateboard","skateboard",480,362,120,38)+TH("bird","bird",516,98,56,58)+TH("tram","tram",28,326,249,118)+
+  PER("barcelona",7,300)+TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("skateboard","skateboard",510,381,60,19)+TH("bird","bird",516,98,56,58)+TH("tram","tram",28,326,249,118)+
   TH("taxi","bcntaxi",60,462,230,100)+TH("car","seat600",410,468,150,94)+TH("plane","plane",70,-14,146,62)};
 SCENES.lisbon={bg:"street-bg-lisbon.webp",sky:"#3e88c0",label:"Lisbon",icon:"lisbontram",ids:["tram","bike","camper","tuktuk","dog","bird","plane","car"],
  svg:ROAD("street-road.webp")+
