@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Helicopter fun</title>
+<link rel="stylesheet" href="/assets/fonts.css">
+<style>
+:root{color-scheme:light;--ink:#18264A;--display:"Fredoka","Baloo 2",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif}
+html,body{height:100%;margin:0}
+body{background:#9fd0e8;color:#fff;font-family:var(--body);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.app{position:relative;height:100%;display:flex;flex-direction:column;box-sizing:border-box;background:#9fd0e8}
+.top{position:absolute;z-index:2;left:0;right:0;top:0;display:flex;flex-direction:column;align-items:center;gap:6px;padding:max(10px,env(safe-area-inset-top,0px)) 16px 0;pointer-events:none}
+#bubble{font-size:clamp(22px,4vw,38px);min-height:1.2em;transition:transform .15s;text-align:center;max-width:94vw}
+#bubble.bump{transform:scale(1.08)}
+#word{font:700 clamp(34px,7vw,72px)/1 var(--display);color:#fff;text-shadow:0 4px 0 #2a6f9a,0 0 18px #fff9;min-height:1em;opacity:0;transition:opacity .2s,transform .2s;transform:scale(.9);text-align:center;max-width:94vw}
+#word.on{opacity:1;transform:scale(1)}
+.stage{flex:1;position:relative}
+#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+</style></head>
+<body>
+<script>window.LP_GAME="heli"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script>
+<div class="app" id="app">
+  <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div><div id="word" aria-hidden="true"></div></div>
+  <div class="stage" id="stage"><canvas id="cv" aria-label="A felt helicopter flying over hills"></canvas></div>
+</div>
+<script>
+/* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
+const DATA=(()=>{
+ const LG=["en","nl","pl","sv","el","zh","ar","ja","ko","ru","tr","hi","de","es","fr","it","pt"];
+ const t=(id,s)=>{const a=s.split("|"),w={id};LG.forEach((l,i)=>w[l]=a[i]);return w};
+ const words=[
+  t("helicopter","Helicopter|Helikopter|Helikopter|Helikopter|Ελικόπτερο|直升机|هليكوبتر|ヘリコプター|헬리콥터|Вертолёт|Helikopter|हेलीकॉप्टर|Hubschrauber|Helicóptero|Hélicoptère|Elicottero|Helicóptero"),
+  t("up","Up|Omhoog|W górę|Upp|Πάνω|上|فوق|うえ|위|Вверх|Yukarı|ऊपर|Hoch|Arriba|Haut|Su|Para cima"),
+  t("down","Down|Omlaag|W dół|Ner|Κάτω|下|تحت|した|아래|Вниз|Aşağı|नीचे|Runter|Abajo|Bas|Giù|Para baixo"),
+  t("bird","Bird|Vogel|Ptak|Fågel|Πουλί|小鸟|طائر|とり|새|Птица|Kuş|चिड़िया|Vogel|Pájaro|Oiseau|Uccello|Pássaro"),
+  t("cloud","Cloud|Wolk|Chmura|Moln|Σύννεφο|云|سحابة|くも|구름|Облако|Bulut|बादल|Wolke|Nube|Nuage|Nuvola|Nuvem"),
+  t("sun","Sun|Zon|Słońce|Sol|Ήλιος|太阳|شمس|おひさま|해|Солнце|Güneş|सूरज|Sonne|Sol|Soleil|Sole|Sol"),
+  t("star","Star|Ster|Gwiazda|Stjärna|Αστέρι|星星|نجمة|ほし|별|Звезда|Yıldız|तारा|Stern|Estrella|Étoile|Stella|Estrela"),
+  t("rainbow","Rainbow|Regenboog|Tęcza|Regnbåge|Ουράνιο τόξο|彩虹|قوس قزح|にじ|무지개|Радуга|Gökkuşağı|इंद्रधनुष|Regenbogen|Arcoíris|Arc-en-ciel|Arcobaleno|Arco-íris"),
+  t("butterfly","Butterfly|Vlinder|Motyl|Fjäril|Πεταλούδα|蝴蝶|فراشة|ちょうちょ|나비|Бабочка|Kelebek|तितली|Schmetterling|Mariposa|Papillon|Farfalla|Borboleta"),
+  t("balloon","Balloon|Ballon|Balon|Ballong|Μπαλόνι|气球|بالون|ふうせん|풍선|Шарик|Balon|गुब्बारा|Ballon|Globo|Ballon|Palloncino|Balão"),
+  t("kite","Kite|Vlieger|Latawiec|Drake|Χαρταετός|风筝|طائرة ورقية|たこ|연|Воздушный змей|Uçurtma|पतंग|Drachen|Cometa|Cerf-volant|Aquilone|Papagaio"),
+  t("plane","Plane|Vliegtuig|Samolot|Flygplan|Αεροπλάνο|飞机|طائرة|ひこうき|비행기|Самолёт|Uçak|हवाई जहाज़|Flugzeug|Avión|Avion|Aereo|Avião"),
+  t("rocket","Rocket|Raket|Rakieta|Raket|Πύραυλος|火箭|صاروخ|ロケット|로켓|Ракета|Roket|रॉकेट|Rakete|Cohete|Fusée|Razzo|Foguete"),
+  t("moon","Moon|Maan|Księżyc|Måne|Φεγγάρι|月亮|قمر|おつきさま|달|Луна|Ay|चाँद|Mond|Luna|Lune|Luna|Lua"),
+  t("house","House|Huis|Dom|Hus|Σπίτι|房子|بيت|おうち|집|Дом|Ev|घर|Haus|Casa|Maison|Casa|Casa")
+ ];
+ return {words,lines:{
+  en:{title:"Helicopter fun",go:"Tap to fly!",done:"Great flying!"},
+  nl:{title:"Helikopterpret",go:"Tik om te vliegen!",done:"Goed gevlogen!"},
+  pl:{title:"Zabawa z helikopterem",go:"Dotknij, żeby lecieć!",done:"Świetny lot!"},
+  sv:{title:"Helikopterkul",go:"Tryck för att flyga!",done:"Fin flygning!"},
+  el:{title:"Παιχνίδι με ελικόπτερο",go:"Άγγιξε για να πετάξεις!",done:"Τέλεια πτήση!"},
+  zh:{title:"直升机真好玩",go:"点一点就能飞！",done:"飞得真棒！"},
+  ar:{title:"متعة الهليكوبتر",go:"المس لتطير!",done:"طيران رائع!"},
+  ja:{title:"ヘリコプターであそぼう",go:"タップしてとぼう！",done:"じょうずにとべたね！"},
+  ko:{title:"헬리콥터 놀이",go:"눌러서 날아요!",done:"멋지게 날았어요!"},
+  ru:{title:"Вертолётик",go:"Нажимай и лети!",done:"Отличный полёт!"},
+  tr:{title:"Helikopter keyfi",go:"Uçmak için dokun!",done:"Harika uçuş!"},
+  hi:{title:"हेलीकॉप्टर की मस्ती",go:"उड़ने के लिए छुओ!",done:"क्या बढ़िया उड़ान!"},
+  de:{title:"Hubschrauber-Spaß",go:"Tippen zum Fliegen!",done:"Toll geflogen!"},
+  es:{title:"Diversión en helicóptero",go:"¡Toca para volar!",done:"¡Qué buen vuelo!"},
+  fr:{title:"Hélicoptère en fête",go:"Touche pour voler !",done:"Beau vol !"},
+  it:{title:"Elicottero in volo",go:"Tocca per volare!",done:"Bel volo!"},
+  pt:{title:"Diversão de helicóptero",go:"Toca para voar!",done:"Que bom voo!"}
+ }};
+})();
+const UI={};
+const $=id=>document.getElementById(id);
+const W=Object.fromEntries(DATA.words.map(w=>[w.id,w]));
+const L=()=>LP.t(DATA.lines);
+const wd=id=>{const w=W[id];return w[LP.lang]||w.en};
+/* things in the sky: word id, felt picture, width as a share of the item size */
+const ITEMS=[["bird","sky-bird.webp",1.1,4],["cloud","cloud-2.webp",1.5],["sun","sky-sun.webp",1],["star","sky-star.webp",.9],["rainbow","sky-rainbow.webp",1.4],["butterfly","sky-butterfly.webp",1],["balloon","train-balloon.webp",.75],["kite","sky-kite.webp",.7],["plane","sky-biplane.webp",1.5],["rocket","fw-rocket.webp",1.2],["moon","sky-moon.webp",.95],["house","sky-house.webp",1]];
+const IDS=ITEMS.map(i=>i[0]);
+const IMG={};const img=n=>{let i=IMG[n];if(!i){i=new Image();i.src="../felt/"+n;IMG[n]=i}return i};
+const ok=i=>i&&i.complete&&i.naturalWidth;
+["street-heli.webp","flappy-sky.webp","flappy-grass.webp","fw-mountain.webp","fw-forest.webp","sky-house.webp","train-flower.webp","cloud-1.webp","cloud-2.webp","cloud-3.webp","sky-sun.webp"].concat(ITEMS.map(i=>i[1])).forEach(img);
+
+/* ================= the sound of a helicopter =================
+   Everything is made here, live, from the rotor speed (0 to 1), so the sound spins up and winds down
+   exactly with the taps: blade chops ("whop whop") that get faster, a turbine whine that climbs,
+   rushing air, a deep gearbox hum and a buzzing tail rotor. */
+let AC=null,eng=null,chopT=0,sched=0;
+function noiseBuf(a){const b=a.createBuffer(1,a.sampleRate*2,a.sampleRate),d=b.getChannelData(0);let l=0;for(let i=0;i<d.length;i++){l=l*.6+(Math.random()*2-1)*.4;d[i]=l*1.6}return b}
+function engineInit(){
+ if(eng)return true;AC=LP.ac();if(!AC)return false;
+ const out=AC.createGain();out.gain.value=.9;const comp=AC.createDynamicsCompressor();out.connect(comp).connect(AC.destination);
+ const nb=noiseBuf(AC);
+ const loopNoise=()=>{const s=AC.createBufferSource();s.buffer=nb;s.loop=true;s.start(0,Math.random());return s};
+ /* rushing air */
+ const wind=loopNoise(),wf=AC.createBiquadFilter(),wg=AC.createGain();wf.type="bandpass";wf.Q.value=.6;wg.gain.value=0;wind.connect(wf).connect(wg).connect(out);
+ /* turbine whine: two detuned voices through a narrow band */
+ const w1=AC.createOscillator(),w2=AC.createOscillator(),tf=AC.createBiquadFilter(),tg=AC.createGain();w1.type="sawtooth";w2.type="triangle";tf.type="bandpass";tf.Q.value=5;tg.gain.value=0;
+ w1.connect(tf);w2.connect(tf);tf.connect(tg).connect(out);w1.start();w2.start();
+ /* gearbox rumble */
+ const g1=AC.createOscillator(),gg=AC.createGain();g1.type="triangle";gg.gain.value=0;g1.connect(gg).connect(out);g1.start();
+ /* tail rotor: a buzzy noise chopped at about 30 Hz */
+ const tn=loopNoise(),tnf=AC.createBiquadFilter(),tng=AC.createGain(),lfo=AC.createOscillator(),lg=AC.createGain();tnf.type="bandpass";tnf.frequency.value=650;tnf.Q.value=1.4;tng.gain.value=0;lfo.frequency.value=30;lg.gain.value=.5;
+ lfo.connect(lg).connect(tng.gain);tn.connect(tnf).connect(tng).connect(out);lfo.start();
+ eng={out,nb,wf,wg,w1,w2,tf,tg,g1,gg,tng,lfo};
+ sched=setInterval(schedule,25);return true;
+}
+function chop(t,v,alt){
+ const a=AC;
+ /* the thump of the air */
+ const o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.setValueAtTime(alt?96:112,t);o.frequency.exponentialRampToValueAtTime(44,t+.12);
+ g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.62*v,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+.15);o.connect(g).connect(eng.out);o.start(t);o.stop(t+.17);
+ /* the slap of the blade */
+ const s=a.createBufferSource(),f=a.createBiquadFilter(),sg=a.createGain();s.buffer=eng.nb;f.type="bandpass";f.frequency.setValueAtTime(alt?260:340,t);f.frequency.exponentialRampToValueAtTime(150,t+.09);f.Q.value=1.1;
+ sg.gain.setValueAtTime(.0001,t);sg.gain.exponentialRampToValueAtTime(.7*v,t+.004);sg.gain.exponentialRampToValueAtTime(.0001,t+.085);s.connect(f).connect(sg).connect(eng.out);s.start(t,Math.random()*1.5);s.stop(t+.1);
+ /* a short crack on top */
+ const c=a.createBufferSource(),cf=a.createBiquadFilter(),cg=a.createGain();c.buffer=eng.nb;cf.type="highpass";cf.frequency.value=2400;
+ cg.gain.setValueAtTime(.0001,t);cg.gain.exponentialRampToValueAtTime(.11*v,t+.002);cg.gain.exponentialRampToValueAtTime(.0001,t+.03);c.connect(cf).connect(cg).connect(eng.out);c.start(t,Math.random()*1.5);c.stop(t+.04);
+}
+let chopN=0;
+function schedule(){
+ if(!eng||!AC)return;
+ const t=AC.currentTime;
+ if(document.hidden||w<.02){chopT=t+.05;return}
+ let guard=0;
+ while(chopT<t+.12&&guard++<6){
+  const v=.3+.7*Math.pow(w,.75);chop(Math.max(chopT,t),v,chopN++%2);
+  chopT+=1/(2.1+w*8.4)*(1+(Math.random()-.5)*.04);
+ }
+}
+function engineUpdate(){
+ if(!eng)return;const t=AC.currentTime,k=.06,on=document.hidden?0:1,p=w*on;
+ eng.wf.frequency.setTargetAtTime(380+w*1100,t,k);eng.wg.gain.setTargetAtTime(p*p*.22+(p>.02?.01:0),t,k);
+ const f=560+w*1500;eng.w1.frequency.setTargetAtTime(f,t,k);eng.w2.frequency.setTargetAtTime(f*1.503,t,k);eng.tf.frequency.setTargetAtTime(f*1.1,t,k);
+ eng.tg.gain.setTargetAtTime(p>.02?(.03+.09*p):0,t,k);
+ eng.g1.frequency.setTargetAtTime(52+w*34,t,k);eng.gg.gain.setTargetAtTime(Math.min(1,p*3)*.17,t,k);
+ eng.tng.gain.setTargetAtTime(p>.03?.04+.08*p:0,t,k);eng.lfo.frequency.setTargetAtTime(14+w*26,t,k);
+}
+function startUp(){
+ /* first tap on a cold helicopter: a starter whirr and a click */
+ LP.noise(.12,.18,"bandpass",1800,2,0);
+ LP.tone(160,.9,"sawtooth",.05,.02,880);LP.tone(240,.9,"triangle",.07,.02,1320);
+}
+function thud(){LP.tone(95,.18,"sine",.35,0,40);LP.noise(.1,.18,"lowpass",300,1,0)}
+
+/* ================= the game ================= */
+const cv=$("cv"),cx=cv.getContext("2d");let Wd=0,Ht=0;
+let w=0,alt=0,scroll=0,gscroll=0,tapY=-1,tapT=0,got=0,round=0,flying=false,wasUp=false,lastTap=0,phase=0,nowT=0,tapCount=0;
+let items=[],cargo=[],clouds=[],scen=[],lastSpawn=0,shake=0;
+const P=()=>[{tap:.3,dec:.17,assist:.85},{tap:.25,dec:.22,assist:.6},{tap:.2,dec:.3,assist:.35}][Math.min(2,LP.age||0)];
+function dims(){
+ const r=cv.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1);Wd=r.width;Ht=r.height;
+ cv.width=Math.max(1,Wd*d);cv.height=Math.max(1,Ht*d);cx.setTransform(d,0,0,d,0,0);
+}
+const gH=()=>Math.max(70,Ht*.17);
+const heliW=()=>Math.max(150,Math.min(Wd*.27,340));
+const heliX=()=>Wd*.3;
+const skidY=()=>Ht-gH()*.72;
+const restY=()=>skidY()-heliW()*345/640/2;
+const topY=()=>heliW()*345/640*.62+8;
+const itemZ=()=>Math.max(72,Math.min(Wd*.1,135));
+function altToY(a){return restY()+(topY()-restY())*a}
+function initWorld(){
+ clouds=[];for(let i=0;i<7;i++)clouds.push({x:Math.random()*Wd*1.6,y:.05+Math.random()*.4,k:1+i%3,s:.55+Math.random()*.6,v:.25+Math.random()*.2});
+ scen=[];
+}
+function spawnItem(){
+ const id=LP.next("item",IDS),def=ITEMS.find(i=>i[0]===id);
+ const a=.28+Math.random()*.66;
+ items.push({id,def,wx:scroll+Wd+itemZ(),alt:a,state:0,t:0,ph:Math.random()*6});
+}
+function spawnScenery(){
+ const kinds=[["fw-forest.webp",1.25],["sky-house.webp",.8],["fw-forest.webp",1.0],["train-flower.webp",.45],["sky-house.webp",.95]];
+ const k=kinds[Math.floor(Math.random()*kinds.length)];scen.push({n:k[0],s:k[1],wx:scroll+Wd+120+Math.random()*80});
+}
+function bubble(t){const b=$("bubble");if(b.textContent===t)return;b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
+let wordTimer=0;
+function showWord(t){const e=$("word");e.textContent=t;e.classList.add("on");clearTimeout(wordTimer);wordTimer=setTimeout(()=>e.classList.remove("on"),1500)}
+const busy=()=>!!(window.LP_busy&&window.LP_busy());
+function sayWord(id){if(busy())return false;LP.say(wd(id));showWord(wd(id));return true}
+
+/* a tap or any key spins the rotor up */
+function tap(x,y){
+ if(!engineInit())return;
+ const cold=w<.04;if(cold)startUp();
+ const p=P();w=Math.min(1,w+p.tap);lastTap=nowT;tapT=nowT;tapCount++;
+ if(y!=null&&y>=0)tapY=y;
+ if(tapCount===1){bubble(L().go);setTimeout(()=>sayWord("helicopter"),250)}
+}
+addEventListener("pointerdown",e=>{
+ if(document.querySelector(".lp-start")||Date.now()-(LP._started||0)<350)return;
+ if(e.target.closest&&e.target.closest(".lpbar,[data-nogate]"))return;
+ const r=cv.getBoundingClientRect();LP.burst(e.clientX,e.clientY,4);tap(e.clientX-r.left,e.clientY-r.top);
+});
+addEventListener("keydown",e=>{
+ if(document.querySelector(".lp-start")||e.repeat||e.metaKey||e.ctrlKey||e.altKey||e.key==="Tab")return;
+ if(!(e.target.closest&&e.target.closest("button")))e.preventDefault();
+ LP.burst(innerWidth*(.2+Math.random()*.6),innerHeight*(.3+Math.random()*.4),4);tap(null,-1);
+});
+document.addEventListener("visibilitychange",()=>{if(document.hidden)w=Math.min(w,.0)});
+
+let last=0;
+function frame(ts){
+ requestAnimationFrame(frame);
+ const dt=Math.min(.05,(ts-last)/1000||.016);last=ts;nowT=ts/1000;if(!Wd)dims();
+ const p=P();
+ /* rotor speed eases down when nobody is tapping */
+ if(w>0){w=Math.max(0,w-dt*p.dec*(w>.6?1.15:1));if(w<.012&&nowT-lastTap>1)w=0}
+ /* where the helicopter wants to be: nothing below .3, then up as the rotor gets faster, or toward the last tap */
+ let target=0;
+ if(w>.3){
+  target=Math.min(1,(w-.3)/.55);
+  if(tapY>=0&&nowT-tapT<2.5){const a=(restY()-tapY)/(restY()-topY());target=target*.35+Math.max(0,Math.min(1,a))*.65*Math.min(1,(w-.3)/.2)}
+  /* quietly steer toward the next thing in the sky */
+  const nx=items.filter(i=>i.state===0&&i.wx-scroll>heliX()-itemZ()*.5).sort((a,b)=>a.wx-b.wx)[0];
+  if(nx&&w>.45){const ax=(nx.wx-scroll-heliX());if(ax<Wd*.85)target+=(nx.alt-target)*p.assist}
+ }
+ const prev=alt;alt+=(target-alt)*Math.min(1,dt*(target>alt?2.4:1.3));
+ if(prev>.06&&alt<=.02&&w<.3){thud();sayWord("down")}
+ if(alt>.14&&!wasUp&&prev<=.14){wasUp=true;sayWord("up")}
+ if(alt<.04)wasUp=false;
+ flying=w>.38;
+ const speed=flying?(w-.38)*(Wd*.55):0;scroll+=speed*dt;gscroll+=speed*dt;
+ phase+=dt*(2+w*40);
+ engineUpdate();
+ /* things to find */
+ if(flying){
+  const ahead=items.filter(i=>i.state===0&&i.wx>scroll);
+  if(ahead.length<2&&scroll+Wd-lastSpawn>Wd*.55){spawnItem();lastSpawn=scroll+Wd}
+  if(!scen.length||scen[scen.length-1].wx<scroll+Wd*.4){if(Math.random()<dt*1.2)spawnScenery()}
+ }
+ if(!items.length&&tapCount>0){spawnItem();lastSpawn=scroll+Wd}
+ const hx=heliX(),hy=altToY(alt),z=itemZ(),hh=heliW()*345/640;
+ for(const it of items){
+  it.t+=dt;
+  if(it.state===0){
+   const sx=it.wx-scroll,sy=altToY(it.alt)+Math.sin(nowT*2+it.ph)*5;
+   if(Math.abs(sx-hx)<z*.5+heliW()*.28&&Math.abs(sy-hy)<z*.5+hh*.4&&w>.3){it.state=1;it.t=0;it.fx=sx;it.fy=sy;collect(it)}
+  }
+ }
+ items=items.filter(i=>i.state===0?i.wx-scroll>-z*2:i.t<1.2);
+ scen=scen.filter(s=>s.wx-scroll*1>-400);
+ if(shake>0)shake=Math.max(0,shake-dt*18);
+ draw();
+}
+function collect(it){
+ got++;LP.sfx.twinkle();LP.sfx.whoosh();
+ sayWord(it.id)||showWord(wd(it.id));
+ cargo.push(it.def);if(cargo.length>5)cargo.shift();
+ if(got%5===0){setTimeout(()=>{LP.celebrate();bubble(L().done);LP.say(L().done,true);cargo=[];setTimeout(()=>bubble(L().go),4000)},900)}
+
+}
+
+/* ---- drawing ---- */
+function draw(){
+ cx.save();if(shake>0)cx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
+ cx.clearRect(0,0,Wd,Ht);
+ const G=gH(),gy=Ht-G,sky=img("flappy-sky.webp");
+ if(ok(sky)){const s=Math.max(Wd/sky.naturalWidth,(gy+8)/sky.naturalHeight),dw=sky.naturalWidth*s,dh=sky.naturalHeight*s;cx.drawImage(sky,(Wd-dw)/2,gy+8-dh,dw,dh)}
+ else{cx.fillStyle="#bcd9e4";cx.fillRect(0,0,Wd,Ht)}
+ /* sun, wobbling in stop motion */
+ const sn=img("sky-sun.webp");if(ok(sn)){const q=Math.max(70,Math.min(Wd*.09,110)),ww=sn.naturalWidth/sn.naturalHeight*q;cx.save();cx.translate(Wd-q*1.2,q*1.3);cx.rotate(Math.floor(nowT/.38)%2?.05:-.05);cx.drawImage(sn,-ww/2,-q/2,ww,q);cx.restore()}
+ /* clouds drift, and slide back faster when we fly */
+ for(const c of clouds){
+  c.x-=(c.v*14+ (flying?(w-.38)*Wd*.55*.18:0))*.016;
+  const im=img("cloud-"+c.k+".webp");if(!ok(im))continue;
+  const cw=Math.max(90,Wd*.14)*c.s,ch=cw*im.naturalHeight/im.naturalWidth;
+  if(c.x<-cw*1.2){c.x=Wd+cw*(.2+Math.random());c.y=.05+Math.random()*.4}
+  cx.globalAlpha=.96;cx.drawImage(im,c.x,c.y*gy,cw,ch);
+ }
+ cx.globalAlpha=1;
+ /* far hills of mountains */
+ const mt=img("fw-mountain.webp");if(ok(mt)){const mw=Math.max(120,Wd*.17),mh=mw*mt.naturalHeight/mt.naturalWidth,gap=mw*2.3,off=(scroll*.25)%gap;for(let x=-off-gap*.2;x<Wd+mw;x+=gap)cx.drawImage(mt,x,gy-mh*.82,mw,mh)}
+ /* grass strip */
+ const gr=img("flappy-grass.webp");
+ if(ok(gr)){const s=G/gr.naturalHeight,tw=gr.naturalWidth*s,off=gscroll%tw;for(let x=-off;x<Wd;x+=tw)cx.drawImage(gr,x,gy,tw+1,G)}
+ else{cx.fillStyle="#6cbf3a";cx.fillRect(0,gy,Wd,G)}
+ /* helipad */
+ const px=heliX()-scroll,pw=heliW()*.95;
+ if(px>-pw&&px<Wd+pw){
+  const py=skidY()+heliW()*.03;
+  cx.save();cx.translate(px,py);cx.fillStyle="#6f7a86";cx.strokeStyle="#c9d1d9";cx.lineWidth=3;cx.setLineDash([7,5]);
+  cx.beginPath();cx.ellipse(0,0,pw/2,pw*.1,0,0,7);cx.fill();cx.stroke();cx.setLineDash([]);
+  cx.fillStyle="#ffd84a";cx.font="700 "+pw*.16+"px Fredoka,sans-serif";cx.textAlign="center";cx.textBaseline="middle";cx.fillText("H",0,pw*.005);cx.restore();
+ }
+ /* scenery on the ground */
+ for(const s of scen){const im=img(s.n);if(!ok(im))continue;const sw=Math.max(70,Wd*.1)*s.s,sh=sw*im.naturalHeight/im.naturalWidth;cx.drawImage(im,s.wx-scroll-sw/2,gy+G*.35-sh,sw,sh)}
+ /* shadow on the grass: smaller and fainter the higher we are */
+ const hx=heliX(),hy=altToY(alt),hw=heliW(),hh=hw*345/640;
+ cx.save();cx.globalAlpha=.28*(1-alt*.6);cx.fillStyle="#12290f";cx.beginPath();cx.ellipse(hx,skidY()+hw*.03,hw*.42*(1-alt*.35),hw*.045,0,0,7);cx.fill();cx.restore();
+ /* dust and wind when the rotor is fast and the helicopter is low */
+ if(w>.5&&alt<.25){cx.save();cx.globalAlpha=.22*(1-alt*3);cx.fillStyle="#efe3c4";for(let i=0;i<6;i++){const a=nowT*3+i*1.7,rx=Math.cos(a)*hw*.5*(1+i*.12),ry=Math.abs(Math.sin(a*1.3))*hw*.025;cx.beginPath();cx.ellipse(hx+rx,skidY()+hw*.02+ry,hw*.05,hw*.018,0,0,7);cx.fill()}cx.restore()}
+ /* things in the sky */
+ const z=itemZ();
+ for(const it of items){
+  const im=img(it.def[1]);if(!ok(im))continue;
+  let x=it.wx-scroll,y=altToY(it.alt)+Math.sin(nowT*2+it.ph)*5,sc=1,a=1;
+  if(it.state===1){const k=Math.min(1,it.t/.9),e=k*k*(3-2*k),tx=Wd-60-cargo.length*0,ty=40;x=it.fx+(hx-it.fx)*Math.min(1,k*2);y=it.fy+(hy+hh*.1-it.fy)*Math.min(1,k*2);sc=1-.65*e;a=1-Math.max(0,k-.6)*2.2}
+  const iw=z*it.def[2]*sc,ih=iw*im.naturalHeight/im.naturalWidth;
+  cx.save();cx.globalAlpha=Math.max(0,a);cx.translate(x,y);cx.rotate(Math.sin(nowT*1.7+it.ph)*.06);
+  if(it.def[3]){const fr=Math.floor(nowT*6)%it.def[3],fw=im.naturalWidth/it.def[3];cx.scale(-1,1);cx.drawImage(im,fr*fw,0,fw,im.naturalHeight,-iw/2,-ih/2,iw,ih)}
+  else cx.drawImage(im,-iw/2,-ih/2,iw,ih);
+  cx.restore();
+ }
+ drawHeli(hx,hy,hw,hh);
+ /* cargo shelf: what we have found so far, small, in the corner */
+ cargo.forEach((d,i)=>{const im=img(d[1]);if(!ok(im))return;const s=Math.max(34,Wd*.045),iw=s*Math.min(1.3,d[2]),ih=iw*im.naturalHeight/im.naturalWidth;{if(d[3]){const fw=im.naturalWidth/d[3],ih2=iw*im.naturalHeight/fw;cx.drawImage(im,0,0,fw,im.naturalHeight,12+i*(s*1.35)+(s*1.35-iw)/2,10+(s-ih2)/2,iw,ih2)}else cx.drawImage(im,12+i*(s*1.35)+(s*1.35-iw)/2,10+(s-ih)/2,iw,ih)}});
+ cx.restore();
+}
+function drawHeli(x,y,w_,h_){
+ const im=img("street-heli.webp");if(!ok(im))return;
+ const k=w_/im.naturalWidth,rx=375,cut=32,bob=flying||alt>.03?Math.sin(nowT*(3+w*5))*(1+w*2.5):0,jit=w>.05?(Math.sin(nowT*60)*w*.9):0;
+ cx.save();cx.translate(x+jit,y+bob);
+ /* the nose dips when we go fast, and the whole thing leans a little with the climb */
+ cx.rotate((w>.38?(w-.38)*.16:0)+(alt>.03?Math.sin(nowT*1.3)*.012:0));
+ cx.shadowColor="#0004";cx.shadowBlur=6;cx.shadowOffsetY=4;
+ /* body, still */
+ cx.drawImage(im,0,cut,im.naturalWidth,im.naturalHeight-cut,-w_/2,-h_/2+cut*k,w_,(im.naturalHeight-cut)*k);
+ cx.shadowColor="transparent";
+ /* main rotor: blades squash back and forth; at speed they blur into a soft disc */
+ const sx=w<.04?1:[1,.55,.9,.35][Math.floor(phase)%4];
+ const rw=(sx),mx=-w_/2+rx*k;
+ cx.save();
+ if(w>.25){cx.globalAlpha=Math.min(.34,(w-.25)*.55);cx.fillStyle="#8a6a3c";cx.beginPath();cx.ellipse(mx,-h_/2+cut*k*.45,w_*.44,h_*.05,0,0,7);cx.fill()}
+ cx.globalAlpha=w>.6?.55:1;
+ cx.drawImage(im,0,0,im.naturalWidth,cut,-w_/2+rx*k*(1-rw),-h_/2,w_*rw,cut*k);cx.restore();
+ /* tail rotor blur */
+ if(w>.1){cx.save();cx.globalAlpha=Math.min(.5,w*.6);cx.fillStyle="#d8b888";const tx=-w_/2+52*k,ty=-h_/2+128*k,r=64*k;cx.beginPath();cx.ellipse(tx,ty,r*(.35+.2*Math.abs(Math.sin(phase*1.7))),r,0,0,7);cx.fill();cx.restore()}
+ cx.restore();
+}
+addEventListener("resize",dims);if(window.ResizeObserver)new ResizeObserver(dims).observe($("stage"));
+LP.init({langs:ALLLANGS,onLang:()=>{document.title=L().title;if(!tapCount)bubble(L().go)},onAge:()=>{}});
+document.title=L().title;
+LP.start(L().title,()=>{dims();initWorld();bubble(L().go);spawnItem();lastSpawn=Wd;requestAnimationFrame(frame)});
+
+</script>
+</body>
+</html>
