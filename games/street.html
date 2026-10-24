@@ -48,7 +48,7 @@ svg#street.swap{animation:swap .6s steps(3,jump-none)}@keyframes swap{from{opaci
 </style>
 </head>
 <body>
-<script>window.LP_GAME="street"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="clouds.js"></script><script src="sounds.js"></script>
+<script>window.LP_GAME="street"</script><script src="voice.js"></script><script src="learn.js"></script><script src="bridge.js"></script><script src="kit.js"></script><script src="look.js"></script><script src="clouds.js"></script><script src="sounds.js"></script><script src="hello.js"></script>
 <div class="app" id="app">
   <div class="top"><div id="bubble" class="k-bubble" aria-live="polite"></div></div>
   <div class="pick" id="pick"></div>
@@ -110,6 +110,10 @@ const DATA={
 
 /* ---- scenes: a felt town plate behind a felt road strip, with things standing on it ---- */
 /* THB: a thing placed in the background picture's own pixels (1536 x 864), so it stays on the water whatever the window size; placeTown() converts it */
+const PAR={5:.62,1:.554,2:.558,3:.504,4:.546};
+const PER=(place,doll,x,id)=>{const h=104,w=Math.round(h*PAR[doll]);return TH(id||"hello_"+place,"person"+doll,x,404-h,w,h)};
+const BEAR=x=>TH("hello_bear","bear",x,284,86,120);
+const HELLO={town:"Hello!",country:"Hello!",site:"Hello!",berlin:"Hallo!",austin:"Alright, alright, alright!",sicily:"Ciao!",london:"Hello!",paris:"Bonjour!",barcelona:"¡Hola!",lisbon:"Olá!",rome:"Ciao!",newyork:"Hey there!",bear:"Hallochen!"};
 const THB=(id,f,bx,by,bw,bh)=>TH(id,f,0,0,10,10).replace('<g class="thing"','<g class="thing" data-bg="'+[bx,by,bw,bh]+'"');
 const TH=(id,f,x,y,w,h)=>`<g class="thing" data-thing="${id}" tabindex="0" role="button"><g class="art"><image href="../felt/street-${f}.webp" x="${x}" y="${y}" width="${w}" height="${h}"/><rect class="hit" x="${x-6}" y="${y-6}" width="${w+12}" height="${h+12}" rx="14"/></g></g>`;
 const ROAD=f=>`<image href="../felt/${f}" x="-900" y="330" width="2700" height="300" preserveAspectRatio="none"/>`;
@@ -118,6 +122,7 @@ const SCENES={
   svg:`<!-- layer 2: the felt and cardboard street, cut out so the town shows above it -->
       <image href="../felt/street-road.webp" x="-900" y="330" width="2700" height="300" preserveAspectRatio="none"/>
       <image href="../felt/street-tree.webp" x="462" y="144" width="151" height="250"/>
+      ${PER("town",1,300)}
       <g class="thing" data-thing="dog" tabindex="0" role="button"><g class="art"><image href="../felt/street-dog.webp" x="372" y="318" width="87" height="82"/><rect class="hit" x="366" y="312" width="99" height="94" rx="14"/></g></g>
       <g class="thing" data-thing="bike" tabindex="0" role="button"><g class="art"><image href="../felt/street-bike.webp" x="600" y="312" width="134" height="90"/><rect class="hit" x="594" y="306" width="146" height="102" rx="14"/></g></g>
       <g class="thing" data-thing="bird" tabindex="0" role="button"><g class="art"><image href="../felt/street-bird.webp" x="516" y="98" width="56" height="58"/><rect class="hit" x="510" y="92" width="68" height="70" rx="14"/></g></g>
@@ -131,49 +136,49 @@ const SCENES={
  country:{bg:"street-bg-country.webp",sky:"#4a86b0",label:"Countryside",icon:"tractor",ids:["truck","tractor","cow","sheep","bird","plane"],
   svg:ROAD("street-road-country.webp")+
    TH("cow","cow",40,318,128,92)+TH("sheep","sheep",246,336,104,72)+
-   TH("bird","bird",560,100,56,58)+TH("plane","plane",70,-14,146,62)+
+   TH("bird","bird",560,100,56,58)+TH("plane","plane",70,-14,146,62)+PER("country",3,400)+
    TH("tractor","tractor",36,426,150,121)+TH("truck","farmtruck",300,408,220,143)+TH("tractor","tractor2",580,418,170,134)},
  site:{bg:"street-bg-site.webp",sky:"#3e88c0",label:"Building",icon:"digger",ids:["crane","digger","dumptruck","mixer","roller","heli"],
   svg:ROAD("street-road-site.webp")+
-   TH("heli","heli",600,-2,163,88)+
+   TH("heli","heli",600,-2,163,88)+PER("site",4,430)+
    TH("roller","roller",262,330,132,83)+
    TH("crane","crane",16,392,172,155)+TH("digger","digger",196,395,166,152)+TH("dumptruck","dump",376,404,190,143)+TH("mixer","mixer",584,406,206,140)},
  berlin:{bg:"street-bg-berlin.webp",sky:"#3e88c0",label:"Berlin",icon:"dbus",ids:["bus","tram","bike","cargobike","car","darkcar","dog","crow","plane"],
   svg:ROAD("street-road.webp")+
-   TH("dog","dog",372,318,87,82)+TH("bike","bike",762,314,128,86)+TH("crow","crow",506,92,70,61)+TH("tram","tram",28,326,249,118)+
+   PER("berlin",2,290)+BEAR(660)+TH("dog","dog",372,318,87,82)+TH("bike","bike",762,314,128,86)+TH("crow","crow",506,92,70,61)+TH("tram","tram",28,326,249,118)+
    TH("car","trabant",196,478,160,82)+TH("bus","dbus",352,427,235,150)+TH("darkcar","bmw",600,412,230,152)+TH("cargobike","cargobike",476,296,160,102)+TH("plane","plane",70,-14,146,62)},
  austin:{bg:"street-bg-austin.webp",sky:"#3e88c0",label:"Austin",icon:"pickup",ids:["truck","car","motorcycle","horse","escooter","bike","dog","bird","plane","police"],
   svg:ROAD("street-road.webp")+
-   TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("police","police",40,474,147,82)+
+   PER("austin",5,500)+TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("police","police",40,474,147,82)+
    TH("car","car",200,470,138,86)+TH("truck","pickup",360,420,250,148)+TH("motorcycle","motorcycle",650,456,150,90)+TH("horse","horse",190,303,105,97)+TH("escooter","escooter",762,306,90,96)+TH("plane","plane",70,-14,146,62)},
  sicily:{bg:"street-bg-sicily.webp",sky:"#3e88c0",label:"Sicily",icon:"boat",ids:["boat","scooter","tuktuk","bike","dog","cat","seagull","plane"],
   svg:ROAD("street-road-beach.webp")+
-   TH("dog","dog",372,318,87,82)+TH("cat","cat",268,322,60,74)+TH("bike","bike",600,312,134,90)+TH("seagull","seagull",500,92,100,67)+
+   PER("sicily",3,490)+TH("dog","dog",372,318,87,82)+TH("cat","cat",268,322,60,74)+TH("bike","bike",600,312,134,90)+TH("seagull","seagull",500,92,100,67)+
    TH("scooter","scooter",60,420,190,135)+THB("boat","boat",985,500,230,117)+TH("tuktuk","ape",630,440,170,119)+THB("boat","trireme",868,490,100,88)+TH("plane","plane",70,-14,146,62)}
 };
 SCENES.london={bg:"street-bg-london.webp",sky:"#3e88c0",label:"London",icon:"bus-red",ids:["bus","taxi","car","bike","dog","bird","plane"],
  svg:ROAD("street-road.webp")+
-  TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bike","pennyfarthing",182,292,120,108)+TH("bird","bird",516,98,56,58)+
+  PER("london",2,480)+TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bike","pennyfarthing",182,292,120,108)+TH("bird","bird",516,98,56,58)+
   TH("taxi","taxi",30,474,190,86)+TH("car","mini",610,456,170,107)+TH("bus","bus-red",236,420,265,148)+TH("plane","plane",70,-14,146,62)};
 SCENES.paris={bg:"street-bg-paris.webp",sky:"#3e88c0",label:"Paris",icon:"2cv",ids:["car","bike","escooter","balloon","dog","bird","plane","bus"],
  svg:ROAD("street-road.webp")+
-  TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+
+  PER("paris",3,480)+TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+
   TH("car","2cv",40,462,200,128)+TH("bus","dbus",330,427,235,150)+TH("car","car",620,470,138,86)+TH("escooter","escooter2",232,314,78,88)+TH("balloon","balloon",740,70,70,129)+TH("plane","plane",70,-14,146,62)};
 SCENES.barcelona={bg:"street-bg-barcelona.webp",sky:"#3e88c0",label:"Barcelona",icon:"bcntaxi",ids:["taxi","tram","car","skateboard","bike","dog","bird","plane"],
  svg:ROAD("street-road.webp")+
-  TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("skateboard","skateboard",480,362,120,38)+TH("bird","bird",516,98,56,58)+TH("tram","tram",28,326,249,118)+
+  PER("barcelona",2,300)+TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("skateboard","skateboard",480,362,120,38)+TH("bird","bird",516,98,56,58)+TH("tram","tram",28,326,249,118)+
   TH("taxi","bcntaxi",60,462,230,100)+TH("car","seat600",410,468,150,94)+TH("plane","plane",70,-14,146,62)};
 SCENES.lisbon={bg:"street-bg-lisbon.webp",sky:"#3e88c0",label:"Lisbon",icon:"lisbontram",ids:["tram","bike","camper","tuktuk","dog","bird","plane","car"],
  svg:ROAD("street-road.webp")+
-  TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("tram","lisbontram",30,330,215,185)+
+  PER("lisbon",1,490)+TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bird","bird",516,98,56,58)+TH("tram","lisbontram",30,330,215,185)+
   TH("car","fiat",640,452,170,99)+TH("camper","camper",268,392,200,172)+TH("tuktuk","ape",480,468,130,91)+TH("plane","plane",70,-14,146,62)};
 SCENES.rome={bg:"street-bg-rome.webp",sky:"#3e88c0",label:"Rome",icon:"fiat",ids:["car","scooter","escooter","chariot","bike","dog","bird","plane"],
  svg:ROAD("street-road.webp")+
-  TH("dog","dog",372,318,87,82)+TH("cat","cat",268,322,60,74)+TH("bike","bike",600,312,134,90)+TH("seagull","seagull",500,92,100,67)+TH("car","fiat",40,436,200,117)+
+  PER("rome",4,480)+TH("dog","dog",372,318,87,82)+TH("cat","cat",770,322,60,74)+TH("bike","bike",600,312,134,90)+TH("seagull","seagull",500,92,100,67)+TH("car","fiat",40,436,200,117)+
   TH("scooter","scooter",330,430,150,105)+TH("escooter","foldscooter",228,314,88,86)+TH("chariot","chariot",560,412,200,141)+TH("plane","plane",70,-14,146,62)};
 SCENES.newyork={bg:"street-bg-newyork.webp",sky:"#3e88c0",label:"New York",icon:"nytaxi",ids:["taxi","police","subway","bike","dog","bird","plane"],
  svg:ROAD("street-road.webp")+
-  TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bike","fixie",190,322,120,78)+TH("bird","bird",516,98,56,58)+TH("police","police",40,474,147,82)+
+  PER("newyork",4,480)+TH("dog","dog",372,318,87,82)+TH("bike","bike",600,312,134,90)+TH("bike","fixie",190,322,120,78)+TH("bird","bird",516,98,56,58)+TH("police","police",40,474,147,82)+
   TH("taxi","nytaxi",230,440,210,118)+TH("subway","subway",490,432,270,110)+TH("plane","plane",70,-14,146,62)};
 const ORDER=["town","country","site","berlin","austin","sicily","london","paris","barcelona","lisbon","rome","newyork"];
 let sceneId="town";
@@ -254,12 +259,16 @@ const SYN={
 };
 
 function bubble(t){const b=$("bubble");b.textContent=t;b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}
-function label(){document.querySelectorAll("[data-thing]").forEach(g=>g.setAttribute("aria-label",w(g.dataset.thing).w))}
+function label(){document.querySelectorAll("[data-thing]").forEach(g=>{const i=g.dataset.thing;g.setAttribute("aria-label",i.startsWith("hello_")?HELLO[i.slice(6)]:w(i).w)})}
 const fill=(tpl,id)=>tpl.replace("{w}",w(id).w);
 
 const SND=new Proxy({},{get:(_,id)=>()=>{if(id==='darkcar'||!LP.sample(id,2.4))SYN[id]()}});
 function play(id,el){
- const now=Date.now();if(now-lastTap<150)return;lastTap=now;playedAt=now;lastId=id;
+ const now=Date.now();if(now-lastTap<150)return;lastTap=now;
+ if(id.startsWith("hello_")){ // a person: the greeting is in the place's own language, whatever the child is learning
+  const g=el||document.querySelector(`[data-thing="${id}"]`);g.classList.remove("go","hop");void g.getBBox();g.classList.add("hop");
+  if(!LP.sample(id,2.6))LP.say(HELLO[id.slice(6)],true);bubble(HELLO[id.slice(6)]);return}
+ playedAt=now;lastId=id;
  const g=el||document.querySelector(`[data-thing="${id}"]`);plays++;
  const anim=["dog","bird","bike","heli","cow","sheep","scooter","cargobike","horse","escooter","skateboard","balloon"].includes(id)?"hop":"go";
  g.classList.remove("go","hop");void g.getBBox();g.classList.add(anim);
@@ -275,8 +284,8 @@ function play(id,el){
   setTimeout(()=>{if(want){bubble(fill(L().where,want));LP.say(fill(L().where,want),true)}},2300);
   return;
  }
- bubble(w(id).w+"  "+w(id).s);LPLearn.heard(id,LP.lang);
- setTimeout(()=>{LP.say(w(id).w);LP.say(w(id).s,true)},({fire:2300,police:2300,bus:2000,plane:1900,heli:1900,bird:1900,crow:1800,seagull:1800,cat:1300,dog:1800,tram:1500,bike:1200,car:1000,truck:1800,taxi:1100,boat:1800,scooter:1500,motorcycle:1700,cargobike:1500,horse:1800,darkcar:4300,subway:1600,escooter:1300,skateboard:1500,camper:1300,chariot:1900,tuktuk:1300,balloon:1900,tractor:1900,cow:1600,sheep:1400,digger:2000,dumptruck:1900,mixer:2000,crane:1700,roller:2000})[id]||1000);
+ bubble(w(id).w);LPLearn.heard(id,LP.lang);
+ setTimeout(()=>{LP.say(w(id).w)},({fire:2300,police:2300,bus:2000,plane:1900,heli:1900,bird:1900,crow:1800,seagull:1800,cat:1300,dog:1800,tram:1500,bike:1200,car:1000,truck:1800,taxi:1100,boat:1800,scooter:1500,motorcycle:1700,cargobike:1500,horse:1800,darkcar:4300,subway:1600,escooter:1300,skateboard:1500,camper:1300,chariot:1900,tuktuk:1300,balloon:1900,tractor:1900,cow:1600,sheep:1400,digger:2000,dumptruck:1900,mixer:2000,crane:1700,roller:2000})[id]||1000);
  if(want)setTimeout(()=>{if(want){bubble(fill(L().where,want));LP.say(fill(L().where,want))}},3600);
  else if(plays>=8&&!swapping){swapping=1;setTimeout(()=>{nextScene();swapping=0},4600)}
 }
