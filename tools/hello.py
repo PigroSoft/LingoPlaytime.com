@@ -19,7 +19,7 @@ def kok(voice, lang, speed=0.95):
         s, sr = K.create(t, voice=voice, speed=speed, lang=lang); sf.write(wav, s, sr)
     return f
 PLAN = {
- "town":     ("Hello!",      kok("af_heart", "en-us")),
+ "town":     ("Hello!",      kok("am_liam", "en-us")),
  "country":  ("Hello!",      kok("am_adam", "en-us")),
  "site":     ("Hello!",      kok("am_michael", "en-us")),
  "berlin":   ("Hallo!",      piper("de-thorsten-low"), 1.3),   # a woman: the only German voice here is male, so it is pitched up
