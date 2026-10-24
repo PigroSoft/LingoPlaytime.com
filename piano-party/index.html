@@ -239,7 +239,6 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     </button>
     <nav aria-label="Main">
       <button type="button" data-view="games" id="nav-games"></button>
-      <button type="button" data-view="stories" id="nav-stories"></button>
       <a href="/blog/" id="nav-parents"></a>
       <button type="button" data-view="app" id="nav-app"></button>
       <button type="button" data-view="privacy" id="nav-privacy"></button>
@@ -332,12 +331,6 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
       <div class="grid" id="gameGrid"></div>
     </section>
 
-
-    <!-- STORIES -->
-    <section class="games" id="v-stories" hidden>
-      <div class="card"><div class="gtext"><h1 id="sto-title"></h1><p id="sto-lead"></p></div></div>
-      <div class="grid" id="storyGrid"></div>
-    </section>
 
     <!-- APP -->
     <section class="card prose" id="v-app" hidden>
@@ -514,7 +507,6 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     {id:"face",name:"Where's your nose?",blurb:"Tap a nose, eyes or toes, hear each word, then point to your very own.",min:0,sound:false,langs:ALLL,art:"face"},
     {id:"dress",name:"Get dressed",blurb:"Rain, sun or snow? Put on the right clothes one word at a time, then go out.",min:0,sound:false,langs:ALLL,art:"dress"},
     {id:"teeth",name:"Sparkly Teeth",blurb:"Scrub the germs off a big felt smile, or brush for two minutes with a timer. Learn the words for teeth.",min:0,sound:false,langs:ALLL,art:"teeth"},
-    {id:"night",name:"Goodnight room",blurb:"Say goodnight to the moon, the lamp and the teddy. It ends all by itself.",min:0,sound:false,langs:ALLL,art:"night"},
     {id:"farm",name:"Old MacDonald's Farm",blurb:"Tap an animal to hear its real sound and its name, then sing the song.",min:0,sound:true,langs:ALLL,art:"farm"},
     {id:"piano",name:"Piano Party",blurb:"Play the piano with your keyboard: free play, or follow a song. Learn the notes and the keys.",min:0,sound:false,langs:ALLL,art:"piano"},
     {id:"drum",name:"Drum Parade",blurb:"Bang the drums or mash any key. Every hit is a beat, a word or a number.",min:0,sound:false,langs:ALLL,art:"drum"},
@@ -526,14 +518,10 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     {id:"market",name:"At the market",blurb:"A raccoon asks for fruit, bread or cheese, and you tap it into the basket.",min:0,sound:false,langs:ALLL,art:"market"},
     {id:"munch",name:"Munch munch",blurb:"A hungry caterpillar eats fruit, counts the bites, and turns into a butterfly.",min:0,sound:false,langs:ALLL,art:"munch"},
     {id:"pairs",name:"Pairs",blurb:"A memory game: every pair is a picture and its word in another language.",min:2,sound:false,langs:ALLL,art:"pairs"},
-  ];
-  /* stories: calm, watch-or-listen tales for bedtime. They open in the same stage as the games but live under their own tab. */
-  const STORIES = [
+    {id:"night",name:"Goodnight room",blurb:"Say goodnight to the moon, the lamp and the teddy. It ends all by itself.",min:0,sound:false,langs:ALLL,art:"night"},
     {id:"crossing",name:"Pip and the safe crossing",blurb:"A raccoon finds the road too busy to cross, and the whole town changes it. Watch it, or switch the screen off and just listen.",min:0,sound:true,langs:ALLL,art:"crossing"},
   ];
-  const STORY_UI={en:["Stories","Bedtime stories","Calm tales to watch or to listen to with the screen off, told in the language you choose."],de:["Geschichten","Gute-Nacht-Geschichten","Ruhige Geschichten zum Anschauen oder zum Zuhören bei ausgeschaltetem Bildschirm, in der Sprache, die du wählst."],es:["Cuentos","Cuentos para dormir","Cuentos tranquilos para ver o para escuchar con la pantalla apagada, en el idioma que elijas."],fr:["Histoires","Histoires du soir","Des histoires calmes à regarder ou à écouter écran éteint, dans la langue de ton choix."],it:["Storie","Storie della buonanotte","Storie tranquille da guardare o da ascoltare a schermo spento, nella lingua che scegli."],pt:["Histórias","Histórias de dormir","Histórias calmas para ver ou ouvir com o ecrã desligado, na língua que escolheres."]};
-  const SU=()=>STORY_UI[(profile||draft).home]||STORY_UI.en;
-  const GAME = Object.fromEntries(GAMES.concat(STORIES).map(g=>[g.id,g]));
+  const GAME = Object.fromEntries(GAMES.map(g=>[g.id,g]));
   /* every game has its own address, lingoplaytime.com/<slug>/, for sharing and search.
      The folder pages are copies of this page made by tools/game-pages.py. */
   const SLUG={crossing:"pip-crossing",peek:"peekaboo",face:"nose",street:"street-sounds",dress:"get-dressed",night:"goodnight",teeth:"brush-teeth",sky:"sky-words",farm:"farm",drum:"drum-parade",piano:"piano-party",train:"word-train",paint:"paint",soup:"soup",flappy:"flappy-words",heli:"helicopter",ark:"noahs-ark",market:"market",munch:"munch",pairs:"pairs"};
@@ -624,7 +612,6 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     document.documentElement.dir=L[home]&&L[home].rtl?"rtl":"ltr";
     const s=t();
     ["games","parents","app","privacy"].forEach(k=>$("nav-"+k).textContent=s[k]);
-    $("nav-stories").textContent=SU()[0];$("nav-stories").disabled=!profile;
     $("nav-games").disabled=!profile;
     $("nav-parents").setAttribute("href","/"+(["de","es","fr","it","pt"].includes(home)?home+"/":"")+"blog/"+(location.protocol==="file:"?"index.html":""));
     applyStatic();
@@ -648,7 +635,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   }
 
   function show(v){
-    if((v==="games"||v==="play"||v==="stories")&&!profile) v="setup";
+    if((v==="games"||v==="play")&&!profile) v="setup";
     if(v==="setup"&&profile&&!editing) v="games";
     if(view==="play"&&v!=="play"){frameTo("about:blank");current=null;document.title=HOME_TITLE}
     if(v!=="play"&&v!=="setup"&&routeGame())history.pushState(null,"","/");
@@ -657,10 +644,9 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     const bb=$("backBtn");
     if(v==="play"){$("barL").prepend(bb)}else if(bb.parentNode.id==="barL"){document.querySelector(".stagebar").prepend(bb)}
     document.querySelectorAll("main>section").forEach(s=>s.hidden=s.id!=="v-"+v);
-    document.querySelectorAll("nav [data-view]").forEach(b=>b.setAttribute("aria-current",(b.dataset.view===v||(v==="play"&&b.dataset.view===(STORIES.some(x=>x.id===current)?"stories":"games")))?"page":"false"));
+    document.querySelectorAll("nav [data-view]").forEach(b=>b.setAttribute("aria-current",(b.dataset.view===v||(v==="play"&&b.dataset.view==="games"))?"page":"false"));
     if(v==="setup")renderSetup();
     if(v==="games")renderGames();
-    if(v==="stories")renderStories();
     renderBar();
     window.scrollTo(0,0);
   }
@@ -733,15 +719,6 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
       const v=LPVoice.best(LPVoice.tag(c),(draft.voices||{})[c]);if(!v)return;
       const u=new SpeechSynthesisUtterance(SAMPLE[c]||L[c].hi);u.voice=v;u.lang=v.lang;u.rate=.9;u.pitch=1;speechSynthesis.speak(u);
     }catch(e){}
-  }
-
-  function renderStories(){
-    const u=SU();$("sto-title").textContent=u[1];$("sto-lead").textContent=u[2];
-    $("storyGrid").innerHTML=STORIES.map(g=>`<button type="button" class="game" data-game="${g.id}">
-        <div class="art felt"><img src="/felt/thumb-${g.id}.webp" alt="" width="600" height="448" loading="lazy" draggable="false"></div>
-        <h3>${esc(gname(g))}</h3><p>${esc(gblurb(g))}</p>
-        <span class="playnow">${esc(T[profile.home]?T[profile.home].gCta:T.en.gCta)}</span>
-</button>`).join("");
   }
   function renderGames(){
     const s=t(),p=profile;
@@ -868,8 +845,7 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   $("voiceRows").addEventListener("click",e=>{const b=e.target.closest("[data-hear]");if(b)hear(b.dataset.hear)});
   $("g-cta").addEventListener("click",()=>{const g=document.querySelector("#gameGrid [data-game]");if(g)openGame(g.dataset.game)});
   $("gameGrid").addEventListener("click",e=>{const g=e.target.closest("[data-game]");if(g)openGame(g.dataset.game)});
-  $("storyGrid").addEventListener("click",e=>{const g=e.target.closest("[data-game]");if(g)openGame(g.dataset.game)});
-  $("backBtn").addEventListener("click",()=>show(STORIES.some(x=>x.id===current)?"stories":"games"));
+  $("backBtn").addEventListener("click",()=>show("games"));
   document.querySelectorAll("nav [data-view]").forEach(btn=>btn.addEventListener("click",()=>show(btn.dataset.view)));
   document.querySelectorAll("footer [data-fview]").forEach(btn=>btn.addEventListener("click",()=>show(btn.dataset.fview)));
   $("logo").addEventListener("click",()=>show(profile?"games":"setup"));
@@ -902,10 +878,10 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
   applyLang();
   const hv=(location.hash||"").slice(1),r0=routeGame();
   if(r0&&profile&&!hv)openGame(r0,true);
-  else show(["games","stories","app","privacy"].includes(hv)?hv:view);
+  else show(["games","app","privacy"].includes(hv)?hv:view);
   // links like /#play or /#play/farm jump straight into a game
   if(hv==="play"||hv.startsWith("play/")){const id=hv.slice(5),el=document.querySelector("#gameGrid [data-game]");const t=GAME[id]?id:(el&&el.dataset.game);if(t)openGame(t,true)}
-  addEventListener("popstate",()=>{const r=routeGame();if(r){if(r!==current)openGame(r,true)}else if(view==="play")show(STORIES.some(x=>x.id===current)?"stories":"games")});
+  addEventListener("popstate",()=>{const r=routeGame();if(r){if(r!==current)openGame(r,true)}else if(view==="play")show("games")});
 })();
 </script>
 
