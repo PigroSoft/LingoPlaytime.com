@@ -32,7 +32,7 @@ PLAN = {
  "rome":     ("Ciao!",       kok("im_nicola", "it")),
  "newyork":  ("Hey! I am walking here!", kok("am_michael", "en-us", 1.0)),
  "soldier":  ("Andiamo!",    kok("im_nicola", "it", 0.9)),
- "bear":     ("Hallochen!",  piper("de-thorsten-low")),
+ "bear":     ("Hallöchen!",  piper("de-thorsten-low")),
 }
 out = {}
 for place, (text, synth, *pitch) in PLAN.items():

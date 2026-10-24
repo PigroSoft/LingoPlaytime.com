@@ -118,7 +118,7 @@ const DATA={
 const PAR={6:.60,5:.62,1:.554,2:.558,3:.504,4:.546};
 const PER=(place,doll,x,id)=>{const h=104,w=Math.round(h*PAR[doll]);return TH(id||"hello_"+place,"person"+doll,x,404-h,w,h)};
 const BEAR=x=>TH("hello_bear","bear",x,284,86,120);
-const HELLO={town:"Hello!",country:"Hello!",site:"Hello!",berlin:"Hallo!",austin:"Alright, alright, alright!",sicily:"Ciao!",london:"Hello!",paris:"Bonjour!",barcelona:"¡Hola!",lisbon:"Olá!",rome:"Ciao!",newyork:"Hey! I'm walking here!",bear:"Hallochen!"};
+const HELLO={town:"Hello!",country:"Hello!",site:"Hello!",berlin:"Hallo!",austin:"Alright, alright, alright!",sicily:"Ciao!",london:"Hello!",paris:"Bonjour!",barcelona:"¡Hola!",lisbon:"Olá!",rome:"Ciao!",newyork:"Hey! I'm walking here!",bear:"Hallöchen!"};
 const THB=(id,f,bx,by,bw,bh)=>TH(id,f,0,0,10,10).replace('<g class="thing"','<g class="thing" data-bg="'+[bx,by,bw,bh]+'"');
 const TH=(id,f,x,y,w,h)=>`<g class="thing" data-thing="${id}" tabindex="0" role="button"><g class="art"><image href="../felt/street-${f}.webp" x="${x}" y="${y}" width="${w}" height="${h}"/><rect class="hit" x="${x-6}" y="${y-6}" width="${w+12}" height="${h+12}" rx="14"/></g></g>`;
 const ROAD=f=>`<image href="../felt/${f}" x="-900" y="330" width="2700" height="300" preserveAspectRatio="none"/>`;
