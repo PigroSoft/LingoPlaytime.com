@@ -125,7 +125,33 @@ LP.start(L().title,()=>{});
 LP.mash((e)=>{
  const c=e.target.closest&&e.target.closest("[data-i]");
  if(c){flip(+c.dataset.i);return}
- if(e.type==="keydown"){const free=[...document.querySelectorAll(".card:not(.up)")];if(free.length)flip(+LP.next("pairs",free).dataset.i)}
+ if(e.type==="keydown"){
+   // age 0=1–2yrs, 1=3–4yrs, 2=5–7yrs
+   // age 2: keyboard disabled, mouse-only
+   if(LP.age===2) return;
+
+   const free=[...document.querySelectorAll(".card:not(.up)")];
+   if(!free.length) return;
+
+   // age 0: every keypress finds the matching pair
+   if(LP.age===0){
+     if(up.length===0){
+       // First card in pair: pick any free card
+       flip(+LP.next("pairs",free).dataset.i);
+     } else {
+       // Second card: find the match
+       const firstCardId=cards[up[0]].id;
+       const matched=cards.findIndex((c,i)=>{
+         const el=document.querySelector(`[data-i="${i}"]`);
+         return el&&free.includes(el)&&c.id===firstCardId&&c.kind!==cards[up[0]].kind;
+       });
+       if(matched>=0) flip(matched);
+     }
+   } else {
+     // age 1: random/rotate through free cards
+     flip(+LP.next("pairs",free).dataset.i);
+   }
+ }
 });
 </script>
 </body>
