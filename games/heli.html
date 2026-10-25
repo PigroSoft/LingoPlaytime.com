@@ -293,7 +293,7 @@ function draw(){
   const im=img(it.def[1]);if(!ok(im))continue;
   let x=it.wx-scroll,y=altToY(it.alt)+Math.sin(nowT*2+it.ph)*5,sc=1,a=1;
   if(it.state===1){const k=Math.min(1,it.t/.9),e=k*k*(3-2*k),tx=Wd-60-cargo.length*0,ty=40;x=it.fx+(hx-it.fx)*Math.min(1,k*2);y=it.fy+(hy+hh*.1-it.fy)*Math.min(1,k*2);sc=1-.65*e;a=1-Math.max(0,k-.6)*2.2}
-  const iw=z*it.def[2]*sc,ih=iw*im.naturalHeight/im.naturalWidth;
+  const frameCount=it.def[3]||1,iw=z*it.def[2]*sc,ih=iw*im.naturalHeight/(im.naturalWidth/frameCount);
   cx.save();cx.globalAlpha=Math.max(0,a);cx.translate(x,y);cx.rotate(Math.sin(nowT*1.7+it.ph)*.06);
   if(it.def[3]){const fr=Math.floor(nowT*6)%it.def[3],fw=im.naturalWidth/it.def[3];cx.scale(-1,1);cx.drawImage(im,fr*fw,0,fw,im.naturalHeight,-iw/2,-ih/2,iw,ih)}
   else cx.drawImage(im,-iw/2,-ih/2,iw,ih);
