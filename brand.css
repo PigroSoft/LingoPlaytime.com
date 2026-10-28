@@ -226,3 +226,19 @@ header::after{inset:4px}
 .wordtable td:first-child{width:2.4em;text-align:center;font-size:22px;padding-inline:8px}
 .wordtable tr:last-child>*{border-bottom:0}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* language pair guides */
+.pairgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:18px 0 8px}
+.pairchip{position:relative;display:flex;align-items:center;gap:12px;padding:16px 14px 12px;border-radius:18px;background:#fffdf7;color:var(--ink);font-weight:700;text-decoration:none;box-shadow:0 0 0 1.5px var(--line),0 3px 0 #0001;overflow:hidden;transition:transform .15s}
+.pairchip::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:linear-gradient(90deg,var(--a) 50%,var(--b) 50%)}
+.pairchip:hover{transform:translateY(-3px)}
+.pairchip:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.fl{display:inline-flex;flex:none;gap:4px}
+.fl svg{width:26px;height:18px;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.18)}
+.pairsband{border-top:8px solid transparent;border-image:linear-gradient(90deg,#c4552a,#e0a81c,#a3162c,#2a63b8,#6b8e23,#7b3a5e) 1}
+.pairsband h2{margin:4px 0 6px}
+.pairsband .more{margin:6px 0 0;font-weight:700}
+.pairbadge{display:inline-flex;align-items:center;gap:10px;margin:2px 0 14px;padding:8px 16px 8px 12px;border-radius:999px;background:#fffdf7;font-weight:700;font-size:15px;box-shadow:0 0 0 1.5px var(--line);position:relative;overflow:hidden}
+.pairbadge::before{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--a) 50%,var(--b) 50%)}
+.pairtable thead th:nth-last-child(2){background:color-mix(in srgb,var(--a) 28%,#fff)}
+.pairtable thead th:last-child{background:color-mix(in srgb,var(--b) 28%,#fff)}
