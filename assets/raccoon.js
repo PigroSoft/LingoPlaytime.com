@@ -35,11 +35,11 @@
       if (x !== onX) {
         onX = x;
         el.style.backgroundImage = "url('" + (x ? preloadX(age) : preload(age)) + "')";
-        el.style.transform = "scale(" + (SETS[age].s * (x ? XK : 1)) + ")";
+        el.style.transform = "scaleX(-1) scale(" + (SETS[age].s * (x ? XK : 1)) + ")";
       }
       el.style.backgroundPosition = (k % 3) * 50 + "% " + Math.floor(k / 3) * 100 + "%";
     }
-    function look() { onX = false; el.style.backgroundImage = "url('" + preload(age) + "')"; el.style.transform = "scale(" + SETS[age].s + ")"; preloadX(age); frame(0); }
+    function look() { onX = false; el.style.backgroundImage = "url('" + preload(age) + "')"; el.style.transform = "scaleX(-1) scale(" + SETS[age].s + ")"; preloadX(age); frame(0); }
     function cancel() { clearTimeout(timer); clearInterval(speaking); speaking = 0; busy = false; }
     function active() { return !dead && seen && !document.hidden && !rm.matches; }
     function play(frames, delay, then) {
