@@ -834,7 +834,6 @@ footer{line-height:1.3;margin-top:24px;text-align:center;font-size:12px;color:va
     e.preventDefault();
     const s=T[draft.home]||T.en;
     draft.name=$("name").value.trim();
-    if(!draft.name){$("s-err").textContent=s.errName;$("name").focus();return}
     if(!draft.learn.length){$("s-err").textContent=s.errLearn;return}
     const want=draft.active||(profile&&profile.active);const keep=playable(draft).includes(want)?want:draft.learn[0];
     profile={...draft,learn:[...draft.learn],active:keep,voices:{...(draft.voices||{})}};
