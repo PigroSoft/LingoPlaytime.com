@@ -90,32 +90,32 @@ body{background:#2a1a12;color:#fff;font-family:var(--body);overflow:hidden;touch
 <script>
 /* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
 const DATA=(()=>{
- const LG=["en","nl","pl","sv","el","zh","ar","ja","ko","ru","tr","hi","de","es","fr","it","pt"];
+ const LG=["en","nl","pl","sv","el","zh","ar","ja","ko","ru","tr","hi","de","es","fr","it","pt","cs"];
  const sol={
-  en:"Doh|Ray|Me|Fah|Soh|Lah|Tee",nl:"Do|Re|Mi|Fa|Sol|La|Si",pl:"Do|Re|Mi|Fa|Sol|La|Si",sv:"Do|Re|Mi|Fa|Sol|La|Si",
+  en:"Doh|Ray|Me|Fah|Soh|Lah|Tee",nl:"Do|Re|Mi|Fa|Sol|La|Si",pl:"Do|Re|Mi|Fa|Sol|La|Si",cs:"Do|Re|Mi|Fa|Sol|La|Si",sv:"Do|Re|Mi|Fa|Sol|La|Si",
   el:"Ντο|Ρε|Μι|Φα|Σολ|Λα|Σι",zh:"哆|来|咪|发|唆|拉|西",ar:"دو|ري|مي|فا|صول|لا|سي",ja:"ド|レ|ミ|ファ|ソ|ラ|シ",
   ko:"도|레|미|파|솔|라|시",ru:"До|Ре|Ми|Фа|Соль|Ля|Си",tr:"Do|Re|Mi|Fa|Sol|La|Si",hi:"सा|रे|ग|म|प|ध|नि",
   de:"Do|Re|Mi|Fa|Sol|La|Si",es:"Do|Re|Mi|Fa|Sol|La|Si",fr:"Do|Ré|Mi|Fa|Sol|La|Si",it:"Do|Re|Mi|Fa|Sol|La|Si",pt:"Dó|Ré|Mi|Fá|Sol|Lá|Si"
  };
- const abc=l=>(["de","sv","pl"].includes(l)?"C|D|E|F|G|A|H":"C|D|E|F|G|A|B").split("|");
+ const abc=l=>(["de","sv","pl","cs"].includes(l)?"C|D|E|F|G|A|H":"C|D|E|F|G|A|B").split("|");
  const words=[];
  for(let i=0;i<7;i++){const w={id:"n"+i};LG.forEach(l=>{w[l]=sol[l].split("|")[i]});words.push(w)}
  for(let i=0;i<7;i++){const w={id:"l"+i};LG.forEach(l=>{w[l]=abc(l)[i]});words.push(w)}
  const T={
-  twinkle:{en:"Twinkle, Twinkle, Little Star",nl:"Twinkel, twinkel, kleine ster",pl:"Błyszcz, błyszcz, mała gwiazdko",sv:"Blinka lilla stjärna",el:"Λάμπε, λάμπε, αστεράκι",zh:"一闪一闪亮晶晶",ar:"تألقي تألقي يا نجمة صغيرة",ja:"きらきらぼし",ko:"반짝반짝 작은 별",ru:"Мерцай, мерцай, звёздочка",tr:"Parla parla küçük yıldız",hi:"टिमटिम तारे",de:"Funkel, funkel, kleiner Stern",es:"Brilla, brilla, estrellita",fr:"Ah ! vous dirai-je, maman",it:"Brilla, brilla, piccola stella",pt:"Brilha, brilha, estrelinha"},
-  mary:{en:"Mary Had a Little Lamb",nl:"Marietje had een lammetje",pl:"Mary miała małą owieczkę",sv:"Mary hade ett litet lamm",el:"Η Μαίρη είχε ένα αρνάκι",zh:"玛丽有只小羊羔",ar:"لماري حمل صغير",ja:"メリーさんのひつじ",ko:"메리에겐 작은 양이 있었어요",ru:"У Мэри был маленький ягнёнок",tr:"Mary'nin küçük kuzusu",hi:"मैरी का छोटा मेमना",de:"Mary hatte ein Lämmchen",es:"María tenía un corderito",fr:"Marie avait un petit agneau",it:"Mary aveva un agnellino",pt:"A Maria tinha um cordeirinho"},
-  buns:{en:"Hot Cross Buns",nl:"Hete kruisbroodjes",pl:"Gorące bułeczki",sv:"Varma bullar",el:"Ζεστά ψωμάκια",zh:"热腾腾的面包",ar:"كعكات ساخنة",ja:"ホットクロスバンズ",ko:"뜨거운 빵",ru:"Горячие булочки",tr:"Sıcak çörekler",hi:"गरम बन",de:"Heiße Brötchen",es:"Panecillos calientes",fr:"Brioches chaudes",it:"Panini caldi",pt:"Pãezinhos quentes"},
-  jacques:{en:"Are You Sleeping?",nl:"Broeder Jacob",pl:"Panie Janie",sv:"Broder Jakob",el:"Αδελφέ Ιάκωβε",zh:"两只老虎",ar:"الأخ يعقوب",ja:"フレール・ジャック",ko:"자크 형제",ru:"Братец Яков",tr:"Kardeş Jacques",hi:"भाई जैक्स",de:"Bruder Jakob",es:"Fray Santiago",fr:"Frère Jacques",it:"Fra Martino",pt:"Frère Jacques"},
-  ode:{en:"Ode to Joy",nl:"Ode aan de vreugde",pl:"Oda do radości",sv:"Ode till glädjen",el:"Ύμνος στη χαρά",zh:"欢乐颂",ar:"نشيد الفرح",ja:"歓喜の歌",ko:"환희의 송가",ru:"Ода к радости",tr:"Neşeye övgü",hi:"आनंद का गीत",de:"Freude, schöner Götterfunken",es:"Oda a la alegría",fr:"Ode à la joie",it:"Inno alla gioia",pt:"Ode à alegria"},
-  jingle:{en:"Jingle Bells",nl:"Jingle Bells",pl:"Dzwonki sań",sv:"Bjällerklang",el:"Τζίνγκλ Μπελς",zh:"铃儿响叮当",ar:"جينغل بيلز",ja:"ジングルベル",ko:"징글벨",ru:"Джингл Беллс",tr:"Jingle Bells",hi:"जिंगल बेल्स",de:"Jingle Bells",es:"Cascabel",fr:"Vive le vent",it:"Jingle Bells",pt:"Jingle Bells"},
-  birthday:{en:"Happy Birthday",nl:"Happy Birthday",pl:"Happy Birthday",sv:"Grattis på födelsedagen",el:"Χρόνια πολλά",zh:"祝你生日快乐",ar:"عيد ميلاد سعيد",ja:"ハッピーバースデー",ko:"생일 축하합니다",ru:"С днём рождения",tr:"İyi ki doğdun",hi:"जन्मदिन मुबारक",de:"Zum Geburtstag viel Glück",es:"Cumpleaños feliz",fr:"Joyeux anniversaire",it:"Tanti auguri a te",pt:"Parabéns a você"},
-  lune:{en:"By the Light of the Moon",nl:"Bij het licht van de maan",pl:"W świetle księżyca",sv:"I månens sken",el:"Στο φως του φεγγαριού",zh:"月光下",ar:"على ضوء القمر",ja:"月あかりで",ko:"달빛 아래",ru:"При свете луны",tr:"Ay ışığında",hi:"चाँदनी में",de:"Im Mondschein",es:"A la luz de la luna",fr:"Au clair de la lune",it:"Al chiaro di luna",pt:"Ao luar"}
+  twinkle:{en:"Twinkle, Twinkle, Little Star",nl:"Twinkel, twinkel, kleine ster",pl:"Błyszcz, błyszcz, mała gwiazdko",cs:"Blikej, blikej, hvězdičko",sv:"Blinka lilla stjärna",el:"Λάμπε, λάμπε, αστεράκι",zh:"一闪一闪亮晶晶",ar:"تألقي تألقي يا نجمة صغيرة",ja:"きらきらぼし",ko:"반짝반짝 작은 별",ru:"Мерцай, мерцай, звёздочка",tr:"Parla parla küçük yıldız",hi:"टिमटिम तारे",de:"Funkel, funkel, kleiner Stern",es:"Brilla, brilla, estrellita",fr:"Ah ! vous dirai-je, maman",it:"Brilla, brilla, piccola stella",pt:"Brilha, brilha, estrelinha"},
+  mary:{en:"Mary Had a Little Lamb",nl:"Marietje had een lammetje",pl:"Mary miała małą owieczkę",cs:"Mary měla malé jehňátko",sv:"Mary hade ett litet lamm",el:"Η Μαίρη είχε ένα αρνάκι",zh:"玛丽有只小羊羔",ar:"لماري حمل صغير",ja:"メリーさんのひつじ",ko:"메리에겐 작은 양이 있었어요",ru:"У Мэри был маленький ягнёнок",tr:"Mary'nin küçük kuzusu",hi:"मैरी का छोटा मेमना",de:"Mary hatte ein Lämmchen",es:"María tenía un corderito",fr:"Marie avait un petit agneau",it:"Mary aveva un agnellino",pt:"A Maria tinha um cordeirinho"},
+  buns:{en:"Hot Cross Buns",nl:"Hete kruisbroodjes",pl:"Gorące bułeczki",cs:"Horké housky",sv:"Varma bullar",el:"Ζεστά ψωμάκια",zh:"热腾腾的面包",ar:"كعكات ساخنة",ja:"ホットクロスバンズ",ko:"뜨거운 빵",ru:"Горячие булочки",tr:"Sıcak çörekler",hi:"गरम बन",de:"Heiße Brötchen",es:"Panecillos calientes",fr:"Brioches chaudes",it:"Panini caldi",pt:"Pãezinhos quentes"},
+  jacques:{en:"Are You Sleeping?",nl:"Broeder Jacob",pl:"Panie Janie",cs:"Bratře Jakube",sv:"Broder Jakob",el:"Αδελφέ Ιάκωβε",zh:"两只老虎",ar:"الأخ يعقوب",ja:"フレール・ジャック",ko:"자크 형제",ru:"Братец Яков",tr:"Kardeş Jacques",hi:"भाई जैक्स",de:"Bruder Jakob",es:"Fray Santiago",fr:"Frère Jacques",it:"Fra Martino",pt:"Frère Jacques"},
+  ode:{en:"Ode to Joy",nl:"Ode aan de vreugde",pl:"Oda do radości",cs:"Óda na radost",sv:"Ode till glädjen",el:"Ύμνος στη χαρά",zh:"欢乐颂",ar:"نشيد الفرح",ja:"歓喜の歌",ko:"환희의 송가",ru:"Ода к радости",tr:"Neşeye övgü",hi:"आनंद का गीत",de:"Freude, schöner Götterfunken",es:"Oda a la alegría",fr:"Ode à la joie",it:"Inno alla gioia",pt:"Ode à alegria"},
+  jingle:{en:"Jingle Bells",nl:"Jingle Bells",pl:"Dzwonki sań",cs:"Rolničky",sv:"Bjällerklang",el:"Τζίνγκλ Μπελς",zh:"铃儿响叮当",ar:"جينغل بيلز",ja:"ジングルベル",ko:"징글벨",ru:"Джингл Беллс",tr:"Jingle Bells",hi:"जिंगल बेल्स",de:"Jingle Bells",es:"Cascabel",fr:"Vive le vent",it:"Jingle Bells",pt:"Jingle Bells"},
+  birthday:{en:"Happy Birthday",nl:"Happy Birthday",pl:"Happy Birthday",cs:"Hodně štěstí, zdraví",sv:"Grattis på födelsedagen",el:"Χρόνια πολλά",zh:"祝你生日快乐",ar:"عيد ميلاد سعيد",ja:"ハッピーバースデー",ko:"생일 축하합니다",ru:"С днём рождения",tr:"İyi ki doğdun",hi:"जन्मदिन मुबारक",de:"Zum Geburtstag viel Glück",es:"Cumpleaños feliz",fr:"Joyeux anniversaire",it:"Tanti auguri a te",pt:"Parabéns a você"},
+  lune:{en:"By the Light of the Moon",nl:"Bij het licht van de maan",pl:"W świetle księżyca",cs:"Měsíček svítí",sv:"I månens sken",el:"Στο φως του φεγγαριού",zh:"月光下",ar:"على ضوء القمر",ja:"月あかりで",ko:"달빛 아래",ru:"При свете луны",tr:"Ay ışığında",hi:"चाँदनी में",de:"Im Mondschein",es:"A la luz de la luna",fr:"Au clair de la lune",it:"Al chiaro di luna",pt:"Ao luar"}
  };
  Object.keys(T).forEach(k=>words.push(Object.assign({id:"t_"+k},T[k])));
  return {words,lines:{
   en:{title:"Piano party",go:"Press any key!",listen:"Listen!",done:"Well done!"},
   nl:{title:"Pianofeestje",go:"Druk op een toets!",listen:"Luister!",done:"Goed gedaan!"},
-  pl:{title:"Pianinowa zabawa",go:"Naciśnij dowolny klawisz!",listen:"Posłuchaj!",done:"Brawo!"},
+  pl:{title:"Pianinowa zabawa",go:"Naciśnij dowolny klawisz!",listen:"Posłuchaj!",done:"Brawo!"},cs:{title:"Klavírní párty",go:"Zmáčkni libovolnou klávesu!",listen:"Poslouchej!",done:"Výborně!"},
   sv:{title:"Pianofest",go:"Tryck på en tangent!",listen:"Lyssna!",done:"Bra jobbat!"},
   el:{title:"Πάρτι πιάνου",go:"Πάτα ένα πλήκτρο!",listen:"Άκου!",done:"Μπράβο!"},
   zh:{title:"钢琴派对",go:"按任意一个键！",listen:"听！",done:"太棒了！"},

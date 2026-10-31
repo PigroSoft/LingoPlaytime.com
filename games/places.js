@@ -63,7 +63,8 @@
     ko: [[["namsan", 460, 1]]],
     ar: [[["domes", 380, 1], ["palms", 660, 1]], [["giza", 520, 1], ["palms", 260, .9]]],
     tr: [[["galata", 340, 1], ["domes", 600, .9]]],
-    hi: [[["taj", 460, 1], ["palms", 740, .8]]]
+    hi: [[["taj", 460, 1], ["palms", 740, .8]]],
+    cs: [[["palace", 440, 1], ["cottages", 700, .8]]]
   };
   var pickIdx = {};
   function strip(lang) {

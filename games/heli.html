@@ -27,7 +27,7 @@ body{background:#9fd0e8;color:#fff;font-family:var(--body);overflow:hidden;touch
 <script>
 /* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
 const DATA=(()=>{
- const LG=["en","nl","pl","sv","el","zh","ar","ja","ko","ru","tr","hi","de","es","fr","it","pt"];
+ const LG=["en","nl","pl","sv","el","zh","ar","ja","ko","ru","tr","hi","de","es","fr","it","pt","cs"];
  const t=(id,s)=>{const a=s.split("|"),w={id};LG.forEach((l,i)=>w[l]=a[i]);return w};
  const words=[
   t("helicopter","Helicopter|Helikopter|Helikopter|Helikopter|Ελικόπτερο|直升机|هليكوبتر|ヘリコプター|헬리콥터|Вертолёт|Helikopter|हेलीकॉप्टर|Hubschrauber|Helicóptero|Hélicoptère|Elicottero|Helicóptero"),
@@ -49,7 +49,7 @@ const DATA=(()=>{
  return {words,lines:{
   en:{title:"Helicopter fun",go:"Tap to fly!",done:"Great flying!"},
   nl:{title:"Helikopterpret",go:"Tik om te vliegen!",done:"Goed gevlogen!"},
-  pl:{title:"Zabawa z helikopterem",go:"Dotknij, żeby lecieć!",done:"Świetny lot!"},
+  pl:{title:"Zabawa z helikopterem",go:"Dotknij, żeby lecieć!",done:"Świetny lot!"},cs:{title:"Zábava s vrtulníkem",go:"Klepni a leť!",done:"Skvělý let!"},
   sv:{title:"Helikopterkul",go:"Tryck för att flyga!",done:"Fin flygning!"},
   el:{title:"Παιχνίδι με ελικόπτερο",go:"Άγγιξε για να πετάξεις!",done:"Τέλεια πτήση!"},
   zh:{title:"直升机真好玩",go:"点一点就能飞！",done:"飞得真棒！"},

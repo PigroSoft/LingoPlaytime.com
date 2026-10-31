@@ -47,7 +47,7 @@ body{background:#8fb8c4;color:#fff;font-family:var(--body);overflow:hidden;touch
 <script>
 /* Every word and line this game can say. tools/phrases.js reads DATA to record them. */
 const DATA=(()=>{
- const LG=["en","nl","pl","sv","el","zh","ar","ja","ko","ru","tr","hi","de","es","fr","it","pt"];
+ const LG=["en","nl","pl","sv","el","zh","ar","ja","ko","ru","tr","hi","de","es","fr","it","pt","cs"];
  const t=(id,s)=>{const a=s.split("|"),w={id};LG.forEach((l,i)=>w[l]=a[i]);return w};
  const words=[
   t("tooth","Tooth|Tand|Ząb|Tand|Δόντι|牙齿|سن|歯|이|Зуб|Diş|दाँत|Zahn|Diente|Dent|Dente|Dente"),
@@ -64,7 +64,7 @@ const DATA=(()=>{
  return {words,lines:{
   en:{title:"Sparkly teeth",go:"Scrub the germs away!",done:"Sparkly clean!"},
   nl:{title:"Blinkende tanden",go:"Poets de bacteriën weg!",done:"Blinkend schoon!"},
-  pl:{title:"Lśniące zęby",go:"Wyszoruj bakterie!",done:"Lśniąco czyste!"},
+  pl:{title:"Lśniące zęby",go:"Wyszoruj bakterie!",done:"Lśniąco czyste!"},cs:{title:"Zářivé zoubky",go:"Vydrhni bacily!",done:"Zářivě čisté!"},
   sv:{title:"Blanka tänder",go:"Borsta bort bakterierna!",done:"Blänkande rent!"},
   el:{title:"Λαμπερά δόντια",go:"Διώξε τα μικρόβια!",done:"Γυαλιστερά καθαρά!"},
   zh:{title:"亮晶晶的牙齿",go:"把细菌刷掉！",done:"亮晶晶，真干净！"},

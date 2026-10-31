@@ -248,8 +248,8 @@
   function css(t) { var s = document.createElement("style"); s.textContent = t; (document.head || document.documentElement).appendChild(s); }
   function ready(fn) { if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn); else fn(); }
 
-  var ALL = window.ALLLANGS = ["en", "de", "es", "fr", "it", "pt", "nl", "pl", "sv", "el", "zh", "ar", "ja", "ko", "ru", "tr", "hi"];
-  var NAMES = { en: "English", de: "Deutsch", es: "Español", fr: "Français", it: "Italiano", pt: "Português", nl: "Nederlands", pl: "Polski", sv: "Svenska", el: "Ελληνικά", zh: "中文", ar: "العربية", ja: "日本語", ko: "한국어", ru: "Русский", tr: "Türkçe", hi: "हिन्दी" };
+  var ALL = window.ALLLANGS = ["en", "de", "es", "fr", "it", "pt", "nl", "pl", "sv", "el", "zh", "ar", "ja", "ko", "ru", "tr", "hi", "cs"];
+  var NAMES = { en: "English", de: "Deutsch", es: "Español", fr: "Français", it: "Italiano", pt: "Português", nl: "Nederlands", pl: "Polski", sv: "Svenska", el: "Ελληνικά", zh: "中文", ar: "العربية", ja: "日本語", ko: "한국어", ru: "Русский", tr: "Türkçe", hi: "हिन्दी", cs: "Čeština" };
 
   var A = {
     farm: {

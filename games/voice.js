@@ -57,7 +57,7 @@
     setTimeout(go, 1000);
   }
 
-  var TAGS = { en: "en-GB", de: "de-DE", es: "es-ES", fr: "fr-FR", it: "it-IT", pt: "pt-PT", nl: "nl-NL", pl: "pl-PL", sv: "sv-SE", el: "el-GR", zh: "zh-CN", ar: "ar-SA", ja: "ja-JP", ko: "ko-KR", ru: "ru-RU", tr: "tr-TR", hi: "hi-IN" };
+  var TAGS = { en: "en-GB", de: "de-DE", es: "es-ES", fr: "fr-FR", it: "it-IT", pt: "pt-PT", nl: "nl-NL", pl: "pl-PL", sv: "sv-SE", el: "el-GR", zh: "zh-CN", ar: "ar-SA", ja: "ja-JP", ko: "ko-KR", ru: "ru-RU", tr: "tr-TR", hi: "hi-IN", cs: "cs-CZ" };
 
   // Lookup key for recorded clips: the child's name is taken out (it is never recorded),
   // leftover commas tidied, case ignored. tools/render.py uses the same rules.
